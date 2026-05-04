@@ -106,4 +106,9 @@ Recipe to unblock is in `TASKS.md` § Blockers.
 
 ## Vol 2 plan deltas
 
-`docs/BATCH_PLAN_VOL2.md` lists DD-101..200. Of those, this sprint shipped roughly **DD-101..148** (with a few skipped for context budget); the rest — i18n, Playwright e2e specs, more admin polish — remain ready-for-claude when desired. The plan doc captures all 100; pull any of them into `TASKS.md` to claim.
+`docs/BATCH_PLAN_VOL2.md` lists DD-101..200. After Wave 9 + Wave 10 of this run, **roughly DD-101..173 are landed**, with several non-essential ones (i18n DD-175..184, visual fidelity DD-185..189, favicon DD-199, bundle analyzer DD-154) intentionally skipped to avoid pad work. The plan doc captures all 100; pull any of the remaining ones into `TASKS.md` to claim.
+
+Latest waves landed:
+- Wave 8 (DD-144, 187, 188, 191..193, 198): PromptPay QR display via qrcode + EMVCo lib, /app/pos/success/[orderId], approve/reject Actions on /admin/applications, useDebouncedValue, useLocalStorageState, Money component.
+- Wave 9 (DD-156..159, 169): Playwright config + 3 e2e specs + CONTRIBUTING.md.
+- Wave 10 (DD-167, 170, 172, 174): PERFORMANCE.md, INCIDENT_RESPONSE.md, CODE_STYLE.md, GLOSSARY.md.
