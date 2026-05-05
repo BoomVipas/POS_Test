@@ -5,18 +5,20 @@ import { useToast } from "@/components/ui/Toast";
 import { useDemoCatalog } from "@/lib/demo/useDemoCatalog";
 import { useDemoSales } from "@/lib/demo/useDemoSales";
 import { useDemoAudit } from "@/lib/demo/useDemoAudit";
+import { useDemoCustomerNotes } from "@/lib/demo/useDemoCustomerNotes";
 import { writeDemoSettings, DEFAULT_DEMO_SETTINGS } from "@/lib/demo/settings";
 
 export function DangerZone() {
   const { clear: clearCatalog, items } = useDemoCatalog();
   const { clear: clearSales, orders } = useDemoSales();
   const { clear: clearAudit, entries, log } = useDemoAudit();
+  const { clear: clearCustomerNotes } = useDemoCustomerNotes();
   const { push } = useToast();
 
   function clearAll() {
     if (
       !confirm(
-        "Reset all demo data? This wipes your demo catalog, recorded sales, audit log, and settings from this browser. Cannot be undone.",
+        "Reset all demo data? This wipes your demo catalog, recorded sales, customer notes, audit log, and settings from this browser. Cannot be undone.",
       )
     ) {
       return;
@@ -31,12 +33,13 @@ export function DangerZone() {
     clearCatalog();
     clearSales();
     clearAudit();
+    clearCustomerNotes();
     writeDemoSettings(DEFAULT_DEMO_SETTINGS);
     push({
       kind: "warn",
       title: "Demo data reset",
       message:
-        "Catalog, sales, audit log, and settings cleared. Refresh to see the changes everywhere.",
+        "Catalog, sales, customer notes, audit log, and settings cleared. Refresh to see the changes everywhere.",
     });
   }
 

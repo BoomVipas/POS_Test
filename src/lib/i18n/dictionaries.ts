@@ -144,6 +144,10 @@ export type Dict = {
     loyaltyPointsAvailable: (n: number) => string;
     loyaltyPointsLifetime: (n: number) => string;
     loyaltyEarnsPoints: (n: number) => string;
+    customerNotesHeader: string;
+    customerTags: string;
+    addCustomTag: string;
+    customerNotePlaceholder: string;
   };
   setupProducts: {
     title: string;
@@ -357,6 +361,10 @@ const en: Dict = {
     loyaltyPointsAvailable: (n) => `★ ${n} point${n === 1 ? "" : "s"} available`,
     loyaltyPointsLifetime: (n) => `${n} lifetime`,
     loyaltyEarnsPoints: (n) => `Earns ${n} point${n === 1 ? "" : "s"}`,
+    customerNotesHeader: "Customer notes",
+    customerTags: "Tags",
+    addCustomTag: "+ Add",
+    customerNotePlaceholder: "Notes (e.g. allergic to fish, owns 3 cats)",
   },
   setupProducts: {
     title: "Products",
@@ -576,6 +584,10 @@ const th: Dict = {
     loyaltyPointsAvailable: (n) => `★ มี ${n} แต้ม`,
     loyaltyPointsLifetime: (n) => `สะสม ${n} แต้ม`,
     loyaltyEarnsPoints: (n) => `จะได้ ${n} แต้ม`,
+    customerNotesHeader: "บันทึกลูกค้า",
+    customerTags: "แท็ก",
+    addCustomTag: "+ เพิ่ม",
+    customerNotePlaceholder: "บันทึก (เช่น แพ้ปลา เลี้ยงแมว 3 ตัว)",
   },
   setupProducts: {
     title: "สินค้า",

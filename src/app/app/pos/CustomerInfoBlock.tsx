@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useCart, useCartDispatch } from "@/lib/pos/cart-store";
 import { useDemoCustomers } from "@/lib/demo/useDemoCustomers";
+import { useDemoCustomerNotes } from "@/lib/demo/useDemoCustomerNotes";
+import { SUGGESTED_TAGS, toggleTag } from "@/lib/demo/customer-notes";
 import { useDebouncedValue } from "@/lib/hooks/useDebouncedValue";
 import { useT } from "@/lib/i18n/provider";
 import { formatDateTimeTH } from "@/lib/date";
@@ -24,7 +26,9 @@ export function CustomerInfoBlock() {
   const dispatch = useCartDispatch();
   const { t } = useT();
   const customers = useDemoCustomers();
+  const notes = useDemoCustomerNotes();
   const [match, setMatch] = useState<CustomerProfile | null>(null);
+  const [customTagDraft, setCustomTagDraft] = useState("");
 
   const debouncedPhone = useDebouncedValue(cart.customer.phone, 350);
 
@@ -35,6 +39,10 @@ export function CustomerInfoBlock() {
     }
     setMatch(customers.findByPhone(debouncedPhone));
   }, [debouncedPhone, customers]);
+
+  const existingNote = match
+    ? notes.get(cart.customer.phone) ?? { note: "", tags: [], updatedAt: "" }
+    : null;
 
   const hasSendLater = cart.lines.some((l) => l.fulfillment === "send_later");
   if (!hasSendLater) return null;
@@ -93,30 +101,100 @@ export function CustomerInfoBlock() {
         />
 
         {match && (
-          <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--color-ok-soft-fg)]/30 bg-[var(--color-ok-soft-bg)] px-3 py-2 text-[var(--color-ok-soft-fg)]">
-            <div className="text-xs">
-              <p className="font-extrabold">
-                ★ {t.pos.returningCustomer} · {t.pos.ordersCount(match.orderCount)}
-                {match.pointsAvailable > 0 && (
-                  <>
-                    {" · "}
-                    {t.pos.loyaltyPointsAvailable(match.pointsAvailable)}
-                  </>
-                )}
-              </p>
-              <p className="opacity-80">
-                {match.name ?? "—"} · {t.pos.lastSeen}{" "}
-                {formatDateTimeTH(match.lastSeenAt)}
-              </p>
+          <>
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--color-ok-soft-fg)]/30 bg-[var(--color-ok-soft-bg)] px-3 py-2 text-[var(--color-ok-soft-fg)]">
+              <div className="text-xs">
+                <p className="font-extrabold">
+                  ★ {t.pos.returningCustomer} ·{" "}
+                  {t.pos.ordersCount(match.orderCount)}
+                  {match.pointsAvailable > 0 && (
+                    <>
+                      {" · "}
+                      {t.pos.loyaltyPointsAvailable(match.pointsAvailable)}
+                    </>
+                  )}
+                </p>
+                <p className="opacity-80">
+                  {match.name ?? "—"} · {t.pos.lastSeen}{" "}
+                  {formatDateTimeTH(match.lastSeenAt)}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={autofill}
+                className="rounded-full bg-white px-3 py-1.5 text-[11px] font-extrabold text-[var(--color-ok-soft-fg)] shadow-sm"
+              >
+                {t.pos.autofillCustomer}
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={autofill}
-              className="rounded-full bg-white px-3 py-1.5 text-[11px] font-extrabold text-[var(--color-ok-soft-fg)] shadow-sm"
-            >
-              {t.pos.autofillCustomer}
-            </button>
-          </div>
+
+            {existingNote && notes.ready && (
+              <div className="rounded-xl border border-line bg-panel p-3">
+                <div className="flex items-baseline justify-between gap-2">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-muted">
+                    {t.pos.customerNotesHeader}
+                  </p>
+                </div>
+                <div className="mt-2 flex flex-wrap items-center gap-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted">
+                    {t.pos.customerTags}:
+                  </span>
+                  {[...new Set([...SUGGESTED_TAGS, ...existingNote.tags])].map(
+                    (tag) => {
+                      const active = existingNote.tags.includes(tag);
+                      return (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() =>
+                            notes.set(cart.customer.phone, {
+                              tags: toggleTag(existingNote.tags, tag),
+                            })
+                          }
+                          className={
+                            active
+                              ? "rounded-full bg-gradient-to-b from-[#a9763f] to-[#7e552a] px-2 py-0.5 text-[10px] font-extrabold text-white"
+                              : "rounded-full border border-line bg-panel px-2 py-0.5 text-[10px] font-extrabold text-accent-strong hover:bg-soft"
+                          }
+                        >
+                          {tag}
+                        </button>
+                      );
+                    },
+                  )}
+                  <input
+                    type="text"
+                    value={customTagDraft}
+                    onChange={(e) => setCustomTagDraft(e.currentTarget.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        const tag = customTagDraft.trim().toLowerCase();
+                        if (!tag) return;
+                        notes.set(cart.customer.phone, {
+                          tags: toggleTag(existingNote.tags, tag),
+                        });
+                        setCustomTagDraft("");
+                      }
+                    }}
+                    placeholder={t.pos.addCustomTag}
+                    className="w-20 rounded-full border border-line bg-white px-2 py-0.5 text-[10px] focus:border-accent focus:outline-none"
+                  />
+                </div>
+                <textarea
+                  value={existingNote.note}
+                  onChange={(e) =>
+                    notes.set(cart.customer.phone, {
+                      note: e.currentTarget.value,
+                    })
+                  }
+                  placeholder={t.pos.customerNotePlaceholder}
+                  rows={2}
+                  className="mt-2 w-full rounded-md border border-line bg-white px-2 py-1 text-xs text-text shadow-sm placeholder:text-muted/60 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
+                />
+              </div>
+            )}
+          </>
         )}
 
         <input
