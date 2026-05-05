@@ -5,6 +5,7 @@ import type {
   FulfillmentType,
   OrderType,
   PaymentMethod,
+  SendLaterStatus,
 } from "@/lib/database.types";
 
 export const DEMO_SALES_KEY = "pos-for-sell:demo-sales:v1";
@@ -34,6 +35,11 @@ export type DemoOrder = {
   note: string | null;
   createdAt: string; // ISO
   items: DemoOrderItem[];
+
+  // Send-later (only set for orderType === "send_later" or "mixed").
+  sendLaterStatus?: SendLaterStatus;
+  trackingNumber?: string | null;
+  shippingAddress?: string | null;
 };
 
 export function readDemoSales(): DemoOrder[] {
@@ -66,6 +72,15 @@ export function appendDemoSale(order: DemoOrder): void {
   const all = readDemoSales();
   all.push(order);
   writeDemoSales(all);
+}
+
+export function updateDemoSale(
+  id: string,
+  patch: Partial<Omit<DemoOrder, "id" | "items" | "createdAt">>,
+): void {
+  const all = readDemoSales();
+  const next = all.map((o) => (o.id === id ? { ...o, ...patch } : o));
+  writeDemoSales(next);
 }
 
 export function nextOrderNumber(): string {

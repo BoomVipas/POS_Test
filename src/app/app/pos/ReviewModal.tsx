@@ -64,13 +64,15 @@ export function ReviewModal({
       })
       .filter((x): x is DemoOrderItem => x !== null);
 
+    const orderType = deriveOrderType();
+    const isSendLater = orderType === "send_later" || orderType === "mixed";
     return {
       id: newDemoOrderId(),
       orderNumber: nextOrderNumber(),
       customerName: cart.customer.name || null,
       customerPhone: cart.customer.phone || null,
       customerEmail: cart.customer.email || null,
-      orderType: deriveOrderType(),
+      orderType,
       paymentMethod: (cart.paymentMethod ?? "cash") as PaymentMethod,
       subtotalSatang: subtotal,
       discountSatang: cart.discountSatang,
@@ -79,6 +81,13 @@ export function ReviewModal({
       note: null,
       createdAt: new Date().toISOString(),
       items,
+      ...(isSendLater
+        ? {
+            sendLaterStatus: "pending" as const,
+            trackingNumber: null,
+            shippingAddress: cart.customer.address || null,
+          }
+        : {}),
     };
   }
 

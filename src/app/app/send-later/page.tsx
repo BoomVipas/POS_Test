@@ -1,26 +1,20 @@
 import Link from "next/link";
+import { SendLaterList } from "./SendLaterList";
 
 export default function SendLaterPage() {
   return (
-    <main className="mx-auto max-w-5xl px-5 py-12">
+    <main className="mx-auto max-w-4xl px-5 py-10">
       <h1 className="font-display text-3xl text-accent-strong">Send-later</h1>
       <p className="mt-2 text-text/85">
-        Pending fulfillments and shipping status.
+        Pending fulfillments and shipping status. Status flow:{" "}
+        <strong>pending → packed → shipped → completed</strong>.
       </p>
-      <p className="mt-2 text-sm text-muted">
-        (DD-75 to DD-84 will wire the customer info form, status flow, tracking
-        numbers, customer notification emails, CSV export, and cancellation.)
+      <p className="mt-1 text-xs text-muted">
+        Demo mode: reads from localStorage. DD-75..84 will move this to the
+        Supabase <code>send_later_orders</code> table.
       </p>
 
-      <div className="panel mt-8 p-6 text-center">
-        <p className="font-display text-xl text-accent-strong">
-          No pending fulfillments.
-        </p>
-        <p className="mt-2 text-sm text-muted">
-          Send-later orders appear here after a sale that includes one or more
-          send-later lines.
-        </p>
-      </div>
+      <SendLaterList />
 
       <Link
         href="/app"

@@ -8,6 +8,7 @@ import { CartLine } from "./CartLine";
 import { PaymentPicker } from "./PaymentPicker";
 import { ReviewModal } from "./ReviewModal";
 import { PromptPayDisplay } from "./PromptPayDisplay";
+import { CustomerInfoBlock } from "./CustomerInfoBlock";
 import { useDemoSettings } from "@/lib/demo/useDemoSettings";
 
 const METHODS: PaymentMethod[] = [
@@ -46,13 +47,25 @@ export function CartPanel({
 
   const total = Math.max(0, subtotal + shipping - cart.discountSatang);
 
+  const hasSendLater = cart.lines.some((l) => l.fulfillment === "send_later");
+  const customerComplete =
+    !!cart.customer.name.trim() &&
+    !!cart.customer.phone.trim() &&
+    !!cart.customer.address.trim();
+  const sendLaterMissingCustomer = hasSendLater && !customerComplete;
+
   const cta =
     cart.lines.length === 0
       ? "Add a product"
       : !cart.paymentMethod
         ? "Pick a payment method"
-        : "Review & confirm";
-  const ctaDisabled = cart.lines.length === 0 || !cart.paymentMethod;
+        : sendLaterMissingCustomer
+          ? "Fill send-later details"
+          : "Review & confirm";
+  const ctaDisabled =
+    cart.lines.length === 0 ||
+    !cart.paymentMethod ||
+    sendLaterMissingCustomer;
 
   return (
     <div className={compact ? "p-4" : "panel p-5"}>
@@ -131,6 +144,8 @@ export function CartPanel({
             amountSatang={total}
           />
         )}
+
+        <CustomerInfoBlock />
 
         <button
           type="button"

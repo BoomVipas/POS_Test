@@ -14,6 +14,7 @@ import { PaymentSplitTile } from "./PaymentSplitTile";
 import { TopSellersTile } from "./TopSellersTile";
 import { InventoryTile } from "./InventoryTile";
 import { HourBars } from "./HourBars";
+import { ExportCsvButton } from "./ExportCsvButton";
 
 export function DashboardLive() {
   const { orders, ready: salesReady } = useDemoSales();
@@ -64,11 +65,14 @@ export function DashboardLive() {
 
   return (
     <main className="mx-auto max-w-6xl px-5 py-8">
-      <div className="flex items-baseline justify-between gap-3">
-        <h1 className="font-display text-3xl text-accent-strong">Dashboard</h1>
-        <p className="text-xs font-bold uppercase tracking-wider text-muted">
-          {hasLiveData ? "Live demo · today" : "Demo · illustrative"}
-        </p>
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <div>
+          <h1 className="font-display text-3xl text-accent-strong">Dashboard</h1>
+          <p className="text-xs font-bold uppercase tracking-wider text-muted">
+            {hasLiveData ? "Live demo · today" : "Demo · illustrative"}
+          </p>
+        </div>
+        <ExportCsvButton />
       </div>
       <p className="mt-1 text-sm text-muted">
         {hasLiveData
