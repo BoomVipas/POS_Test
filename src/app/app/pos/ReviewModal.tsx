@@ -1,9 +1,20 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useCart, useCartDispatch } from "@/lib/pos/cart-store";
 import { formatTHB } from "@/lib/money/format";
 import type { Product } from "@/lib/pos/types";
+import { useDemoSales } from "@/lib/demo/useDemoSales";
+import { useDemoCatalog } from "@/lib/demo/useDemoCatalog";
+import {
+  newDemoOrderId,
+  nextOrderNumber,
+  type DemoOrder,
+  type DemoOrderItem,
+} from "@/lib/demo/sales";
+import type { OrderType, PaymentMethod } from "@/lib/database.types";
+import { useToast } from "@/components/ui/Toast";
 
 export function ReviewModal({
   products,
@@ -18,18 +29,95 @@ export function ReviewModal({
   total: number;
   onClose: () => void;
 }) {
+  const router = useRouter();
   const cart = useCart();
   const dispatch = useCartDispatch();
+  const sales = useDemoSales();
+  const catalog = useDemoCatalog();
+  const { push } = useToast();
+
   const [confirmed, setConfirmed] = useState(false);
   const productIndex = new Map(products.map((p) => [p.id, p]));
   const hasSendLater = cart.lines.some((l) => l.fulfillment === "send_later");
+  const hasTakeNow = cart.lines.some((l) => l.fulfillment === "take_now");
+
+  function deriveOrderType(): OrderType {
+    if (hasSendLater && hasTakeNow) return "mixed";
+    if (hasSendLater) return "send_later";
+    return "take_now";
+  }
+
+  function buildOrder(): DemoOrder {
+    const items: DemoOrderItem[] = cart.lines
+      .map((l) => {
+        const p = productIndex.get(l.productId);
+        if (!p) return null;
+        return {
+          productId: p.id,
+          sku: p.sku,
+          productName: p.name,
+          qty: l.qty,
+          unitPriceSatang: p.price_satang,
+          lineTotalSatang: p.price_satang * l.qty,
+          fulfillmentType: l.fulfillment,
+        } satisfies DemoOrderItem;
+      })
+      .filter((x): x is DemoOrderItem => x !== null);
+
+    return {
+      id: newDemoOrderId(),
+      orderNumber: nextOrderNumber(),
+      customerName: cart.customer.name || null,
+      customerPhone: cart.customer.phone || null,
+      customerEmail: cart.customer.email || null,
+      orderType: deriveOrderType(),
+      paymentMethod: (cart.paymentMethod ?? "cash") as PaymentMethod,
+      subtotalSatang: subtotal,
+      discountSatang: cart.discountSatang,
+      shippingFeeSatang: shipping,
+      totalSatang: total,
+      note: null,
+      createdAt: new Date().toISOString(),
+      items,
+    };
+  }
 
   function handleConfirm() {
     setConfirmed(true);
+    const order = buildOrder();
+    sales.append(order);
+
+    // Decrement demo catalog stock for each line. Real Supabase RPC will do
+    // this atomically server-side (DD-66).
+    const itemsByProduct = new Map<string, number>();
+    for (const it of order.items) {
+      itemsByProduct.set(
+        it.productId,
+        (itemsByProduct.get(it.productId) ?? 0) + it.qty,
+      );
+    }
+    for (const [productId, qty] of itemsByProduct) {
+      const p = productIndex.get(productId);
+      if (!p) continue;
+      // Only decrement demo-catalog products (not the bundled mockProducts).
+      if (catalog.items.some((c) => c.id === productId)) {
+        catalog.update(productId, {
+          current_qty: Math.max(0, p.current_qty - qty),
+        });
+      }
+    }
+
+    push({
+      kind: "success",
+      title: "Sale recorded",
+      message: `${order.orderNumber} · ${formatTHB(order.totalSatang)} THB`,
+    });
+
     setTimeout(() => {
       dispatch({ type: "CLEAR" });
       onClose();
-    }, 1100);
+      router.push(`/app/pos/success/${order.id}`);
+    }, 600);
   }
 
   return (
@@ -110,11 +198,12 @@ export function ReviewModal({
           disabled={confirmed}
           className="btn-accent mt-5 w-full rounded-2xl px-5 py-3 text-base font-extrabold"
         >
-          {confirmed ? "Saved (mock)" : "Confirm sale"}
+          {confirmed ? "Saved" : "Confirm sale"}
         </button>
 
         <p className="mt-2 text-center text-xs text-muted">
-          DD-65 will replace this with the real <code>create_order</code> RPC.
+          Demo mode: persists to localStorage. DD-65 swaps in the real{" "}
+          <code>create_order</code> RPC.
         </p>
       </div>
     </div>
