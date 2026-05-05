@@ -130,6 +130,11 @@ export type Dict = {
     ordersCount: (n: number) => string;
     lastSeen: string;
     autofillCustomer: string;
+    amountTendered: string;
+    exact: string;
+    changeDue: string;
+    addNote: string;
+    notePlaceholder: string;
   };
   setupProducts: {
     title: string;
@@ -329,6 +334,11 @@ const en: Dict = {
     ordersCount: (n) => `${n} order${n === 1 ? "" : "s"}`,
     lastSeen: "last seen",
     autofillCustomer: "Autofill name + address",
+    amountTendered: "Cash tendered",
+    exact: "Exact",
+    changeDue: "Change due",
+    addNote: "Add note",
+    notePlaceholder: "Note (e.g. no scarf, gift wrap)",
   },
   setupProducts: {
     title: "Products",
@@ -534,6 +544,11 @@ const th: Dict = {
     ordersCount: (n) => `${n} ออเดอร์`,
     lastSeen: "ล่าสุดเมื่อ",
     autofillCustomer: "เติมชื่อและที่อยู่อัตโนมัติ",
+    amountTendered: "เงินที่รับ",
+    exact: "พอดี",
+    changeDue: "เงินทอน",
+    addNote: "เพิ่มหมายเหตุ",
+    notePlaceholder: "หมายเหตุ (เช่น ไม่เอาผ้าพันคอ ห่อของขวัญ)",
   },
   setupProducts: {
     title: "สินค้า",

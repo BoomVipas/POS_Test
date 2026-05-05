@@ -62,12 +62,17 @@ export function ReviewModal({
           unitPriceSatang: p.price_satang,
           lineTotalSatang: p.price_satang * l.qty,
           fulfillmentType: l.fulfillment,
+          ...(l.note ? { note: l.note } : {}),
         } satisfies DemoOrderItem;
       })
       .filter((x): x is DemoOrderItem => x !== null);
 
     const orderType = deriveOrderType();
     const isSendLater = orderType === "send_later" || orderType === "mixed";
+    const isCash = (cart.paymentMethod ?? "cash") === "cash";
+    const tendered = cart.cashTenderedSatang;
+    const change = isCash && tendered > total ? tendered - total : 0;
+
     return {
       id: newDemoOrderId(),
       orderNumber: nextOrderNumber(),
@@ -83,6 +88,9 @@ export function ReviewModal({
       note: null,
       createdAt: new Date().toISOString(),
       items,
+      ...(isCash && tendered > 0
+        ? { cashTenderedSatang: tendered, changeDueSatang: change }
+        : {}),
       ...(isSendLater
         ? {
             sendLaterStatus: "pending" as const,
@@ -176,6 +184,11 @@ export function ReviewModal({
                     {line.qty} × {formatTHB(p.price_satang)}
                     {line.fulfillment === "send_later" && " · send later"}
                   </p>
+                  {line.note && (
+                    <p className="mt-0.5 text-[11px] italic text-[#6d4c28]">
+                      “{line.note}”
+                    </p>
+                  )}
                 </div>
                 <p className="num shrink-0 text-sm font-extrabold text-accent-strong">
                   {formatTHB(p.price_satang * line.qty)}
@@ -209,6 +222,22 @@ export function ReviewModal({
               {cart.paymentMethod ?? "—"}
             </strong>
           </p>
+          {cart.paymentMethod === "cash" && cart.cashTenderedSatang > 0 && (
+            <div className="mt-1 grid gap-0.5 rounded-xl bg-[var(--color-ok-soft-bg)] px-3 py-2 text-xs text-[var(--color-ok-soft-fg)]">
+              <Row
+                label="Tendered"
+                value={formatTHB(cart.cashTenderedSatang)}
+                muted
+              />
+              <Row
+                label="Change due"
+                value={formatTHB(
+                  Math.max(0, cart.cashTenderedSatang - total),
+                )}
+                muted
+              />
+            </div>
+          )}
           {hasSendLater && (
             <p className="rounded-xl border border-[#ddc4a2] bg-[#fff7ec] px-3 py-2 text-xs text-[#6d4c28]">
               Send-later: customer info will be required at confirm (DD-76).

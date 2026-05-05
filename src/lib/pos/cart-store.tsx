@@ -13,6 +13,8 @@ type State = {
   lines: CartLine[];
   paymentMethod: PaymentMethod | null;
   discountSatang: number;
+  /** Cash tendered when paymentMethod === "cash". 0 means not entered yet. */
+  cashTenderedSatang: number;
   customer: { name: string; phone: string; email: string; address: string };
 };
 
@@ -30,15 +32,18 @@ type Action =
       productId: string;
       fulfillment: CartLine["fulfillment"];
     }
+  | { type: "SET_LINE_NOTE"; productId: string; note: string }
   | { type: "CLEAR" }
   | { type: "SET_PAYMENT_METHOD"; method: PaymentMethod | null }
   | { type: "SET_DISCOUNT"; satang: number }
+  | { type: "SET_CASH_TENDERED"; satang: number }
   | { type: "SET_CUSTOMER"; patch: Partial<State["customer"]> };
 
 const initial: State = {
   lines: [],
   paymentMethod: null,
   discountSatang: 0,
+  cashTenderedSatang: 0,
   customer: { name: "", phone: "", email: "", address: "" },
 };
 
@@ -91,12 +96,29 @@ function reducer(s: State, a: Action): State {
             : l,
         ),
       };
+    case "SET_LINE_NOTE":
+      return {
+        ...s,
+        lines: s.lines.map((l) =>
+          l.productId === a.productId
+            ? { ...l, note: a.note.trim() === "" ? undefined : a.note }
+            : l,
+        ),
+      };
     case "CLEAR":
       return initial;
     case "SET_PAYMENT_METHOD":
-      return { ...s, paymentMethod: a.method };
+      // Reset tendered when switching away from cash to avoid stale values.
+      return {
+        ...s,
+        paymentMethod: a.method,
+        cashTenderedSatang:
+          a.method === "cash" ? s.cashTenderedSatang : 0,
+      };
     case "SET_DISCOUNT":
       return { ...s, discountSatang: Math.max(0, a.satang) };
+    case "SET_CASH_TENDERED":
+      return { ...s, cashTenderedSatang: Math.max(0, a.satang) };
     case "SET_CUSTOMER":
       return { ...s, customer: { ...s.customer, ...a.patch } };
   }

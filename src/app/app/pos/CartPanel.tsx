@@ -9,6 +9,7 @@ import { PaymentPicker } from "./PaymentPicker";
 import { ReviewModal } from "./ReviewModal";
 import { PromptPayDisplay } from "./PromptPayDisplay";
 import { CustomerInfoBlock } from "./CustomerInfoBlock";
+import { CashTenderBlock } from "./CashTenderBlock";
 import { useDemoSettings } from "@/lib/demo/useDemoSettings";
 import { useT } from "@/lib/i18n/provider";
 
@@ -148,6 +149,10 @@ export function CartPanel({
             proxy={{ kind: "phone", value: settings.promptpayPhone }}
             amountSatang={total}
           />
+        )}
+
+        {cart.paymentMethod === "cash" && total > 0 && (
+          <CashTenderBlock totalSatang={total} />
         )}
 
         <CustomerInfoBlock />

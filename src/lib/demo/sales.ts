@@ -18,6 +18,7 @@ export type DemoOrderItem = {
   unitPriceSatang: number;
   lineTotalSatang: number;
   fulfillmentType: FulfillmentType;
+  note?: string;
 };
 
 export type DemoOrder = {
@@ -35,6 +36,10 @@ export type DemoOrder = {
   note: string | null;
   createdAt: string; // ISO
   items: DemoOrderItem[];
+
+  // Cash tender + change (only meaningful when paymentMethod === "cash").
+  cashTenderedSatang?: number;
+  changeDueSatang?: number;
 
   // Send-later (only set for orderType === "send_later" or "mixed").
   sendLaterStatus?: SendLaterStatus;

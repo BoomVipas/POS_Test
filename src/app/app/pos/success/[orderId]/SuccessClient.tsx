@@ -87,6 +87,11 @@ export function SuccessClient({ orderId }: { orderId: string }) {
                   {it.qty} × {formatTHB(it.unitPriceSatang)}
                   {it.fulfillmentType === "send_later" && " · send later"}
                 </p>
+                {it.note && (
+                  <p className="mt-0.5 text-[11px] italic text-[#6d4c28]">
+                    “{it.note}”
+                  </p>
+                )}
               </div>
               <p className="num shrink-0 text-sm font-extrabold text-accent-strong">
                 {formatTHB(it.lineTotalSatang)}
@@ -117,6 +122,22 @@ export function SuccessClient({ orderId }: { orderId: string }) {
               {formatTHB(order.totalSatang)} THB
             </span>
           </div>
+          {order.paymentMethod === "cash" &&
+            order.cashTenderedSatang !== undefined &&
+            order.cashTenderedSatang > 0 && (
+              <div className="mt-1 grid gap-0.5 rounded-xl bg-[var(--color-ok-soft-bg)] px-3 py-2 text-xs text-[var(--color-ok-soft-fg)]">
+                <Row
+                  label={t.pos.amountTendered}
+                  value={`${formatTHB(order.cashTenderedSatang)} THB`}
+                  muted
+                />
+                <Row
+                  label={t.pos.changeDue}
+                  value={`${formatTHB(order.changeDueSatang ?? 0)} THB`}
+                  muted
+                />
+              </div>
+            )}
         </div>
 
         {order.paymentMethod === "promptpay" && order.totalSatang > 0 && (

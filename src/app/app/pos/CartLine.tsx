@@ -1,6 +1,7 @@
 "use client";
 
-import { Minus, Plus, X } from "lucide-react";
+import { useState } from "react";
+import { Minus, Plus, X, StickyNote } from "lucide-react";
 import { formatTHB } from "@/lib/money/format";
 import { useCartDispatch } from "@/lib/pos/cart-store";
 import type { CartLine as CartLineType, Product } from "@/lib/pos/types";
@@ -17,6 +18,7 @@ export function CartLine({
   const { t } = useT();
   const lineTotal = product.price_satang * line.qty;
   const isLater = line.fulfillment === "send_later";
+  const [showNoteInput, setShowNoteInput] = useState(Boolean(line.note));
 
   return (
     <li
@@ -31,23 +33,52 @@ export function CartLine({
         <p className="line-clamp-2 text-sm font-extrabold text-text">
           {product.name}
         </p>
-        <button
-          type="button"
-          onClick={() =>
-            dispatch({
-              type: "SET_FULFILLMENT",
-              productId: product.id,
-              fulfillment: isLater ? "take_now" : "send_later",
-            })
-          }
-          className={`mt-1.5 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-wider ${
-            isLater
-              ? "border-[#ddc4a2] bg-[#fff7ec] text-[#6d4c28]"
-              : "border-[#b8d2ab] bg-[var(--color-ok-soft-bg)] text-[var(--color-ok-soft-fg)]"
-          }`}
-        >
-          {isLater ? t.pos.sendLater : t.pos.takeNow}
-        </button>
+        <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() =>
+              dispatch({
+                type: "SET_FULFILLMENT",
+                productId: product.id,
+                fulfillment: isLater ? "take_now" : "send_later",
+              })
+            }
+            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-wider ${
+              isLater
+                ? "border-[#ddc4a2] bg-[#fff7ec] text-[#6d4c28]"
+                : "border-[#b8d2ab] bg-[var(--color-ok-soft-bg)] text-[var(--color-ok-soft-fg)]"
+            }`}
+          >
+            {isLater ? t.pos.sendLater : t.pos.takeNow}
+          </button>
+          {!showNoteInput && !line.note && (
+            <button
+              type="button"
+              onClick={() => setShowNoteInput(true)}
+              className="inline-flex items-center gap-1 rounded-full border border-line bg-panel px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-muted hover:text-accent-strong"
+            >
+              <StickyNote size={11} />
+              {t.pos.addNote}
+            </button>
+          )}
+        </div>
+        {(showNoteInput || line.note) && (
+          <input
+            type="text"
+            value={line.note ?? ""}
+            onChange={(e) =>
+              dispatch({
+                type: "SET_LINE_NOTE",
+                productId: product.id,
+                note: e.currentTarget.value,
+              })
+            }
+            placeholder={t.pos.notePlaceholder}
+            maxLength={120}
+            autoFocus={showNoteInput && !line.note}
+            className="mt-2 w-full rounded-md border border-line bg-white px-2 py-1 text-xs text-text shadow-sm placeholder:text-muted/60 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
+          />
+        )}
       </div>
       <div className="flex flex-col items-end justify-between gap-2">
         <div className="flex items-center gap-1.5">
