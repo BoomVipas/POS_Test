@@ -8,9 +8,7 @@ import { CartLine } from "./CartLine";
 import { PaymentPicker } from "./PaymentPicker";
 import { ReviewModal } from "./ReviewModal";
 import { PromptPayDisplay } from "./PromptPayDisplay";
-
-// Demo PromptPay proxy. Real workspace value comes from workspace settings (DD-100ish).
-const DEMO_PROMPTPAY_PHONE = "0812345678";
+import { useDemoSettings } from "@/lib/demo/useDemoSettings";
 
 const METHODS: PaymentMethod[] = [
   "cash",
@@ -29,6 +27,7 @@ export function CartPanel({
 }) {
   const cart = useCart();
   const dispatch = useCartDispatch();
+  const { settings } = useDemoSettings();
   const [reviewOpen, setReviewOpen] = useState(false);
 
   const productIndex = new Map(products.map((p) => [p.id, p]));
@@ -128,7 +127,7 @@ export function CartPanel({
 
         {cart.paymentMethod === "promptpay" && total > 0 && (
           <PromptPayDisplay
-            proxy={{ kind: "phone", value: DEMO_PROMPTPAY_PHONE }}
+            proxy={{ kind: "phone", value: settings.promptpayPhone }}
             amountSatang={total}
           />
         )}

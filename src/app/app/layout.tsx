@@ -84,6 +84,9 @@ export default async function AppLayout({
             <Link href="/app/send-later" className="hover:text-accent">
               Send-later
             </Link>
+            <Link href="/app/settings" className="hover:text-accent">
+              Settings
+            </Link>
           </nav>
           {guard.mode === "demo" && (
             <span className="ml-auto rounded-full border border-[var(--color-warn-soft-fg)]/40 bg-[var(--color-warn-soft-bg)] px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-[var(--color-warn-soft-fg)]">

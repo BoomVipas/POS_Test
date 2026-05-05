@@ -26,6 +26,11 @@ export default function AppHomePage() {
           title="Send-later"
           body="Fulfil pending shipments."
         />
+        <Tile
+          href="/app/settings"
+          title="Settings"
+          body="Brand name, PromptPay phone, defaults."
+        />
       </ul>
     </main>
   );
