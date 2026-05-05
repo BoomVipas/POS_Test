@@ -16,6 +16,7 @@ export const SAMPLE_CATALOG: Array<Omit<Product, "id">> = [
     is_active: true,
     image_path: null,
     current_qty: 30,
+    upsellSkus: ["CAT-STK-BR", "CAT-NIP"],
   },
   {
     workspace_id: "demo-workspace",
@@ -28,6 +29,7 @@ export const SAMPLE_CATALOG: Array<Omit<Product, "id">> = [
     is_active: true,
     image_path: null,
     current_qty: 100,
+    upsellSkus: ["CAT-TREAT", "CAT-BED"],
   },
   {
     workspace_id: "demo-workspace",
@@ -64,6 +66,7 @@ export const SAMPLE_CATALOG: Array<Omit<Product, "id">> = [
     is_active: true,
     image_path: null,
     current_qty: 50,
+    upsellSkus: ["CAT-NIP", "CAT-MUG"],
   },
   {
     workspace_id: "demo-workspace",
@@ -76,6 +79,7 @@ export const SAMPLE_CATALOG: Array<Omit<Product, "id">> = [
     is_active: true,
     image_path: null,
     current_qty: 10,
+    upsellSkus: ["CAT-NIP", "CAT-TREAT"],
   },
   {
     workspace_id: "demo-workspace",
@@ -88,6 +92,7 @@ export const SAMPLE_CATALOG: Array<Omit<Product, "id">> = [
     is_active: true,
     image_path: null,
     current_qty: 12,
+    upsellSkus: ["CAT-STK-BK", "CAT-MUG"],
   },
   {
     workspace_id: "demo-workspace",

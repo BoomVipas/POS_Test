@@ -17,6 +17,10 @@ export type Product = {
   image_path: string | null;
   current_qty: number; // remaining at the active event
   pinned?: boolean; // pinned-first in POS grid (Shopify Smart Grid pattern)
+  /** SKUs to suggest when this product is added to the cart. SKUs survive
+   *  seeding (where ids are generated at runtime) and are easier to author
+   *  in the catalog UI. */
+  upsellSkus?: string[];
 };
 
 export type CartLine = {

@@ -11,6 +11,7 @@ import { PromptPayDisplay } from "./PromptPayDisplay";
 import { CustomerInfoBlock } from "./CustomerInfoBlock";
 import { CashTenderBlock } from "./CashTenderBlock";
 import { SplitPaymentBlock } from "./SplitPaymentBlock";
+import { UpsellPrompt } from "./UpsellPrompt";
 import { useDemoSettings } from "@/lib/demo/useDemoSettings";
 import { useT } from "@/lib/i18n/provider";
 import { validateSplits } from "@/lib/pos/splits";
@@ -103,13 +104,18 @@ export function CartPanel({
           {t.pos.emptyCart}
         </p>
       ) : (
-        <ul className="grid gap-2">
-          {cart.lines.map((line) => {
-            const p = productIndex.get(line.productId);
-            if (!p) return null;
-            return <CartLine key={line.productId} line={line} product={p} />;
-          })}
-        </ul>
+        <>
+          <ul className="grid gap-2">
+            {cart.lines.map((line) => {
+              const p = productIndex.get(line.productId);
+              if (!p) return null;
+              return <CartLine key={line.productId} line={line} product={p} />;
+            })}
+          </ul>
+          <div className="mt-3">
+            <UpsellPrompt products={products} />
+          </div>
+        </>
       )}
 
       <div className="mt-4 grid gap-3">

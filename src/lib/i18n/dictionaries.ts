@@ -148,6 +148,11 @@ export type Dict = {
     customerTags: string;
     addCustomTag: string;
     customerNotePlaceholder: string;
+    upsellHeader: string;
+    upsellAdd: string;
+    activityFeedHeader: string;
+    forecastSold: (qty: number, days: number) => string;
+    forecastSuggestRestock: (qty: number) => string;
   };
   setupProducts: {
     title: string;
@@ -365,6 +370,11 @@ const en: Dict = {
     customerTags: "Tags",
     addCustomTag: "+ Add",
     customerNotePlaceholder: "Notes (e.g. allergic to fish, owns 3 cats)",
+    upsellHeader: "Customers also added",
+    upsellAdd: "+ Add",
+    activityFeedHeader: "Live activity",
+    forecastSold: (qty, days) => `Sold ${qty} in last ${days} day${days === 1 ? "" : "s"}`,
+    forecastSuggestRestock: (qty) => `Consider +${qty} for next event`,
   },
   setupProducts: {
     title: "Products",
@@ -588,6 +598,11 @@ const th: Dict = {
     customerTags: "แท็ก",
     addCustomTag: "+ เพิ่ม",
     customerNotePlaceholder: "บันทึก (เช่น แพ้ปลา เลี้ยงแมว 3 ตัว)",
+    upsellHeader: "ลูกค้าซื้อคู่กันบ่อย",
+    upsellAdd: "+ เพิ่ม",
+    activityFeedHeader: "ความเคลื่อนไหวสด",
+    forecastSold: (qty, days) => `ขายแล้ว ${qty} ใน ${days} วันล่าสุด`,
+    forecastSuggestRestock: (qty) => `แนะนำเตรียมเพิ่ม ${qty} ชิ้นสำหรับงานถัดไป`,
   },
   setupProducts: {
     title: "สินค้า",
