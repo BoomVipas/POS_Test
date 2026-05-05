@@ -124,7 +124,12 @@ export type Dict = {
     reviewConfirm: string;
     reviewSaved: string;
     receiptScanWith: string;
+    receiptScanAgain: string;
     paymentMethodLabel: string;
+    returningCustomer: string;
+    ordersCount: (n: number) => string;
+    lastSeen: string;
+    autofillCustomer: string;
   };
   setupProducts: {
     title: string;
@@ -154,6 +159,9 @@ export type Dict = {
     fImageRemove: string;
     fImageHint: string;
     saveChanges: string;
+    pin: string;
+    unpin: string;
+    pinned: string;
   };
   dashboard: {
     title: string;
@@ -315,7 +323,12 @@ const en: Dict = {
     reviewConfirm: "Confirm sale",
     reviewSaved: "Saved",
     receiptScanWith: "Scan with any Thai banking app to pay.",
+    receiptScanAgain: "Scan to re-pay or share the QR with the customer.",
     paymentMethodLabel: "Payment method",
+    returningCustomer: "Returning customer",
+    ordersCount: (n) => `${n} order${n === 1 ? "" : "s"}`,
+    lastSeen: "last seen",
+    autofillCustomer: "Autofill name + address",
   },
   setupProducts: {
     title: "Products",
@@ -345,6 +358,9 @@ const en: Dict = {
     fImageRemove: "Remove image",
     fImageHint: "Auto-resized to ≤1024px and converted to WebP. Saved as a data URL in this browser only.",
     saveChanges: "Save changes",
+    pin: "Pin",
+    unpin: "Unpin",
+    pinned: "pinned",
   },
   dashboard: {
     title: "Dashboard",
@@ -512,7 +528,12 @@ const th: Dict = {
     reviewConfirm: "ยืนยันการขาย",
     reviewSaved: "บันทึกแล้ว",
     receiptScanWith: "สแกน QR ด้วยแอปธนาคารใดก็ได้เพื่อชำระเงิน",
+    receiptScanAgain: "สแกนเพื่อชำระอีกครั้งหรือส่งให้คนอื่น",
     paymentMethodLabel: "วิธีชำระเงิน",
+    returningCustomer: "ลูกค้าประจำ",
+    ordersCount: (n) => `${n} ออเดอร์`,
+    lastSeen: "ล่าสุดเมื่อ",
+    autofillCustomer: "เติมชื่อและที่อยู่อัตโนมัติ",
   },
   setupProducts: {
     title: "สินค้า",
@@ -544,6 +565,9 @@ const th: Dict = {
     fImageHint:
       "ปรับขนาดอัตโนมัติให้ไม่เกิน 1024px และแปลงเป็น WebP บันทึกเฉพาะในเบราว์เซอร์นี้",
     saveChanges: "บันทึกการเปลี่ยนแปลง",
+    pin: "ปักหมุด",
+    unpin: "เอาหมุดออก",
+    pinned: "ปักหมุดแล้ว",
   },
   dashboard: {
     title: "แดชบอร์ด",

@@ -22,7 +22,7 @@ export function ProductGrid({ products }: { products: Product[] }) {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return products.filter((p) => {
+    const matches = products.filter((p) => {
       if (category !== "all" && p.category !== category) return false;
       if (!q) return true;
       return (
@@ -30,6 +30,13 @@ export function ProductGrid({ products }: { products: Product[] }) {
         p.sku.toLowerCase().includes(q) ||
         p.category.toLowerCase().includes(q)
       );
+    });
+    // Pinned-first, then alphabetic by name (Shopify Smart Grid pattern).
+    return [...matches].sort((a, b) => {
+      const aPin = a.pinned ? 1 : 0;
+      const bPin = b.pinned ? 1 : 0;
+      if (aPin !== bPin) return bPin - aPin;
+      return a.name.localeCompare(b.name);
     });
   }, [products, query, category]);
 

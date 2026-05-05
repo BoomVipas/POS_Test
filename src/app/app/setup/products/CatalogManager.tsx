@@ -9,6 +9,7 @@ import { Pill } from "@/components/ui/Pill";
 import { EmptyState } from "@/components/ui/States";
 import { useToast } from "@/components/ui/Toast";
 import { formatTHB } from "@/lib/money/format";
+import { useT } from "@/lib/i18n/provider";
 import { ProductFormModal } from "./ProductFormModal";
 import { SAMPLE_CATALOG } from "@/lib/demo/sample-catalog";
 import type { Product } from "@/lib/pos/types";
@@ -18,6 +19,7 @@ const DEMO_WORKSPACE_ID = "demo-workspace";
 export function CatalogManager() {
   const { items, ready, create, update, remove, setActive } = useDemoCatalog();
   const audit = useDemoAudit();
+  const { t } = useT();
   const [editing, setEditing] = useState<Product | null>(null);
   const [open, setOpen] = useState(false);
   const { push } = useToast();
@@ -81,6 +83,18 @@ export function CatalogManager() {
       summary: `${p.sku} → ${isActive ? "active" : "inactive"}`,
       oldValue: { is_active: p.is_active },
       newValue: { is_active: isActive },
+    });
+  }
+
+  function handleSetPinned(p: Product, pinned: boolean) {
+    update(p.id, { pinned });
+    audit.log({
+      action: "catalog_update",
+      targetTable: "products",
+      targetId: p.id,
+      summary: `${p.sku} → ${pinned ? "pinned" : "unpinned"}`,
+      oldValue: { pinned: p.pinned ?? false },
+      newValue: { pinned },
     });
   }
 
@@ -175,6 +189,7 @@ export function CatalogManager() {
               <div className="flex flex-wrap items-baseline gap-2">
                 <span className="num text-xs font-bold text-muted">{p.sku}</span>
                 <span className="font-extrabold text-text">{p.name}</span>
+                {p.pinned && <Pill tone="accent">★ {t.setupProducts.pinned}</Pill>}
                 {!p.is_active && <Pill tone="neutral">inactive</Pill>}
                 {p.send_later_enabled && <Pill tone="ok">send-later</Pill>}
               </div>
@@ -198,6 +213,13 @@ export function CatalogManager() {
             <div className="flex flex-col gap-1.5">
               <Button size="sm" variant="secondary" onClick={() => edit(p)}>
                 Edit
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => handleSetPinned(p, !p.pinned)}
+              >
+                {p.pinned ? t.setupProducts.unpin : t.setupProducts.pin}
               </Button>
               <Button
                 size="sm"

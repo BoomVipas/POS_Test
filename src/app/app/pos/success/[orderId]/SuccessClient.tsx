@@ -2,11 +2,16 @@
 
 import Link from "next/link";
 import { useDemoSales } from "@/lib/demo/useDemoSales";
+import { useDemoSettings } from "@/lib/demo/useDemoSettings";
+import { useT } from "@/lib/i18n/provider";
+import { PromptPayDisplay } from "../../PromptPayDisplay";
 import { formatTHB } from "@/lib/money/format";
 import { formatDateTimeTH } from "@/lib/date";
 
 export function SuccessClient({ orderId }: { orderId: string }) {
   const { orders, ready } = useDemoSales();
+  const { settings } = useDemoSettings();
+  const { t } = useT();
   const order = ready ? orders.find((o) => o.id === orderId) : undefined;
 
   if (!ready) {
@@ -106,13 +111,25 @@ export function SuccessClient({ orderId }: { orderId: string }) {
           )}
           <div className="mt-1 flex items-baseline justify-between border-t border-line pt-2">
             <span className="font-display text-lg text-accent-strong">
-              Total
+              {t.pos.total}
             </span>
             <span className="num text-2xl font-black text-accent-strong">
               {formatTHB(order.totalSatang)} THB
             </span>
           </div>
         </div>
+
+        {order.paymentMethod === "promptpay" && order.totalSatang > 0 && (
+          <div className="mt-5">
+            <PromptPayDisplay
+              proxy={{ kind: "phone", value: settings.promptpayPhone }}
+              amountSatang={order.totalSatang}
+            />
+            <p className="mt-2 text-center text-xs text-muted">
+              {t.pos.receiptScanAgain}
+            </p>
+          </div>
+        )}
 
         <div className="no-print mt-6 flex flex-wrap justify-center gap-3">
           <button

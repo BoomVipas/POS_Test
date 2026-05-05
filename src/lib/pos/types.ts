@@ -16,6 +16,7 @@ export type Product = {
   is_active: boolean;
   image_path: string | null;
   current_qty: number; // remaining at the active event
+  pinned?: boolean; // pinned-first in POS grid (Shopify Smart Grid pattern)
 };
 
 export type CartLine = {
