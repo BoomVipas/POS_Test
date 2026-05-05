@@ -16,6 +16,9 @@ export type DemoAuditAction =
   | "stock_count_open"
   | "stock_count_commit"
   | "stock_count_cancel"
+  | "pet_create"
+  | "pet_update"
+  | "pet_delete"
   | "demo_reset"
   | "demo_seed";
 

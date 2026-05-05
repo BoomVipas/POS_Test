@@ -13,6 +13,7 @@ import {
   lifecycleLabel,
   lifecycleStageFor,
 } from "@/lib/demo/customer-lifecycle";
+import { PetCardsBlock } from "./PetCardsBlock";
 
 const fieldCls =
   "w-full rounded-[var(--radius-md)] border border-line bg-white px-3 py-2 text-sm text-text shadow-sm placeholder:text-muted/60 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25";
@@ -135,6 +136,8 @@ export function CustomerInfoBlock() {
                 {t.pos.autofillCustomer}
               </button>
             </div>
+
+            <PetCardsBlock phone={cart.customer.phone} />
 
             {existingNote && notes.ready && (
               <div className="rounded-xl border border-line bg-panel p-3">

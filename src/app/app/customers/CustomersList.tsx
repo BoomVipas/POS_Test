@@ -5,6 +5,8 @@ import { Pill, type PillTone } from "@/components/ui/Pill";
 import { useDemoSales } from "@/lib/demo/useDemoSales";
 import { useDemoCustomers } from "@/lib/demo/useDemoCustomers";
 import { useDemoCustomerNotes } from "@/lib/demo/useDemoCustomerNotes";
+import { useDemoPets } from "@/lib/demo/useDemoPets";
+import { petSummary, speciesEmoji } from "@/lib/demo/pets";
 import {
   daysBetween,
   firstSeenAt,
@@ -37,6 +39,7 @@ export function CustomersList() {
   const customers = useDemoCustomers();
   const { orders, ready } = useDemoSales();
   const notes = useDemoCustomerNotes();
+  const pets = useDemoPets();
   const [filter, setFilter] = useState<LifecycleStage | "all">("all");
 
   const all = useMemo(
@@ -153,6 +156,26 @@ export function CustomersList() {
                       <span className="num">×{top.qty}</span>
                     </p>
                   )}
+                  {(() => {
+                    const petList = pets.forPhone(profile.phone);
+                    if (petList.length === 0) return null;
+                    return (
+                      <p className="mt-0.5 text-xs text-muted">
+                        {petList.slice(0, 3).map((pp, i) => (
+                          <span key={pp.id}>
+                            {i > 0 && " · "}
+                            {speciesEmoji(pp.species)}{" "}
+                            <strong className="font-extrabold text-text">
+                              {petSummary(pp)}
+                            </strong>
+                          </span>
+                        ))}
+                        {petList.length > 3 && (
+                          <span> +{petList.length - 3} more</span>
+                        )}
+                      </p>
+                    );
+                  })()}
                 </div>
                 <div className="text-right">
                   <p className="num text-base font-extrabold text-accent-strong">

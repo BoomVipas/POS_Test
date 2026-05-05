@@ -10,6 +10,7 @@ import { useDemoCloseDay } from "@/lib/demo/useDemoCloseDay";
 import { useDemoPreOrders } from "@/lib/demo/useDemoPreOrders";
 import { useDemoClaims } from "@/lib/demo/useDemoClaims";
 import { useDemoStockCount } from "@/lib/demo/useDemoStockCount";
+import { useDemoPets } from "@/lib/demo/useDemoPets";
 import { writeDemoSettings, DEFAULT_DEMO_SETTINGS } from "@/lib/demo/settings";
 
 export function DangerZone() {
@@ -21,6 +22,7 @@ export function DangerZone() {
   const { clear: clearPreOrders } = useDemoPreOrders();
   const { clear: clearClaims } = useDemoClaims();
   const { clear: clearStockCount } = useDemoStockCount();
+  const { clear: clearPets } = useDemoPets();
   const { push } = useToast();
 
   function clearAll() {
@@ -46,6 +48,7 @@ export function DangerZone() {
     clearPreOrders();
     clearClaims();
     clearStockCount();
+    clearPets();
     writeDemoSettings(DEFAULT_DEMO_SETTINGS);
     push({
       kind: "warn",

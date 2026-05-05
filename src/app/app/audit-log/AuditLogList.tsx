@@ -19,6 +19,9 @@ const ACTION_TONE: Record<DemoAuditAction, PillTone> = {
   stock_count_open: "neutral",
   stock_count_commit: "ok",
   stock_count_cancel: "neutral",
+  pet_create: "accent",
+  pet_update: "neutral",
+  pet_delete: "neutral",
   demo_reset: "danger",
   demo_seed: "ok",
 };
