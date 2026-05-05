@@ -1,4 +1,5 @@
 import type { DemoOrder } from "./sales";
+import { effectiveTotalSatang } from "./sales";
 import { isoDateInTZ, TH_TZ } from "@/lib/date";
 
 export type DemoDashboardMetrics = {
@@ -32,7 +33,7 @@ export function computeDemoMetrics(
 ): DemoDashboardMetrics {
   const today = ordersForToday(orders);
 
-  const totalSatang = today.reduce((s, o) => s + o.totalSatang, 0);
+  const totalSatang = today.reduce((s, o) => s + effectiveTotalSatang(o), 0);
   const bills = today.length;
   const avgBillSatang = bills > 0 ? Math.round(totalSatang / bills) : 0;
 
@@ -45,11 +46,12 @@ export function computeDemoMetrics(
   };
   for (const o of today) {
     const m = o.paymentMethod;
-    if (m === "cash") paymentSplit.cash += o.totalSatang;
-    else if (m === "promptpay") paymentSplit.promptpay += o.totalSatang;
-    else if (m === "transfer") paymentSplit.transfer += o.totalSatang;
-    else if (m === "card") paymentSplit.card += o.totalSatang;
-    else paymentSplit.other += o.totalSatang;
+    const v = effectiveTotalSatang(o);
+    if (m === "cash") paymentSplit.cash += v;
+    else if (m === "promptpay") paymentSplit.promptpay += v;
+    else if (m === "transfer") paymentSplit.transfer += v;
+    else if (m === "card") paymentSplit.card += v;
+    else paymentSplit.other += v;
   }
 
   // Top sellers, by revenue

@@ -26,6 +26,19 @@ export type DemoPayment = {
   amountSatang: number;
 };
 
+export type DemoRefund = {
+  id: string;
+  /** Index into the parent order's items array (0-based). */
+  lineIndex: number;
+  /** Quantity refunded from that line (1..originalQty). */
+  qty: number;
+  /** qty × unit_price_satang for this refund event. */
+  amountSatang: number;
+  reason: string;
+  /** ISO timestamp. */
+  refundedAt: string;
+};
+
 export type DemoOrder = {
   id: string;
   orderNumber: string; // event_001, event_002, ...
@@ -64,7 +77,41 @@ export type DemoOrder = {
   status?: "completed" | "voided";
   voidedAt?: string | null;
   voidReason?: string | null;
+
+  /** Partial refunds against specific lines. Append-only. */
+  refunds?: DemoRefund[];
 };
+
+/** Effective total (after partial refunds) for dashboard math. Voided orders
+ *  return 0 here; callers should still filter status === "voided" upstream so
+ *  voids don't count as "1 bill recorded". */
+export function effectiveTotalSatang(order: DemoOrder): number {
+  if ((order.status ?? "completed") === "voided") return 0;
+  const refunded = (order.refunds ?? []).reduce(
+    (s, r) => s + r.amountSatang,
+    0,
+  );
+  return Math.max(0, order.totalSatang - refunded);
+}
+
+/** Per-line remaining qty after refunds against that line index. */
+export function remainingQty(
+  order: DemoOrder,
+  lineIndex: number,
+): number {
+  const item = order.items[lineIndex];
+  if (!item) return 0;
+  const refundedFromLine = (order.refunds ?? [])
+    .filter((r) => r.lineIndex === lineIndex)
+    .reduce((s, r) => s + r.qty, 0);
+  return Math.max(0, item.qty - refundedFromLine);
+}
+
+export function newRefundId(): string {
+  return `refund-${Date.now().toString(36)}-${Math.random()
+    .toString(36)
+    .slice(2, 7)}`;
+}
 
 export function readDemoSales(): DemoOrder[] {
   if (typeof window === "undefined") return [];
