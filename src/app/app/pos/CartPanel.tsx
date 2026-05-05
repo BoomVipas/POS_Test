@@ -12,6 +12,7 @@ import { CustomerInfoBlock } from "./CustomerInfoBlock";
 import { CashTenderBlock } from "./CashTenderBlock";
 import { SplitPaymentBlock } from "./SplitPaymentBlock";
 import { UpsellPrompt } from "./UpsellPrompt";
+import { ImportClaimButton } from "./ImportClaimButton";
 import { useDemoSettings } from "@/lib/demo/useDemoSettings";
 import { useT } from "@/lib/i18n/provider";
 import { validateSplits } from "@/lib/pos/splits";
@@ -87,15 +88,18 @@ export function CartPanel({
           <h2 className="font-display text-xl text-accent-strong">
             {t.pos.cart}
           </h2>
-          {cart.lines.length > 0 && (
-            <button
-              type="button"
-              onClick={() => dispatch({ type: "CLEAR" })}
-              className="rounded-full bg-[#f2e6d7] px-3 py-1 text-xs font-extrabold text-[#6a4a26]"
-            >
-              {t.pos.clear}
-            </button>
-          )}
+          <div className="flex items-center gap-1.5">
+            <ImportClaimButton />
+            {cart.lines.length > 0 && (
+              <button
+                type="button"
+                onClick={() => dispatch({ type: "CLEAR" })}
+                className="rounded-full bg-[#f2e6d7] px-3 py-1 text-xs font-extrabold text-[#6a4a26]"
+              >
+                {t.pos.clear}
+              </button>
+            )}
+          </div>
         </header>
       )}
 

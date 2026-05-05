@@ -178,6 +178,34 @@ export type Dict = {
     soldOutCta: string;
     chromeLink: string;
   };
+  qrMenu: {
+    title: string;
+    body: string;
+    cartEmpty: string;
+    addSomething: string;
+    nameRequired: string;
+    nameRequiredHint: string;
+    submitOrder: string;
+    submitTitle: string;
+    submitBody: string;
+    fName: string;
+    fNamePlaceholder: string;
+    generateCode: string;
+    claimReady: string;
+    showAtBooth: (name: string) => string;
+    startOver: string;
+    noCatalogTitle: string;
+    noCatalogBody: string;
+    importHeader: string;
+    importBody: string;
+    importCta: string;
+    codeFormat: string;
+    codeNotFound: string;
+    replaceCart: string;
+    imported: (name: string) => string;
+    importedBody: (n: number) => string;
+    openClaims: (n: number) => string;
+  };
   setupProducts: {
     title: string;
     body: string;
@@ -424,6 +452,35 @@ const en: Dict = {
     markCancelled: "Cancel",
     soldOutCta: "Pre-order",
     chromeLink: "Pre-orders",
+  },
+  qrMenu: {
+    title: "Browse the booth",
+    body: "Tap to add. When you're done, get a code and show it at the till.",
+    cartEmpty: "Cart is empty",
+    addSomething: "Add at least one item.",
+    nameRequired: "Name needed",
+    nameRequiredHint: "So the booth staff can recognize you.",
+    submitOrder: "Get my code",
+    submitTitle: "Generate claim code",
+    submitBody: "We'll show a 4-character code to walk up to the till with.",
+    fName: "Your name",
+    fNamePlaceholder: "First name is fine",
+    generateCode: "Generate",
+    claimReady: "Show this at the till",
+    showAtBooth: (name) =>
+      `Hi ${name} — walk up to the till and the staff will type this in.`,
+    startOver: "New order",
+    noCatalogTitle: "Booth not ready yet",
+    noCatalogBody: "The booth has no products listed for QR ordering yet.",
+    importHeader: "Import claim",
+    importBody: "Type the 4-character code from the customer's phone.",
+    importCta: "Import",
+    codeFormat: "4-character code, letters and digits.",
+    codeNotFound: "No matching open claim. Code may have been redeemed or expired.",
+    replaceCart: "Cart isn't empty. Replace it with the imported claim?",
+    imported: (name) => `Cart imported · ${name}`,
+    importedBody: (n) => `${n} line${n === 1 ? "" : "s"} added to the cart.`,
+    openClaims: (n) => `Open claims (${n})`,
   },
   setupProducts: {
     title: "Products",
@@ -677,6 +734,34 @@ const th: Dict = {
     markCancelled: "ยกเลิก",
     soldOutCta: "พรีออเดอร์",
     chromeLink: "พรีออเดอร์",
+  },
+  qrMenu: {
+    title: "เลือกสินค้าจากบูธ",
+    body: "แตะเพื่อเพิ่มลงตะกร้า เมื่อเสร็จ รับรหัสและไปแสดงที่จุดชำระเงิน",
+    cartEmpty: "ตะกร้าว่าง",
+    addSomething: "เพิ่มสินค้าอย่างน้อย 1 รายการ",
+    nameRequired: "ต้องใส่ชื่อ",
+    nameRequiredHint: "เพื่อให้ทางร้านรู้ว่าใคร",
+    submitOrder: "รับรหัสของฉัน",
+    submitTitle: "สร้างรหัสรับสินค้า",
+    submitBody: "เราจะแสดงรหัส 4 ตัวเพื่อไปแสดงที่จุดชำระเงิน",
+    fName: "ชื่อของคุณ",
+    fNamePlaceholder: "ชื่อเล่นก็ได้",
+    generateCode: "สร้าง",
+    claimReady: "แสดงรหัสนี้ที่จุดชำระเงิน",
+    showAtBooth: (name) => `สวัสดีคุณ ${name} ไปที่จุดชำระเงินและให้พนักงานพิมพ์รหัสนี้`,
+    startOver: "สั่งใหม่",
+    noCatalogTitle: "บูธยังไม่พร้อม",
+    noCatalogBody: "บูธยังไม่ได้เปิดให้สั่งผ่าน QR",
+    importHeader: "นำเข้ารหัส",
+    importBody: "พิมพ์รหัส 4 ตัวจากโทรศัพท์ลูกค้า",
+    importCta: "นำเข้า",
+    codeFormat: "รหัส 4 ตัวอักษร ตัวเลขหรือตัวอักษร",
+    codeNotFound: "ไม่พบรหัสที่ใช้งานได้ อาจถูกใช้ไปแล้วหรือหมดอายุ",
+    replaceCart: "ตะกร้าไม่ว่าง จะแทนที่ด้วยรหัสที่นำเข้าหรือไม่?",
+    imported: (name) => `นำเข้าตะกร้าแล้ว · ${name}`,
+    importedBody: (n) => `เพิ่ม ${n} รายการในตะกร้า`,
+    openClaims: (n) => `รหัสที่รออยู่ (${n})`,
   },
   setupProducts: {
     title: "สินค้า",
