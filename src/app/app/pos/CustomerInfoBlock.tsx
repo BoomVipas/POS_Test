@@ -9,6 +9,10 @@ import { useDebouncedValue } from "@/lib/hooks/useDebouncedValue";
 import { useT } from "@/lib/i18n/provider";
 import { formatDateTimeTH } from "@/lib/date";
 import type { CustomerProfile } from "@/lib/demo/customers";
+import {
+  lifecycleLabel,
+  lifecycleStageFor,
+} from "@/lib/demo/customer-lifecycle";
 
 const fieldCls =
   "w-full rounded-[var(--radius-md)] border border-line bg-white px-3 py-2 text-sm text-text shadow-sm placeholder:text-muted/60 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25";
@@ -107,6 +111,10 @@ export function CustomerInfoBlock() {
                 <p className="font-extrabold">
                   ★ {t.pos.returningCustomer} ·{" "}
                   {t.pos.ordersCount(match.orderCount)}
+                  {" · "}
+                  <span className="rounded-full bg-white px-1.5 py-0.5 text-[10px] uppercase">
+                    {lifecycleLabel(lifecycleStageFor(match))}
+                  </span>
                   {match.pointsAvailable > 0 && (
                     <>
                       {" · "}

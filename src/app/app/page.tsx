@@ -51,6 +51,11 @@ export default async function AppHomePage() {
           body="Walk the warehouse, count, fix drift after each event."
         />
         <Tile
+          href="/app/customers"
+          title="Customers"
+          body="Lifecycle, lifetime spend, top SKU per phone."
+        />
+        <Tile
           href="/app/pre-orders"
           title={t.preOrders.title}
           body={t.preOrders.body}
