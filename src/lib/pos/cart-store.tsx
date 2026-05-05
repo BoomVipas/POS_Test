@@ -9,6 +9,7 @@ import {
 } from "react";
 import type { CartLine, PaymentMethod } from "./types";
 import type { PaymentSplit } from "./splits";
+import type { OrderSource } from "@/lib/demo/sales";
 
 type State = {
   lines: CartLine[];
@@ -20,6 +21,10 @@ type State = {
   /** Cash tendered when paymentMethod === "cash". 0 means not entered yet. */
   cashTenderedSatang: number;
   customer: { name: string; phone: string; email: string; address: string };
+  /** Acquisition channel for the eventual order. Default "booth"; set to
+   *  "qr_menu" when an /qr-menu claim is imported, or via the source
+   *  picker in CartPanel. */
+  source: OrderSource;
 };
 
 type Action =
@@ -45,7 +50,8 @@ type Action =
   | { type: "UPDATE_SPLIT"; index: number; patch: Partial<PaymentSplit> }
   | { type: "REMOVE_SPLIT"; index: number }
   | { type: "CLEAR_SPLITS" }
-  | { type: "SET_CUSTOMER"; patch: Partial<State["customer"]> };
+  | { type: "SET_CUSTOMER"; patch: Partial<State["customer"]> }
+  | { type: "SET_SOURCE"; source: OrderSource };
 
 const initial: State = {
   lines: [],
@@ -54,6 +60,7 @@ const initial: State = {
   discountSatang: 0,
   cashTenderedSatang: 0,
   customer: { name: "", phone: "", email: "", address: "" },
+  source: "booth",
 };
 
 function reducer(s: State, a: Action): State {
@@ -149,6 +156,8 @@ function reducer(s: State, a: Action): State {
       return { ...s, splits: [] };
     case "SET_CUSTOMER":
       return { ...s, customer: { ...s.customer, ...a.patch } };
+    case "SET_SOURCE":
+      return { ...s, source: a.source };
   }
 }
 

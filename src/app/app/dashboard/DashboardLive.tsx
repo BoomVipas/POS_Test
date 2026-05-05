@@ -29,6 +29,8 @@ import { ProfitTile } from "./ProfitTile";
 import { ReorderTile } from "./ReorderTile";
 import { DateRangePicker } from "./DateRangePicker";
 import { DeltaChip } from "./DeltaChip";
+import { SourceSplitTile } from "./SourceSplitTile";
+import { splitBySource } from "@/lib/demo/source-split";
 
 export function DashboardLive() {
   const { orders, ready: salesReady } = useDemoSales();
@@ -54,6 +56,7 @@ export function DashboardLive() {
   const margin = hasLiveData ? aggregateMargin(ordersHere) : null;
   const prevMargin =
     ordersPrev.length > 0 ? aggregateMargin(ordersPrev) : null;
+  const sourceRows = hasLiveData ? splitBySource(ordersHere) : [];
 
   const inventoryRows =
     catalogReady && catalog.length > 0
@@ -170,6 +173,13 @@ export function DashboardLive() {
             marginPct={margin.marginPct}
             ordersWithCost={margin.ordersWithCost}
             totalOrders={ordersHere.length}
+          />
+        )}
+
+        {sourceRows.length > 1 && (
+          <SourceSplitTile
+            rows={sourceRows}
+            totalSatang={live?.totalSatang ?? 0}
           />
         )}
 

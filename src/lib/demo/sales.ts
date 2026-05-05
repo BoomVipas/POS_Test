@@ -42,6 +42,51 @@ export type DemoRefund = {
   refundedAt: string;
 };
 
+/** Where this order originated. Pattern from Zort multi-channel + Shopee
+ *  Seller Center channel attribution. Lets the dashboard split revenue
+ *  by acquisition channel and the seller learn which channel earns. */
+export type OrderSource =
+  | "booth"
+  | "qr_menu"
+  | "line"
+  | "shopee"
+  | "lazada"
+  | "tiktok"
+  | "phone"
+  | "other";
+
+export const ORDER_SOURCES: OrderSource[] = [
+  "booth",
+  "qr_menu",
+  "line",
+  "shopee",
+  "lazada",
+  "tiktok",
+  "phone",
+  "other",
+];
+
+export function orderSourceLabel(s: OrderSource): string {
+  switch (s) {
+    case "booth":
+      return "Booth";
+    case "qr_menu":
+      return "QR menu";
+    case "line":
+      return "LINE";
+    case "shopee":
+      return "Shopee";
+    case "lazada":
+      return "Lazada";
+    case "tiktok":
+      return "TikTok";
+    case "phone":
+      return "Phone";
+    case "other":
+      return "Other";
+  }
+}
+
 export type DemoOrder = {
   id: string;
   orderNumber: string; // event_001, event_002, ...
@@ -83,6 +128,11 @@ export type DemoOrder = {
 
   /** Partial refunds against specific lines. Append-only. */
   refunds?: DemoRefund[];
+
+  /** Acquisition channel. Defaults to "booth" for sales rung up at the
+   *  POS; ImportClaimButton sets it to "qr_menu" when a customer's
+   *  self-order is converted into a paid sale. */
+  source?: OrderSource;
 };
 
 /** Effective total (after partial refunds) for dashboard math. Voided orders

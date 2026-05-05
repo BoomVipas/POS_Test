@@ -15,6 +15,7 @@ import {
   effectiveTotalSatang,
   newRefundId,
   remainingQty,
+  orderSourceLabel,
   type DemoOrder,
   type DemoRefund,
 } from "@/lib/demo/sales";
@@ -229,6 +230,9 @@ export function CorrectionList() {
                     <span className="num text-xs font-bold text-muted">
                       {o.orderNumber}
                     </span>
+                    {o.source && o.source !== "booth" && (
+                      <Pill tone="accent">{orderSourceLabel(o.source)}</Pill>
+                    )}
                     {isVoided && <Pill tone="danger">voided</Pill>}
                     {isFullyRefunded && (
                       <Pill tone="warn">fully refunded</Pill>

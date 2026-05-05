@@ -113,6 +113,7 @@ export function ReviewModal({
           }
         : {}),
       ...(pointsToEarn > 0 ? { pointsEarned: pointsToEarn } : {}),
+      source: cart.source,
       ...(isSendLater
         ? {
             sendLaterStatus: "pending" as const,

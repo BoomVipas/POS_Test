@@ -45,6 +45,14 @@ export function ImportClaimButton() {
         fulfillment: line.fulfillment,
       });
     }
+    // Tag this order's acquisition channel as the QR self-order menu.
+    dispatch({ type: "SET_SOURCE", source: "qr_menu" });
+    if (claim.customerName) {
+      dispatch({
+        type: "SET_CUSTOMER",
+        patch: { name: claim.customerName },
+      });
+    }
     push({
       kind: "success",
       title: t.qrMenu.imported(claim.customerName),
