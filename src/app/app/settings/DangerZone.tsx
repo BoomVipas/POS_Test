@@ -4,29 +4,39 @@ import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
 import { useDemoCatalog } from "@/lib/demo/useDemoCatalog";
 import { useDemoSales } from "@/lib/demo/useDemoSales";
+import { useDemoAudit } from "@/lib/demo/useDemoAudit";
 import { writeDemoSettings, DEFAULT_DEMO_SETTINGS } from "@/lib/demo/settings";
 
 export function DangerZone() {
   const { clear: clearCatalog, items } = useDemoCatalog();
   const { clear: clearSales, orders } = useDemoSales();
+  const { clear: clearAudit, entries, log } = useDemoAudit();
   const { push } = useToast();
 
   function clearAll() {
     if (
       !confirm(
-        "Reset all demo data? This wipes your demo catalog, recorded sales, and settings from this browser. Cannot be undone.",
+        "Reset all demo data? This wipes your demo catalog, recorded sales, audit log, and settings from this browser. Cannot be undone.",
       )
     ) {
       return;
     }
+    // Log the reset BEFORE clearing audit, then clear audit.
+    log({
+      action: "demo_reset",
+      targetTable: "demo",
+      targetId: null,
+      summary: `Reset all: ${items.length} products, ${orders.length} sales, ${entries.length} audit entries`,
+    });
     clearCatalog();
     clearSales();
+    clearAudit();
     writeDemoSettings(DEFAULT_DEMO_SETTINGS);
     push({
       kind: "warn",
       title: "Demo data reset",
       message:
-        "Catalog, sales, and settings cleared. Refresh to see the changes everywhere.",
+        "Catalog, sales, audit log, and settings cleared. Refresh to see the changes everywhere.",
     });
   }
 
@@ -38,8 +48,9 @@ export function DangerZone() {
       <p className="mt-1 text-sm text-text/85">
         Wipe everything stored in this browser: {items.length} product
         {items.length === 1 ? "" : "s"}, {orders.length} recorded sale
-        {orders.length === 1 ? "" : "s"}, and your settings. Real Supabase data
-        is unaffected (and not stored in this browser anyway).
+        {orders.length === 1 ? "" : "s"}, {entries.length} audit entr
+        {entries.length === 1 ? "y" : "ies"}, and your settings. Real Supabase
+        data is unaffected (and not stored in this browser anyway).
       </p>
       <Button
         type="button"

@@ -3,18 +3,21 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useDemoCatalog } from "@/lib/demo/useDemoCatalog";
+import { useDemoAudit } from "@/lib/demo/useDemoAudit";
 import { Button } from "@/components/ui/Button";
 import { Pill } from "@/components/ui/Pill";
 import { EmptyState } from "@/components/ui/States";
 import { useToast } from "@/components/ui/Toast";
 import { formatTHB } from "@/lib/money/format";
 import { ProductFormModal } from "./ProductFormModal";
+import { SAMPLE_CATALOG } from "@/lib/demo/sample-catalog";
 import type { Product } from "@/lib/pos/types";
 
 const DEMO_WORKSPACE_ID = "demo-workspace";
 
 export function CatalogManager() {
   const { items, ready, create, update, remove, setActive } = useDemoCatalog();
+  const audit = useDemoAudit();
   const [editing, setEditing] = useState<Product | null>(null);
   const [open, setOpen] = useState(false);
   const { push } = useToast();
@@ -32,20 +35,82 @@ export function CatalogManager() {
   function handleSubmit(values: Omit<Product, "id">, originalId: string | null) {
     if (originalId) {
       update(originalId, values);
+      audit.log({
+        action: "catalog_update",
+        targetTable: "products",
+        targetId: originalId,
+        summary: `${values.sku} — ${values.name}`,
+        newValue: { sku: values.sku, name: values.name, price_satang: values.price_satang, current_qty: values.current_qty },
+      });
     } else {
-      create(values);
+      const id = create(values);
+      audit.log({
+        action: "catalog_create",
+        targetTable: "products",
+        targetId: id,
+        summary: `+${values.sku} — ${values.name}`,
+        newValue: { sku: values.sku, name: values.name, price_satang: values.price_satang, current_qty: values.current_qty },
+      });
     }
   }
 
   function handleRemove(p: Product) {
     if (confirm(`Remove ${p.sku} — ${p.name}? This cannot be undone in demo mode.`)) {
       remove(p.id);
+      audit.log({
+        action: "catalog_delete",
+        targetTable: "products",
+        targetId: p.id,
+        summary: `−${p.sku} — ${p.name}`,
+        oldValue: { sku: p.sku, name: p.name },
+      });
       push({
         kind: "info",
         title: "Removed",
         message: `${p.sku} deleted from demo catalog.`,
       });
     }
+  }
+
+  function handleSetActive(p: Product, isActive: boolean) {
+    setActive(p.id, isActive);
+    audit.log({
+      action: "catalog_set_active",
+      targetTable: "products",
+      targetId: p.id,
+      summary: `${p.sku} → ${isActive ? "active" : "inactive"}`,
+      oldValue: { is_active: p.is_active },
+      newValue: { is_active: isActive },
+    });
+  }
+
+  function handleSeed() {
+    if (
+      items.length > 0 &&
+      !confirm(
+        "Adding sample products on top of your existing catalog. Continue?",
+      )
+    ) {
+      return;
+    }
+    let created = 0;
+    for (const p of SAMPLE_CATALOG) {
+      if (items.some((existing) => existing.sku === p.sku)) continue;
+      create(p);
+      created++;
+    }
+    audit.log({
+      action: "demo_seed",
+      targetTable: "products",
+      targetId: null,
+      summary: `Loaded ${created} sample product${created === 1 ? "" : "s"}`,
+      newValue: { added: created, total: SAMPLE_CATALOG.length },
+    });
+    push({
+      kind: "success",
+      title: "Sample catalog loaded",
+      message: `${created} product${created === 1 ? "" : "s"} added.`,
+    });
   }
 
   if (!ready) {
@@ -62,8 +127,15 @@ export function CatalogManager() {
         <div className="mt-8">
           <EmptyState
             title="No products yet."
-            body="Add your first product card. It saves to your browser only — replaced by Supabase rows once configured."
-            action={<Button onClick={add}>+ Add product</Button>}
+            body="Add your first product card, or load the sample catalog to skip ahead and see the POS in action."
+            action={
+              <div className="flex flex-wrap justify-center gap-2">
+                <Button onClick={add}>+ Add product</Button>
+                <Button variant="secondary" onClick={handleSeed}>
+                  Load sample catalog
+                </Button>
+              </div>
+            }
           />
         </div>
         <Link
@@ -130,7 +202,7 @@ export function CatalogManager() {
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => setActive(p.id, !p.is_active)}
+                onClick={() => handleSetActive(p, !p.is_active)}
               >
                 {p.is_active ? "Deactivate" : "Activate"}
               </Button>

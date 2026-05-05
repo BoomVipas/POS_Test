@@ -136,3 +136,39 @@ body {
   filter: grayscale(0.2);
   cursor: not-allowed;
 }
+
+/* ============================================================
+   Print receipt — used on /app/pos/success/[orderId].
+   Hides app chrome and the controls; renders the panel full-width.
+   Add .no-print to anything that should be hidden on print.
+   ============================================================ */
+@media print {
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  /* Hide app shell (top bar / nav) and any explicitly-marked elements. */
+  .no-print,
+  header,
+  nav {
+    display: none !important;
+  }
+  .panel {
+    border: none !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+  }
+  .num,
+  .tabular {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  /* Try to fit a thermal-printer-style narrow column. */
+  main {
+    max-width: 80mm !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+  }
+}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useDemoSales } from "@/lib/demo/useDemoSales";
 import { useDemoCatalog } from "@/lib/demo/useDemoCatalog";
+import { useDemoAudit } from "@/lib/demo/useDemoAudit";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { Pill } from "@/components/ui/Pill";
@@ -15,6 +16,7 @@ import type { DemoOrder } from "@/lib/demo/sales";
 export function CorrectionList() {
   const { orders, ready, update } = useDemoSales();
   const { items: catalog, update: updateProduct } = useDemoCatalog();
+  const audit = useDemoAudit();
   const { push } = useToast();
   const [voiding, setVoiding] = useState<DemoOrder | null>(null);
   const [reason, setReason] = useState("");
@@ -65,6 +67,15 @@ export function CorrectionList() {
         updateProduct(productId, { current_qty: p.current_qty + qty });
       }
     }
+
+    audit.log({
+      action: "order_void",
+      targetTable: "orders",
+      targetId: voiding.id,
+      summary: `${voiding.orderNumber} voided · ${formatTHB(voiding.totalSatang)} THB · reason: ${reason.trim()}`,
+      oldValue: { totalSatang: voiding.totalSatang, status: "completed" },
+      newValue: { status: "voided", voidReason: reason.trim() },
+    });
 
     push({
       kind: "success",

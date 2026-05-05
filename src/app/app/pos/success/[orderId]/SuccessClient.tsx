@@ -114,7 +114,14 @@ export function SuccessClient({ orderId }: { orderId: string }) {
           </div>
         </div>
 
-        <div className="mt-6 flex justify-center gap-3">
+        <div className="no-print mt-6 flex flex-wrap justify-center gap-3">
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="rounded-[var(--radius-md)] border border-line bg-panel px-5 py-2.5 text-sm font-bold text-accent-strong"
+          >
+            Print
+          </button>
           <Link
             href="/app/pos"
             className="btn-accent rounded-[var(--radius-md)] px-5 py-2.5 text-sm font-bold"

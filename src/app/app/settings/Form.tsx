@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useDemoSettings } from "@/lib/demo/useDemoSettings";
+import { useDemoAudit } from "@/lib/demo/useDemoAudit";
 import { isValidPhoneTH, normalizePhoneTH } from "@/lib/phone";
 import { TextInput } from "@/components/ui/TextInput";
 import { Button } from "@/components/ui/Button";
@@ -9,6 +10,7 @@ import { useToast } from "@/components/ui/Toast";
 
 export function SettingsForm() {
   const { settings, save, ready } = useDemoSettings();
+  const audit = useDemoAudit();
   const [brand, setBrand] = useState(settings.brandDisplayName);
   const [phone, setPhone] = useState(settings.promptpayPhone);
   const [phoneError, setPhoneError] = useState<string | null>(null);
@@ -31,11 +33,20 @@ export function SettingsForm() {
       return;
     }
     const normalized = normalizePhoneTH(phone, "local");
-    save({
+    const next = {
       brandDisplayName: brand.trim() || "Demo Brand",
       promptpayPhone: normalized,
-    });
+    };
+    save(next);
     setPhone(normalized);
+    audit.log({
+      action: "settings_update",
+      targetTable: "workspaces",
+      targetId: null,
+      summary: `Brand → ${next.brandDisplayName}, phone → ${next.promptpayPhone}`,
+      oldValue: settings,
+      newValue: next,
+    });
     push({
       kind: "success",
       title: "Saved",

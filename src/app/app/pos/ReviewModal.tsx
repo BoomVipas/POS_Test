@@ -7,6 +7,7 @@ import { formatTHB } from "@/lib/money/format";
 import type { Product } from "@/lib/pos/types";
 import { useDemoSales } from "@/lib/demo/useDemoSales";
 import { useDemoCatalog } from "@/lib/demo/useDemoCatalog";
+import { useDemoAudit } from "@/lib/demo/useDemoAudit";
 import {
   newDemoOrderId,
   nextOrderNumber,
@@ -34,6 +35,7 @@ export function ReviewModal({
   const dispatch = useCartDispatch();
   const sales = useDemoSales();
   const catalog = useDemoCatalog();
+  const audit = useDemoAudit();
   const { push } = useToast();
 
   const [confirmed, setConfirmed] = useState(false);
@@ -115,6 +117,19 @@ export function ReviewModal({
         });
       }
     }
+
+    audit.log({
+      action: "order_create",
+      targetTable: "orders",
+      targetId: order.id,
+      summary: `${order.orderNumber} · ${formatTHB(order.totalSatang)} THB · ${order.paymentMethod}`,
+      newValue: {
+        orderNumber: order.orderNumber,
+        totalSatang: order.totalSatang,
+        paymentMethod: order.paymentMethod,
+        items: order.items.length,
+      },
+    });
 
     push({
       kind: "success",
