@@ -19,6 +19,9 @@ export type DemoOrderItem = {
   lineTotalSatang: number;
   fulfillmentType: FulfillmentType;
   note?: string;
+  /** Snapshot of unit landed cost at sale time. Frozen so future cost
+   *  changes don't rewrite history (QuickBooks COGS-at-sale pattern). */
+  unitCostSatang?: number;
 };
 
 export type DemoPayment = {

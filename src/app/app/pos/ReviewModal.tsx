@@ -69,6 +69,9 @@ export function ReviewModal({
           lineTotalSatang: p.price_satang * l.qty,
           fulfillmentType: l.fulfillment,
           ...(l.note ? { note: l.note } : {}),
+          ...(p.cost_satang && p.cost_satang > 0
+            ? { unitCostSatang: p.cost_satang }
+            : {}),
         } satisfies DemoOrderItem;
       })
       .filter((x): x is DemoOrderItem => x !== null);

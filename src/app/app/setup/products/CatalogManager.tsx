@@ -60,7 +60,14 @@ export function CatalogManager() {
         targetTable: "products",
         targetId: originalId,
         summary: `${values.sku} — ${values.name}`,
-        newValue: { sku: values.sku, name: values.name, price_satang: values.price_satang, current_qty: values.current_qty },
+        newValue: {
+          sku: values.sku,
+          name: values.name,
+          price_satang: values.price_satang,
+          cost_satang: values.cost_satang ?? null,
+          current_qty: values.current_qty,
+          reorder_point: values.reorder_point ?? null,
+        },
       });
     } else {
       const id = create(values);
@@ -69,7 +76,14 @@ export function CatalogManager() {
         targetTable: "products",
         targetId: id,
         summary: `+${values.sku} — ${values.name}`,
-        newValue: { sku: values.sku, name: values.name, price_satang: values.price_satang, current_qty: values.current_qty },
+        newValue: {
+          sku: values.sku,
+          name: values.name,
+          price_satang: values.price_satang,
+          cost_satang: values.cost_satang ?? null,
+          current_qty: values.current_qty,
+          reorder_point: values.reorder_point ?? null,
+        },
       });
     }
   }
@@ -216,6 +230,22 @@ export function CatalogManager() {
                 <span className="num">
                   {formatTHB(p.price_satang)} THB
                 </span>
+                {p.cost_satang && p.cost_satang > 0 && (
+                  <>
+                    {" · cost "}
+                    <span className="num">
+                      {formatTHB(p.cost_satang)}
+                    </span>
+                    {" · margin "}
+                    <span className="num font-extrabold text-[var(--color-ok-soft-fg)]">
+                      {Math.round(
+                        ((p.price_satang - p.cost_satang) / p.price_satang) *
+                          100,
+                      )}
+                      %
+                    </span>
+                  </>
+                )}
                 {p.shipping_fee_satang > 0 && (
                   <>
                     {" · ship "}
@@ -225,7 +255,24 @@ export function CatalogManager() {
                   </>
                 )}
                 {" · stock "}
-                <span className="num">{p.current_qty}</span>
+                <span
+                  className={
+                    typeof p.reorder_point === "number" &&
+                    p.reorder_point > 0 &&
+                    p.current_qty <= p.reorder_point
+                      ? "num font-extrabold text-[var(--color-warn-soft-fg)]"
+                      : "num"
+                  }
+                >
+                  {p.current_qty}
+                </span>
+                {typeof p.reorder_point === "number" &&
+                  p.reorder_point > 0 && (
+                    <>
+                      {" / reorder@"}
+                      <span className="num">{p.reorder_point}</span>
+                    </>
+                  )}
               </p>
               {(() => {
                 const f = forecastsByProduct.get(p.id);

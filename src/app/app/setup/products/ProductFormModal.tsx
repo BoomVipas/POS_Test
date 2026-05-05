@@ -17,8 +17,10 @@ type FormValues = {
   name: string;
   category: string;
   priceBaht: string;
+  costBaht: string;
   shippingFeeBaht: string;
   startingQty: string;
+  reorderPoint: string;
   sendLaterEnabled: boolean;
   imagePath: string | null; // data URL for the demo
 };
@@ -28,8 +30,10 @@ const empty = (): FormValues => ({
   name: "",
   category: "uncategorized",
   priceBaht: "",
+  costBaht: "",
   shippingFeeBaht: "0",
   startingQty: "0",
+  reorderPoint: "",
   sendLaterEnabled: true,
   imagePath: null,
 });
@@ -40,8 +44,16 @@ function fromProduct(p: Product): FormValues {
     name: p.name,
     category: p.category,
     priceBaht: (p.price_satang / 100).toString(),
+    costBaht:
+      p.cost_satang && p.cost_satang > 0
+        ? (p.cost_satang / 100).toString()
+        : "",
     shippingFeeBaht: (p.shipping_fee_satang / 100).toString(),
     startingQty: String(p.current_qty),
+    reorderPoint:
+      typeof p.reorder_point === "number" && p.reorder_point > 0
+        ? String(p.reorder_point)
+        : "",
     sendLaterEnabled: p.send_later_enabled,
     imagePath: p.image_path,
   };
@@ -129,6 +141,12 @@ export function ProductFormModal({
       next.priceBaht = "Price must be ≥ 0";
     }
 
+    const costRaw = v.costBaht.trim();
+    const cost = costRaw === "" ? null : Number(costRaw);
+    if (cost !== null && (!Number.isFinite(cost) || cost < 0)) {
+      next.costBaht = "Cost must be ≥ 0";
+    }
+
     const shipping = v.shippingFeeBaht.trim() === "" ? 0 : Number(v.shippingFeeBaht);
     if (!Number.isFinite(shipping) || shipping < 0) {
       next.shippingFeeBaht = "Shipping fee must be ≥ 0";
@@ -137,6 +155,12 @@ export function ProductFormModal({
     const qty = v.startingQty.trim() === "" ? 0 : Number(v.startingQty);
     if (!Number.isInteger(qty) || qty < 0) {
       next.startingQty = "Starting qty must be a non-negative integer";
+    }
+
+    const reorderRaw = v.reorderPoint.trim();
+    const reorder = reorderRaw === "" ? null : Number(reorderRaw);
+    if (reorder !== null && (!Number.isInteger(reorder) || reorder < 0)) {
+      next.reorderPoint = "Reorder point must be a non-negative integer";
     }
 
     setErrors(next);
@@ -153,6 +177,10 @@ export function ProductFormModal({
       is_active: initial?.is_active ?? true,
       image_path: v.imagePath,
       current_qty: qty,
+      ...(initial?.pinned ? { pinned: initial.pinned } : {}),
+      ...(initial?.upsellSkus ? { upsellSkus: initial.upsellSkus } : {}),
+      ...(cost !== null && cost > 0 ? { cost_satang: bahtToSatang(cost) } : {}),
+      ...(reorder !== null && reorder > 0 ? { reorder_point: reorder } : {}),
     };
 
     onSubmit(product, initial?.id ?? null);
@@ -210,6 +238,18 @@ export function ProductFormModal({
             error={errors.priceBaht}
           />
           <NumberInput
+            label="Unit cost (THB, optional)"
+            value={v.costBaht}
+            onChange={(e) => set("costBaht", e.currentTarget.value)}
+            placeholder="420"
+            min={0}
+            step={1}
+            error={errors.costBaht}
+            hint="Wholesale / landed cost. Powers margin reports."
+          />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <NumberInput
             label="Shipping fee (THB, send-later)"
             value={v.shippingFeeBaht}
             onChange={(e) => set("shippingFeeBaht", e.currentTarget.value)}
@@ -217,6 +257,16 @@ export function ProductFormModal({
             min={0}
             step={1}
             error={errors.shippingFeeBaht}
+          />
+          <NumberInput
+            label="Reorder at qty (optional)"
+            value={v.reorderPoint}
+            onChange={(e) => set("reorderPoint", e.currentTarget.value)}
+            placeholder="10"
+            min={0}
+            step={1}
+            error={errors.reorderPoint}
+            hint="Dashboard flags when current stock ≤ this number."
           />
         </div>
         <NumberInput

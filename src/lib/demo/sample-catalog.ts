@@ -11,11 +11,13 @@ export const SAMPLE_CATALOG: Array<Omit<Product, "id">> = [
     name: "Cat Hoodie · Brown",
     category: "apparel",
     price_satang: 89000,
+    cost_satang: 42000, // 47% margin
     shipping_fee_satang: 5000,
     send_later_enabled: true,
     is_active: true,
     image_path: null,
     current_qty: 30,
+    reorder_point: 10,
     upsellSkus: ["CAT-STK-BR", "CAT-NIP"],
   },
   {
@@ -24,11 +26,13 @@ export const SAMPLE_CATALOG: Array<Omit<Product, "id">> = [
     name: "Catnip Toy",
     category: "toys",
     price_satang: 19000,
+    cost_satang: 6500, // 66% margin
     shipping_fee_satang: 3000,
     send_later_enabled: true,
     is_active: true,
     image_path: null,
     current_qty: 100,
+    reorder_point: 30,
     upsellSkus: ["CAT-TREAT", "CAT-BED"],
   },
   {
@@ -37,11 +41,13 @@ export const SAMPLE_CATALOG: Array<Omit<Product, "id">> = [
     name: "Sticker Pack · Brown",
     category: "accessories",
     price_satang: 9000,
+    cost_satang: 2500, // 72% margin
     shipping_fee_satang: 2000,
     send_later_enabled: true,
     is_active: true,
     image_path: null,
     current_qty: 200,
+    reorder_point: 50,
   },
   {
     workspace_id: "demo-workspace",
@@ -49,11 +55,13 @@ export const SAMPLE_CATALOG: Array<Omit<Product, "id">> = [
     name: "Sticker Pack · Black",
     category: "accessories",
     price_satang: 9000,
+    cost_satang: 2500,
     shipping_fee_satang: 2000,
     send_later_enabled: true,
     is_active: true,
     image_path: null,
     current_qty: 200,
+    reorder_point: 50,
   },
   {
     workspace_id: "demo-workspace",
@@ -61,11 +69,13 @@ export const SAMPLE_CATALOG: Array<Omit<Product, "id">> = [
     name: "Premium Cat Treats · Tuna",
     category: "food",
     price_satang: 29000,
+    cost_satang: 18000, // 38% margin (imported)
     shipping_fee_satang: 5000,
     send_later_enabled: false,
     is_active: true,
     image_path: null,
     current_qty: 50,
+    reorder_point: 20,
     upsellSkus: ["CAT-NIP", "CAT-MUG"],
   },
   {
@@ -74,11 +84,13 @@ export const SAMPLE_CATALOG: Array<Omit<Product, "id">> = [
     name: "Brushed Cat Bed · Cream",
     category: "home",
     price_satang: 149000,
+    cost_satang: 78000, // 48% margin
     shipping_fee_satang: 12000,
     send_later_enabled: true,
     is_active: true,
     image_path: null,
     current_qty: 10,
+    reorder_point: 4,
     upsellSkus: ["CAT-NIP", "CAT-TREAT"],
   },
   {
@@ -87,11 +99,13 @@ export const SAMPLE_CATALOG: Array<Omit<Product, "id">> = [
     name: "Cat Scarf · Beige",
     category: "apparel",
     price_satang: 49000,
+    cost_satang: 22000, // 55% margin
     shipping_fee_satang: 5000,
     send_later_enabled: true,
     is_active: true,
     image_path: null,
     current_qty: 12,
+    reorder_point: 6,
     upsellSkus: ["CAT-STK-BK", "CAT-MUG"],
   },
   {
@@ -100,10 +114,12 @@ export const SAMPLE_CATALOG: Array<Omit<Product, "id">> = [
     name: "Cat Coffee Mug",
     category: "home",
     price_satang: 35000,
+    cost_satang: 16000, // 54% margin
     shipping_fee_satang: 7000,
     send_later_enabled: true,
     is_active: true,
     image_path: null,
     current_qty: 18,
+    reorder_point: 8,
   },
 ];

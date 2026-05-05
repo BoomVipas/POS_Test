@@ -7,6 +7,7 @@ import {
   computeDemoMetrics,
   ordersForToday,
 } from "@/lib/demo/dashboardMetrics";
+import { aggregateMargin } from "@/lib/demo/margin";
 import { mockToday } from "./mock";
 import { PaceStrip } from "./PaceStrip";
 import { TodayMetricsTile } from "./TodayMetricsTile";
@@ -16,6 +17,8 @@ import { InventoryTile } from "./InventoryTile";
 import { HourBars } from "./HourBars";
 import { ExportCsvButton } from "./ExportCsvButton";
 import { ActivityFeedTile } from "./ActivityFeedTile";
+import { ProfitTile } from "./ProfitTile";
+import { ReorderTile } from "./ReorderTile";
 
 export function DashboardLive() {
   const { orders, ready: salesReady } = useDemoSales();
@@ -24,6 +27,7 @@ export function DashboardLive() {
   const todayOrders = ordersForToday(orders);
   const hasLiveData = salesReady && todayOrders.length > 0;
   const live = hasLiveData ? computeDemoMetrics(orders) : null;
+  const todayMargin = hasLiveData ? aggregateMargin(todayOrders) : null;
 
   // Inventory: prefer the demo catalog when populated; fall back to the mock.
   const inventoryRows =
@@ -91,6 +95,21 @@ export function DashboardLive() {
         />
 
         <PaymentSplitTile split={totals.paymentSplit} />
+
+        {todayMargin && (
+          <ProfitTile
+            revenueSatang={todayMargin.revenueSatang}
+            cogsSatang={todayMargin.cogsSatang}
+            profitSatang={todayMargin.profitSatang}
+            marginPct={todayMargin.marginPct}
+            ordersWithCost={todayMargin.ordersWithCost}
+            totalOrders={todayOrders.length}
+          />
+        )}
+
+        {catalogReady && catalog.length > 0 && (
+          <ReorderTile catalog={catalog} />
+        )}
 
         <div className="grid gap-4 lg:grid-cols-2">
           <TopSellersTile
