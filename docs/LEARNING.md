@@ -12,11 +12,22 @@
 
 ## Progress
 
-- [ ] **Level 1 — Web app basics** (in progress)
+- [ ] **Level 1 — Web app basics** (taught 2026-05-07; exercise pending)
 - [ ] Level 2 — Next.js structure
 - [ ] Level 3 — Supabase basics
 - [ ] Level 4 — Deployment flow
 - [ ] Level 5 — SaaS architecture
+
+## Resume here (next session)
+
+**Where we left off:** Level 1 was taught in chat on 2026-05-07. Founder paused before doing the DevTools exercise, planning to resume the next day.
+
+**Next session opening move:**
+1. Ask: "Did you run `npm run dev` and look at the Network tab? What did you see?"
+2. If yes — debrief what they saw, fill any gaps, then move to Level 2 (Next.js structure: how `src/app/...` folders become real URLs; server vs client components; Server Actions; env vars).
+3. If they didn't get to it — walk them through it live, screen by screen.
+
+**Don't:** dump Level 2 before confirming Level 1 landed.
 
 ---
 
