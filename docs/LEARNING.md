@@ -16,6 +16,9 @@
 - [LEARNING_GLOSSARY.md](LEARNING_GLOSSARY.md) — every technical term you'll see, in plain language. Look things up here whenever a word is unfamiliar.
 - [LEARNING_REPO_MAP.md](LEARNING_REPO_MAP.md) — annotated tour of where everything lives in this repo. Open this when you're lost.
 - [LEARNING_ERRORS.md](LEARNING_ERRORS.md) — what error messages mean and how to read them. Open this when something breaks.
+- [LEARNING_FLOWS.md](LEARNING_FLOWS.md) — sequence diagrams of the main user journeys (apply, sale, customer portal, returning-customer lookup, admin approval). Read after Level 3.
+- [LEARNING_AI_WORKFLOW.md](LEARNING_AI_WORKFLOW.md) — how to brief, review, and verify AI-generated work on this codebase. Read whenever you want to ship faster without losing safety.
+- [LEARNING_TYPESCRIPT.md](LEARNING_TYPESCRIPT.md) — 10-minute cheat sheet for reading TypeScript without learning to write it.
 
 ## What you do NOT need to learn
 
@@ -610,7 +613,31 @@ gh pr merge <num> --squash --delete-branch       # merge
 1. [LEARNING_REPO_MAP.md](LEARNING_REPO_MAP.md) — "where does X live?"
 2. [LEARNING_GLOSSARY.md](LEARNING_GLOSSARY.md) — "what does this term mean?"
 3. [LEARNING_ERRORS.md](LEARNING_ERRORS.md) — "the dev server says X, what does that mean?"
-4. [ROADMAP.md](ROADMAP.md) — "where is the project headed?"
-5. [PROJECT_VISION.md](PROJECT_VISION.md) — "who is the pilot for?"
-6. [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md) — "what tables exist?"
-7. [USER_FLOW.md](USER_FLOW.md) — "what does a sale look like end-to-end?"
+4. [LEARNING_FLOWS.md](LEARNING_FLOWS.md) — "what happens when the user clicks X?"
+5. [LEARNING_AI_WORKFLOW.md](LEARNING_AI_WORKFLOW.md) — "how do I work with AI on this without breaking things?"
+6. [LEARNING_TYPESCRIPT.md](LEARNING_TYPESCRIPT.md) — "what does this `: string | null` mean?"
+7. [ROADMAP.md](ROADMAP.md) — "where is the project headed?"
+8. [PROJECT_VISION.md](PROJECT_VISION.md) — "who is the pilot for?"
+9. [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md) — "what tables exist?"
+10. [USER_FLOW.md](USER_FLOW.md) — "what does a sale look like end-to-end?"
+
+---
+
+## Scavenger hunt — repo navigation drill (~20 min, optional)
+
+Before or after Level 2, do this to build navigation muscle. For each item, find it in the repo and answer the question. No cheating — actually open the file.
+
+| # | Find this | Question |
+|---|---|---|
+| 1 | The file that becomes the URL `/apply` | What's its absolute path under `src/`? |
+| 2 | The Server Action that handles application submission | Which file? Which line declares `"use server"`? |
+| 3 | The Postgres function that creates a sale atomically | Where does it lock the event row? (Hint: look for `for update`) |
+| 4 | The RLS policy for the `products` table | What does the SELECT policy require? |
+| 5 | The TypeScript type for one row of `products` | What types does it use for money columns? |
+| 6 | The auth gate that wraps every `/app/*` URL | Which mode does it return when Supabase env vars are missing? |
+| 7 | The Supabase client used in Server Components | Why is there a separate "admin" client? |
+| 8 | The cart store (where cart state lives) | What kind of state container does it use? |
+| 9 | The customer-portal claim RPC | Why is it `security definer` and grant-able to `anon`? |
+| 10 | One vitest test file | What's the convention for test file naming? |
+
+When you can answer all 10 in under 10 minutes by opening files in your editor, you've internalized the repo layout. That's a real milestone.
