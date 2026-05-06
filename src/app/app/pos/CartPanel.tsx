@@ -9,6 +9,7 @@ import { PaymentPicker } from "./PaymentPicker";
 import { ReviewModal } from "./ReviewModal";
 import { PromptPayDisplay } from "./PromptPayDisplay";
 import { CustomerInfoBlock } from "./CustomerInfoBlock";
+import { ReturningCustomerLookup } from "./ReturningCustomerLookup";
 import { CashTenderBlock } from "./CashTenderBlock";
 import { SplitPaymentBlock } from "./SplitPaymentBlock";
 import { UpsellPrompt } from "./UpsellPrompt";
@@ -102,6 +103,10 @@ export function CartPanel({
           </div>
         </header>
       )}
+
+      <div className="mb-3">
+        <ReturningCustomerLookup />
+      </div>
 
       {cart.lines.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-line bg-white px-4 py-6 text-center text-sm text-muted">
