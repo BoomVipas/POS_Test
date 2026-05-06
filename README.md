@@ -95,3 +95,9 @@ pos-for-sell/
 ## Status
 
 Foundation (Phase 0, batches DD-01 through DD-12) — see `TASKS.md`. Phase 1 (public application flow) is partially scaffolded; persistence batches (DD-15+) are blocked on Supabase credentials.
+
+After the original 100-batch plan, work shifted to **organic "Wave NN" feature batches** driven by competitor research, the meowmeow Pet Expo field findings, and the strategic correction in [`../VISION.md`](../VISION.md). As of 2026-05-07: 259 vitest tests pass; latest waves are 39a (sample bucket data layer, PR #4) and 40a (Customer Portal data layer, PR #5). Full wave list in [`docs/STATUS.md`](docs/STATUS.md). Wave naming convention in [`docs/BATCH_PLAN.md`](docs/BATCH_PLAN.md) "Post-DD-100 Waves" section.
+
+## Architecture in one paragraph
+
+Two connected layers per [`docs/PROJECT_VISION.md`](docs/PROJECT_VISION.md): the **POS App** (`/app/*`, seller-facing, fast checkout, optional customer fields, no pet UI) and the **Customer Portal** (`/register/[token]`, customer-facing, anon, post-purchase, captures profile + multi-channel contacts + optional pet info). The two layers are connected by a 16-char single-use token issued at checkout and redeemed by the customer via QR or share link. Pet profile is the booth-seller competitive moat but lives in the portal layer, never in the cashier flow.

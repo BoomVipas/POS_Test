@@ -92,3 +92,47 @@ System side: admin gets an email "New application from <brand>".
 - **A correction is atomic.** Edits an existing order; audit row records before/after.
 - **Inventory cannot go negative** unless explicitly allowed (not allowed in pilot).
 - **Two staff cannot sell the last unit.** Postgres SELECT FOR UPDATE on event_inventory row inside the function.
+
+## Customer Portal flow (post-purchase, Wave 40)
+
+> Architectural rule, [PROJECT_VISION.md](PROJECT_VISION.md): customer + pet profile must never block the cashier flow. Profiles are captured **after** the sale via QR or shareable link.
+
+```
+At checkout
+1. Cashier completes a sale.                  → create_order RPC writes the
+                                                 order atomically.
+2. Receipt success screen renders.            → Server Action calls
+                                                 create_registration_token(order_id).
+                                                 Returns 16-char token.
+3. Receipt shows a QR + share link            → URL: /register/{token}
+   (also "Send by Line/SMS" buttons).         → cashier moves on to the next sale.
+
+Customer portal (anon)
+4. Customer scans QR (or follows the link).   → Mobile-first /register/[token]
+                                                 page.
+5. Server fetches token row server-side       → renders form when token is
+   (admin-scoped lookup; never exposes           valid + unclaimed + unexpired.
+   tokens to anon SELECT).                       Otherwise shows error state.
+6. Customer fills form (optional fields):     → preferred contact method,
+   - display name                                phones / emails / line ids,
+   - contacts (phone / email / line)             pet name + species + breed +
+   - pets (vertical module, optional)            birthday + allergies, consent.
+7. Submit → Server Action calls               → claim_registration_token RPC,
+   claim_registration_token(token, payload).     anon-callable. Atomically writes
+                                                 customer + contacts + pets +
+                                                 customer_order_links rows;
+                                                 marks token claimed; audit-logs.
+8. Success page                               → "We saved your info. See you at
+                                                 the next event."
+
+Repeat customer at the next event
+9. Cashier asks for phone or scans loyalty QR. → Server Action (Wave 40c)
+                                                  looks up customer_contacts
+                                                  by (workspace_id, channel,
+                                                  value).
+10. POS surfaces "returning customer" badge    → customer_id, pet preview,
+    with past purchases.                         past order history. Cashier
+                                                 can attach to current sale.
+```
+
+Token rules: 16 random chars, single-use, 90-day expiry. The token IS the credential — the portal flow has no auth session. Without a valid token, `claim_registration_token` aborts with `errcode = '22023'`. Direct anon SELECT on `customer_registration_tokens` is denied by RLS; tokens only become readable through the SECURITY DEFINER RPCs.

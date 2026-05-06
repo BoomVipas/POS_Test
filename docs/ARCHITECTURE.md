@@ -61,3 +61,38 @@ For the 5-brand pilot, one Postgres + RLS gives:
 - Migration path to per-tenant DB is open (RLS makes that more annoying than helpful at this scale).
 
 If/when the pilot graduates to a paid product, larger tenants can be migrated to dedicated projects.
+
+## Two-layer architecture: POS App + Customer Portal (added 2026-05-07)
+
+Per [VISION.md](../../VISION.md) and [PROJECT_VISION.md](PROJECT_VISION.md), MochiPOS is split into two connected layers so the cashier never has to do CRM work during peak sales time.
+
+### Layer A — POS App (seller-facing)
+
+- Routes under `/app/*`, gated by `workspace_members` membership.
+- Used by cashier and staff during the event.
+- Optimised for speed, low typing, mistake resistance.
+- Required-to-save fields: product, qty, payment method, fulfillment (take-now / Send Later), discount.
+- Customer fields are optional even within the Send Later flow (the only place `CustomerInfoBlock` renders).
+- **Pet UI never appears in this layer.** The `useDemoPets` / `PetCardsBlock` from Wave 35 will be removed once Waves 40b/c land.
+
+### Layer B — Customer Portal (customer-facing)
+
+- Routes under `/register/[token]` (anon, no auth session).
+- Reached via QR on receipt or shareable link (Line / SMS / email).
+- Mobile-first, bilingual EN/TH.
+- Data writes go through `claim_registration_token` SECURITY DEFINER RPC. The token IS the credential; without it, the function aborts.
+- Captures customer profile + multi-channel contacts + (optional) pet profile + order linking — atomically, in one transaction, audit-logged.
+
+### Why the layers are connected by a token, not auth
+
+Customers don't have a Supabase auth session at the booth. Forcing a signup before they can claim "this was my order" would defeat the speed goal. A 16-char single-use 90-day-expiring token solves this: the cashier issues it as part of the sale, the customer redeems it from any device. Two different physical people, two different sessions, one shared opaque secret.
+
+### Data isolation between layers
+
+- All five Customer Portal tables (`customers`, `customer_contacts`, `pets`, `customer_order_links`, `customer_registration_tokens`) carry `workspace_id` and have RLS read policies for workspace members + admins.
+- **No direct INSERT / UPDATE / DELETE policies exist on these tables.** Every mutation goes through a SECURITY DEFINER RPC (`claim_registration_token` for the anon flow; future cashier-side helpers in Wave 40c).
+- This means the anon Supabase key cannot write to the database directly — only the RPC, which validates the token first.
+
+### Vertical module flag
+
+The `pets` table is a vertical module. Non-pet workspaces will have empty `pets` rows; UI must handle this case (planned for Wave 40b). The architecture is **general POS core + optional vertical modules**; the pet module is the booth-seller moat for the pilot, but the core works without it.

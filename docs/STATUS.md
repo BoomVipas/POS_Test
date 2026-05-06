@@ -112,3 +112,42 @@ Latest waves landed:
 - Wave 8 (DD-144, 187, 188, 191..193, 198): PromptPay QR display via qrcode + EMVCo lib, /app/pos/success/[orderId], approve/reject Actions on /admin/applications, useDebouncedValue, useLocalStorageState, Money component.
 - Wave 9 (DD-156..159, 169): Playwright config + 3 e2e specs + CONTRIBUTING.md.
 - Wave 10 (DD-167, 170, 172, 174): PERFORMANCE.md, INCIDENT_RESPONSE.md, CODE_STYLE.md, GLOSSARY.md.
+
+## Latest waves (post-DD-100, organic numbering)
+
+After DD-100 the project shifted from the original 100-batch plan into organic "Wave NN" feature batches driven by competitor research, the meowmeow Pet Expo field findings, and the strategic correction in [VISION.md](../../VISION.md). Each wave is 1–N batches that ship as a cohesive unit.
+
+Snapshot at the end of 2026-05-07:
+
+- **Wave 12–17** (2026-05-05): demo POS persistence, product CRUD, sale persistence, send-later workflow, customer info, image upload, bill void, POS search, helper extraction + 10 more unit tests.
+- **Wave 18**: sample seed + demo audit log + print receipt.
+- **Wave 19**: EN/TH bilingual UI — i18n core + translated public pages + POS chrome.
+- **Wave 20**: 3 features stolen from competitor research.
+- **Wave 21**: quick-cash tender + change + per-line notes.
+- **Wave 22**: split payments — cash + PromptPay + card on one bill.
+- **Wave 23**: loyalty points (Loyverse / Square pattern).
+- **Wave 24**: customer notes + tags (Shopify-inspired).
+- **Wave 25**: cash reconciliation at close-of-day.
+- **Wave 26**: partial refunds with reason — extends void flow.
+- **Wave 27**: QR self-order — customer-facing `/qr-menu` + cashier import.
+- **Wave 28**: upsell suggestions per product (Toast / Shopify pattern).
+- **Wave 29**: live activity feed on dashboard.
+- **Wave 30**: demand forecasting / reorder suggestions (Lightspeed-inspired).
+- **Wave 31**: pre-order capture for sold-out products.
+- **Wave 32+36**: COGS / margin per product + reorder points.
+- **Wave 33**: stock count session — fix warehouse drift.
+- **Wave 34**: multi-period dashboard + period-over-period.
+- **Wave 35**: pet profiles — booth-seller competitive moat (currently demo localStorage in `useDemoPets`; will be inverted to portal-driven by Waves 40b/c).
+- **Wave 37**: order source / channel attribution.
+- **Wave 38**: customer lifecycle + LTV view.
+- **Wave 39a** *(open PR #4)*: sample bucket data layer — `event_inventory.sample_qty` + `convert_event_to_sample` / `convert_sample_to_event` RPCs + types + 6 vitest type guards. Carries the meowmeow Batch DD field-tested model into the SaaS.
+- **Wave 40a** *(open PR #5)*: Customer Portal data layer — 5 new tables (`customers`, `customer_contacts`, `pets`, `customer_order_links`, `customer_registration_tokens`) + 2 RPCs (`create_registration_token` workspace-only, `claim_registration_token` anon-callable with token-as-credential) + RLS + 11 vitest type guards. Implements the "checkout first, profile later" correction from [VISION.md](../../VISION.md).
+
+Test count: **259 vitest tests pass** as of Wave 40a (was 65 at end of original 100-batch plan).
+
+## Pending waves
+
+- **Wave 39b**: sample bucket UI — Make / Return buttons in Stock Setup, Server Actions wrapping the two RPCs, integration test against a live Supabase dev DB.
+- **Wave 39c**: bill-correction Send Later queue rebuild + warehouse-aware allowance check (port of meowmeow Batch EE).
+- **Wave 40b**: receipt QR + portal page (`/register/[token]`) + `claim_registration_token` Server Action + "Send registration link" button on the receipt success screen.
+- **Wave 40c**: cashier-side repeat-customer lookup (lookup by phone, attach to current sale, surface "returning customer" badge with pet preview). Once 40b/c land, the in-cashier `PetCardsBlock` from Wave 35 becomes redundant and gets refactored out.

@@ -74,3 +74,21 @@ pos-for-sell/
 ## Picking a batch
 
 See `pos-for-sell/TASKS.md` for live status and `docs/BATCH_PLAN.md` (Vol 1) and `docs/BATCH_PLAN_VOL2.md` (Vol 2) for the full backlog. Pick a `ready-for-claude` entry, claim it in `TASKS.md`, and go.
+
+## DD-XX vs Wave NN naming
+
+Two conventions live in this project:
+
+- **DD-XX** (DD-01 through DD-100, plus DD-101..210 in Vol 2) — the original upfront-planned batches. Branch: `pos/DD-XX-short-slug`. Commit: `[DD-XX] one-line summary`.
+- **Wave NN** (post-DD-100 organic numbering) — feature-cohesive multi-batch work driven by competitor research, the meowmeow field findings, and the strategic correction in `../VISION.md`. Branch: `pos/wave-NN-short-slug` (or `pos/wave-NNa-...` when split). Commit: `[Wave NN] one-line summary` or `[Wave NNa] ...`.
+
+See `docs/BATCH_PLAN.md` "Post-DD-100 Waves" section for the convention details and the full list of shipped waves.
+
+## Two-layer architecture rule
+
+Per `docs/PROJECT_VISION.md` and `../VISION.md`:
+
+- **POS App** (`/app/*`, seller-facing): customer fields are optional; pet UI must not appear.
+- **Customer Portal** (`/register/[token]`, customer-facing, anon): pet profile and detailed customer info live here.
+
+Do not add pet UI to a `/app/*` checkout-flow batch unless the batch is explicitly removing such UI per Wave 40c.

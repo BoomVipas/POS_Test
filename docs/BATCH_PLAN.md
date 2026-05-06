@@ -649,3 +649,47 @@ Sister batch in meowmeow_pos_event.html: `Batch AA — Manager Action Dashboard 
 - DD-201 → DD-210 are blocked by Phase 7 (DD-85 → DD-94); they read manager-action signals from the dashboard data already produced there. Implement after the meowmeow `Batch AA` ships so the SaaS port can mirror its dashboardMetrics extensions and visual treatment.
 - DD-203 introduces a new `eod_checklist` table — keep its RLS reviewed alongside other Phase 7 tables.
 - DD-207 is blocked by DD-100 (pilot-status base).
+
+---
+
+## Post-DD-100 Waves — organic numbering
+
+After the original 100-batch plan was working in demo mode, work shifted to a "Wave NN" naming convention for cohesive multi-batch features. Each wave is 1–N batches that land together; the wave number replaces a single DD-XX in the commit prefix.
+
+### Convention
+
+- **Branch name**: `pos/wave-NN-short-slug` (or `pos/wave-NNa-...` when a wave is split into sub-batches a/b/c).
+- **Commit prefix**: `[Wave NN] one-line summary` (or `[Wave NNa]`).
+- **PR title**: `pos: Wave NN <short summary>`.
+- **TASKS.md entry**: a "Wave NN — title" block under `## Currently active` while in flight, then moved to `## Done` with the merge SHA after merge.
+- **Same hard rules** apply: claim before editing, branch-per-wave, RLS on every business table, money in satang, audit log on every admin/correction/refund action.
+
+### Why "Wave" replaces "DD-XX" after 100
+
+The 100-batch plan was authored upfront in solo mode at the user's request to plan + execute end-to-end through the pilot launch. Once the demo flows worked and the design language was settled, post-100 work became driven by competitor research, the meowmeow Pet Expo field findings, and the strategic correction in [VISION.md](../../VISION.md) — none of which fit cleanly into the original phase structure. "Wave NN" is the post-launch organic numbering that records what shipped, in order, without forcing every change to map back to the original plan.
+
+### Waves shipped (snapshot 2026-05-07)
+
+See [STATUS.md](STATUS.md) for the canonical list. Highlights:
+
+- **Wave 12–17**: demo POS persistence + product/sale/send-later workflow + customer info + image upload + bill void + POS search.
+- **Wave 19**: EN/TH bilingual UI.
+- **Wave 22**: split payments (cash + PromptPay + card on one bill).
+- **Wave 23**: loyalty points (Loyverse / Square pattern).
+- **Wave 26**: partial refunds with reason.
+- **Wave 27**: QR self-order menu.
+- **Wave 30**: demand forecasting / reorder suggestions.
+- **Wave 32+36**: COGS / margin per product + reorder points.
+- **Wave 33**: stock count session — fix warehouse drift.
+- **Wave 34**: multi-period dashboard.
+- **Wave 35**: pet profiles (currently demo localStorage; will be inverted to portal-driven post Wave 40b/c).
+- **Wave 38**: customer lifecycle + LTV view.
+- **Wave 39a** *(in review, PR #4)*: sample bucket data layer — `event_inventory.sample_qty` + 2 RPCs. Carries meowmeow Batch DD field-tested model into the SaaS.
+- **Wave 40a** *(in review, PR #5)*: Customer Portal data layer — 5 new tables + 2 RPCs (anon-callable claim flow). Implements the "checkout first, profile later" architectural correction.
+
+### Waves planned
+
+- **Wave 39b**: sample bucket UI + Server Actions.
+- **Wave 39c**: bill-correction Send Later queue rebuild + warehouse-aware allowance (port of meowmeow Batch EE).
+- **Wave 40b**: receipt QR + portal page (`/register/[token]`) + Server Action wrapping `claim_registration_token`.
+- **Wave 40c**: cashier-side repeat-customer lookup + remove the in-cashier `PetCardsBlock` from Wave 35.
