@@ -106,20 +106,27 @@ pos-for-sell/
 ├── src/
 │   ├── app/                # Next.js App Router pages
 │   │   ├── apply/          # public application form
-│   │   ├── register/       # invite-code redemption
+│   │   ├── register/       # /register = invite-code redemption stub; /register/[token] = customer portal claim (Wave 40)
+│   │   ├── learn/          # founder learning curriculum landing
 │   │   ├── login/
 │   │   ├── admin/          # platform admin pages
-│   │   └── app/            # tenant app (POS, dashboard, setup)
+│   │   └── app/            # tenant app (POS, dashboard, setup, inventory, …)
 │   ├── components/
 │   ├── lib/
 │   │   ├── supabase/       # browser/server/admin Supabase clients
 │   │   ├── email/          # Resend wrapper + templates
+│   │   ├── i18n/           # EN/TH dictionaries + getDict (Wave 19)
+│   │   ├── pos/            # cart store, calc, splits
 │   │   └── database.types.ts
-│   └── middleware.ts       # session refresh
+│   └── proxy.ts            # session refresh (Next 16 rename of middleware.ts)
 ├── database/
 │   ├── schema.sql
 │   ├── rls-policies.sql
-│   └── seed.sql
+│   ├── seed.sql
+│   └── functions/          # SECURITY DEFINER RPCs (create_order, etc.)
+├── tests/
+│   ├── lib/                # vitest unit tests (~34 files)
+│   └── e2e/                # playwright smoke tests
 ├── docs/
 └── public/
 ```
