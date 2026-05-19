@@ -59,15 +59,21 @@ Rolling snapshot. The "What's live" section below is the original 2026-05-04 bas
 
 `pos-for-sell/database/`:
 
-- `schema.sql` — 13 tables, helper fns
-- `rls-policies.sql` — full set
-- `seed.sql` — demo data
-- `functions/create_order.sql`
-- `functions/void_order.sql`
-- `functions/correct_order.sql`
-- `functions/redeem_invite_code.sql`
+- `schema.sql` — **18 tables** (verified 2026-05-18 by `grep '^create table' schema.sql`):
+  - **Tenancy & access**: `applications`, `admin_users`, `invite_codes`, `workspaces`, `workspace_members`.
+  - **Catalog & sales**: `products`, `events`, `event_inventory`, `orders`, `order_items`, `payment_records`, `send_later_orders`.
+  - **Customer Portal** (Wave 40a): `customers`, `customer_contacts`, `pets`, `customer_order_links`, `customer_registration_tokens`.
+  - **Audit**: `audit_logs`.
+- `rls-policies.sql` — full policy set; mutations gated by role + workspace helpers.
+- `seed.sql` — demo data.
+- `functions/` — **8 Postgres RPCs**:
+  - **Sales**: `create_order`, `void_order`, `correct_order`.
+  - **Onboarding**: `redeem_invite_code`.
+  - **Customer Portal** (Wave 40a): `create_registration_token` (workspace-only), `claim_registration_token` (anon, token-as-credential).
+  - **Sample bucket** (Wave 39a): `convert_event_to_sample`, `convert_sample_to_event`.
+- `migrations/` — 2 forward-only migration files (`2026-05-07_add_sample_qty.sql`, `2026-05-07_customer_portal.sql`).
 
-None applied to a real DB yet.
+None applied to a real DB yet — applying is the Supabase-provisioning unblock recipe in `TASKS.md` § Blockers.
 
 ## Tests
 
