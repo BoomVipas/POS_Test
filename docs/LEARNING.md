@@ -53,7 +53,7 @@ If an AI agent ever shows you any of those and you don't follow it, that's fine 
 
 ## Progress
 
-- [x] **Level 1 — Web app basics** (taught 2026-05-07; exercise pending)
+- [x] **Level 1 — Web app basics** (taught 2026-05-07; exercise still pending — see Resume here for what's happened since)
 - [ ] Level 2 — Next.js structure
 - [ ] Level 3 — Supabase basics
 - [ ] Level 4 — Deployment flow
@@ -62,14 +62,19 @@ If an AI agent ever shows you any of those and you don't follow it, that's fine 
 
 ## Resume here (next session)
 
-**Where we left off:** Level 1 was taught in chat on 2026-05-07. Founder paused before doing the DevTools exercise.
+**Where we left off:**
+- **2026-05-07** — Level 1 taught in chat. Founder paused before doing the DevTools exercise.
+- **2026-05-18** — Founder returned, ran the demo, but only saw the marketing/apply page and assumed "this is the whole app." We walked through the 4 audience surfaces in chat. Shipped Demo navigation map to `/learn` and to this doc (PRs #16, #17) so the orientation gap is solved permanently — anyone hitting the demo cold can now find `/app/pos` and the other surfaces without asking.
+
+**Status:** Level 1 still ungraduated. The 5 concepts (frontend, backend, database, hosting, API) landed, but the DevTools Network-tab exercise is still owed. Founder also hasn't yet narrated what `/app/pos` looks like in their own words.
 
 **Next session opening move:**
-1. Ask: "Did you run `npm run dev` and look at the Network tab? What did you see?"
-2. If yes — debrief what they saw, fill any gaps, then move to Level 2.
-3. If they didn't get to it — walk through it live, screen by screen.
+1. **Orientation first:** "Have you clicked around `/app/pos` since? What did the cashier screen look like to you?" They should describe a product grid plus a cart on the right.
+2. If yes — short debrief, then run the DevTools exercise from Level 1 (Network tab investigation).
+3. If no — walk them through `/app/pos` first (3 min), then the DevTools exercise.
+4. Only then move to Level 2.
 
-**Don't:** dump Level 2 before confirming Level 1 landed.
+**Don't:** dump Level 2 before confirming Level 1 landed — both the concepts AND the hands-on exercise.
 
 ---
 
