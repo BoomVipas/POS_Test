@@ -613,8 +613,11 @@ That's the moment you've made the round trip from "I don't understand the repo" 
 # In pos-for-sell/
 
 npm run dev          # start the dev server on http://localhost:3000
-npm test             # run the vitest test suite
-npm run build        # production build (catches TS errors)
+npm test             # run the vitest unit test suite (~2s, 300+ tests)
+npm run typecheck    # check TS types without building (faster than build)
+npm run lint         # run ESLint (Next config)
+npm run build        # production build (includes TS type-check; NOT lint)
+npm run e2e          # run Playwright browser tests (auto-starts dev server)
 
 # Git basics
 git status                                       # what's changed
