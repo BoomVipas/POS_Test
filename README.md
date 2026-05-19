@@ -2,7 +2,7 @@
 
 Multi-tenant POS SaaS for cat-product booth sellers. Built on Next.js 16 + Supabase + Vercel + Resend.
 
-This project lives inside the `meowmeow_sandbox` repo as a sibling to `meowmeow_pos_event.html`. It has its own protocol, batch namespace, and architecture — see `CLAUDE.md`.
+This project lives inside the `meowmeow_sandbox` repo as a sibling to `meowmeow_pos_event.html` — see the [parent readme](../readme.md) for the meowmeow event-POS context that informs many SaaS patterns (sample bucket, Send Later, free-gift). MochiPOS has its own protocol, batch namespace, and architecture — see [`CLAUDE.md`](./CLAUDE.md).
 
 ## Quick links
 
