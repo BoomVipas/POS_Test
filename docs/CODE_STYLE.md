@@ -70,4 +70,4 @@ Small, opinionated set on top of `eslint-config-next` and `tsconfig` strict mode
 - Don't import `process.env` directly outside of `lib/*` modules. Centralise.
 - Don't use `localStorage` for business data. Ever.
 - Don't add a feature flag library — for the pilot we're not big enough yet.
-- Don't add an i18n library proactively. Wait until DD-175 lands.
+- Don't add a *different* i18n library. EN/TH shipped in Wave 19 via `src/lib/i18n/` (server `getDict()` + client `LangProvider` + `dictionaries.ts`). New translatable strings go into that pattern; don't pull in `next-intl` or similar.
