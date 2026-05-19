@@ -36,7 +36,7 @@ public visitor               admin                pilot client
 ## Key boundaries
 
 - **Server vs client**. Default is server components. `"use client"` only when interactivity needs it (forms, cart store, modal).
-- **Mutations vs reads**. Server actions for app-internal mutations. Postgres `security definer` functions for atomic, multi-table writes (create_order, void_order, correct_order, redeem_invite_code). RLS allows direct INSERT/UPDATE for products/events/inventory by role; orders+order_items+payment_records have **no direct mutation policy** — they go through RPCs.
+- **Mutations vs reads**. Server actions for app-internal mutations. Postgres `security definer` functions for atomic, multi-table writes — 8 RPCs as of Wave 40a (verified 2026-05-18): sales (`create_order`, `void_order`, `correct_order`), onboarding (`redeem_invite_code`), sample bucket Wave 39a (`convert_event_to_sample`, `convert_sample_to_event`), customer portal Wave 40a (`create_registration_token` workspace-only, `claim_registration_token` anon-callable). RLS allows direct INSERT/UPDATE for products/events/inventory by role; orders+order_items+payment_records have **no direct mutation policy** — they go through RPCs. Customer-portal tables likewise have no direct write policy — all writes go through `claim_registration_token`.
 - **Admin vs tenant**. `/admin/*` requires a row in `admin_users` (checked in `src/lib/auth/admin-check.ts`). `/app/*` requires a row in `workspace_members` for the user's workspace. Public + auth pages have no gate.
 
 ## Tenancy
@@ -73,7 +73,7 @@ Per [VISION.md](../../VISION.md) and [PROJECT_VISION.md](PROJECT_VISION.md), Moc
 - Optimised for speed, low typing, mistake resistance.
 - Required-to-save fields: product, qty, payment method, fulfillment (take-now / Send Later), discount.
 - Customer fields are optional even within the Send Later flow (the only place `CustomerInfoBlock` renders).
-- **Pet UI never appears in this layer.** The `useDemoPets` / `PetCardsBlock` from Wave 35 will be removed once Waves 40b/c land.
+- **Pet UI never appears in this layer.** The `useDemoPets` / `PetCardsBlock` from Wave 35 are scheduled for removal — Waves 40b/c shipped 2026-05-07 (which made the in-cashier pet UI redundant), but the cleanup batch hasn't been scheduled yet. Until then, treat the rule as authoritative and don't extend that code path.
 
 ### Layer B — Customer Portal (customer-facing)
 
