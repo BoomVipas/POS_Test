@@ -57,8 +57,6 @@ Plus also done:
 
 ## Phase 0 — Foundation (DD-01 → DD-12)
 
-## Phase 0 — Foundation (DD-01 → DD-12)
-
 ### DD-01 — Repo + stack decision docs
 - **Owner:** claude
 - **Status:** done
@@ -74,49 +72,59 @@ Plus also done:
 - **Notes:** Strict TS via scaffold defaults. Path alias `@/*`. Lint clean. Prettier deferred — eslint w/ next config provides format-on-save guidance. (Synced with top-of-file "What landed" table 2026-05-18.)
 
 ### DD-04 — Theme tokens
-- **Status:** ready-for-claude
+- **Status:** done
 - **Depends on:** DD-03
+- **Notes:** meowmeow palette mapped via `@theme inline` in `globals.css`. Dark mode removed.
 
 ### DD-05 — Layout shell
-- **Status:** ready-for-claude
+- **Status:** done (partial)
 - **Depends on:** DD-04
+- **Notes:** Layout root with light gradient background + `font-sans` + `min-h-dvh`. Top-bar component deferred until /app routes exist (DD-43+).
 
 ### DD-06 — Database schema SQL
-- **Status:** ready-for-claude
-- **Notes:** Writing the SQL is unblocked. *Applying* the SQL is blocked on Supabase project.
+- **Status:** done
+- **Notes:** `database/schema.sql` — 13 tables + helper functions. *Applying* the SQL to a live Supabase project remains blocked on B-1 (Supabase project not created).
 
 ### DD-07 — RLS policies SQL
-- **Status:** ready-for-claude
+- **Status:** done
 - **Depends on:** DD-06
+- **Notes:** `database/rls-policies.sql` — full policy set; mutations gated by role helpers.
 
 ### DD-08 — Seed SQL
-- **Status:** ready-for-claude
+- **Status:** done
 - **Depends on:** DD-06, DD-07
+- **Notes:** `database/seed.sql` — picks first auth.users row as admin + workspace owner; seeds 5 demo products + 1 demo event.
 
 ### DD-09 — Database TypeScript types
-- **Status:** ready-for-claude
+- **Status:** done
 - **Depends on:** DD-06
+- **Notes:** `src/lib/database.types.ts` — hand-written, matches schema. Replace with `supabase gen types typescript` later.
 
 ### DD-10 — Supabase client libs
-- **Status:** ready-for-claude
+- **Status:** done
 - **Depends on:** DD-09
+- **Notes:** `src/lib/supabase/{client,server,admin,middleware}.ts` + `src/middleware.ts` (now `src/proxy.ts` per Next 16 deprecation).
 
 ### DD-11 — Resend email lib
-- **Status:** ready-for-claude
+- **Status:** done
+- **Notes:** `src/lib/email/resend.ts` + `templates/{new-application,invite}.ts`.
 
 ### DD-12 — Env management + setup README
-- **Status:** ready-for-claude
+- **Status:** done
 - **Depends on:** DD-10, DD-11
+- **Notes:** `.env.example` + setup section in `README.md`.
 
 ## Phase 1 — Public application flow (DD-13 → DD-22)
 
 ### DD-13 — Marketing landing /
-- **Status:** ready-for-claude
+- **Status:** done
 - **Depends on:** DD-05
+- **Notes:** `src/app/page.tsx` marketing landing.
 
 ### DD-14 — /apply form UI
-- **Status:** ready-for-claude
+- **Status:** done
 - **Depends on:** DD-05
+- **Notes:** `src/app/apply/{page,Form,schema,actions}.tsx` — full form + zod + RHF + action ready.
 
 ### DD-15 — /apply server action (insert applications)
 - **Status:** blocked
@@ -134,8 +142,9 @@ Plus also done:
 - **Depends on:** DD-11, DD-15
 
 ### DD-18 — /apply success page
-- **Status:** ready-for-claude
+- **Status:** done
 - **Depends on:** DD-14
+- **Notes:** `/apply/success`.
 
 ### DD-19 — /apply/status check
 - **Status:** blocked
@@ -150,8 +159,9 @@ Plus also done:
 - **BlockedBy:** analytics provider choice (Plausible, Vercel Analytics, PostHog).
 
 ### DD-22 — /apply mobile responsive pass
-- **Status:** ready-for-claude
+- **Status:** done
 - **Depends on:** DD-14
+- **Notes:** Form is mobile-responsive by default (form fields stack, no horizontal overflow). Manual iPhone-SE check still owed.
 
 ## Phase 2 — Admin approval (DD-23 → DD-32)
 
