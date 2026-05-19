@@ -19,7 +19,7 @@
   ```sql
   insert into public.admin_users (user_id) values ('<your-auth-uid>');
   ```
-- Apply database migrations: run `database/schema.sql`, then `database/rls-policies.sql`, then optionally `database/seed.sql` and the `database/functions/*.sql` (after the schema is up).
+- Apply database schema and functions in the order shown in the "Database migrations" table below — `schema.sql`, then `rls-policies.sql`, then the 8 functions (and the 2 `migrations/` files if upgrading rather than starting fresh). `seed.sql` is optional, dev only.
 
 ## Environments
 
@@ -44,17 +44,25 @@ Vercel keeps every deployment. From the dashboard, click any past deploy → Pro
 
 ## Database migrations
 
-Schema changes ship as new SQL files under `database/`. Apply them in order in the Supabase SQL editor. There is no `migrate` CLI in this repo yet; for the pilot, manual application is fine. Track applied migrations in a hand-curated list in `docs/DEPLOYMENT.md` (this file) once we hit migration #2.
+Schema changes ship as new SQL files under `database/`. Apply them in order in the Supabase SQL editor. There is no `migrate` CLI in this repo yet; for the pilot, manual application is fine.
+
+**Fresh install vs upgrade:** `schema.sql` reflects the current shape of all tables (18 as of 2026-05-18). A fresh Supabase project only needs `schema.sql` + `rls-policies.sql` + the functions. The `migrations/` files are for upgrading a database that was bootstrapped from an earlier schema — `add_sample_qty` adds the Wave 39a column; `customer_portal` adds the 5 Wave 40a tables.
 
 | # | Date | File | Notes |
 |---|---|---|---|
-| 1 | unapplied | `schema.sql` | Initial 13 tables + helpers |
-| 2 | unapplied | `rls-policies.sql` | RLS policies + helpers |
-| 3 | unapplied | `seed.sql` | Demo data (dev only; do NOT run in prod) |
-| 4 | unapplied | `functions/create_order.sql` | atomic sale RPC |
-| 5 | unapplied | `functions/void_order.sql` | inventory restore |
-| 6 | unapplied | `functions/correct_order.sql` | customer-info patch |
-| 7 | unapplied | `functions/redeem_invite_code.sql` | workspace creation |
+| 1 | unapplied | `schema.sql` | All 18 tables + helpers (verified 2026-05-18) |
+| 2 | unapplied | `rls-policies.sql` | Full RLS policy set + helpers |
+| 3 | unapplied | `migrations/2026-05-07_add_sample_qty.sql` | Wave 39a: adds `event_inventory.sample_qty` (skip on fresh install) |
+| 4 | unapplied | `migrations/2026-05-07_customer_portal.sql` | Wave 40a: adds 5 customer-portal tables + RLS (skip on fresh install) |
+| 5 | unapplied | `functions/redeem_invite_code.sql` | Workspace creation from invite code |
+| 6 | unapplied | `functions/create_order.sql` | Atomic sale RPC (FOR UPDATE locks) |
+| 7 | unapplied | `functions/void_order.sql` | Inventory restore |
+| 8 | unapplied | `functions/correct_order.sql` | Order edit + inventory delta |
+| 9 | unapplied | `functions/convert_event_to_sample.sql` | Wave 39a: booth → sample bucket |
+| 10 | unapplied | `functions/convert_sample_to_event.sql` | Wave 39a: sample bucket → booth |
+| 11 | unapplied | `functions/create_registration_token.sql` | Wave 40a: cashier issues post-sale token |
+| 12 | unapplied | `functions/claim_registration_token.sql` | Wave 40a: anon customer claim (token-as-credential) |
+| 13 | unapplied | `seed.sql` | Demo data (dev only; do NOT run in prod) |
 
 ## Build sizes
 
