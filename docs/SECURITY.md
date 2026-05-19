@@ -10,6 +10,7 @@ The app is a multi-tenant SaaS where each tenant's data is potentially valuable 
 4. **Spam / abuse** — `/apply` form gets bot-spammed.
 5. **Email impersonation** — invite emails are spoofed.
 6. **Data destruction** — accidental or malicious DELETEs.
+7. **Customer Portal token compromise** *(added Wave 40a)* — an unauthorized party intercepts, guesses, or otherwise obtains a registration token and claims a customer profile they don't own. The token IS the credential for the anon claim flow, so leakage equals control over the claim.
 
 ## Controls
 
@@ -51,6 +52,16 @@ The app is a multi-tenant SaaS where each tenant's data is potentially valuable 
 - `void_order` is reason-required and writes both old + new values to `audit_logs`.
 - `correct_order` writes old + new to `audit_logs`.
 - All admin actions (approve, reject, issue, cancel invite) write to `audit_logs`.
+
+### Customer Portal token compromise (Wave 40a)
+
+- **Single-use**: `claim_registration_token` marks the token claimed atomically inside the same transaction as the customer / contacts / pets writes. Replay attempts abort with `errcode = '22023'`.
+- **Expiry**: tokens auto-expire after 90 days; expired tokens cannot be claimed.
+- **No direct anon SELECT**: RLS on `customer_registration_tokens` denies anon read. Tokens cannot be enumerated by listing the table — they can only be *verified* through the SECURITY DEFINER RPC.
+- **Audit-logged**: every claim writes to `audit_logs` (with `user_id = null` since the caller is anon-authenticated by the token itself).
+- **Transport via receipt**: tokens only travel on the receipt the customer just received (QR + share link). An attacker needs physical access to the receipt or interception of the Line / SMS / email share.
+- **Server-side token validation**: even with a valid-looking token, the RPC runs `select ... for update` on the token row inside the transaction before any customer-data write, so concurrent claim attempts serialize.
+- **Future work**: per-IP rate-limit at the RPC layer is not yet implemented. The 16-character token space is large, but a brute-force-style attacker hammering the RPC is not yet rate-limited at the app layer (Supabase has some default DB-level connection limits). Treat as a known-deferred control.
 
 ## Secrets management
 
