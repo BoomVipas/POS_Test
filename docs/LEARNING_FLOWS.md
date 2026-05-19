@@ -476,6 +476,103 @@ For Google Auth (per ROADMAP), the flow is identical except `signInWithOAuth` re
 
 ---
 
+## Flow 8 — Sample bucket convert (Wave 39a/b)
+
+The meowmeow field-proven mechanic for "stock physically on display vs sellable stock." Imported wholesale into the SaaS as a port of meowmeow's Batch DD model. The cashier or stock staff moves N units from the sellable booth count into the on-display sample count (and back) — atomically, audit-logged, race-safe.
+
+```
+STAFF       BROWSER (POS)        VERCEL/NEXT          SUPABASE
+  |              |                    |                     |
+  | nav to       |                    |                     |
+  | /app/        |                    |                     |
+  | inventory/   |                    |                     |
+  | samples →    |                    |                     |
+  |              | GET  →             |                     |
+  |              |                    | page.tsx renders    |
+  |              |                    | SampleBucketManager |
+  |              | ← UI               |                     |
+  |              |                    |                     |
+  | clicks       |                    |                     |
+  | "Make"       |                    |                     |
+  | for prod X,  |                    |                     |
+  | qty 10       |                    |                     |
+  |              | call convertTo     |                     |
+  |              | Sample(eventId,    |                     |
+  |              |   productId, 10) → |                     |
+  |              |                    | Server Action       |
+  |              |                    | supabase.rpc(       |
+  |              |                    |  'convert_event_    |
+  |              |                    |   to_sample',       |
+  |              |                    |   {p_qty: 10})  →   |
+  |              |                    |                     | Postgres TXN begin
+  |              |                    |                     |
+  |              |                    |                     | check auth.uid()
+  |              |                    |                     | check is_workspace_
+  |              |                    |                     |  member(role IN
+  |              |                    |                     |  [owner,manager,
+  |              |                    |                     |   cashier,stock_staff])
+  |              |                    |                     |  → 42501 if no
+  |              |                    |                     |
+  |              |                    |                     | SELECT event_inventory
+  |              |                    |                     |  FOR UPDATE  ← lock!
+  |              |                    |                     | check current_qty ≥ 10
+  |              |                    |                     |  → 22023 if underflow
+  |              |                    |                     |
+  |              |                    |                     | UPDATE current_qty -= 10
+  |              |                    |                     | UPDATE sample_qty   += 10
+  |              |                    |                     | INSERT audit_log
+  |              |                    |                     |  (convert_to_sample,
+  |              |                    |                     |   reason, before/after)
+  |              |                    |                     |
+  |              |                    |                     | commit
+  |              |                    |  ← updated row      |
+  |              |  ← {ok, row}       |                     |
+  |              |                    |                     |
+  | sees new     |                    |                     |
+  | counts:      |                    |                     |
+  | booth -10,   |                    |                     |
+  | sample +10   |                    |                     |
+```
+
+### The convert_sample_to_event inverse
+
+Identical shape, mirrored numbers: moves N from `sample_qty` back to `current_qty`. Used when a customer wants to buy a unit currently on display, or when the booth re-stocks samples from the warehouse.
+
+### Why FOR UPDATE matters here (same story as Flow 3)
+
+Without the row lock, two stock_staff users calling Make at the same instant could each see "50 available" and both succeed for 30 — overshooting the actual stock. With the lock, the second waits for the first to commit, then sees the post-decrement quantity and fails clean if there isn't enough.
+
+### Cast list
+
+| File | Role |
+|---|---|
+| `src/app/app/inventory/samples/page.tsx` | Page wrapper |
+| `src/app/app/inventory/samples/SampleBucketManager.tsx` | Client component — Make / Return buttons + qty input |
+| `src/lib/demo/sample-bucket.ts` | Pure logic — demo conversion math |
+| `src/lib/demo/useDemoSampleBucket.ts` | Demo hook (localStorage stand-in) |
+| `database/functions/convert_event_to_sample.sql` | Atomic make-sample RPC |
+| `database/functions/convert_sample_to_event.sql` | Atomic return-from-sample RPC |
+| `database/schema.sql` table `event_inventory` | The shared row (current_qty + sample_qty + others) |
+| `tests/lib/sample-bucket.test.ts` | Type guards |
+| `tests/lib/sample-bucket-demo.test.ts` | Demo conversion logic tests |
+
+### What can go wrong, where
+
+| Failure | Where it shows up | Why |
+|---|---|---|
+| User not in workspace | `42501` "forbidden" | RLS gate inside RPC |
+| User in workspace but role too low (e.g. `viewer`) | `42501` "forbidden" | RPC role check |
+| `p_qty <= 0` | Argument validation error | Defense in depth |
+| `current_qty < p_qty` (or `sample_qty < p_qty` for the inverse) | `22023` "underflow" with current count in the message | Most common operational failure |
+| Two concurrent conversions on the same row | One succeeds, one fails clean | `FOR UPDATE` does its job |
+| Cashier doesn't see updated counts | Stale demo cache; in real mode, a `revalidatePath` is owed | UI-layer issue, not data |
+
+### Why this is a meowmeow Pet Expo import
+
+The "sample bucket" pattern came from the family booth's hard-won experience: units physically on display during a multi-day event don't move on their own, and without explicit tracking they either silently inflate the loss column or block end-of-day stock counts. The meowmeow event POS got Batch DD's model right; Wave 39a ports the same model into the SaaS so future booth pilots inherit it.
+
+---
+
 ## Practice — pick one flow and trace it
 
 For one flow above, do this:
