@@ -34,6 +34,62 @@ export default function LearnPage() {
       <ResumeCallout />
 
       <section className="mt-12">
+        <h2 className="font-display text-2xl text-accent-strong">
+          Demo navigation map
+        </h2>
+        <p className="mt-2 text-sm text-text/75">
+          MochiPOS has four audiences and four surfaces. When you run{" "}
+          <code className="rounded bg-panel px-1.5 py-0.5">npm run dev</code>,
+          each URL below opens the section for that audience. Demo data is
+          mocked — no real database needed.
+        </p>
+        <ul className="mt-5 grid gap-3 md:grid-cols-2">
+          <SurfaceTile
+            audience="future sellers"
+            title="Public marketing"
+            body="Where new pet brands sign up. Today this is the first screen you see when you open the dev server — easy to mistake for the whole app."
+            links={[
+              { href: "/", label: "/" },
+              { href: "/apply", label: "/apply" },
+            ]}
+          />
+          <SurfaceTile
+            audience="sellers at the booth"
+            title="Cashier app"
+            body="The heart of the product. Cashier rings up sales, manages inventory, closes the day. Start here."
+            links={[
+              { href: "/app/pos", label: "/app/pos", primary: true },
+              { href: "/app/dashboard", label: "/app/dashboard" },
+              { href: "/app/customers", label: "/app/customers" },
+              { href: "/app/send-later", label: "/app/send-later" },
+              { href: "/app/stock-count", label: "/app/stock-count" },
+              { href: "/app/close-day", label: "/app/close-day" },
+              { href: "/app/setup/products", label: "/app/setup/products" },
+            ]}
+          />
+          <SurfaceTile
+            audience="you (the founder)"
+            title="Platform admin"
+            body="Approve seller applications, manage workspaces, watch the audit log."
+            links={[
+              { href: "/admin/applications", label: "/admin/applications" },
+              { href: "/admin/workspaces", label: "/admin/workspaces" },
+              { href: "/admin/invite-codes", label: "/admin/invite-codes" },
+              { href: "/admin/audit-log", label: "/admin/audit-log" },
+            ]}
+          />
+          <SurfaceTile
+            audience="pet owners (customers)"
+            title="Customer-facing"
+            body="What the customer sees: scan QR at the booth to browse the menu (/qr-menu), or after a purchase claim a pet profile via the token link on their receipt (/register/[token])."
+            links={[
+              { href: "/qr-menu", label: "/qr-menu" },
+            ]}
+          />
+        </ul>
+      </section>
+
+      <section className="mt-12">
         <h2 className="font-display text-2xl text-accent-strong">The 5 levels</h2>
         <p className="mt-2 text-sm text-text/75">
           Tackle them in order. Each ends with one hands-on exercise inside this
@@ -289,6 +345,46 @@ function StatusBadge({ status }: { status: Status }) {
     >
       {cfg.label}
     </span>
+  );
+}
+
+function SurfaceTile({
+  audience,
+  title,
+  body,
+  links,
+}: {
+  audience: string;
+  title: string;
+  body: string;
+  links: { href: string; label: string; primary?: boolean }[];
+}) {
+  return (
+    <li>
+      <article className="rounded-[var(--radius-lg)] border border-line bg-panel p-5">
+        <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-muted">
+          For {audience}
+        </p>
+        <h3 className="mt-1 font-display text-lg text-accent-strong">{title}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-text/80">{body}</p>
+        <ul className="mt-3 flex flex-wrap gap-1.5">
+          {links.map((link) => (
+            <li key={link.href}>
+              <Link
+                href={link.href}
+                className={`inline-block rounded-[var(--radius-md)] border px-2 py-1 text-[11px] font-bold transition-colors ${
+                  link.primary
+                    ? "border-accent bg-accent/10 text-accent-strong hover:bg-accent/20"
+                    : "border-line bg-bg/50 text-text/80 hover:border-accent hover:text-accent-strong"
+                }`}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </article>
+    </li>
   );
 }
 
