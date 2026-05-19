@@ -70,9 +70,8 @@ Plus also done:
 - **Notes:** `npx create-next-app@latest pos-for-sell` with TS + Tailwind v4 + App Router + src dir + ESLint + npm + Turbopack. Next 16.2.4 + React 19.2.4. `npm run dev` works.
 
 ### DD-03 — Project conventions
-- **Owner:** claude
-- **Status:** in-progress
-- **Notes:** Strict TS, prettier, path aliases @, scripts.
+- **Status:** done
+- **Notes:** Strict TS via scaffold defaults. Path alias `@/*`. Lint clean. Prettier deferred — eslint w/ next config provides format-on-save guidance. (Synced with top-of-file "What landed" table 2026-05-18.)
 
 ### DD-04 — Theme tokens
 - **Status:** ready-for-claude
