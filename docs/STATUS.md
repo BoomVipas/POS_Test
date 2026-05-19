@@ -185,15 +185,17 @@ Snapshot at the end of 2026-05-07:
 - **Wave 35**: pet profiles — booth-seller competitive moat (currently demo localStorage in `useDemoPets`; will be inverted to portal-driven by Waves 40b/c).
 - **Wave 37**: order source / channel attribution.
 - **Wave 38**: customer lifecycle + LTV view.
-- **Wave 39a** *(open PR #4)*: sample bucket data layer — `event_inventory.sample_qty` + `convert_event_to_sample` / `convert_sample_to_event` RPCs + types + 6 vitest type guards. Carries the meowmeow Batch DD field-tested model into the SaaS.
-- **Wave 40a** *(open PR #5)*: Customer Portal data layer — 5 new tables (`customers`, `customer_contacts`, `pets`, `customer_order_links`, `customer_registration_tokens`) + 2 RPCs (`create_registration_token` workspace-only, `claim_registration_token` anon-callable with token-as-credential) + RLS + 11 vitest type guards. Implements the "checkout first, profile later" correction from [VISION.md](../../VISION.md).
-- **Wave 40b** *(open PR — TBD)*: Customer Portal UI in demo mode — receipt success screen issues a 16-char token + QR + share link via `RegistrationLinkBlock`; new `/register/[token]` route validates the token in the demo store and renders a mobile-first bilingual EN/TH form (customer profile + multi-channel contacts + optional pet block); `useDemoCustomerTokens` hook backed by localStorage (mirrors `useDemoPets` / `useDemoClaims` patterns). When Wave 40a merges + Supabase wires up, the demo store swaps to the `claim_registration_token` RPC without UI changes. 15 new vitest tests for token logic.
+- **Wave 39a** *(merged PR #4, `6455917`, 2026-05-06)*: sample bucket data layer — `event_inventory.sample_qty` + `convert_event_to_sample` / `convert_sample_to_event` RPCs + types + 6 vitest type guards. Carries the meowmeow Batch DD field-tested model into the SaaS.
+- **Wave 40a** *(merged PR #5, `2c5d908`, 2026-05-07)*: Customer Portal data layer — 5 new tables (`customers`, `customer_contacts`, `pets`, `customer_order_links`, `customer_registration_tokens`) + 2 RPCs (`create_registration_token` workspace-only, `claim_registration_token` anon-callable with token-as-credential) + RLS + 11 vitest type guards. Implements the "checkout first, profile later" correction from [VISION.md](../../VISION.md).
+- **Wave 40b** *(merged PR #6, `56f743d`, 2026-05-07)*: Customer Portal UI in demo mode — receipt success screen issues a 16-char token + QR + share link via `RegistrationLinkBlock`; new `/register/[token]` route validates the token in the demo store and renders a mobile-first bilingual EN/TH form (customer profile + multi-channel contacts + optional pet block); `useDemoCustomerTokens` hook backed by localStorage (mirrors `useDemoPets` / `useDemoClaims` patterns). Real Supabase wiring lands in Wave 40d. 15 new vitest tests for token logic.
+- **Wave 39b** *(merged PR #8, `e9cab46`, 2026-05-07)*: sample bucket UI (demo mode) — port of meowmeow Batch DD UI into `/app/inventory/samples`.
+- **Wave 40c** *(merged PR #9, `4522862`, 2026-05-07)*: cashier-side repeat-customer lookup (lookup by phone, attach to current sale, "returning customer" badge with pet preview). Validates the moat in action.
 
 Test count: **263 vitest tests pass** as of Wave 40b on its branch (was 65 at end of original 100-batch plan; 248 at end of Wave 38).
 
 ## Pending waves
 
-- **Wave 39b**: sample bucket UI — Make / Return buttons in Stock Setup, Server Actions wrapping the two RPCs, integration test against a live Supabase dev DB.
 - **Wave 39c**: bill-correction Send Later queue rebuild + warehouse-aware allowance check (port of meowmeow Batch EE).
-- **Wave 40c**: cashier-side repeat-customer lookup (lookup by phone, attach to current sale, surface "returning customer" badge with pet preview). Once 40b + 40c land in production, the in-cashier `PetCardsBlock` from Wave 35 becomes redundant and gets refactored out.
-- **Wave 40d**: real Supabase wiring for the Customer Portal — Server Actions calling `create_registration_token` / `claim_registration_token` RPCs; admin-client server-side token validation in `/register/[token]/page.tsx`. Blocks on Wave 40a merge + Supabase project provisioning.
+- **Wave 40d**: real Supabase wiring for the Customer Portal — Server Actions calling `create_registration_token` / `claim_registration_token` RPCs; admin-client server-side token validation in `/register/[token]/page.tsx`. Blocks on Supabase project provisioning.
+
+Note: once Wave 40d + 40c land in production-against-real-Supabase, the in-cashier `PetCardsBlock` from Wave 35 becomes redundant and gets refactored out.
