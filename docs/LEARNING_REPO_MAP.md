@@ -39,6 +39,10 @@ pos-for-sell/
 | LEARNING.md | The 5-level curriculum | While learning |
 | LEARNING_GLOSSARY.md | Term lookup | When a word is unfamiliar |
 | LEARNING_REPO_MAP.md | This file | When lost in folders |
+| LEARNING_FLOWS.md | Sequence diagrams for the main user journeys (apply, sale, portal claim, returning-customer, admin) | After Level 3 |
+| LEARNING_ERRORS.md | What error messages mean and how to read them | When something breaks |
+| LEARNING_AI_WORKFLOW.md | How to brief, review, and verify AI-generated work on this stack | When working with AI agents |
+| LEARNING_TYPESCRIPT.md | 10-minute cheat sheet for reading TypeScript without learning to write it | When you hit unfamiliar `: string \| null` syntax |
 | ARCHITECTURE.md | Technical architecture overview | When designing new features |
 | BATCH_PLAN.md | Original 100-batch plan | For historical context |
 | BATCH_PLAN_VOL2.md | Continuation past DD-100 | For Wave-numbered work |
@@ -168,9 +172,12 @@ src/app/
 │   ├── stock-count/                      ← /app/stock-count (Wave 33)
 │   └── settings/                         ← /app/settings
 │
-└── qr-menu/                              ← /qr-menu (customer-facing menu via QR)
-    ├── page.tsx
-    └── CustomerView.tsx
+├── qr-menu/                              ← /qr-menu (customer-facing menu via QR)
+│   ├── page.tsx
+│   └── CustomerView.tsx
+│
+└── learn/                                ← /learn (founder learning landing — visual TOC for LEARNING.md)
+    └── page.tsx
 ```
 
 **Patterns to recognize:**
