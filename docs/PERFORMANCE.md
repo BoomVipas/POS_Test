@@ -28,7 +28,7 @@ Booth POS runs on tablets over 4G. A slow tap-to-add or slow checkout costs sale
 
 - **N+1 queries**. The dashboard tiles each query separately; in DD-85+ wire them through a single `dashboard_metrics(workspace_id, day)` RPC that returns one JSON blob.
 - **Missing indexes**. `event_inventory(event_id, product_id)` is unique; `orders(workspace_id, event_id, created_at desc)` indexed in `schema.sql`. Add more as queries grow.
-- **Image sizes**. Product images are compressed client-side (DD-46) to <250KB WebP before upload. Don't skip this.
+- **Image sizes**. Product images are compressed client-side (DD-46, `src/lib/image/compress.ts`) at quality 0.8, max 1024×1024, WebP. The compressed blob is currently stored as a **base64 data URL in `products.image_path`** — no Supabase Storage upload step has shipped yet. When Storage upload lands, keep the compress step before upload. Today the practical concern is row size: a 250KB+ data URL bloats every product list query, so don't skip the compress pass even though there's no upload to it.
 - **Bundle bloat**. Avoid pulling whole UI libraries. Prefer composing primitives we own (`src/components/ui/*`).
 - **Date parsing in tight loops**. `new Date(s)` is cheap; `Intl.DateTimeFormat` is not. Cache formatters at module scope (`new Intl.DateTimeFormat(...)` once, reuse).
 - **JSON parsing on payment_records**. Pulled together with orders; not separately serialized.
