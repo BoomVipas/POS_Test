@@ -133,7 +133,6 @@ export function RegistrationLinkBlock({ orderId }: { orderId: string }) {
           <div
             aria-hidden
             className="grid h-[220px] w-[220px] place-items-center rounded-xl bg-[#fdf7ec] p-2"
-            // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: qrSvg }}
           />
         )}
