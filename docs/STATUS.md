@@ -4,8 +4,8 @@ Rolling snapshot. The "What's live" section below is the original 2026-05-04 bas
 
 ## What's live
 
-- **Build**: 18 routes, `npm run build` clean. Static where appropriate, dynamic for auth-gated layouts.
-- **Tests**: 65 unit tests pass on the pure-logic libs (`npm test`).
+- **Build**: 29 routes (`page.tsx` files in `src/app/`). Static where appropriate, dynamic for auth-gated layouts.
+- **Tests**: 304 unit tests across 34 files all pass — verified 2026-05-18 (`npm test`, 1.7s). Pure-logic libs only; no Supabase, no browser.
 - **No external creds yet** — every Supabase / Resend touch degrades to mock data with a "Demo mode" badge.
 
 ## Routes
@@ -73,8 +73,15 @@ None applied to a real DB yet.
 
 `pos-for-sell/tests/lib/`:
 
-- 9 test files, 65 assertions
-- Coverage: PromptPay payload+CRC, slug, invite-code, order-number, cart calc, SKU, phone, CSV, date
+- 34 test files, 304 assertions — all pass as of 2026-05-18 (`npm test`, 1.7s).
+- Coverage by area:
+  - **Pure utilities**: csv, date, invite-code, order-number, phone, slug, sku.
+  - **POS logic**: cart calc, split payments, upsell.
+  - **Payment**: PromptPay (EMVCo payload + CRC16).
+  - **Dashboard**: metrics, date range, source split.
+  - **Customer**: customer-portal (data layer), customer-tokens (16-char token logic), customer-notes, returning-customer (phone lookup).
+  - **Sample bucket** (Wave 39a): type guards + demo conversion.
+  - **Demo stores** (localStorage stand-ins for everything Supabase will own): activity feed, close-day, customer lifecycle, customers, forecast, loyalty, margin, pets, pre-orders, QR claims, refunds, sales, settings, stock-count.
 
 ## Documentation
 
