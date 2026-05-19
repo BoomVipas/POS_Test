@@ -14,31 +14,32 @@ Source of truth: `database/schema.sql`. RLS in `database/rls-policies.sql`. Seed
 
 ### Catalog
 
-6. **products** — product cards. Belongs to a workspace. Image stored in Supabase Storage; row holds `image_path`.
-7. **categories** — optional. Workspace-scoped. Initially we may inline category as a string column on products.
+6. **products** — product cards. Belongs to a workspace. Image stored in Supabase Storage; row holds `image_path`. Category is inlined as a `text` column (`category not null default 'uncategorized'`) — no separate `categories` table.
 
 ### Selling
 
-8. **events** — one booth/fair. Workspace-scoped. Has start_date, end_date, status.
-9. **event_inventory** — per-product stock at an event. Has starting_qty, current_qty, reserved_qty (for send-later), sold_qty, **sample_qty** (event-long display bucket; Wave 39a), adjusted_qty. Sample units are physically on display at the booth: they reduce sellable booth stock (`current_qty`) but never return to warehouse on their own. Move units between booth and sample with the `convert_event_to_sample` and `convert_sample_to_event` RPCs.
-10. **orders** — sale header. Has total, payment_method, payment_status, customer info, order_type (take_now / send_later / mixed).
-11. **order_items** — one row per SKU sold. Has fulfillment_type per line.
-12. **payment_records** — payment events for an order (multiple payments allowed, e.g. partial cash + transfer).
-13. **send_later_orders** — fulfillment data when one or more items are send_later.
+7. **events** — one booth/fair. Workspace-scoped. Has start_date, end_date, status.
+8. **event_inventory** — per-product stock at an event. Has starting_qty, current_qty, reserved_qty (for send-later), sold_qty, **sample_qty** (event-long display bucket; Wave 39a), adjusted_qty. Sample units are physically on display at the booth: they reduce sellable booth stock (`current_qty`) but never return to warehouse on their own. Move units between booth and sample with the `convert_event_to_sample` and `convert_sample_to_event` RPCs.
+9. **orders** — sale header. Has total, payment_method, payment_status, customer info, order_type (take_now / send_later / mixed).
+10. **order_items** — one row per SKU sold. Has fulfillment_type per line.
+11. **payment_records** — payment events for an order (multiple payments allowed, e.g. partial cash + transfer).
+12. **send_later_orders** — fulfillment data when one or more items are send_later.
 
 ### Trust + audit
 
-14. **audit_logs** — append-only. Action + table + before/after JSON snapshots.
+13. **audit_logs** — append-only. Action + table + before/after JSON snapshots.
 
 ### Customer Portal (Wave 40a — post-purchase, customer-facing)
 
 The pet/customer profile system is **never** part of the cashier checkout flow. It is captured after the sale via a QR / link on the receipt that opens a customer-facing registration page. See [VISION.md](../../VISION.md) and [PROJECT_VISION.md](PROJECT_VISION.md) for the strategic rationale.
 
-15. **customers** — workspace-scoped customer profile. Created via the portal claim flow or by an explicit cashier-side tag. `registered_via` records origin (portal / cashier / admin / import).
-16. **customer_contacts** — multi-channel contact rows per customer (phone / email / line / other). Unique on `(workspace_id, channel, value)` so repeat lookups can match without duplicates.
-17. **pets** — pet profiles per customer (vertical module, optional even within the portal). Holds species, breed, weight, birthday/adoption day, allergies, preferences.
-18. **customer_order_links** — many-to-many bridge between customers and orders. Populated on portal claim and on cashier-side returning-customer attach.
-19. **customer_registration_tokens** — one-shot tokens (16-char base32-style). Created when a sale is completed; consumed once when the customer claims via the portal. 90-day default expiry.
+14. **customers** — workspace-scoped customer profile. Created via the portal claim flow or by an explicit cashier-side tag. `registered_via` records origin (portal / cashier / admin / import).
+15. **customer_contacts** — multi-channel contact rows per customer (phone / email / line / other). Unique on `(workspace_id, channel, value)` so repeat lookups can match without duplicates.
+16. **pets** — pet profiles per customer (vertical module, optional even within the portal). Holds species, breed, weight, birthday/adoption day, allergies, preferences.
+17. **customer_order_links** — many-to-many bridge between customers and orders. Populated on portal claim and on cashier-side returning-customer attach.
+18. **customer_registration_tokens** — one-shot tokens (16-char base32-style). Created when a sale is completed; consumed once when the customer claims via the portal. 90-day default expiry.
+
+**Total: 18 tables** (5 tenant/identity + 1 catalog + 6 selling + 1 audit + 5 customer portal).
 
 ## Money
 
