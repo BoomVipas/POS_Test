@@ -57,6 +57,8 @@ System side: admin gets an email "New application from <brand>".
 
 ## Client booth day
 
+> **Note (flagged 2026-05-18):** This section and "Client end of event" below describe an `/app/events/*` route hierarchy that does **not** exist in the current codebase. The actual `/app` routes today are listed in [STATUS.md § Routes](STATUS.md) — relevant ones include `/app/close-day` (end-of-day reconciliation, Wave 25), `/app/stock-count` (count session, Wave 33), `/app/inventory/samples` (sample bucket, Wave 39b), `/app/setup/products` (catalog), and `/app/pos` (the cashier screen). There is no `/app/events/new`, `/app/events/<id>/start`, or `/app/events/<id>/close` route. The flow below predates Wave 33 / Wave 40 and needs a refresh from the founder before rewriting — flagging rather than guessing.
+
 ```
 1. /app                              → home: "Open Event Day" or "Continue Day N"
 2. /app/events/new                   → create event (name, venue, dates)
