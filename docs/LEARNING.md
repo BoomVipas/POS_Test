@@ -4,6 +4,19 @@
 
 > **Landing page in the app:** when the dev server is running, open `http://localhost:3000/learn` for a visual table of contents with the current "today" callout, the 5 levels as tiles, and links to every reference doc.
 
+## Demo navigation map
+
+MochiPOS has four audiences and four surfaces. When you run `npm run dev`, each URL below opens the section for that audience. Demo data is mocked — no real database needed.
+
+| For | Surface | Key URLs |
+|---|---|---|
+| Future sellers | **Public marketing** — where new pet brands sign up. The first screen you see when you open the dev server (easy to mistake for the whole app). | `/`, `/apply` |
+| Sellers at the booth | **Cashier app** — the heart of the product. Rings up sales, manages inventory, closes the day. | **`/app/pos` (start here)**, `/app/dashboard`, `/app/customers`, `/app/send-later`, `/app/stock-count`, `/app/close-day`, `/app/setup/products` |
+| You (the founder) | **Platform admin** — approve seller applications, manage workspaces, watch the audit log. | `/admin/applications`, `/admin/workspaces`, `/admin/invite-codes`, `/admin/audit-log` |
+| Pet owners | **Customer-facing** — what the customer sees: scan QR at the booth to browse the menu (`/qr-menu`), or after a purchase claim a pet profile via the token link on their receipt (`/register/[token]`). | `/qr-menu` |
+
+> **First time exploring?** Start `npm run dev`, then open `http://localhost:3000/app/pos` — that's the actual POS the cashier uses. The marketing landing at `/` is the seller-onboarding flow, not the app itself.
+
 ## How this curriculum works
 
 - **One level at a time.** No skipping ahead. Each level builds on the previous.
