@@ -46,10 +46,21 @@ Treat meowmeow as a source of validated patterns, **not** a target for edits —
 
 ## Batch flow
 
-- **Letters**: `DD-01`, `DD-02`, ... up to `DD-100`. After 100 we'll reset or extend the plan.
-- **Branch name**: `pos/DD-XX-short-slug` (the `pos/` prefix keeps the SaaS branches visually distinct from `batch/...` branches that target meowmeow_pos_event.html).
-- **Commit prefix**: `[DD-XX] one-line summary`.
-- **PR title**: `pos: DD-XX <one-line summary>`.
+Two naming conventions are in use — pick based on which kind of work you're starting:
+
+- **DD-XX** (DD-01 through DD-100, plus DD-101..210 in `BATCH_PLAN_VOL2.md`) — the original upfront-planned batches from the 100-batch plan.
+  - Branch: `pos/DD-XX-short-slug` (the `pos/` prefix keeps SaaS branches visually distinct from `batch/...` branches that target `meowmeow_pos_event.html`).
+  - Commit prefix: `[DD-XX] one-line summary`.
+  - PR title: `pos: DD-XX <one-line summary>`.
+- **Wave NN** (post-DD-100 organic work) — feature-cohesive multi-batch work driven by competitor research, meowmeow field findings, and the strategic correction in `../VISION.md`. Used for everything from Wave 12 onwards.
+  - Branch: `pos/wave-NN-short-slug` (or `pos/wave-NNa-...` when a wave is split).
+  - Commit prefix: `[Wave NN] one-line summary` (or `[Wave NNa] ...`).
+  - PR title: includes Wave NN.
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) "DD-XX vs Wave NN naming" for the convention details and [`docs/BATCH_PLAN.md`](docs/BATCH_PLAN.md) "Post-DD-100 Waves" section for the full shipped list.
+
+Common rules for both conventions:
+
 - **One implementation batch at a time.** Finish or hand off before claiming another.
 - **Update [TASKS.md](TASKS.md) before editing.** Set `Owner: claude`, `Status: in-progress`, `Branch: ...`, `Claimed: <YYYY-MM-DD HH:MM>`.
 
