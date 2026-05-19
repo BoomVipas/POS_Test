@@ -75,6 +75,30 @@ insert into public.admin_users (user_id) values ('<your-user-uuid>');
 
 The admin pages at `/admin/*` will then become accessible.
 
+## Try it locally
+
+Once `npm run dev` is running, here's where to actually find the app. The landing page is just the marketing/apply form — most of the product lives behind `/app/*` and `/admin/*`.
+
+| URL | What it is | Needs |
+|---|---|---|
+| `/` | Marketing landing + Apply CTA. Public. | nothing |
+| `/apply` | Pilot application form (DD-14). Public. | nothing |
+| `/apply/success` | Post-submit confirmation. | nothing |
+| `/learn` | Founder learning curriculum landing (recently added). Public. | nothing |
+| `/app` | Tenant home — 4 tiles for POS / Products / Dashboard / Send-later. | demo mode OK |
+| `/app/pos` | **The actual POS demo** — product grid, sticky cart, mock checkout. | demo mode OK |
+| `/app/dashboard` | Today + multi-period dashboard tiles with mock data. | demo mode OK |
+| `/app/setup/products` | Product setup (add/edit modal with image compress). | demo mode OK |
+| `/app/inventory/samples` | Sample bucket convert UI (Wave 39b). | demo mode OK |
+| `/app/stock-count` | Physical-count reconciliation flow. | demo mode OK |
+| `/register/[token]` | Customer Portal claim page (Wave 40b). | demo mode OK |
+| `/admin` | Platform-admin home. | Supabase + admin_users row |
+| `/admin/applications` | Applications queue (approve/reject). | Supabase + admin |
+
+**Demo mode** — if `NEXT_PUBLIC_SUPABASE_URL` is not set, the `/app/*` and `/admin/*` pages render against mock data instead of failing. A yellow "Demo mode" banner shows in the app shell. This is the fastest way to explore the UI without setting up Supabase first.
+
+**Admin mode** — `/admin/*` redirects elsewhere unless your auth user has a row in `public.admin_users`. See step 6 above.
+
 ## Project structure
 
 ```
