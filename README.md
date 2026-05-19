@@ -6,6 +6,14 @@ This project lives inside the `meowmeow_sandbox` repo as a sibling to `meowmeow_
 
 ## Quick links
 
+**Start here (founder / first-time reader):**
+
+- [`docs/LEARNING.md`](./docs/LEARNING.md) — 5-level curriculum for reading this repo without being a full-time engineer. Open `http://localhost:3000/learn` for the visual version while the dev server is running.
+- [`docs/ROADMAP.md`](./docs/ROADMAP.md) — where MochiPOS is going (beachhead, modules, pricing, 6-month plan).
+- [`docs/STATUS.md`](./docs/STATUS.md) — current state of routes, libraries, waves landed.
+
+**Building / executing:**
+
 - [`CLAUDE.md`](./CLAUDE.md) — execution protocol and hard rules.
 - [`TASKS.md`](./TASKS.md) — live status board.
 - [`docs/PROJECT_VISION.md`](./docs/PROJECT_VISION.md) — what we're building, for whom.
