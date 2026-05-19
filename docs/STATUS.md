@@ -10,25 +10,45 @@ Rolling snapshot. The "What's live" section below is the original 2026-05-04 bas
 
 ## Routes
 
+29 routes total (verified 2026-05-18 by `find src/app -name page.tsx | wc -l`). Status legend: **live** = real page; **wired** = real impl with optional Supabase; **demo** = full UI on localStorage; **mock** = real UI on mock data; **placeholder** = stub page saying "not yet built"; **gated** = checks for auth/config.
+
 | Path | Status | Notes |
 |---|---|---|
+| **Public** | | |
 | `/` | live | marketing landing |
-| `/apply` | wired | server action ready; writes to applications when env is present |
+| `/apply` | wired | form + server action; writes to `applications` when env present |
 | `/apply/success` | live | post-submit screen |
-| `/apply/status` | placeholder | DD-19 wires it |
-| `/login` | placeholder | DD-39 wires Supabase Auth |
-| `/register` | placeholder | DD-33..38 wires invite redemption |
+| `/apply/status` | live | i18n status copy; real DB lookup deferred to a future wave |
+| **Seller onboarding** | | |
+| `/login` | **placeholder** | "DD-39 will wire this page to Supabase Auth" |
+| `/register` | **placeholder** | "DD-33..38 will wire the invite-redemption flow" |
+| **Founder learning** | | |
+| `/learn` | live | curriculum landing (PR #15) |
+| **Admin (gated)** | | |
 | `/admin` | gated | three failure modes: not-configured, not-authed, not-admin |
 | `/admin/applications` | wired | live query + graceful fallback |
 | `/admin/invite-codes` | wired + mock | mock fallback when no creds |
 | `/admin/workspaces` | wired + mock | same |
 | `/admin/audit-log` | wired + mock | same |
 | `/admin/pilot-status` | mock-only | DD-100 makes it live |
-| `/app` | gated + demo | demo banner when no creds |
-| `/app/pos` | demo | mock catalog of 8 products, full cart UX |
-| `/app/setup/products` | placeholder | DD-43..54 wires product setup |
-| `/app/dashboard` | mock | full visual dashboard with 6 tiles |
-| `/app/send-later` | placeholder | DD-75..84 wires fulfilment |
+| **Cashier app (gated)** | | |
+| `/app` | gated + demo | demo banner when no creds; seller home with tiles |
+| `/app/pos` | demo | full POS, mock catalog, full cart UX, search, payment picker |
+| `/app/pos/success/[orderId]` | demo | success screen + PromptPay QR + Customer Portal token (Wave 8 + 40b) |
+| `/app/dashboard` | demo | multi-period dashboard, 10+ tiles (Wave 29/34) |
+| `/app/customers` | demo | auto-derived from past sales with lifecycle stage (Wave 38) |
+| `/app/correction` | demo | bill-correction flow (`correct_order` analog) |
+| `/app/audit-log` | demo | activity history (Wave 18) |
+| `/app/close-day` | demo | cash reconciliation (Wave 25) |
+| `/app/send-later` | demo | pending fulfillments, status flow (Wave 16/17) |
+| `/app/stock-count` | demo | walk-the-warehouse recount with variance (Wave 33) |
+| `/app/pre-orders` | demo | sold-out pre-orders (Wave 31) |
+| `/app/inventory/samples` | demo | sample bucket Make / Return (Wave 39b) |
+| `/app/settings` | demo | workspace settings |
+| `/app/setup/products` | demo | catalog CRUD with image upload (Wave 13/14) |
+| **Customer-facing** | | |
+| `/qr-menu` | demo | customer-facing menu via QR (Wave 27) |
+| `/register/[token]` | demo | post-purchase pet-profile claim form (Wave 40b) |
 
 ## Libraries
 
