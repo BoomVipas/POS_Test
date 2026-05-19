@@ -39,6 +39,8 @@
 
 ## C
 
+**Cart store** — The React context + reducer holding the active sale: line items, qty, fulfillment type, payment method, discount, customer fields. Lives only while the cashier is mid-sale; clears on checkout or after idle timeout. *Anchor:* `src/lib/pos/cart-store.tsx`.
+
 **Client component** — A React component that runs in the browser. Has `"use client"` on line 1. Can use `useState`, `onClick`, animations. *Anchor:* `src/app/apply/Form.tsx`.
 
 **Commit (Git)** — One saved snapshot on a branch. *Command:* `git commit -m "..."`.
@@ -48,6 +50,8 @@
 **Cookie** — A small piece of data the browser stores and sends to the server with every request. Used for sessions/auth. *Anchor:* `src/lib/supabase/server.ts` reads/sets cookies for Supabase Auth.
 
 **CRUD** — Create, Read, Update, Delete. The four basic operations on database rows.
+
+**Customer Portal** — The customer-facing layer of MochiPOS where pet owners claim a profile after a sale (multi-channel contacts + optional pet info). Separate from the cashier app on purpose: checkout stays fast, profile capture is post-purchase. *Anchor:* `/register/[token]` route + `customers` / `customer_contacts` / `pets` / `customer_order_links` / `customer_registration_tokens` tables (Wave 40a/b). *Architecture rule:* "checkout first, profile later."
 
 ---
 
@@ -68,6 +72,8 @@
 ## E
 
 **Edge function** — A small backend function deployed to many regions for low latency. MochiPOS doesn't use these yet.
+
+**EMVCo** — The standards body for global payment QR codes. PromptPay QR codes follow the EMVCo Merchant-Presented Mode spec — which is why MochiPOS hand-builds the payload (TLV-encoded fields) plus a CRC16 checksum instead of using a generic QR library. *Anchor:* `src/lib/promptpay/`.
 
 **Environment variable** — A piece of config (URL, secret) that's different per environment. Read via `process.env.NAME`. *Anchor:* `.env.local` on your laptop, Vercel project settings in production.
 
@@ -185,6 +191,8 @@
 
 **Production** — The live version of the app users see. *Anchor:* deploys to Vercel from `main` branch.
 
+**PromptPay** — Thailand's bank-to-bank instant payment system, mostly used via QR code at point of sale. The customer scans the cashier's QR with any Thai banking app and the money lands in the seller's account in seconds. MochiPOS generates the QR client-side from the EMVCo spec + CRC16. *Anchor:* `src/lib/promptpay/`; UI in `src/app/app/pos/PromptPayDisplay.tsx`.
+
 **Pull request (PR)** — A request to merge a branch into `main`, with a description and review.
 
 ---
@@ -200,6 +208,8 @@
 **React** — The UI library Next.js uses. You write components; React renders HTML. *Version:* 19.
 
 **Rebase** — Replaying your branch's commits on top of the latest `main`. Used when `main` has moved on while your branch was open. *Command:* `git rebase origin/main`.
+
+**Refund (vs void vs correction)** — Three different ways MochiPOS "undoes" a sale, all distinct: **void** = cancel the entire order (full or partial, Wave 26); **correction** = edit an existing order — different items, different total (`correct_order` RPC); **refund** = give money back without otherwise changing the order record. Each is a separate RPC and writes its own audit log row.
 
 **Resend** — The email-sending service MochiPOS uses for application notifications and invites. *Anchor:* `src/lib/email/resend.ts`.
 
@@ -229,9 +239,13 @@
 
 **Slug** — A URL-friendly version of a name (`"Cat Toys Co" → "cat-toys-co"`). *Anchor:* `src/lib/slug/index.ts`; `workspaces.slug`.
 
+**Split payment** — One order paid by more than one method on the same bill (e.g., 500 THB cash + 300 THB PromptPay + 200 THB card). MochiPOS supports up to three tenders per order, each recorded as its own `payment_records` row. *Anchor:* `src/lib/pos/splits.ts`; UI in `SplitPaymentBlock.tsx` (Wave 22).
+
 **SQL** — The language used to talk to relational databases. SELECT, INSERT, UPDATE, DELETE.
 
 **SSR (server-side rendering)** — Generating the page HTML on the server before sending it to the browser. The default for Next.js App Router server components.
+
+**Stock count session** — A walk-the-warehouse inventory recount that locks current quantities, accepts per-SKU physical counts with a per-line variance reason, and commits as a single adjustment with audit. Designed to fix the drift that builds up over multi-day events. *Anchor:* `/app/stock-count` route; `StockCountManager.tsx` (Wave 33).
 
 **Supabase** — The backend-as-a-service MochiPOS uses for database, auth, file storage. Built on Postgres. *Anchor:* `src/lib/supabase/`.
 
