@@ -14,11 +14,11 @@ npm run dev                     # http://localhost:3000
 | Command | What it does |
 |---|---|
 | `npm run dev` | Next.js dev server with Turbopack |
-| `npm run build` | Production build (also runs lint + type-check) |
-| `npm run lint` | ESLint (Next config) |
+| `npm run build` | Production build. Runs the TS type-check but **does NOT run ESLint** (Next 16 dropped that integration). Run `npm run lint` separately. |
+| `npm run lint` | ESLint (Next config) — must be run explicitly; not part of `npm run build`. |
 | `npm test` | Vitest unit tests once |
 | `npm run test:watch` | Vitest in watch mode |
-| `npm run e2e` | Playwright tests against `npm run dev` |
+| `npm run e2e` | Playwright tests. Auto-starts the dev server on :3000 (or reuses an existing one when not in CI). Set `E2E_NO_AUTOSTART=1` to run against a server you started yourself. |
 | `npm run e2e:install` | One-time: download chromium browser binary |
 
 ## Branch + commit conventions
