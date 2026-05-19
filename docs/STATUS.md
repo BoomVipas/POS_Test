@@ -1,6 +1,6 @@
 # Status — pos-for-sell
 
-Snapshot at the end of the credential-free build sprint (2026-05-04).
+Rolling snapshot. The "What's live" section below is the original 2026-05-04 baseline (end of the credential-free build sprint); the "Latest waves" section near the bottom tracks newer work appended per wave. Last meaningful update: 2026-05-07 (Wave 40c).
 
 ## What's live
 
