@@ -1,11 +1,12 @@
 import { defineConfig, devices } from "@playwright/test";
 
 // Smoke / regression tests for credential-free UI surfaces.
-// Run with `npm run e2e` (assumes `npm run dev` is up on :3000) or
-// `npm run e2e:ci` (auto-starts the dev server).
+// Run with `npm run e2e` — the webServer config below auto-starts the
+// dev server on :3000 (or reuses an existing one when not in CI). To
+// run against a server you started yourself, set E2E_NO_AUTOSTART=1.
 //
 // First-time setup on a fresh machine:
-//   npx playwright install chromium
+//   npm run e2e:install   (installs the chromium browser binary)
 
 export default defineConfig({
   testDir: "./tests/e2e",
