@@ -16,12 +16,12 @@ The booth POS will be used in less-than-ideal conditions: low light, gloved hand
 - **Light mode only**: dark mode is intentionally not implemented; booth lighting unreliable.
 - **Keyboard escape**: every modal closeable via Escape.
 - **Tabular numerics** on prices/totals so 1,234 lines up with 12.
+- **Language attribute on `<html>`**: `src/app/layout.tsx` reads the active language via `getLang()` and sets `<html lang={lang}>` so screen readers announce content in the right language (shipped with Wave 19 i18n).
 
 ## Pending (post-pilot)
 
 - Keyboard navigation for product grid (arrow keys to move card focus).
 - Screen-reader pass on POS and dashboard.
-- Lang attribute toggling on `<html>` when TH/EN switch lands (DD-184).
 - High-contrast theme variant.
 - Captioning for any future audio/video.
 
