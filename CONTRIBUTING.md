@@ -57,7 +57,8 @@ pos-for-sell/
 
 ## Pull request checklist
 
-- [ ] `npm run build` passes.
+- [ ] `npm run build` passes (includes TypeScript type-check).
+- [ ] `npm run lint` passes — `build` does **not** run ESLint in Next 16, so this must be checked separately.
 - [ ] `npm test` passes.
 - [ ] `npm run e2e` passes (or document why it can't run yet).
 - [ ] No env vars hard-coded; new vars added to `docs/ENV_VARS.md` + `.env.example`.
