@@ -62,13 +62,13 @@ type Product = {
   workspace_id: string;
   name: string;
   price_satang: number;
-  active: boolean;
+  is_active: boolean;
   image_path: string | null;
 }
 ```
 *"A product object must have these fields with these types."*
 
-`string | null` means "either a string or null" — common for nullable database columns.
+`string | null` means "either a string or null" — common for nullable database columns. (The real `Product` in `src/lib/pos/types.ts` has a few more fields — `sku`, `category`, `current_qty`, optional `cost_satang`, `reorder_point`, `upsellSkus`, `pinned`. This is the simplified core.)
 
 ### 7. Array type
 ```ts
@@ -143,7 +143,7 @@ The compiler narrows the type based on the `ok` field. Beautiful and safe.
 
 ### Pattern B — A React component's props
 
-From a typical client component:
+A simplified shape (not copy-pasted from any one file — the real `ProductFormModal` props are more complex; see `src/app/app/setup/products/ProductFormModal.tsx`):
 
 ```ts
 type Props = {
@@ -152,7 +152,7 @@ type Props = {
   initialValues?: Partial<ProductFormValues>;
 };
 
-export function ProductFormModal({ productId, onClose, initialValues }: Props) { ... }
+export function ExampleModal({ productId, onClose, initialValues }: Props) { ... }
 ```
 
 Decoded:
@@ -163,7 +163,7 @@ Decoded:
 When you use this component:
 
 ```tsx
-<ProductFormModal productId="abc" onClose={() => setOpen(false)} />
+<ExampleModal productId="abc" onClose={() => setOpen(false)} />
 ```
 
 Missing `productId`? Compiler error. Wrong type for `onClose`? Compiler error.
