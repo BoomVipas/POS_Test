@@ -22,6 +22,16 @@ When working anywhere inside `pos-for-sell/`, **this file overrides the root `CL
 - Vercel (hosting)
 - npm (package manager)
 
+## Sister project — MeowMeow Event POS
+
+Several SaaS features port field-proven patterns from the **MeowMeow Event POS** (single-file app at the repo root). When implementing a wave that names a meowmeow analog — sample bucket (Wave 39a/b ↔ meowmeow Batch DD), Send Later (Wave 16/17), free-gift promo, bill correction, void audit — consult the source docs to understand *why* the pattern works under real booth conditions:
+
+- [`../readme.md`](../readme.md) — meowmeow product direction, behavior rules, current shape (look for the relevant section: Send Later, Inventory, Correction Center, Free Gift Rules).
+- [`../TASKS.md`](../TASKS.md) — meowmeow batch history (the Done section names which batches shipped each pattern, e.g. Batch DD for sample bucket, Batch EE for bill-correction allowance).
+- [`../meowmeow_pos_event.html`](../meowmeow_pos_event.html) — the source app itself; grep it for the feature name to find the live implementation.
+
+Treat meowmeow as a source of validated patterns, **not** a target for edits — its protocol is at [`../CLAUDE.md`](../CLAUDE.md) and its batch naming (`batch/<letter>`) is distinct from this project's `pos/DD-XX` / `pos/wave-NN`. Do not edit meowmeow files from a SaaS batch (and vice versa).
+
 ## Hard rules
 
 1. **No localStorage for business data.** All orders, products, payments, inventory go to Supabase. localStorage is only allowed for ephemeral UI state (selected day, expanded panels, draft cart that has not been confirmed).
