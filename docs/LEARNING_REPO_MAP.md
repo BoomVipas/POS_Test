@@ -12,7 +12,7 @@ pos-for-sell/
 ├── docs/                     ← all documentation lives here
 ├── database/                 ← SQL: schema, RLS, RPCs, migrations, seed
 ├── src/                      ← application code (TS/TSX)
-├── tests/                    ← vitest unit tests
+├── tests/                    ← vitest unit tests (tests/lib/) + Playwright e2e (tests/e2e/)
 ├── public/                   ← static files served as-is (favicon, images)
 ├── .env.example              ← template for env vars (real secrets in .env.local)
 ├── package.json              ← dependencies + scripts (npm run dev, etc.)
@@ -252,20 +252,28 @@ Runs on every request before the page renders. In MochiPOS it handles Supabase s
 
 ```
 tests/
-└── lib/                      ← unit tests for shared modules
-    ├── slug.test.ts
-    ├── pos-calc.test.ts
-    ├── customer-portal.test.ts
-    ├── customer-tokens.test.ts
-    ├── returning-customer.test.ts
-    ├── sample-bucket.test.ts
-    ├── sample-bucket-demo.test.ts
-    └── (~30 more)
+├── lib/                      ← vitest unit tests for shared modules (~34 files, 304 tests)
+│   ├── slug.test.ts
+│   ├── pos-calc.test.ts
+│   ├── customer-portal.test.ts
+│   ├── customer-tokens.test.ts
+│   ├── returning-customer.test.ts
+│   ├── sample-bucket.test.ts
+│   ├── sample-bucket-demo.test.ts
+│   └── (~30 more)
+└── e2e/                      ← Playwright smoke specs (3 files)
+    ├── landing.spec.ts       ← / renders hero + Apply CTA
+    ├── apply.spec.ts         ← /apply renders required fields + blocks empty submit
+    └── pos.spec.ts           ← /app/pos product grid + add-to-cart + payment picker
 ```
 
-**Run:** `npm test` (one-shot) or `npm run test:watch` (auto-rerun on save).
+**Run unit tests:** `npm test` (one-shot) or `npm run test:watch` (auto-rerun on save).
 
-The tests check pure logic — no Supabase, no browser. They run in 1-2 seconds and catch bugs in the modules under `src/lib/`. **Always run them after a change.**
+**Run e2e:** `npm run e2e` (Playwright auto-starts the dev server on :3000 if not running). First-time setup: `npm run e2e:install` to download chromium.
+
+The unit tests check pure logic — no Supabase, no browser. They run in 1-2 seconds and catch bugs in the modules under `src/lib/`. **Always run them after a change.**
+
+The e2e tests run real browser sessions against the dev server (in demo mode, no Supabase needed). They're slower; run them when changing UI in the routes they cover.
 
 ---
 
