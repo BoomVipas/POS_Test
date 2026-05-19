@@ -104,7 +104,7 @@ pos-for-sell/
 
 Foundation (Phase 0, batches DD-01 through DD-12) — see `TASKS.md`. Phase 1 (public application flow) is partially scaffolded; persistence batches (DD-15+) are blocked on Supabase credentials.
 
-After the original 100-batch plan, work shifted to **organic "Wave NN" feature batches** driven by competitor research, the meowmeow Pet Expo field findings, and the strategic correction in [`../VISION.md`](../VISION.md). As of 2026-05-07: 259 vitest tests pass; latest waves are 39a (sample bucket data layer, PR #4) and 40a (Customer Portal data layer, PR #5). Full wave list in [`docs/STATUS.md`](docs/STATUS.md). Wave naming convention in [`docs/BATCH_PLAN.md`](docs/BATCH_PLAN.md) "Post-DD-100 Waves" section.
+After the original 100-batch plan, work shifted to **organic "Wave NN" feature batches** driven by competitor research, the meowmeow Pet Expo field findings, and the strategic correction in [`../VISION.md`](../VISION.md). For the current snapshot — routes, libraries, test count, latest waves landed — see [`docs/STATUS.md`](docs/STATUS.md), which is the live source of truth and stays current as waves merge. Wave naming convention in [`docs/BATCH_PLAN.md`](docs/BATCH_PLAN.md) "Post-DD-100 Waves" section.
 
 ## Architecture in one paragraph
 
