@@ -6,11 +6,12 @@ When working anywhere inside `pos-for-sell/`, **this file overrides the root `CL
 
 ## Read first, every session
 
-1. [docs/PROJECT_VISION.md](docs/PROJECT_VISION.md) — what we're building, for whom, why.
-2. [docs/BATCH_PLAN.md](docs/BATCH_PLAN.md) — all ~100 planned batches in order, by phase.
-3. [TASKS.md](TASKS.md) — live status board (which batch is claimed/in-progress/done).
-4. [docs/DESIGN_TOKENS.md](docs/DESIGN_TOKENS.md) — meowmeow visual language carried over.
-5. [docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md) — table list and RLS approach.
+1. [docs/ROADMAP.md](docs/ROADMAP.md) — **canonical** strategic direction (May 2026): beachhead market, vertical-module strategy, Google Auth + invite-only pilot, three-level data philosophy, six-month plan, pricing intent. Wins over older planning docs where they overlap.
+2. [docs/PROJECT_VISION.md](docs/PROJECT_VISION.md) — pilot-mechanics overview: hard requirements, non-goals, success criteria. Read after ROADMAP for the operational layer.
+3. [docs/BATCH_PLAN.md](docs/BATCH_PLAN.md) — all ~100 planned batches in order, by phase.
+4. [TASKS.md](TASKS.md) — live status board (which batch is claimed/in-progress/done).
+5. [docs/DESIGN_TOKENS.md](docs/DESIGN_TOKENS.md) — meowmeow visual language carried over.
+6. [docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md) — table list and RLS approach.
 
 ## Stack (do not change without batch)
 
