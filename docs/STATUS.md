@@ -52,28 +52,26 @@ Rolling snapshot. The "What's live" section below is the original 2026-05-04 bas
 
 ## Libraries
 
-`src/lib/`:
+`src/lib/` (19 modules; verified 2026-05-18):
 
-- `cn.ts` — classnames helper
-- `csv/` — RFC 4180 builder
-- `database.types.ts` — Supabase types (hand-rolled; regen later)
-- `date/` — TH timezone + eventDayIndex
-- `email/` — Resend wrapper + new-application + invite templates
-- `image/compress.ts` — client-side WebP compression
-- `invite-code/` — ambiguity-safe code generator
-- `money/format.ts`
-- `order-number/` — sequence formatter + parser
-- `phone/` — Thai phone normalizer
-- `pos/` — types + cart store + calc
-- `promptpay/` — EMVCo payload + CRC16
-- `sku/` — validator + normalizer
-- `slug/` — URL slug + candidates
-- `supabase/{client,server,admin,middleware}.ts`
-- `auth/admin-check.ts` — three-mode admin gate
+- **Supabase / data**: `supabase/{client,server,admin,middleware}.ts`, `database.types.ts` (hand-rolled; regen later).
+- **Auth**: `auth/admin-check.ts` — three-mode admin gate.
+- **POS logic**: `pos/` — cart store, calc, splits, types, upsell.
+- **Money**: `money/format.ts` — formatTHB, satang ↔ baht.
+- **Payment**: `promptpay/` — EMVCo payload + CRC16.
+- **i18n**: `i18n/` — EN/TH dictionaries + server/client providers (Wave 19).
+- **Hooks**: `hooks/` — useDebouncedValue, useLocalStorageState.
+- **Email**: `email/` — Resend wrapper + templates (new-application, invite).
+- **Demo stores**: `demo/` — localStorage stand-ins for catalog, sales, customers, pets, sample bucket, close-day, etc. (30+ files; one per concept Supabase will own).
+- **Utilities**: `cn.ts` (classnames), `csv/` (RFC 4180), `date/` (TH timezone + eventDayIndex), `image/compress.ts` (WebP), `invite-code/` (ambiguity-safe generator), `order-number/` (sequence formatter), `phone/` (TH normalizer), `sku/` (validator), `slug/` (URL slug + candidates).
 
 ## Components
 
-`src/components/ui/`: Button, TextInput, NumberInput, Textarea, Select, Checkbox, Radio, Modal, Toast, Pill, States (Skeleton, EmptyState, ErrorState).
+`src/components/`:
+
+- `ui/` — Button, TextInput, NumberInput, Textarea, Select, Checkbox, Radio, Modal, Toast, Pill, States (Skeleton, EmptyState, ErrorState).
+- `LanguageSwitcher.tsx` — EN/TH toggle (Wave 19).
+- `Money.tsx` — formatted THB display.
 
 ## Database
 
@@ -111,21 +109,35 @@ None applied to a real DB yet — applying is the Supabase-provisioning unblock 
 
 ## Documentation
 
-`pos-for-sell/docs/`:
+`pos-for-sell/docs/` (25 files; verified 2026-05-18):
 
-- `PROJECT_VISION.md`
-- `BATCH_PLAN.md` (DD-01..100)
-- `BATCH_PLAN_VOL2.md` (DD-101..200, this sprint's plan)
-- `USER_FLOW.md`
-- `PILOT_RULES.md`
-- `DESIGN_TOKENS.md`
-- `DATABASE_SCHEMA.md`
-- `ARCHITECTURE.md`
-- `SECURITY.md`
-- `ACCESSIBILITY.md`
-- `ENV_VARS.md`
-- `DEPLOYMENT.md`
-- `STATUS.md` (this file)
+**Strategy / vision:**
+- `ROADMAP.md` — canonical strategic direction.
+- `PROJECT_VISION.md` — pilot target + scope.
+
+**Founder learning curriculum** (2026-05-07+):
+- `LEARNING.md` — 5-level curriculum.
+- `LEARNING_GLOSSARY.md` — term lookup.
+- `LEARNING_REPO_MAP.md` — annotated repo tour.
+- `LEARNING_FLOWS.md` — sequence diagrams for main flows.
+- `LEARNING_ERRORS.md` — how to read errors.
+- `LEARNING_AI_WORKFLOW.md` — how to work with AI agents.
+- `LEARNING_TYPESCRIPT.md` — 10-min TS reading cheat sheet.
+
+**Architecture / technical reference:**
+- `ARCHITECTURE.md` — technical overview.
+- `DATABASE_SCHEMA.md` — table list (companion to `database/schema.sql`).
+- `DESIGN_TOKENS.md` — palette + typography from meowmeow.
+- `GLOSSARY.md` — project-specific terms (distinct from `LEARNING_GLOSSARY.md`).
+- `CODE_STYLE.md` — code conventions.
+
+**Operations / planning:**
+- `BATCH_PLAN.md` (DD-01..100), `BATCH_PLAN_VOL2.md` (DD-101..200).
+- `USER_FLOW.md` — application → invite → workspace → POS flow.
+- `PILOT_RULES.md` — accept/reject criteria for pilot applicants.
+- `ENV_VARS.md`, `DEPLOYMENT.md` — environment setup + deploy.
+- `SECURITY.md`, `ACCESSIBILITY.md`, `PERFORMANCE.md`, `INCIDENT_RESPONSE.md` — operational concerns.
+- `STATUS.md` (this file).
 
 ## Blocked work
 
