@@ -25,8 +25,6 @@ export function RegistrationLinkBlock({ orderId }: { orderId: string }) {
     if (typeof window !== "undefined") setOrigin(window.location.origin);
   }, []);
 
-  if (!ready) return null;
-
   const existing = forOrder(orderId);
   // Pick the most recent unclaimed token for this order; otherwise the latest.
   const active =
@@ -36,11 +34,6 @@ export function RegistrationLinkBlock({ orderId }: { orderId: string }) {
     )[0] ??
     null;
   const registered = registeredForOrder(orderId);
-
-  function handleIssue() {
-    const row = create(orderId);
-    void renderQr(row, origin);
-  }
 
   async function renderQr(row: DemoCustomerToken, originVal: string) {
     if (!originVal) return;
@@ -59,9 +52,19 @@ export function RegistrationLinkBlock({ orderId }: { orderId: string }) {
     }
   }
 
+  function handleIssue() {
+    const row = create(orderId);
+    void renderQr(row, origin);
+  }
+
+  // Render the QR when the active token / origin changes. Stays above the
+  // early return below so this hook runs on every render (rules-of-hooks).
   useEffect(() => {
     if (active && origin) void renderQr(active, origin);
   }, [active, origin]);
+
+  // Demo store still hydrating — render nothing until it is ready.
+  if (!ready) return null;
 
   function copyLink() {
     if (!active || !origin) return;

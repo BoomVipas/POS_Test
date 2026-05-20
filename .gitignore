@@ -33,6 +33,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# local dev-server logs (e.g. .codex-dev/next-dev.*.log)
+.codex-dev/
+
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
