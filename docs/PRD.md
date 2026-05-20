@@ -48,7 +48,7 @@
 | F07 | Event stock allocation (warehouse → event / sample / gift buckets) | Wave 39a data layer done |
 | F08 | POS fast checkout | Demo full UX, RPC pending |
 | F09 | Send Later fulfillment | Demo persisted |
-| F10 | Bill void / line correction / partial refund | Demo + RPCs SQL ready |
+| F10 | Bill void / metadata correction / partial refund | Demo + RPCs SQL ready |
 | F11 | Receipt + PromptPay QR | Live (mock data) |
 | F12 | Customer Portal QR registration | Wave 40b demo done, Wave 40d pending |
 | F13 | Customer + pet profile (post-purchase) | Wave 40a data layer done |
@@ -257,13 +257,13 @@ Repeat per SKU, edit/delete inline, search by SKU/name
 Fill: event name, venue, start_date, end_date, event_type (expo / market / fair),
       booth size, expected foot traffic
 ↓
-Submit → insert into `events`, status = upcoming
+Submit → insert into `events`, status = planned
 ↓
 On the event day → /app/events/<id>/start
 ↓
 Allocate stock (see F07)
 ↓
-Status → in-progress, opens /app/pos
+Status → running, opens /app/pos
 ↓
 At close → /app/events/<id>/close (day-N close)
 ↓
@@ -273,40 +273,38 @@ After last day → /app/events/<id>/close-event (final close, archive)
 **Expected output.**
 - `events` row with workspace_id and dates.
 - Event drives the URL space: `/app/events/<id>/{pos,stock,dashboard}`.
-- Status lifecycle: upcoming → in-progress → closed_day_N → archived.
+- Status lifecycle: planned → running → closed → archived (`events.status` enum). Per-day close is tracked separately, not as distinct statuses.
 
 ---
 
-## F07 — Event stock allocation (warehouse → event / sample / gift buckets)
+## F07 — Event stock allocation (warehouse → event; sample bucket)
 
-**Description.** Move stock from warehouse into the event. Within an event there are sub-buckets: sellable, sample, free-gift. Every move writes an `inventory_movements` row.
+**Description.** Allocate stock into an event as counters on one `event_inventory` row per (event, product): `starting_qty`, `current_qty` (sellable), `reserved_qty`, `sold_qty`, `sample_qty`, `adjusted_qty`. Conversions and sales move quantities between these counters; each sale / conversion / correction is captured in `audit_logs`. v0.1 has **no** separate `warehouse_stock` table and **no** per-move `inventory_movements` ledger — allocation sets the counters directly (see Open Questions #13–15).
 
-**Purpose.** The biggest cause of post-event drift is sample / free-gift / Send Later movement that isn't tracked. Making each bucket a first-class quantity (not a flag on the sellable count) is the fix — it's the meowmeow field finding ported into SaaS.
+**Purpose.** The biggest cause of post-event drift is sample / free-gift / Send Later movement that isn't tracked. Making each bucket a first-class **quantity** (not a flag on the sellable count) is the fix — it's the meowmeow field finding ported into SaaS. v0.1 ships sample as its own counter (`sample_qty`); free-gift is not yet its own bucket (Open Q#14).
 
 **Consumer.** P1 (owner) on setup. P2 (cashier or admin staff) during the event when converting buckets.
 
 **Flow.**
 ```
-/app/events/<id>/stock → see warehouse_stock and event_inventory side by side
+/app/events/<id>/stock → see each SKU's event_inventory counters
 ↓
 For each SKU → "Allocate" → enter qty
 ↓
-Server Action → decrement warehouse_stock, insert/update event_inventory,
-                write `inventory_movements` row (type = `stock_in`)
+Server Action → insert/update event_inventory (set starting_qty + current_qty)
 ↓
 During event:
-  → "Make sample" → convert_event_to_sample(qty)
-  → "Return to event" → convert_sample_to_event(qty)
-  → "Give as gift" → bucket → given (recorded as `gift_given`)
-  → POS sale → `event_inventory.sellable_qty` decrement (atomic in create_order)
+  → "Make sample" → convert_event_to_sample(qty)   (current_qty → sample_qty)
+  → "Return to event" → convert_sample_to_event(qty) (sample_qty → current_qty)
+  → POS sale → current_qty decrement, sold_qty increment (atomic in create_order, FOR UPDATE)
 ↓
-Stock-count session (Wave 33) → reconcile, write `correction` movement
+Stock-count session (Wave 33) → reconcile variance into adjusted_qty
 ```
 
 **Expected output.**
-- `event_inventory` row per (event, product) with `sellable_qty` + `sample_qty` (Wave 39a model).
-- `inventory_movements` ledger: every change is one row with type + reason + staff_id.
-- End-of-event totals are computable: `closing = opening − sold − sample_sold − gift_given − send_later_reserved ± corrections`.
+- One `event_inventory` row per (event, product) carrying counters: `starting_qty` / `current_qty` / `reserved_qty` / `sold_qty` / `sample_qty` / `adjusted_qty` (Wave 39a added `sample_qty`).
+- Every sale / sample-conversion / void writes an `audit_logs` row (actor + before/after snapshot); v0.1 has no per-move `inventory_movements` ledger.
+- End-of-event totals reconcile from the counters: `starting_qty` (opening) vs `current_qty` (remaining), `sold_qty`, `sample_qty`, `adjusted_qty`; `reserved_qty` is reserved for send-later (Open Q#13).
 
 ---
 
@@ -342,8 +340,7 @@ Server Action → `create_order` RPC (atomic):
                   - insert order_items
                   - insert payment_records (1..N for split)
                   - insert send_later_orders (if any line is Send Later)
-                  - decrement event_inventory.sellable_qty (FOR UPDATE)
-                  - write inventory_movements (type = sale / send_later_reserved)
+                  - decrement event_inventory.current_qty, increment sold_qty (FOR UPDATE)
                   - write audit_logs row
 ↓
 On success → /app/pos/success/[orderId]
@@ -375,7 +372,8 @@ On confirm → capture shipping info on the same modal
 ↓
 create_order RPC writes a `send_later_orders` row tied to the order
 ↓
-event_inventory `send_later_reserved` increments (stock reserved, not deducted)
+create_order decrements current_qty + increments sold_qty for the line
+             (v0.1 deducts send-later as sold, not reserved — Open Q#13)
 ↓
 Post-event → /app/send-later
 ↓
@@ -383,47 +381,51 @@ Filter by event, status (pending / packed / shipped / completed / cancelled)
 ↓
 Mark packed → audit row
 Mark shipped → enter tracking number, optional notify customer
-Mark completed → event_inventory `send_later_reserved` decrements; `sold` movement written
+Mark completed → send_later_orders status = completed (stock already deducted at sale; no further inventory change)
 Cancel → restore stock, refund flow if already paid
 ```
 
 **Expected output.**
 - Each Send Later order ends the event in a known final state — no "unknown" rows.
-- Stock reconciliation matches: reserved at sale, decremented at completion, restored at cancel.
+- Stock reconciliation matches: deducted at sale (create_order), restored if the bill is voided (void_order). Whether send-later should instead *reserve* — Open Q#13.
 - Customer (if they registered via F12) sees their Send Later status in their post-event link.
 
 ---
 
-## F10 — Bill void / line correction / partial refund
+## F10 — Bill void / metadata correction / partial refund
 
-**Description.** Three related flows: void an entire bill, correct a single line on an existing bill, refund part of a bill with a reason. All atomic via Postgres functions, all audit-logged.
+**Description.** Three related flows: **void** an entire bill (`void_order`); **correct metadata** — customer info / note — on an existing bill (`correct_order`); and **partial refund** of selected lines. Void and metadata-correction are atomic Postgres RPCs; **quantity / price changes are not in-place edits — they go through void + recreate** (`correct_order.sql` is metadata-only by design). Partial refund is demo-only in v0.1 (no RPC yet). All actions are audit-logged.
 
-**Purpose.** Cashiers make mistakes during peak hour. The system has to let them recover without a manager. Audit log + before/after capture means recovery doesn't become a hole in the books.
+**Purpose.** Mistakes happen during peak hour and recovery has to be clean + audited. In v0.1 `void_order` / `correct_order` are **owner/manager-only** — a plain cashier cannot self-recover; whether they should (booth speed vs control) is Open Q#16. Audit log + before/after capture means recovery never becomes a hole in the books.
 
-**Consumer.** P2 with permission (cashier role or above). P4 reviews via audit log.
+**Consumer.** Owner / manager role (P1 or a manager-role staffer) — not plain cashiers in v0.1 (Open Q#16). P4 reviews via audit log.
 
 **Flow.**
 ```
 Void:
   /app/pos/orders/<id> → "Void bill" → confirm with reason
-  → void_order RPC: mark order void, restore event_inventory, write inventory_movements,
-                    write audit_logs (before/after snapshot)
+  → void_order RPC: mark order void, restore event_inventory counters (current_qty +=, sold_qty -=),
+                    cancel open send-later, write audit_logs (before/after snapshot)
 
-Line correction:
-  /app/pos/orders/<id> → edit line (qty / price / discount)
-  → correct_order RPC: write new order_items revision,
-                       adjust event_inventory delta,
-                       write audit_logs with before/after
+Metadata correction:
+  /app/pos/orders/<id> → edit customer name / phone / email / note
+  → correct_order RPC (owner/manager): patch those header fields, set status
+                       completed → corrected, write audit_logs (before/after).
+                       Does NOT touch order_items or stock.
 
-Partial refund (Wave 26):
+Qty / price / discount change:
+  → not an in-place edit. Void the bill (void_order) then recreate (create_order):
+    stock auto-restores on void and re-deducts on recreate — safer + audit-clean.
+
+Partial refund (Wave 26 — demo only, no RPC yet):
   /app/pos/orders/<id> → "Refund line(s)" → reason → confirm
-  → partial void of the affected lines + payment_records adjustment + audit
+  → (planned) partial void of affected lines + payment_records adjustment + audit
 ```
 
 **Expected output.**
-- Stock and money are always consistent post-correction.
-- `audit_logs` carries before/after JSON for each change.
-- Admin (P4) can see every void/correction with reason + staff_id.
+- Stock and money stay consistent: metadata correction touches neither; qty/price changes go through void + recreate (symmetric).
+- `audit_logs` carries before/after JSON for each void / correction.
+- Admin (P4) can see every void / correction with staff_id (void also carries a reason).
 
 ---
 
@@ -533,7 +535,7 @@ future cashier-side helpers (Wave 40c+).
 - Per-workspace customer database that survives across events.
 - Pet info available for personalization (e.g., "Mochi's birthday is next week").
 - Tenant isolation enforced by RLS on every read.
-- Admin reads (P4) write to `admin_access_logs` with a reason.
+- Admin reads (P4) of identifiable customer data are logged with a reason (table TBD — `audit_logs` vs a dedicated `admin_access_logs`; Open Q#7, not yet built).
 
 ---
 
@@ -551,7 +553,8 @@ In /app/pos cart → "Customer" field
 ↓
 Cashier enters phone (Thai phone normalizer applied)
 ↓
-Server Action: lookup_customer_by_contact(workspace_id, 'phone', value)
+Lookup (demo today: lookupReturningCustomer; planned RPC
+        lookup_customer_by_contact(workspace_id,'phone',value) at Supabase wiring)
 ↓
 On match → returning customer panel:
             - customer name
@@ -569,13 +572,13 @@ On no match → "Send registration link after sale" prompt (default flow)
 - Phone-based lookup latency <300ms.
 - Cashier can attach a known customer to the current cart in <2 taps.
 - New `customer_order_links` row written at create_order if a customer was attached.
-- The in-cashier `PetCardsBlock` from Wave 35 is removed once F14 is live — pet UI never appears in the cashier flow.
+- Target: pet UI never appears in the cashier flow. **Not yet true** — `PetCardsBlock` (Wave 35) is still wired in `CustomerInfoBlock` (the send-later block); its removal lands with the real-Supabase Customer Portal (Wave 40d). Until then POS carries two customer surfaces (this lookup + the legacy block).
 
 ---
 
 ## F15 — Daily + multi-period dashboard
 
-**Description.** Real-time tile dashboard for the seller. Tiles: revenue, orders, items sold, top SKU, Send Later pending, stockout risk, peak hour. Day-N switcher + full-event aggregate + period-over-period comparison.
+**Description.** Real-time tile dashboard for the seller. Live tiles (rendered today): revenue / orders / avg bill, payment split, top sellers, inventory-remaining (stockout risk), hourly peak. Built but not yet composed into the page: profit/margin, reorder, activity feed, source split, and the Day-N switcher + full-event aggregate + period-over-period comparison.
 
 **Purpose.** During a multi-day expo, the seller needs to know how today is going against yesterday and against the last event. Generic POS dashboards are current-day only — that's a field finding from the meowmeow Pet Expo run.
 
@@ -597,15 +600,17 @@ Reorder suggestions (Wave 30) surfaced inline
 ```
 
 **Expected output.**
-- Six tiles render <2s on first load.
-- Multi-period view works for any closed event (read-only).
+- The rendered `/app/dashboard` shows revenue/orders/avg, payment split, top sellers, inventory-remaining, and hourly peak; all render <2s on first load.
+- **Wiring gap:** profit/margin (Wave 32), reorder (Wave 30), activity feed (Wave 29), source split (Wave 37), and the multi-period range/compare (Wave 34, `DashboardLive`) exist as components but are **not imported by the current page** — they must be composed in before this matches STATUS's "10+ tiles." No "Send Later pending" tile yet.
 - Drills open the underlying record list with the same time-window applied.
 
 ---
 
 ## F16 — End-of-event CSV export + archive
 
-**Description.** At close-of-event, a CSV bundle is generated: orders, order_items, payment_records, send_later_orders, inventory_movements, dashboard snapshot. The event is then archived — read-only, no new sales accepted.
+**Description.** At close-of-event, a CSV bundle is generated: orders, order_items, payment_records, send_later_orders, event_inventory (end-of-event counters), dashboard snapshot. The event is then archived — read-only, no new sales accepted.
+
+> **Status (v0.1):** the close-event route, archive flow, and multi-file bundle are **not built**. What exists today is a single-file, today-only "Export today as CSV" button on the dashboard (`ExportCsvButton`, RFC 4180 via `lib/csv`). The flow below is the target.
 
 **Purpose.** Sellers need a portable record they can pull into spreadsheets, accounting, or hand to their accountant. They also need a hard line that says "this event is closed" so no late entries pollute the numbers.
 
@@ -622,10 +627,10 @@ Files in bundle:
   - order_items.csv
   - payment_records.csv
   - send_later_orders.csv
-  - inventory_movements.csv
+  - event_inventory.csv (end-of-event counters per SKU)
   - dashboard_snapshot.csv
 ↓
-Bundle delivered (zip or side-by-side — see Open Question #6)
+Bundle delivered (zip or side-by-side — see Open Question #8)
 ↓
 events.status = archived
 ↓
@@ -657,7 +662,7 @@ Admin logs in → middleware checks `admin_users` membership
 /admin = home with five tiles
 ↓
 /admin/applications → triage (F02)
-/admin/invite-codes → outstanding + used; resend / cancel
+/admin/invite-codes → read-only list (filter by status; no resend / cancel in pilot — see F02)
 /admin/workspaces → list with last-activity, status, contact info
                     Click → workspace detail (read-only by default)
                     Any drill into seller data → modal asks for `reason`
@@ -669,7 +674,7 @@ Admin logs in → middleware checks `admin_users` membership
 ```
 
 **Expected output.**
-- Every admin read of identifiable seller data writes one `admin_access_logs` row.
+- Every admin read of identifiable seller data is logged with a reason (target; table per Open Q#7 — `admin_access_logs` not yet built).
 - Pilot board shows where each of the 5 brands is in the pilot at a glance.
 - Service role key is used only inside `/admin/*` Server Actions, never reaches the client.
 
@@ -709,8 +714,12 @@ Living list — resolve, don't accumulate.
 8. **CSV bundle format.** Single ZIP, or multiple CSVs side by side? Filename convention?
 9. **Brand #6.** Pilot pricing for the 5 free pilot brands is clear — what about #6?
 10. **Receipt printer support (post-pilot).** Which models when we do add it? Star / Epson / generic ESC/POS?
-11. **Data retention.** What does "delete my workspace" mean for `audit_logs` and `inventory_movements` (the audit trail must survive)?
+11. **Data retention.** What does "delete my workspace" mean for `audit_logs` and `event_inventory` (the audit trail must survive)?
 12. **Onboarding video.** 5-minute Loom per pilot seller, or written guide only?
+13. **Send-later stock semantics.** v0.1 *deducts* send-later stock as sold at sale time (`create_order`); `reserved_qty` exists but is never written. Should send-later instead *reserve* (so "available to sell" excludes reserved-but-unshipped)? Affects oversell math across a multi-day event.
+14. **Free-gift bucket.** meowmeow tracked free-gift movement as its own bucket; v0.1 has no `gift_qty` column (only `sample_qty`). Add a first-class gift counter, or fold gifts into `sample_qty` / `adjusted_qty`?
+15. **Warehouse-level stock.** No `warehouse_stock` table in v0.1 — allocation sets `event_inventory.starting_qty` directly. Is per-event starting stock enough for the pilot, or do sellers need a warehouse balance that decrements as they allocate across events?
+16. **Correction role.** `void_order` / `correct_order` are owner/manager-only, but F10's booth-speed intent is to let cashiers self-recover at peak hour. Allow a cashier-correction path (audited), or keep it manager-gated for the pilot?
 
 ---
 
@@ -718,6 +727,8 @@ Living list — resolve, don't accumulate.
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-21 | F10 correction (Codex HOLD on #71): `correct_order` is **metadata-only** (customer / note; status → corrected) — it does not rewrite `order_items` or adjust stock; **qty / price changes go through void + recreate**. Also: F10 is owner/manager-only (not cashier); partial refund is demo-only (no RPC yet); added Open Q#16 (cashier-correction role). | Founder + Claude |
+| 2026-05-21 | Verification rounds 17+ (F14–F17 + cross-cutting). **Inventory model resolved: match shipped counters** — removed the `inventory_movements` ledger from F07–F10 and F16; sales / conversions / voids move counters on `event_inventory` and are captured in `audit_logs`; `sellable_qty` → `current_qty`. Also corrected: F06 lifecycle to planned→running→closed→archived; F09 send-later deducts (not reserves); F17 invite-codes read-only (matches F02); F16 bundle uses `event_inventory.csv`, fixed cross-ref to Open Q#8, and flagged the flow as not-built (only a dashboard today-export exists); F13/F17 `admin_access_logs` softened to defer to Open Q#7; F14 `PetCardsBlock` still in cashier flow + lookup RPC marked planned; F15 tile list + dashboard wiring gap. Added Open Q#13–15 (send-later reserve, free-gift bucket, warehouse stock). Still to re-check next pass: F06 `event_type` / `booth_size` / `foot_traffic` fields are not in the `events` schema. | Founder + Claude |
 | 2026-05-19 | Verification pass rounds 1–16 (preamble, stack, personas, F01–F13). All claims confirmed except: F02 invite email is manual during pilot (no Resend automation); F02 invite-codes admin page is read-only in pilot (no resend / cancel actions); F08 discount presets are per-workspace configurable with default 20 / 50 / 100 THB. Open Questions updated; F14–F17 + cross-cutting still pending on next pass. | Founder + Claude |
 | 2026-05-19 | Restructured to per-module **Flow · Description · Purpose · Consumer · Expected output** format at founder request. | Claude |
 | 2026-05-18 | Initial draft. | Claude |
