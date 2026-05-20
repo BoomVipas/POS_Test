@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Design-system handoff export (reference assets + stale duplicated source) —
+    // not part of the app; keep it out of lint.
+    "Mochi POS Design System-handoff/**",
   ]),
 ]);
 

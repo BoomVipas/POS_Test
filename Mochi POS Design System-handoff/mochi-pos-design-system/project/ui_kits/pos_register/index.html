@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MochiPOS · Register</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<style>
+  html, body { height: 100%; overflow: hidden; }
+  body { background: var(--bg); position: relative; }
+  #app { position: relative; height: 100vh; display: flex; flex-direction: column; }
+  .stage { display: flex; flex: 1; min-height: 0; }
+  .eyebrow { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="app"></div>
+
+<script type="text/babel" src="Atoms.jsx"></script>
+<script type="text/babel" src="Topbar.jsx"></script>
+<script type="text/babel" src="Sidebar.jsx"></script>
+<script type="text/babel" src="Toolbar.jsx"></script>
+<script type="text/babel" src="MenuGrid.jsx"></script>
+<script type="text/babel" src="Cart.jsx"></script>
+<script type="text/babel" src="ChargeModal.jsx"></script>
+
+<script type="text/babel">
+const { useState, useMemo } = React;
+
+const PRODUCTS = [
+  { sku: "002A", name: "Cat Curator (Blue)",   price: 1290, stock: 8,  cat: "modern",  ext: "png" },
+  { sku: "003",  name: "The Ionic Column",     price: 890,  stock: 12, cat: "sculpt",  ext: "png" },
+  { sku: "006",  name: "The Triceratops",      price: 1290, stock: 2,  cat: "sculpt",  ext: "png" },
+  { sku: "010",  name: "The Sphinx of Giza",   price: 1190, stock: 5,  cat: "sculpt",  ext: "png" },
+  { sku: "012",  name: "Bowl Appétit",         price: 690,  stock: 14, cat: "modern",  ext: "png" },
+  { sku: "014",  name: "Venus",                price: 1490, stock: 0,  cat: "sculpt",  ext: "png" },
+  { sku: "017",  name: "Banana Doll",          price: 290,  stock: 22, cat: "doll",    ext: "jpg" },
+  { sku: "018",  name: "Lobster Doll",         price: 290,  stock: 18, cat: "doll",    ext: "jpg" },
+  { sku: "019",  name: "Pencil Tie",           price: 220,  stock: 9,  cat: "modern",  ext: "jpg" },
+  { sku: "020",  name: "Ribbon Bow",           price: 180,  stock: 24, cat: "modern",  ext: "jpg" },
+  { sku: "021",  name: "Sticker Classic",      price: 60,   stock: 80, cat: "sticker", ext: "jpg" },
+  { sku: "022",  name: "Sticker Modern",       price: 60,   stock: 65, cat: "sticker", ext: "jpg" },
+];
+
+function App() {
+  const [day, setDay] = useState(2);
+  const [cat, setCat] = useState("all");
+  const [query, setQuery] = useState("");
+  const [lines, setLines] = useState([]);
+  const [customer, setCustomer] = useState("Walk-in customer");
+  const [sendLater, setSendLater] = useState(false);
+  const [charging, setCharging] = useState(false);
+  const [toast, setToast] = useState(null);
+  const [syncCount, setSyncCount] = useState(3);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return PRODUCTS.filter(p =>
+      (cat === "all" || p.cat === cat) &&
+      (!q || p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q))
+    );
+  }, [cat, query]);
+
+  const total = lines.reduce((s, l) => s + l.price * l.qty, 0);
+
+  const addLine = (p) => setLines(prev => {
+    const ex = prev.find(l => l.sku === p.sku);
+    if (ex) return prev.map(l => l.sku === p.sku ? { ...l, qty: l.qty + 1 } : l);
+    return [...prev, { sku: p.sku, name: p.name, price: p.price, qty: 1 }];
+  });
+  const inc = sku => setLines(prev => prev.map(l => l.sku === sku ? { ...l, qty: l.qty + 1 } : l));
+  const dec = sku => setLines(prev => prev.flatMap(l => {
+    if (l.sku !== sku) return [l];
+    if (l.qty <= 1) return [];
+    return [{ ...l, qty: l.qty - 1 }];
+  }));
+  const remove = sku => setLines(prev => prev.filter(l => l.sku !== sku));
+  const clear = () => setLines([]);
+
+  const confirm = () => {
+    const id = `MP-20260507-${String(140 + Math.floor(Math.random() * 60)).padStart(4, "0")}`;
+    setCharging(false); setLines([]); setCustomer("Walk-in customer");
+    setSendLater(false); setSyncCount(c => c + 1);
+    setToast(id);
+    setTimeout(() => setToast(null), 3500);
+  };
+
+  return (
+    <>
+      <Topbar activeDay={day} onDayChange={setDay} syncCount={syncCount} />
+      <div className="stage">
+        <Sidebar active={cat} onSelect={setCat} />
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+          <Toolbar query={query} onQuery={setQuery}
+            onScan={() => { const r = PRODUCTS.find(p => p.stock > 0); if (r) addLine(r); }}
+            onLookup={() => setCustomer("Khun Pim · Mochi 🐱")} />
+          <MenuGrid products={filtered} onAdd={addLine} />
+        </div>
+        <Cart
+          lines={lines} customer={customer} onCustomer={setCustomer}
+          sendLater={sendLater} onSendLater={setSendLater}
+          onInc={inc} onDec={dec} onRemove={remove} onClear={clear}
+          onCharge={() => setCharging(true)}
+        />
+      </div>
+      <ChargeModal open={charging} total={total} onClose={() => setCharging(false)} onConfirm={confirm} />
+      <ReceiptToast open={!!toast} txid={toast} onDone={() => setToast(null)} />
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("app")).render(<App />);
+</script>
+</body>
+</html>

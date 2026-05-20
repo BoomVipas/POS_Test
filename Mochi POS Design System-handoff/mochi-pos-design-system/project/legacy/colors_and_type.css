@@ -1,0 +1,170 @@
+/* Meowseum / Phiphetthaphan — design tokens
+   Extracted verbatim from meowmeow_pos_event.html and meowmeow_receipt_admin.html.
+   Cream + warm brown palette, Aptos body, Georgia stacked-serif wordmark. */
+
+:root {
+  /* ── Surfaces ─────────────────────────────────────────────── */
+  --bg:           #f6f0e6;   /* page cream */
+  --bg-grad-top:  #fbf7ef;
+  --bg-grad-bot:  #f1e7d6;
+  --panel:        #fffaf3;
+  --panel-strong: #fffdf9;
+  --panel-grad-bot:#fcf5e9;
+  --soft:         #efe5d6;   /* recessed surface */
+  --line:         #ddcfbe;   /* hairline / divider */
+  --line-quiet:   rgba(141,98,54,.14);
+  --line-warm:    rgba(141,98,54,.16);
+  --shadow-card:  0 22px 52px rgba(77,53,29,.10);
+  --shadow-pop:   0 28px 64px rgba(77,53,29,.14);
+  --shadow-rest:  0 10px 20px rgba(77,53,29,.05);
+  --shadow-hover: 0 16px 28px rgba(77,53,29,.10);
+
+  /* ── Text ─────────────────────────────────────────────────── */
+  --text:         #2b231d;   /* primary */
+  --text-deep:    #2f261e;   /* receipt wordmark */
+  --muted:        #736555;   /* secondary */
+  --muted-warm:   #6d5e4e;   /* uppercase eyebrow */
+  --label:        #6a4a26;   /* button / chip label */
+
+  /* ── Brand brown ──────────────────────────────────────────── */
+  --accent:       #8d6236;   /* primary brown */
+  --accent-strong:#6e4b27;   /* deep brown — totals, body H */
+  --accent-soft:  #a87640;   /* button gradient top */
+  --accent-deep:  #85572b;   /* button gradient bot */
+  --accent-darker:#5e4423;   /* selected day */
+  --gold:         #c59a54;   /* warm gold accent */
+
+  /* Brown gradient for primary buttons & active tabs */
+  --grad-button:  linear-gradient(180deg,#a87640 0%,#85572b 100%);
+  --grad-button-warm: linear-gradient(180deg,#a9763f 0%,#7e552a 100%);
+
+  /* ── Semantic ─────────────────────────────────────────────── */
+  --success:      #4f7a3f;   /* green text on stock pill */
+  --success-bg:   #dfe7d1;
+  --success-soft: #e4f0dc;
+  --warn:         #8c6226;   /* low-stock label */
+  --warn-bg:      #fff1d7;
+  --warn-soft:    #f7d9b0;
+  --danger:       #b44b3f;   /* sold-out, error */
+  --danger-bg:    #f8e1de;
+  --danger-deep:  #8b3d34;
+  --severe:       #9c3f33;   /* destructive overlay */
+  --severe-deep:  #7d2f25;
+  --info-bg:      #eef1ff;   /* receipt slip badge */
+
+  /* ── Receipt-specific ─────────────────────────────────────── */
+  --slip-bg:      #ffffff;
+  --slip-line:    #cfc7bc;   /* dashed divider */
+  --slip-rule:    #d7d0c6;
+  --slip-head-bg: #f3f5fb;   /* receipt table head */
+
+  /* ── Typography ───────────────────────────────────────────── */
+  --font-body:    "Aptos","Segoe UI",Tahoma,sans-serif;
+  --font-display: Georgia,"Times New Roman",serif;   /* wordmark only */
+  --font-mono:    "SF Mono","Menlo","Consolas",ui-monospace,monospace;
+
+  /* Body type scale (px) */
+  --fs-eyebrow: 11px;   /* tracked uppercase */
+  --fs-xs:      11px;
+  --fs-sm:      12px;
+  --fs-md:      13px;
+  --fs-base:    14px;
+  --fs-lg:      15px;
+  --fs-xl:      16px;
+  --fs-h3:      20px;
+  --fs-h2:      22px;
+  --fs-h1:      28px;
+  --fs-hero:    30px;
+
+  /* Display (Georgia wordmark) — exact metrics */
+  --fs-mark-the:  20px;
+  --fs-mark-meow: 46px;
+  --fs-mark-seum: 35px;
+  --fs-slip-the:  22px;
+  --fs-slip-meow: 56px;
+  --fs-slip-seum: 44px;
+
+  /* Numerics */
+  --fw-reg: 400;
+  --fw-md:  600;
+  --fw-sb:  700;
+  --fw-b:   800;
+  --fw-xb:  900;
+
+  /* ── Radii ────────────────────────────────────────────────── */
+  --r-pill: 999px;
+  --r-xs:   8px;
+  --r-sm:   10px;
+  --r-md:   14px;
+  --r-lg:   20px;
+  --r-xl:   28px;
+  --r-2xl:  32px;
+
+  /* ── Spacing (8/4 hybrid; matches inline values in source) ── */
+  --sp-1: 4px;
+  --sp-2: 6px;
+  --sp-3: 8px;
+  --sp-4: 10px;
+  --sp-5: 12px;
+  --sp-6: 14px;
+  --sp-7: 18px;
+  --sp-8: 22px;
+  --sp-9: 28px;
+
+  /* ── Backgrounds (page wash) ──────────────────────────────── */
+  --page-bg: linear-gradient(180deg,#fbf7ef 0%,#f1e7d6 100%);
+  --page-overlay:
+    radial-gradient(circle at top left,rgba(255,255,255,.58),transparent 28%),
+    radial-gradient(circle at 82% 18%,rgba(197,154,84,.10),transparent 22%),
+    linear-gradient(180deg,rgba(251,247,239,.92) 0%,rgba(241,231,214,.94) 100%);
+}
+
+/* ── Semantic element styles ─────────────────────────────────── */
+
+html, body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--page-bg);
+}
+
+h1, h2, h3 { color: var(--text); margin: 0; }
+h1 { font-size: var(--fs-hero); line-height: 1.05; font-weight: 900; }
+h2 { font-size: var(--fs-h1);   line-height: 1.1;  font-weight: 900; }
+h3 { font-size: var(--fs-h3);   line-height: 1.15; font-weight: 800; }
+
+.eyebrow {
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+p   { margin: 0; line-height: 1.45; color: var(--text); }
+.muted { color: var(--muted); }
+
+/* The stacked Georgia wordmark — used in topbar + receipt slip. */
+.wordmark {
+  display: grid;
+  gap: 0;
+  line-height: .88;
+  letter-spacing: -.045em;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--text-deep);
+}
+.wordmark .the  { font-size: var(--fs-mark-the);  letter-spacing: -.01em; }
+.wordmark .meow { font-size: var(--fs-mark-meow); display: flex; align-items: flex-end; gap: 6px; }
+.wordmark .seum { font-size: var(--fs-mark-seum); letter-spacing: .035em; padding-left: .045em; }
+
+/* Code / SKU */
+code, .sku {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  font-weight: 700;
+}
+
+/* Tabular numerics — used on totals + dashboard money */
+.num { font-variant-numeric: tabular-nums lining-nums; letter-spacing: -.02em; }

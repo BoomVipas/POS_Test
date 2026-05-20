@@ -1,0 +1,33 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { padding: 18px 22px; background: var(--bg); margin: 0; }
+  .stack { display: flex; flex-direction: column; gap: 10px; }
+  .field { background: var(--panel); border: 1px solid var(--line-strong); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-rest); }
+  .field:focus-within { border-color: var(--indigo-500); box-shadow: 0 0 0 4px var(--lavender-200); }
+  input { border: none; outline: none; flex: 1; font-family: inherit; font-size: 14px; color: var(--text); background: transparent; }
+  input::placeholder { color: var(--muted-soft); }
+  .label { font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .row { display: flex; gap: 12px; }
+  .row > * { flex: 1; }
+  svg { width: 16px; height: 16px; color: var(--muted); }
+</style></head><body>
+<div class="stack">
+  <div>
+    <div class="label">Search</div>
+    <div class="field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-3.5-3.5"/></svg>
+      <input placeholder="Find a customer, pet, or order…">
+    </div>
+  </div>
+  <div class="row">
+    <div>
+      <div class="label">Pet name</div>
+      <div class="field"><input value="Mochi" style="font-weight:700"></div>
+    </div>
+    <div>
+      <div class="label">Phone</div>
+      <div class="field"><input placeholder="+66 …"></div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Meowseum Receipt Admin</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<style>
+  body { background: var(--page-bg); position: relative; min-height: 100vh; padding: 0; }
+  body::before { content: ""; position: absolute; inset: 0; background: var(--page-overlay); pointer-events: none; }
+  .shell { position: relative; max-width: 1200px; margin: 0 auto; padding: 0 0 40px; }
+  .panel { background: var(--panel); border-radius: 24px; box-shadow: var(--shadow-card); margin: 0 28px; overflow: hidden; }
+  .layout { display: flex; gap: 18px; padding: 0 28px; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="app"></div>
+
+<script type="text/babel" src="Header.jsx"></script>
+<script type="text/babel" src="StatStrip.jsx"></script>
+<script type="text/babel" src="ReceiptTable.jsx"></script>
+<script type="text/babel" src="ReceiptDetail.jsx"></script>
+
+<script type="text/babel">
+const { useState } = React;
+
+const RECEIPTS = [
+  { id: "MW-20260506-0142", customer: "Walk-in customer", time: "10:42", day: 2, itemCount: 3, total: 1180, tender: "Cash", received: 1200,
+    lines: [{ name: "The Ionic Column", qty: 1, price: 890 }, { name: "Banana Doll", qty: 1, price: 290 }] },
+  { id: "MW-20260506-0143", customer: "Khun Pim",         time: "10:51", day: 2, itemCount: 5, total: 2380, tender: "QR PromptPay", received: 2380,
+    lines: [{ name: "Cat Curator (Blue)", qty: 1, price: 1290 }, { name: "Bowl Appétit", qty: 1, price: 690 }, { name: "Sticker Modern", qty: 4, price: 60 }, { name: "Ribbon Bow", qty: 1, price: 180 }] },
+  { id: "MW-20260506-0144", customer: "Walk-in customer", time: "11:08", day: 2, itemCount: 2, total: 580,  tender: "Cash", received: 600,
+    lines: [{ name: "Banana Doll", qty: 1, price: 290 }, { name: "Lobster Doll", qty: 1, price: 290 }] },
+  { id: "MW-20260506-0145", customer: "Khun Aof",         time: "11:24", day: 2, itemCount: 1, total: 1490, tender: "Card", received: 1490,
+    lines: [{ name: "Venus", qty: 1, price: 1490 }] },
+  { id: "MW-20260506-0146", customer: "Walk-in customer", time: "11:47", day: 2, itemCount: 6, total: 540,  tender: "Cash", received: 540,
+    lines: [{ name: "Sticker Classic", qty: 5, price: 60 }, { name: "Sticker Modern", qty: 4, price: 60 }] },
+  { id: "MW-20260506-0147", customer: "Khun Mai",         time: "12:03", day: 2, itemCount: 4, total: 3170, tender: "Card", received: 3170,
+    lines: [{ name: "The Triceratops", qty: 1, price: 1290 }, { name: "The Sphinx of Giza", qty: 1, price: 1190 }, { name: "Pencil Tie", qty: 1, price: 220 }, { name: "Ribbon Bow", qty: 1, price: 180 }] },
+  { id: "MW-20260506-0148", customer: "Walk-in customer", time: "12:19", day: 2, itemCount: 1, total: 890,  tender: "QR PromptPay", received: 890,
+    lines: [{ name: "The Ionic Column", qty: 1, price: 890 }] },
+  { id: "MW-20260506-0149", customer: "Khun Bee",         time: "12:32", day: 2, itemCount: 3, total: 870,  tender: "Cash", received: 1000,
+    lines: [{ name: "Banana Doll", qty: 2, price: 290 }, { name: "Bowl Appétit", qty: 1, price: 290 }] },
+];
+
+function App() {
+  const [day, setDay] = useState("2");
+  const [selected, setSelected] = useState(RECEIPTS[1].id);
+  const rows = RECEIPTS;
+  const rec = rows.find(r => r.id === selected);
+  const stats = {
+    sales: rows.reduce((s, r) => s + r.total, 0),
+    items: rows.reduce((s, r) => s + r.itemCount, 0),
+    avg:   Math.round(rows.reduce((s, r) => s + r.total, 0) / rows.length),
+    txCount: rows.length,
+    topName: "The Ionic Column",
+    pending: 0,
+  };
+
+  return (
+    <div className="shell">
+      <AdminHeader day={day} onDay={setDay} />
+      <StatStrip stats={stats} />
+      <div className="layout">
+        <ReceiptTable rows={rows} selected={selected} onSelect={setSelected} />
+        <ReceiptDetail rec={rec} />
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("app")).render(<App />);
+</script>
+</body>
+</html>

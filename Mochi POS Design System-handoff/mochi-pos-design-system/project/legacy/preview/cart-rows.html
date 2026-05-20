@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{padding:20px;background:var(--panel);display:flex;gap:18px;align-items:center;}
+  .row{display:flex;flex-direction:column;gap:8px;}
+  .row-r{display:flex;justify-content:space-between;align-items:center;font-size:14px;}
+  .name{color:var(--text);font-weight:600;}
+  .price{font-weight:800;color:var(--accent-strong);font-variant-numeric:tabular-nums;}
+  .total-row{display:flex;justify-content:space-between;align-items:baseline;border-top:1px dashed var(--slip-line);padding-top:10px;}
+  .total-lab{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-warm);}
+  .total-num{font-size:24px;font-weight:900;color:var(--accent-strong);font-variant-numeric:tabular-nums;letter-spacing:-.02em;}
+  .meta{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);align-self:flex-start;}
+</style></head><body>
+<div class="row" style="min-width:280px">
+  <div class="row-r"><span class="name">The Ionic Column ×1</span><span class="price">฿890</span></div>
+  <div class="row-r"><span class="name">Banana Doll ×2</span><span class="price">฿580</span></div>
+  <div class="row-r"><span class="name">Sticker Classic ×3</span><span class="price">฿180</span></div>
+  <div class="total-row"><span class="total-lab">Total</span><span class="total-num">฿1,650</span></div>
+</div>
+<div class="meta">cart row · 14/600<br>total · 24/900<br>tabular-nums everywhere</div>
+</body></html>

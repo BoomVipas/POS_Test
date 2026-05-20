@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MochiPOS · Onboarding</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { background: var(--bg); margin: 0; min-height: 100vh; }
+  .topbar { height: 64px; display: flex; align-items: center; gap: 14px; padding: 0 28px; max-width: 1200px; margin: 0 auto; border-bottom: 1px solid var(--line-quiet); }
+  .topbar img { height: 26px; }
+  .help { margin-left: auto; font-size: 12px; color: var(--muted); }
+  .help a { color: var(--indigo); font-weight: 700; text-decoration: none; }
+
+  .layout { max-width: 920px; margin: 0 auto; padding: 40px 28px 80px; }
+
+  /* progress rail */
+  .rail { display: flex; align-items: center; gap: 12px; margin-bottom: 36px; }
+  .rail .step { display: flex; align-items: center; gap: 10px; }
+  .rail .num { width: 28px; height: 28px; border-radius: 50%; background: var(--bg-soft); color: var(--muted); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; }
+  .rail .step.done .num { background: var(--success-bg); color: var(--success); }
+  .rail .step.on .num { background: var(--indigo); color: #fff; box-shadow: 0 0 0 4px var(--lavender-200); }
+  .rail .lbl { font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  .rail .step.on .lbl, .rail .step.done .lbl { color: var(--text); }
+  .rail .bar { flex: 1; height: 2px; background: var(--bg-soft); border-radius: 2px; }
+  .rail .bar.done { background: var(--success); }
+
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 40px; box-shadow: var(--shadow-card); }
+
+  .eyebrow { font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--lavender-700); }
+  h2 { font-size: 30px; margin-top: 6px; letter-spacing: -.02em; }
+  .lede { font-size: 15px; line-height: 1.5; color: var(--muted); margin-top: 8px; max-width: 540px; }
+
+  /* code-redeem step */
+  .code-card { background: var(--cream); border: 1px solid var(--cream-deep); border-radius: 16px; padding: 18px 22px; margin-top: 28px; display: flex; gap: 14px; align-items: center; }
+  .code-card .icn { width: 44px; height: 44px; border-radius: 12px; background: var(--panel); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .code-card .ti { font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .code-card .em { font-size: 14px; color: var(--text); margin-top: 2px; font-weight: 700; }
+
+  .field { display: flex; flex-direction: column; gap: 6px; margin-top: 20px; }
+  .field label { font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  .field input { font-family: inherit; font-size: 16px; padding: 14px 16px; border: 1px solid var(--line-strong); border-radius: 14px; background: var(--panel); color: var(--text); outline: none; }
+  .field input:focus { border-color: var(--indigo-500); box-shadow: 0 0 0 4px var(--lavender-200); }
+  .field input.code-input { font-family: var(--font-mono); font-size: 22px; letter-spacing: .12em; font-weight: 800; text-align: center; padding: 18px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .help-line { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+  /* product card setup */
+  .add-product { margin-top: 22px; padding: 18px; border: 2px dashed var(--line-strong); border-radius: 16px; background: var(--bg-soft); display: flex; gap: 14px; align-items: center; cursor: pointer; }
+  .add-product:hover { border-color: var(--indigo-500); background: var(--lavender-100); }
+  .add-product .pls { width: 40px; height: 40px; border-radius: 12px; background: var(--panel); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: var(--indigo); }
+  .add-product .lbl { font-weight: 800; font-size: 14px; }
+  .add-product .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .product-row { margin-top: 12px; padding: 14px; background: var(--bg-soft); border-radius: 14px; display: grid; grid-template-columns: 56px 1fr 100px 80px 90px 28px; gap: 14px; align-items: center; }
+  .product-row .img { width: 56px; height: 56px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); overflow: hidden; }
+  .product-row .img img { width: 100%; height: 100%; object-fit: cover; }
+  .product-row .nm { font-size: 13px; font-weight: 800; }
+  .product-row .sk { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 2px; font-weight: 700; }
+  .product-row .pr, .product-row .st { font-variant-numeric: tabular-nums; font-weight: 800; font-size: 13px; text-align: right; }
+  .product-row .pr-label, .product-row .st-label { font-size: 10px; color: var(--muted); font-weight: 800; letter-spacing: .04em; text-transform: uppercase; text-align: right; }
+  .product-row .send { font-size: 11px; padding: 4px 8px; background: var(--lavender-100); color: var(--indigo); border-radius: 999px; font-weight: 700; text-align: center; }
+  .product-row .x { width: 28px; height: 28px; border-radius: 50%; background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 18px; }
+  .product-row .x:hover { background: var(--danger-bg); color: var(--danger); }
+
+  /* CTA row */
+  .cta-row { display: flex; gap: 12px; margin-top: 32px; align-items: center; }
+  .btn-pri { padding: 14px 28px; background: var(--grad-primary); color: #fff; border: none; border-radius: 14px; font-family: inherit; font-weight: 800; font-size: 15px; cursor: pointer; box-shadow: var(--shadow-card); }
+  .btn-sec { padding: 14px 22px; background: var(--panel); color: var(--indigo); border: 1px solid var(--line-strong); border-radius: 14px; font-family: inherit; font-weight: 700; font-size: 14px; cursor: pointer; }
+  .skip { margin-left: auto; font-size: 13px; color: var(--muted); text-decoration: none; font-weight: 700; }
+  .skip:hover { color: var(--indigo); }
+
+  .summary-side { font-size: 12px; color: var(--muted); }
+
+  .welcome-mini { display: flex; gap: 14px; align-items: center; margin-bottom: 28px; padding: 16px 20px; background: var(--lavender-100); border-radius: 16px; }
+  .welcome-mini img { height: 38px; }
+  .welcome-mini .ti { font-weight: 800; color: var(--indigo); font-size: 14px; }
+  .welcome-mini .bd { font-size: 12px; color: var(--text); margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand" style="display:flex;align-items:center;gap:10px">
+    <img src="../assets/mochi-mascot.png" alt="">
+    <span class="wm">Mochi<span class="pos">POS</span></span>
+  </div>
+  <div class="help">Stuck? <a href="#">LINE us</a> · <a href="#">Sign out</a></div>
+</header>
+
+<main class="layout">
+
+  <!-- progress rail -->
+  <div class="rail">
+    <div class="step done"><div class="num">✓</div><div class="lbl">Code</div></div>
+    <div class="bar done"></div>
+    <div class="step done"><div class="num">✓</div><div class="lbl">Account</div></div>
+    <div class="bar done"></div>
+    <div class="step on"><div class="num">3</div><div class="lbl">Brand</div></div>
+    <div class="bar"></div>
+    <div class="step"><div class="num">4</div><div class="lbl">Products</div></div>
+    <div class="bar"></div>
+    <div class="step"><div class="num">5</div><div class="lbl">First event</div></div>
+  </div>
+
+  <div class="card">
+    <div class="welcome-mini">
+      <img src="../assets/mochi-face.png" alt="">
+      <div>
+        <div class="ti">Welcome, Aim 👋</div>
+        <div class="bd">Your invite was approved May 6. Let's set up Meow House so you can start selling.</div>
+      </div>
+    </div>
+
+    <div class="eyebrow">Step 3 of 5 · Your brand</div>
+    <h2>Add your products</h2>
+    <p class="lede">You can add SKUs one at a time, or bulk-paste from CSV. Aim for 30 in under 30 min — we'll let you stop and come back.</p>
+
+    <!-- product list (3 added) -->
+    <div style="margin-top:24px">
+      <div class="product-row">
+        <div class="img"><img src="../assets/products/006.png"></div>
+        <div>
+          <div class="nm">The Triceratops</div>
+          <div class="sk">SKU 006</div>
+        </div>
+        <div>
+          <div class="pr-label">Price</div>
+          <div class="pr">฿1,290</div>
+        </div>
+        <div>
+          <div class="st-label">Stock</div>
+          <div class="st">42</div>
+        </div>
+        <div class="send">Send Later</div>
+        <button class="x" title="Remove">×</button>
+      </div>
+
+      <div class="product-row">
+        <div class="img"><img src="../assets/products/003.png"></div>
+        <div>
+          <div class="nm">The Ionic Column</div>
+          <div class="sk">SKU 003</div>
+        </div>
+        <div>
+          <div class="pr-label">Price</div>
+          <div class="pr">฿890</div>
+        </div>
+        <div>
+          <div class="st-label">Stock</div>
+          <div class="st">88</div>
+        </div>
+        <div class="send">Send Later</div>
+        <button class="x" title="Remove">×</button>
+      </div>
+
+      <div class="product-row">
+        <div class="img"><img src="../assets/products/017.jpg"></div>
+        <div>
+          <div class="nm">Banana Doll</div>
+          <div class="sk">SKU 017</div>
+        </div>
+        <div>
+          <div class="pr-label">Price</div>
+          <div class="pr">฿290</div>
+        </div>
+        <div>
+          <div class="st-label">Stock</div>
+          <div class="st">120</div>
+        </div>
+        <div class="send" style="opacity:.4">—</div>
+        <button class="x" title="Remove">×</button>
+      </div>
+
+      <div class="add-product">
+        <div class="pls">+</div>
+        <div>
+          <div class="lbl">Add product</div>
+          <div class="sub">Or <a href="#" style="color:var(--indigo);font-weight:700">paste from CSV</a> · <a href="#" style="color:var(--indigo);font-weight:700">import from Shopify</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-row">
+      <button class="btn-sec">← Back</button>
+      <button class="btn-pri">Next: First event →</button>
+      <a href="#" class="skip">Skip · I'll add products later</a>
+    </div>
+  </div>
+
+  <p style="text-align:center;margin-top:24px;font-size:12px;color:var(--muted)">3 products added · saved automatically · <a href="#" style="color:var(--indigo);font-weight:700">view all</a></p>
+
+</main>
+
+</body>
+</html>

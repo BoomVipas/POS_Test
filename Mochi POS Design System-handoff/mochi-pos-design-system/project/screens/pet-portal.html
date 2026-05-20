@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390">
+<title>MochiPOS · Register your pet</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { background: var(--bg); margin: 0; min-height: 100vh; }
+  .phone { max-width: 390px; margin: 0 auto; min-height: 100vh; background: var(--bg); display: flex; flex-direction: column; }
+  .topbar { padding: 16px 20px; display: flex; align-items: center; gap: 10px; }
+  .topbar img { height: 22px; }
+  .topbar .wm { font-size: 16px; }
+  .lang { margin-left: auto; font-size: 11px; padding: 4px 10px; border-radius: 999px; background: var(--bg-soft); border: none; font-family: inherit; font-weight: 700; color: var(--text); cursor: pointer; }
+
+  /* Hero */
+  .hero { padding: 16px 20px 32px; text-align: center; background: var(--grad-page); }
+  .mascot-card { width: 120px; height: 120px; margin: 0 auto 16px; background: var(--lavender-100); border-radius: 36px; padding: 12px; box-shadow: var(--shadow-card); display: flex; align-items: center; justify-content: center; }
+  .mascot-card img { height: 100%; }
+  h1 { font-size: 28px; line-height: 1.15; margin-bottom: 8px; }
+  .hero p { font-size: 14px; color: var(--muted); padding: 0 12px; }
+  .receipt-pill { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; padding: 6px 12px; border-radius: 999px; background: var(--cream); color: var(--text); font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+  .receipt-pill .ord { font-family: var(--font-mono); color: var(--text); font-weight: 700; letter-spacing: 0; }
+
+  /* Section */
+  section { padding: 24px 20px; }
+  section h3 { font-size: 18px; margin-bottom: 16px; }
+  section .sub { font-size: 13px; color: var(--muted); margin-top: -10px; margin-bottom: 16px; }
+
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .field label { font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  .field input { font-family: inherit; font-size: 16px; padding: 14px 16px; border: 1px solid var(--line-strong); border-radius: 14px; background: var(--panel); color: var(--text); outline: none; }
+  .field input:focus { border-color: var(--indigo-500); box-shadow: 0 0 0 4px var(--lavender-200); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* Pet type chips */
+  .chips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .chip-pet { padding: 14px 8px; border: 1px solid var(--line-strong); border-radius: 14px; background: var(--panel); cursor: pointer; text-align: center; font-family: inherit; }
+  .chip-pet.on { border-color: var(--indigo); background: var(--indigo-50); }
+  .chip-pet .ic { font-size: 24px; line-height: 1; }
+  .chip-pet .nm { font-size: 11px; font-weight: 700; margin-top: 6px; color: var(--text); }
+  .chip-pet.on .nm { color: var(--indigo); }
+
+  /* Allergy / preference chips */
+  .tag-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .tag { padding: 8px 12px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--panel); font-size: 12px; font-weight: 700; color: var(--text); cursor: pointer; }
+  .tag.on { background: var(--indigo); color: #fff; border-color: var(--indigo); }
+
+  /* Order link card */
+  .order-card { background: var(--cream); border: 1px solid var(--cream-deep); border-radius: 16px; padding: 16px; display: flex; gap: 12px; align-items: center; margin-bottom: 18px; }
+  .order-card .ico { width: 40px; height: 40px; border-radius: 12px; background: var(--panel); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .order-card .info { flex: 1; min-width: 0; }
+  .order-card .ord { font-family: var(--font-mono); font-size: 11px; color: var(--muted); font-weight: 700; }
+  .order-card .nm { font-size: 14px; font-weight: 800; margin-top: 2px; }
+  .order-card .meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* Consent */
+  .consent { display: flex; gap: 12px; align-items: flex-start; padding: 16px; background: var(--bg-soft); border-radius: 14px; margin-bottom: 16px; }
+  .consent input { flex-shrink: 0; margin-top: 2px; width: 18px; height: 18px; accent-color: var(--indigo); }
+  .consent label { font-size: 12px; line-height: 1.5; color: var(--text); }
+  .consent label strong { font-weight: 800; }
+
+  /* Footer cta */
+  .cta-bar { position: sticky; bottom: 0; padding: 16px 20px 24px; background: linear-gradient(180deg, transparent 0, var(--bg) 30%); border-top: 1px solid var(--line-quiet); margin-top: auto; }
+  .cta { width: 100%; padding: 16px 0; background: var(--grad-primary); color: #fff; border: none; border-radius: 16px; font-family: inherit; font-weight: 800; font-size: 16px; cursor: pointer; box-shadow: var(--shadow-card); }
+  .cta-meta { text-align: center; margin-top: 10px; font-size: 11px; color: var(--muted); }
+
+  /* Progress */
+  .progress { display: flex; gap: 4px; padding: 0 20px 4px; }
+  .progress span { flex: 1; height: 4px; border-radius: 999px; background: var(--bg-soft); }
+  .progress span.on { background: var(--indigo); }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="topbar">
+    <img src="../assets/mochi-mascot.png" alt="">
+    <span class="wm">Mochi<span class="pos">POS</span></span>
+    <button class="lang">EN · TH</button>
+  </div>
+
+  <div class="progress">
+    <span class="on"></span>
+    <span class="on"></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="mascot-card"><img src="../assets/mochi-mascot.png" alt=""></div>
+    <h1>Tell us about your cat</h1>
+    <p>So next time you visit theMeowseum we'll know what Mochi loves — and won't show you anything she's allergic to.</p>
+    <span class="receipt-pill">Order <span class="ord">MW-20260507-0182</span></span>
+  </div>
+
+  <!-- Order context -->
+  <section style="padding-top:8px">
+    <div class="order-card">
+      <div class="ico">🐾</div>
+      <div class="info">
+        <div class="ord">Pet Expo Thailand · Day 3</div>
+        <div class="nm">2 items · ฿1,470</div>
+        <div class="meta">Triceratops + Banana Doll · paid</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About you -->
+  <section style="padding-top:0">
+    <div class="eyebrow" style="color:var(--lavender-700);margin-bottom:8px">Step 2 of 4 · About you</div>
+    <h3>Where can we reach you?</h3>
+    <div class="field">
+      <label>Name or nickname</label>
+      <input value="Khun Pim" style="font-weight:700">
+    </div>
+    <div class="field">
+      <label>Phone or LINE ID</label>
+      <input placeholder="+66 …" inputmode="tel">
+    </div>
+  </section>
+
+  <!-- Pet -->
+  <section style="padding-top:8px">
+    <h3>Your pet</h3>
+    <div class="sub">Add as many as you'd like. We'll remember each one.</div>
+
+    <div class="field">
+      <label>Pet name</label>
+      <input value="Mochi" style="font-weight:700">
+    </div>
+
+    <div class="field">
+      <label>Type</label>
+      <div class="chips">
+        <button type="button" class="chip-pet on"><div class="ic">🐱</div><div class="nm">Cat</div></button>
+        <button type="button" class="chip-pet"><div class="ic">🐶</div><div class="nm">Dog</div></button>
+        <button type="button" class="chip-pet"><div class="ic">🐰</div><div class="nm">Rabbit</div></button>
+        <button type="button" class="chip-pet"><div class="ic">🐦</div><div class="nm">Other</div></button>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Breed</label>
+        <input value="Persian">
+      </div>
+      <div class="field">
+        <label>Age</label>
+        <input value="3 yr">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Allergies <span style="color:var(--muted-soft);font-weight:600;text-transform:none;letter-spacing:0">— optional</span></label>
+      <div class="tag-grid">
+        <button type="button" class="tag on">Chicken</button>
+        <button type="button" class="tag">Fish</button>
+        <button type="button" class="tag">Beef</button>
+        <button type="button" class="tag">Dairy</button>
+        <button type="button" class="tag">Grain</button>
+        <button type="button" class="tag">+ Other</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Loves</label>
+      <div class="tag-grid">
+        <button type="button" class="tag on">Cardboard</button>
+        <button type="button" class="tag on">Catnip</button>
+        <button type="button" class="tag">Feathers</button>
+        <button type="button" class="tag">Lasers</button>
+        <button type="button" class="tag">Tunnels</button>
+        <button type="button" class="tag">+ Other</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Consent -->
+  <section style="padding-top:0">
+    <div class="consent">
+      <input type="checkbox" id="c1" checked>
+      <label for="c1">Send me <strong>occasional</strong> product picks based on Mochi's preferences. No spam — we promise.</label>
+    </div>
+  </section>
+
+  <div class="cta-bar">
+    <button class="cta">Save Mochi's profile →</button>
+    <div class="cta-meta">Takes 30 seconds · You can edit anytime</div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MochiPOS · Event setup</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { background: var(--bg); margin: 0; }
+  .topbar { height: 64px; display: flex; align-items: center; gap: 16px; padding: 0 24px; background: var(--panel); border-bottom: 1px solid var(--line); }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand img { height: 28px; }
+  .crumbs { margin-left: 18px; font-size: 13px; color: var(--muted); }
+  .crumbs a { color: var(--muted); text-decoration: none; }
+  .crumbs strong { color: var(--text); font-weight: 700; }
+  .top-actions { margin-left: auto; display: flex; gap: 12px; }
+  .btn-pri { padding: 10px 18px; background: var(--grad-primary); color: #fff; border: none; border-radius: 12px; font-family: inherit; font-weight: 700; font-size: 13px; cursor: pointer; }
+  .btn-sec { padding: 10px 18px; background: var(--panel); color: var(--indigo); border: 1px solid var(--line-strong); border-radius: 12px; font-family: inherit; font-weight: 700; font-size: 13px; cursor: pointer; }
+
+  .page { padding: 32px 40px 56px; max-width: 1280px; margin: 0 auto; }
+  h1 { margin-bottom: 4px; }
+  .lede { color: var(--muted); font-size: 14px; max-width: 640px; }
+
+  /* Stepper */
+  .steps { display: flex; gap: 0; margin: 28px 0 24px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 6px; box-shadow: var(--shadow-rest); }
+  .step { flex: 1; display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 12px; }
+  .step.on { background: var(--indigo-50); }
+  .step .num { width: 28px; height: 28px; border-radius: 50%; background: var(--bg-soft); color: var(--muted); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; flex-shrink: 0; }
+  .step.done .num { background: var(--success-bg); color: var(--success); }
+  .step.on .num { background: var(--indigo); color: #fff; }
+  .step .lbl { font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  .step.on .lbl, .step.done .lbl { color: var(--text); }
+
+  .grid { display: grid; grid-template-columns: 1fr 360px; gap: 20px; }
+
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-rest); }
+  .card h3 { font-size: 18px; }
+  .card .sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 18px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  .field input, .field select { font-family: inherit; font-size: 14px; padding: 12px 14px; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--panel); color: var(--text); outline: none; }
+  .field input:focus, .field select:focus { border-color: var(--indigo-500); box-shadow: 0 0 0 4px var(--lavender-200); }
+
+  /* Stock allocator table */
+  .alloc { margin-top: 24px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+  .alloc-head { display: grid; grid-template-columns: 56px 1fr 110px repeat(4, 80px) 90px; gap: 12px; padding: 12px 16px; background: var(--bg-soft); font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); align-items: center; }
+  .alloc-row { display: grid; grid-template-columns: 56px 1fr 110px repeat(4, 80px) 90px; gap: 12px; padding: 14px 16px; align-items: center; border-top: 1px solid var(--line-quiet); }
+  .alloc-row:hover { background: var(--bg-soft); }
+  .alloc-row .img { width: 40px; height: 40px; border-radius: 10px; background: var(--bg-soft); border: 1px solid var(--line); overflow: hidden; }
+  .alloc-row .img img { width: 100%; height: 100%; object-fit: cover; }
+  .alloc-row .nm { font-size: 13px; font-weight: 700; line-height: 1.3; }
+  .alloc-row .sku { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-top: 2px; font-weight: 700; }
+  .alloc-row .wh { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; font-weight: 700; }
+  .alloc-row input { width: 56px; padding: 8px 6px; border: 1px solid var(--line-strong); border-radius: 8px; font-family: var(--font-mono); font-size: 13px; font-weight: 700; text-align: center; background: var(--panel); color: var(--text); outline: none; }
+  .alloc-row input:focus { border-color: var(--indigo-500); }
+  .alloc-row .total { font-weight: 800; font-variant-numeric: tabular-nums; font-size: 13px; text-align: right; }
+
+  /* Aside: rule cards */
+  .aside { display: flex; flex-direction: column; gap: 16px; }
+  .ruleset .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--line-quiet); }
+  .ruleset .toggle-row:last-child { border-bottom: none; }
+  .ruleset .nm { font-size: 13px; font-weight: 700; }
+  .ruleset .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .switch { width: 44px; height: 26px; border-radius: 999px; background: var(--bg-soft); position: relative; cursor: pointer; transition: background 160ms ease; flex-shrink: 0; }
+  .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: var(--shadow-rest); transition: left 160ms ease; }
+  .switch.on { background: var(--indigo); }
+  .switch.on::after { left: 21px; }
+
+  .gift-rule { padding: 14px; background: var(--lavender-100); border-radius: 12px; margin-top: 12px; font-size: 13px; color: var(--indigo); line-height: 1.5; }
+  .gift-rule strong { font-weight: 800; }
+
+  .summary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; }
+  .summary-row.total { font-weight: 800; font-size: 16px; padding-top: 12px; border-top: 1px solid var(--line); margin-top: 8px; color: var(--text); }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <img src="../assets/mochi-mascot.png" alt="">
+    <span class="wm">Mochi<span class="pos">POS</span></span>
+  </div>
+  <div class="crumbs"><a href="#">Events</a> &nbsp;›&nbsp; <strong>Pet Expo Thailand · Q2 2026</strong></div>
+  <div class="top-actions">
+    <button class="btn-sec">Save draft</button>
+    <button class="btn-pri">Open booth →</button>
+  </div>
+</header>
+
+<main class="page">
+  <div class="eyebrow" style="color:var(--lavender-700)">New event</div>
+  <h1>Set up your booth</h1>
+  <p class="lede">Allocate inventory across event days, decide which SKUs go to the booth vs Send Later, and pre-load free-gift rules. You can adjust everything mid-event.</p>
+
+  <!-- Stepper -->
+  <div class="steps">
+    <div class="step done"><div class="num">✓</div><div class="lbl">Event details</div></div>
+    <div class="step done"><div class="num">✓</div><div class="lbl">Schedule</div></div>
+    <div class="step on"><div class="num">3</div><div class="lbl">Stock allocation</div></div>
+    <div class="step"><div class="num">4</div><div class="lbl">Free gifts &amp; promos</div></div>
+    <div class="step"><div class="num">5</div><div class="lbl">Staff &amp; review</div></div>
+  </div>
+
+  <div class="grid">
+    <!-- LEFT: stock allocator -->
+    <div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end">
+          <div>
+            <h3>Stock allocation · 4 days</h3>
+            <div class="sub">Pull from warehouse. Quantities save automatically. Sample column comes off warehouse but is shown separately.</div>
+          </div>
+          <button class="btn-sec" style="padding:8px 14px;font-size:12px">+ Add SKU</button>
+        </div>
+
+        <div class="alloc">
+          <div class="alloc-head">
+            <span></span>
+            <span>Product</span>
+            <span style="text-align:right">Warehouse</span>
+            <span style="text-align:center">Day 1</span>
+            <span style="text-align:center">Day 2</span>
+            <span style="text-align:center">Day 3</span>
+            <span style="text-align:center">Day 4</span>
+            <span style="text-align:right">+ Sample</span>
+          </div>
+
+          <div class="alloc-row">
+            <div class="img"><img src="../assets/products/006.png"></div>
+            <div><div class="nm">The Triceratops</div><div class="sku">SKU 006 · ฿1,290</div></div>
+            <div class="wh" style="text-align:right">42</div>
+            <div style="text-align:center"><input value="8"></div>
+            <div style="text-align:center"><input value="8"></div>
+            <div style="text-align:center"><input value="6"></div>
+            <div style="text-align:center"><input value="6"></div>
+            <div class="total">28 + 1</div>
+          </div>
+
+          <div class="alloc-row">
+            <div class="img"><img src="../assets/products/003.png"></div>
+            <div><div class="nm">The Ionic Column</div><div class="sku">SKU 003 · ฿890</div></div>
+            <div class="wh" style="text-align:right">88</div>
+            <div style="text-align:center"><input value="10"></div>
+            <div style="text-align:center"><input value="12"></div>
+            <div style="text-align:center"><input value="12"></div>
+            <div style="text-align:center"><input value="10"></div>
+            <div class="total">44 + 1</div>
+          </div>
+
+          <div class="alloc-row">
+            <div class="img"><img src="../assets/products/010.png"></div>
+            <div><div class="nm">The Sphinx of Giza</div><div class="sku">SKU 010 · ฿1,190</div></div>
+            <div class="wh" style="text-align:right">36</div>
+            <div style="text-align:center"><input value="5"></div>
+            <div style="text-align:center"><input value="6"></div>
+            <div style="text-align:center"><input value="6"></div>
+            <div style="text-align:center"><input value="5"></div>
+            <div class="total">22 + 1</div>
+          </div>
+
+          <div class="alloc-row">
+            <div class="img"><img src="../assets/products/014.png"></div>
+            <div><div class="nm">Venus</div><div class="sku">SKU 014 · ฿1,490</div></div>
+            <div class="wh" style="text-align:right">18</div>
+            <div style="text-align:center"><input value="4"></div>
+            <div style="text-align:center"><input value="4"></div>
+            <div style="text-align:center"><input value="3"></div>
+            <div style="text-align:center"><input value="3"></div>
+            <div class="total">14 + 1</div>
+          </div>
+
+          <div class="alloc-row">
+            <div class="img"><img src="../assets/products/017.jpg"></div>
+            <div><div class="nm">Banana Doll</div><div class="sku">SKU 017 · ฿290</div></div>
+            <div class="wh" style="text-align:right">120</div>
+            <div style="text-align:center"><input value="20"></div>
+            <div style="text-align:center"><input value="22"></div>
+            <div style="text-align:center"><input value="22"></div>
+            <div style="text-align:center"><input value="20"></div>
+            <div class="total">84 + 0</div>
+          </div>
+
+          <div class="alloc-row">
+            <div class="img"><img src="../assets/products/021.jpg"></div>
+            <div><div class="nm">Sticker Classic</div><div class="sku">SKU 021 · ฿60 · gift-eligible</div></div>
+            <div class="wh" style="text-align:right">400</div>
+            <div style="text-align:center"><input value="80"></div>
+            <div style="text-align:center"><input value="80"></div>
+            <div style="text-align:center"><input value="80"></div>
+            <div style="text-align:center"><input value="80"></div>
+            <div class="total">320 + 0</div>
+          </div>
+
+          <div class="alloc-row" style="opacity:.55">
+            <div class="img"></div>
+            <div><div class="nm" style="color:var(--muted)">+ 6 more SKUs allocated</div><div class="sku" style="color:var(--muted-soft)">show all</div></div>
+            <div></div><div></div><div></div><div></div><div></div><div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: aside -->
+    <aside class="aside">
+      <div class="card">
+        <h3>Event summary</h3>
+        <div style="margin-top:14px">
+          <div class="summary-row"><span class="muted">SKUs allocated</span><span class="num"><strong>12</strong></span></div>
+          <div class="summary-row"><span class="muted">Total units to booth</span><span class="num"><strong>518</strong></span></div>
+          <div class="summary-row"><span class="muted">Sample bucket</span><span class="num"><strong>4</strong></span></div>
+          <div class="summary-row"><span class="muted">Estimated retail</span><span class="num"><strong>฿387,460</strong></span></div>
+          <div class="summary-row total"><span>Reserved warehouse value</span><span class="num">฿142,180</span></div>
+        </div>
+      </div>
+
+      <div class="card ruleset">
+        <h3>Booth rules</h3>
+        <div style="margin-top:8px">
+          <div class="toggle-row">
+            <div><div class="nm">Send Later available</div><div class="sub">Pay now, ship after event</div></div>
+            <div class="switch on"></div>
+          </div>
+          <div class="toggle-row">
+            <div><div class="nm">QR pet registration</div><div class="sub">Print on every receipt</div></div>
+            <div class="switch on"></div>
+          </div>
+          <div class="toggle-row">
+            <div><div class="nm">EN / TH bilingual UI</div><div class="sub">Cashier toggles per shift</div></div>
+            <div class="switch on"></div>
+          </div>
+          <div class="toggle-row">
+            <div><div class="nm">Offline mode</div><div class="sub">Sync when wifi returns</div></div>
+            <div class="switch on"></div>
+          </div>
+          <div class="toggle-row">
+            <div><div class="nm">Cash drawer</div><div class="sub">No drawer at this booth</div></div>
+            <div class="switch"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Free-gift rule <span class="pill lav" style="margin-left:6px;font-size:10px">draft</span></h3>
+        <div class="gift-rule">
+          When subtotal ≥ <strong>฿500</strong>, add 1× <strong>Sticker Classic</strong> as gift. Deducts from gift bucket — not counted as paid sales.
+        </div>
+        <button class="btn-sec" style="margin-top:12px;width:100%;font-size:12px">Edit gift rules</button>
+      </div>
+    </aside>
+  </div>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MochiPOS · Apply for the pilot</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { background: var(--bg); margin: 0; }
+  .topbar { height: 64px; display: flex; align-items: center; gap: 14px; padding: 0 28px; max-width: 1200px; margin: 0 auto; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand img { height: 28px; }
+  .nav { margin-left: auto; display: flex; gap: 8px; }
+  .nav a { padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; color: var(--text); text-decoration: none; }
+  .nav a:hover { background: var(--bg-soft); }
+  .nav a.cta { background: var(--indigo); color: #fff; padding: 10px 18px; }
+
+  .layout { display: grid; grid-template-columns: 1fr 480px; gap: 56px; max-width: 1200px; margin: 0 auto; padding: 32px 28px 80px; }
+
+  /* Left: pitch */
+  .pitch .kicker { font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--lavender-700); margin-bottom: 18px; }
+  .pitch h1 { font-size: 56px; line-height: 1.02; letter-spacing: -.03em; font-weight: 900; }
+  .pitch h1 .lav { color: var(--lavender-700); }
+  .pitch .lede { font-size: 18px; line-height: 1.55; color: var(--text); max-width: 520px; margin-top: 22px; }
+
+  .features { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 36px; max-width: 540px; }
+  .feature { padding: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow-rest); }
+  .feature .ti { font-size: 14px; font-weight: 800; color: var(--text); }
+  .feature .bd { font-size: 13px; line-height: 1.5; color: var(--muted); margin-top: 4px; }
+
+  .proof { margin-top: 40px; padding: 24px; background: var(--cream); border-radius: 20px; max-width: 540px; }
+  .proof .stamp { font-family: Georgia, serif; font-style: italic; font-size: 13px; color: var(--text); letter-spacing: -.01em; line-height: 1.4; }
+  .proof .who { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-top: 12px; }
+
+  /* Right: form panel */
+  .form-card { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 32px; box-shadow: var(--shadow-card); position: sticky; top: 24px; height: fit-content; }
+  .form-card .ti { font-size: 22px; font-weight: 800; letter-spacing: -.015em; }
+  .form-card .sub { font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+
+  .field { display: flex; flex-direction: column; gap: 6px; margin-top: 16px; }
+  .field label { font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  .field input, .field textarea, .field select { font-family: inherit; font-size: 14px; padding: 11px 14px; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--panel); color: var(--text); outline: none; }
+  .field input:focus, .field textarea:focus { border-color: var(--indigo-500); box-shadow: 0 0 0 4px var(--lavender-200); }
+  .field textarea { min-height: 90px; resize: vertical; line-height: 1.45; }
+  .field .err { font-size: 11px; color: var(--danger); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .submit { margin-top: 24px; width: 100%; padding: 14px 0; background: var(--grad-primary); color: #fff; border: none; border-radius: 14px; font-family: inherit; font-weight: 800; font-size: 15px; cursor: pointer; box-shadow: var(--shadow-card); }
+  .submit-meta { text-align: center; margin-top: 12px; font-size: 11px; color: var(--muted); }
+  .submit-meta a { color: var(--indigo); font-weight: 700; }
+
+  .pilot-strip { margin-top: 64px; padding: 20px 28px; background: var(--indigo-50); border-radius: 20px; max-width: 1144px; margin-left: auto; margin-right: auto; display: flex; align-items: center; gap: 24px; }
+  .pilot-strip .ic { width: 48px; height: 48px; flex-shrink: 0; border-radius: 14px; background: var(--lavender-100); display: flex; align-items: center; justify-content: center; }
+  .pilot-strip .ic svg { stroke: var(--indigo); }
+  .pilot-strip .nm { font-size: 14px; font-weight: 800; color: var(--indigo); }
+  .pilot-strip .bd { font-size: 13px; color: var(--text); margin-top: 2px; line-height: 1.45; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <img src="../assets/mochi-mascot.png" alt="">
+    <span class="wm">Mochi<span class="pos">POS</span></span>
+  </div>
+  <nav class="nav">
+    <a href="#">Why MochiPOS</a>
+    <a href="#">Pricing</a>
+    <a href="#">Sign in</a>
+    <a href="#" class="cta">Apply</a>
+  </nav>
+</header>
+
+<main class="layout">
+
+  <!-- LEFT: PITCH -->
+  <div class="pitch">
+    <div class="kicker">Pilot · 5 brands · cat sellers first</div>
+    <h1>Sell fast at the booth.<br><span class="lav">Save the data for later.</span></h1>
+    <p class="lede">A POS built for booth and event sellers — multi-day stock, Send Later orders, sample bucket, and post-purchase pet profiles. No CRM forms slowing down your cashier line.</p>
+
+    <div class="features">
+      <div class="feature">
+        <div class="ti">4-day event stock</div>
+        <div class="bd">Allocate per day, sample bucket separate, gift rule baked in.</div>
+      </div>
+      <div class="feature">
+        <div class="ti">Send Later, paid now</div>
+        <div class="bd">Customer pays at booth, ships from warehouse. Stays out of booth stock.</div>
+      </div>
+      <div class="feature">
+        <div class="ti">QR pet profiles</div>
+        <div class="bd">Receipt has a QR. Customer registers their cat after the sale, on their phone.</div>
+      </div>
+      <div class="feature">
+        <div class="ti">Returning customer lookup</div>
+        <div class="bd">Phone or QR finds them. Past orders, pet name, allergies — at the next event.</div>
+      </div>
+    </div>
+
+    <div class="proof">
+      <p class="stamp">"Born from a real Pet Expo booth POS that survived a 4-day event. Every feature comes from a problem we hit on the booth floor — not a feature spec."</p>
+      <div class="who">— theMeowseum · Pet Expo Thailand 2025</div>
+    </div>
+  </div>
+
+  <!-- RIGHT: APPLY FORM -->
+  <aside class="form-card">
+    <div class="ti">Apply to join the pilot</div>
+    <div class="sub">We review every application by hand. Expect a reply within 3 working days.</div>
+
+    <form>
+      <div class="field">
+        <label>Your name</label>
+        <input placeholder="e.g. Aim Visan" autocomplete="name">
+      </div>
+
+      <div class="field-row">
+        <div class="field" style="margin-top:12px">
+          <label>Phone</label>
+          <input placeholder="0xx-xxx-xxxx" autocomplete="tel" inputmode="tel">
+        </div>
+        <div class="field" style="margin-top:12px">
+          <label>Email</label>
+          <input type="email" placeholder="you@brand.com" autocomplete="email">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Brand name</label>
+        <input placeholder="e.g. Meow House" autocomplete="organization">
+      </div>
+
+      <div class="field">
+        <label>Product category</label>
+        <input placeholder="e.g. Cat apparel, treats, toys">
+      </div>
+
+      <div class="field">
+        <label>Instagram / Facebook / website <span style="color:var(--muted-soft);text-transform:none;letter-spacing:0;font-weight:600">— optional</span></label>
+        <input type="url" placeholder="https://instagram.com/...">
+      </div>
+
+      <div class="field-row">
+        <div class="field" style="margin-top:12px">
+          <label># of active SKUs</label>
+          <input type="number" placeholder="25" inputmode="numeric">
+        </div>
+        <div class="field" style="margin-top:12px">
+          <label># of events / year</label>
+          <input type="number" placeholder="6" inputmode="numeric">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Why MochiPOS? <span style="color:var(--muted-soft);text-transform:none;letter-spacing:0;font-weight:600">— optional</span></label>
+        <textarea placeholder="Tell us about your event setup, what's hurting today, anything you'd like us to know."></textarea>
+      </div>
+
+      <button type="submit" class="submit">Submit application</button>
+      <p class="submit-meta">Already approved? <a href="#">Redeem your invite code →</a></p>
+    </form>
+  </aside>
+
+</main>
+
+<div class="pilot-strip">
+  <div class="ic">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M9 12l2 2 4-4"></path></svg>
+  </div>
+  <div>
+    <div class="nm">Pilot acceptance · 5 brands</div>
+    <div class="bd">Cat-product brand · 10–100 active SKUs · at least one upcoming event in the next 90 days · accepts PromptPay or bank transfer · willing to give us 30 minutes a week of feedback.</div>
+  </div>
+</div>
+
+</body>
+</html>

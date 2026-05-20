@@ -1,0 +1,28 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{padding:20px 22px;background:var(--panel);display:flex;flex-direction:column;gap:14px;}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  button{font-family:inherit;font-weight:700;cursor:pointer;border:none;}
+  .btn-primary{background:var(--grad-button);color:#fff;border-radius:14px;padding:10px 18px;font-size:14px;box-shadow:var(--shadow-rest);}
+  .btn-secondary{background:var(--soft);color:var(--label);border-radius:14px;padding:10px 18px;font-size:14px;}
+  .btn-ghost{background:transparent;color:var(--accent);border-radius:14px;padding:10px 14px;font-size:14px;}
+  .btn-danger{background:var(--severe);color:#fff;border-radius:14px;padding:10px 18px;font-size:14px;}
+  .btn-pill{background:var(--accent-darker);color:#fff;border-radius:999px;padding:6px 14px;font-size:12px;font-weight:800;letter-spacing:.04em;}
+  .btn-icon{width:42px;height:42px;border-radius:12px;background:var(--panel);box-shadow:var(--shadow-rest);display:flex;align-items:center;justify-content:center;color:var(--accent);}
+  .meta{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);}
+</style></head><body>
+<div class="row">
+  <button class="btn-primary">Charge ฿1,290</button>
+  <button class="btn-secondary">Add to cart</button>
+  <button class="btn-ghost">Cancel</button>
+  <button class="btn-danger">Void sale</button>
+</div>
+<div class="row">
+  <button class="btn-pill">DAY 02</button>
+  <button class="btn-pill" style="background:var(--soft);color:var(--label)">DAY 03</button>
+  <button class="btn-icon">＋</button>
+  <button class="btn-icon">−</button>
+  <button class="btn-icon">⌕</button>
+</div>
+<div class="meta">primary 14r / grad #a87640→#85572b · secondary 14r / soft fill · ghost text · danger severe</div>
+</body></html>

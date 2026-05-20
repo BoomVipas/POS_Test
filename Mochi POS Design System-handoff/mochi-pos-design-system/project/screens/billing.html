@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MochiPOS · Billing</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { background: var(--bg); margin: 0; min-height: 100vh; }
+
+  /* sidebar */
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+  .sidebar { background: var(--panel-2); border-right: 1px solid var(--line); padding: 20px 16px; }
+  .sidebar .br { display: flex; align-items: center; gap: 10px; padding: 4px 8px 22px; border-bottom: 1px solid var(--line-quiet); margin-bottom: 14px; }
+  .sidebar .br img { height: 24px; }
+  .nav-grp { font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted-soft); padding: 14px 12px 6px; }
+  .nav a { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--text); text-decoration: none; }
+  .nav a:hover { background: var(--bg-soft); }
+  .nav a.on { background: var(--indigo); color: #fff; }
+  .nav a .ic { width: 16px; height: 16px; opacity: .9; }
+
+  .main { padding: 32px 40px 80px; max-width: 1080px; }
+
+  .hd { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 32px; }
+  .hd h1 { font-size: 32px; letter-spacing: -.025em; }
+  .hd .lede { font-size: 14px; color: var(--muted); margin-top: 6px; }
+
+  /* current plan banner */
+  .current { background: var(--grad-cream); border-radius: 20px; padding: 24px 28px; display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; margin-bottom: 36px; box-shadow: var(--shadow-rest); }
+  .current .lbl { font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .current .nm { font-size: 22px; font-weight: 900; letter-spacing: -.015em; margin-top: 2px; }
+  .current .since { font-size: 13px; color: var(--text); margin-top: 4px; }
+  .current .bd-info { display: flex; gap: 24px; margin-top: 14px; }
+  .current .bd-info .item .k { font-size: 11px; color: var(--muted); font-weight: 700; }
+  .current .bd-info .item .v { font-size: 14px; font-weight: 800; margin-top: 2px; }
+  .current .pill-pilot { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: var(--lavender-100); color: var(--indigo); border-radius: 999px; font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+
+  /* toggle */
+  .toggle-wrap { display: flex; justify-content: center; margin-bottom: 24px; }
+  .toggle { display: inline-flex; padding: 4px; background: var(--bg-soft); border-radius: 999px; gap: 2px; }
+  .toggle button { padding: 8px 18px; border: none; background: transparent; font-family: inherit; font-size: 13px; font-weight: 700; color: var(--muted); border-radius: 999px; cursor: pointer; }
+  .toggle button.on { background: var(--panel); color: var(--text); box-shadow: var(--shadow-rest); }
+  .toggle .save { font-size: 10px; padding: 2px 7px; background: var(--success-bg); color: var(--success); border-radius: 999px; margin-left: 4px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+
+  /* plan grid */
+  .plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 48px; }
+  .plan { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; padding: 26px; box-shadow: var(--shadow-rest); display: flex; flex-direction: column; position: relative; }
+  .plan.feat { border: 2px solid var(--indigo); box-shadow: var(--shadow-card); transform: translateY(-4px); }
+  .plan .ribbon { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); padding: 4px 12px; background: var(--indigo); color: #fff; border-radius: 999px; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+  .plan .nm { font-size: 18px; font-weight: 900; letter-spacing: -.01em; }
+  .plan .for { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .plan .price { margin-top: 20px; display: flex; align-items: baseline; gap: 6px; }
+  .plan .price .c { font-size: 16px; font-weight: 700; color: var(--text-2); }
+  .plan .price .v { font-size: 36px; font-weight: 900; letter-spacing: -.025em; line-height: 1; }
+  .plan .price .u { font-size: 13px; color: var(--muted); font-weight: 700; }
+  .plan .price-range { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  .plan ul { list-style: none; padding: 0; margin: 24px 0 0; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .plan li { display: flex; gap: 10px; font-size: 13px; line-height: 1.45; }
+  .plan li svg { flex-shrink: 0; margin-top: 2px; }
+  .plan li.muted { color: var(--muted-soft); }
+  .plan li.muted svg { stroke: var(--muted-soft); }
+
+  .plan .cta { margin-top: 24px; padding: 12px 0; border-radius: 12px; font-family: inherit; font-weight: 800; font-size: 14px; cursor: pointer; border: none; }
+  .plan .cta.pri { background: var(--grad-primary); color: #fff; }
+  .plan .cta.sec { background: var(--panel); border: 1px solid var(--line-strong); color: var(--indigo); }
+  .plan .cta.cur { background: var(--success-bg); color: var(--success); cursor: default; }
+
+  /* invoice history */
+  .history h3 { font-size: 18px; margin-bottom: 14px; }
+  .history-card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow-rest); }
+  .invoice-row { display: grid; grid-template-columns: 110px 1fr 100px 90px 80px; gap: 16px; padding: 14px 20px; align-items: center; border-bottom: 1px solid var(--line-quiet); }
+  .invoice-row:last-child { border-bottom: none; }
+  .invoice-row:hover { background: var(--bg-soft); }
+  .invoice-row .dt { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-weight: 700; }
+  .invoice-row .nm { font-size: 13px; font-weight: 700; }
+  .invoice-row .meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .invoice-row .amt { font-variant-numeric: tabular-nums; font-weight: 800; text-align: right; }
+  .invoice-row .pdf { font-size: 12px; color: var(--indigo); font-weight: 700; text-decoration: none; text-align: right; }
+
+  .pay-method { margin-top: 32px; padding: 20px 24px; background: var(--panel); border: 1px solid var(--line); border-radius: 18px; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-rest); }
+  .pay-method .ic { width: 44px; height: 44px; border-radius: 10px; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .pay-method .nm { font-weight: 800; font-size: 14px; }
+  .pay-method .meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .pay-method button { margin-left: auto; padding: 8px 16px; border: 1px solid var(--line-strong); background: var(--panel); border-radius: 10px; font-family: inherit; font-size: 12px; font-weight: 700; color: var(--indigo); cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- sidebar -->
+  <aside class="sidebar">
+    <div class="br">
+      <img src="../assets/mochi-mascot.png" alt="">
+      <span class="wm">Mochi<span class="pos">POS</span></span>
+    </div>
+    <div class="nav-grp">Today</div>
+    <nav class="nav">
+      <a href="#"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2h-4v-7H9v7H5a2 2 0 0 1-2-2z"/></svg>Dashboard</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Register</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7"/></svg>Send Later</a>
+    </nav>
+    <div class="nav-grp">Setup</div>
+    <nav class="nav">
+      <a href="#"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Products</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Events</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Customers</a>
+    </nav>
+    <div class="nav-grp">Account</div>
+    <nav class="nav">
+      <a href="#"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>
+      <a href="#" class="on"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Billing</a>
+    </nav>
+  </aside>
+
+  <!-- main -->
+  <main class="main">
+    <div class="hd">
+      <div>
+        <h1>Billing &amp; plans</h1>
+        <p class="lede">Pilot brands sell free during their pilot event. After that, you choose a plan.</p>
+      </div>
+    </div>
+
+    <!-- current plan banner -->
+    <div class="current">
+      <div>
+        <div class="lbl">Current plan</div>
+        <div class="nm">Pilot · free for one event <span class="pill-pilot" style="margin-left:6px">Active</span></div>
+        <div class="since">Joined May 6, 2026 · Pilot event ends June 14, 2026</div>
+        <div class="bd-info">
+          <div class="item"><div class="k">SKUs</div><div class="v">12 of 100</div></div>
+          <div class="item"><div class="k">Events used</div><div class="v">0 of 1</div></div>
+          <div class="item"><div class="k">Customer profiles</div><div class="v">0</div></div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)">Next billing</div>
+        <div style="font-size:18px;font-weight:900;margin-top:4px">June 15, 2026</div>
+      </div>
+    </div>
+
+    <!-- toggle -->
+    <div class="toggle-wrap">
+      <div class="toggle">
+        <button class="on">Per event</button>
+        <button>Monthly <span class="save">Save 15%</span></button>
+      </div>
+    </div>
+
+    <!-- plans -->
+    <div class="plans">
+      <div class="plan">
+        <div class="nm">Starter Event</div>
+        <div class="for">Small booth · ≤ 25 SKUs</div>
+        <div class="price">
+          <span class="c">฿</span><span class="v">490</span><span class="u">/event</span>
+        </div>
+        <div class="price-range">฿490–990 depending on event length</div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Up to 4 booth days per event</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Send Later orders</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>QR pet portal</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>CSV export</li>
+          <li class="muted"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>1 staff seat</li>
+          <li class="muted"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>No COGS / margin</li>
+        </ul>
+        <button class="cta sec">Choose Starter</button>
+      </div>
+
+      <div class="plan feat">
+        <div class="ribbon">Most popular</div>
+        <div class="nm">Pro Event</div>
+        <div class="for">Medium booth · 25–100 SKUs</div>
+        <div class="price">
+          <span class="c">฿</span><span class="v">1,500</span><span class="u">/event</span>
+        </div>
+        <div class="price-range">฿1,500–2,500 depending on event length</div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Everything in Starter</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>5 staff seats</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>COGS &amp; gross margin</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Sample bucket tracking</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free-gift rules</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Returning-customer lookup</li>
+        </ul>
+        <button class="cta pri">Choose Pro</button>
+      </div>
+
+      <div class="plan">
+        <div class="nm">Frequent Seller</div>
+        <div class="for">Sellers joining events often</div>
+        <div class="price">
+          <span class="c">฿</span><span class="v">990</span><span class="u">/month</span>
+        </div>
+        <div class="price-range">฿990–1,990/mo · unlimited events</div>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Everything in Pro</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Unlimited events</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Cross-event analytics</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Reorder forecasting</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Priority LINE support</li>
+          <li class="muted"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>Dedicated success manager (Q4)</li>
+        </ul>
+        <button class="cta sec">Choose Frequent</button>
+      </div>
+    </div>
+
+    <!-- payment method -->
+    <div class="pay-method">
+      <div class="ic">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+      </div>
+      <div>
+        <div class="nm">PromptPay · Aim Visan</div>
+        <div class="meta">Default for invoice settlement · added May 6, 2026</div>
+      </div>
+      <button>Change</button>
+    </div>
+
+    <!-- invoice history -->
+    <div class="history" style="margin-top:48px">
+      <h3>Invoices</h3>
+      <div class="history-card">
+        <div class="invoice-row" style="background:var(--bg-soft)">
+          <div style="font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)">Issued</div>
+          <div style="font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)">Description</div>
+          <div style="font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);text-align:right">Status</div>
+          <div style="font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);text-align:right">Amount</div>
+          <div></div>
+        </div>
+        <div class="invoice-row">
+          <div class="dt">2026-05-06</div>
+          <div>
+            <div class="nm">Pilot enrolment · Pet Expo Q2 2026</div>
+            <div class="meta">Free during pilot · 1 event included</div>
+          </div>
+          <div style="text-align:right"><span class="pill ok">Pilot</span></div>
+          <div class="amt">฿0</div>
+          <a href="#" class="pdf">View</a>
+        </div>
+        <div class="invoice-row" style="opacity:.6">
+          <div class="dt">— pending —</div>
+          <div>
+            <div class="nm">Post-pilot plan</div>
+            <div class="meta">Choose a plan above to set up future invoicing</div>
+          </div>
+          <div style="text-align:right"><span class="pill" style="background:var(--bg-soft);color:var(--muted)">Draft</span></div>
+          <div class="amt">—</div>
+          <span class="pdf" style="color:var(--muted)">—</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>
