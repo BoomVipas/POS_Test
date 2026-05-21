@@ -15,10 +15,10 @@ describe("Wave 40b — generateTokenString", () => {
     expect(token).toMatch(/^[A-HJ-NP-Za-hj-km-np-z2-9]{16}$/);
   });
 
-  it("excludes I / O / 0 / 1 / l for OCR + voice clarity", () => {
+  it("excludes I / O / 0 / 1 / i / l / o for OCR + voice clarity", () => {
     for (let i = 0; i < 100; i++) {
       const t = generateTokenString();
-      expect(t).not.toMatch(/[IO0l1]/);
+      expect(t).not.toMatch(/[IO0il1o]/);
     }
   });
 

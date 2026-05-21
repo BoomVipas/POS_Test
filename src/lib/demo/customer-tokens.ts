@@ -82,8 +82,8 @@ export type ClaimResult =
     };
 
 const TOKEN_ALPHABET =
-  "ABCDEFGHJKMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
-// Excludes I/O/0/1/l ambiguity. ~5.78 bits per char × 16 chars = ~92 bits.
+  "ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+// Excludes I/O/0/1/i/l/o ambiguity. ~5.75 bits per char x 16 chars = ~92 bits.
 
 export const DEFAULT_TTL_DAYS = 90;
 

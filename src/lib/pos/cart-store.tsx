@@ -53,7 +53,7 @@ type Action =
   | { type: "SET_CUSTOMER"; patch: Partial<State["customer"]> }
   | { type: "SET_SOURCE"; source: OrderSource };
 
-const initial: State = {
+export const initial: State = {
   lines: [],
   paymentMethod: null,
   splits: [],
@@ -63,7 +63,8 @@ const initial: State = {
   source: "booth",
 };
 
-function reducer(s: State, a: Action): State {
+// Exported for unit testing — the provider wires it via useReducer below.
+export function reducer(s: State, a: Action): State {
   switch (a.type) {
     case "ADD": {
       const existing = s.lines.find((l) => l.productId === a.productId);
