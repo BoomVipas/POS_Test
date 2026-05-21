@@ -75,6 +75,7 @@ export default async function AppLayout({
   const navItems = [
     { href: "/app/pos", label: t.chrome.pos },
     { href: "/app/setup/products", label: t.chrome.products },
+    { href: "/app/events", label: "Events" },
     { href: "/app/dashboard", label: t.chrome.dashboard },
     { href: "/app/send-later", label: t.chrome.sendLater },
     { href: "/app/correction", label: t.chrome.corrections },
