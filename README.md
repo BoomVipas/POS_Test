@@ -88,6 +88,7 @@ Once `npm run dev` is running, here's where to actually find the app. The landin
 | `/app` | Tenant home — 4 tiles for POS / Products / Dashboard / Send-later. | demo mode OK |
 | `/app/pos` | **The actual POS demo** — product grid, sticky cart, mock checkout. | demo mode OK |
 | `/app/dashboard` | Today + multi-period dashboard tiles with mock data. | demo mode OK |
+| `/app/events` | Event setup — per-day stock allocation, booth-rule toggles, free-gift rule. | demo mode OK |
 | `/app/setup/products` | Product setup (add/edit modal with image compress). | demo mode OK |
 | `/app/inventory/samples` | Sample bucket convert UI (Wave 39b). | demo mode OK |
 | `/app/stock-count` | Physical-count reconciliation flow. | demo mode OK |
