@@ -1,6 +1,8 @@
 import type { Product } from "@/lib/pos/types";
 
 // Mock catalog — replaced by real Supabase rows in DD-55+ once creds land.
+// cost_satang is a realistic landed cost (~45-55% of retail) so margin reports
+// and the event-setup "reserved warehouse value" show meaningful demo numbers.
 export const mockProducts: Product[] = [
   {
     id: "p-001",
@@ -9,6 +11,7 @@ export const mockProducts: Product[] = [
     name: "Cat Hoodie",
     category: "apparel",
     price_satang: 89000,
+    cost_satang: 42000,
     shipping_fee_satang: 5000,
     send_later_enabled: true,
     is_active: true,
@@ -22,6 +25,7 @@ export const mockProducts: Product[] = [
     name: "Catnip Toy",
     category: "toys",
     price_satang: 19000,
+    cost_satang: 7000,
     shipping_fee_satang: 3000,
     send_later_enabled: true,
     is_active: true,
@@ -35,6 +39,7 @@ export const mockProducts: Product[] = [
     name: "Sticker Pack · Brown",
     category: "accessories",
     price_satang: 9000,
+    cost_satang: 2500,
     shipping_fee_satang: 2000,
     send_later_enabled: true,
     is_active: true,
@@ -48,6 +53,7 @@ export const mockProducts: Product[] = [
     name: "Premium Cat Treats",
     category: "food",
     price_satang: 29000,
+    cost_satang: 14000,
     shipping_fee_satang: 5000,
     send_later_enabled: false,
     is_active: true,
@@ -61,6 +67,7 @@ export const mockProducts: Product[] = [
     name: "Brushed Cat Bed",
     category: "home",
     price_satang: 149000,
+    cost_satang: 72000,
     shipping_fee_satang: 12000,
     send_later_enabled: true,
     is_active: true,
@@ -74,6 +81,7 @@ export const mockProducts: Product[] = [
     name: "Tuna Pouch · Salmon · Chicken trio",
     category: "food",
     price_satang: 39000,
+    cost_satang: 18000,
     shipping_fee_satang: 4000,
     send_later_enabled: true,
     is_active: true,
@@ -87,6 +95,7 @@ export const mockProducts: Product[] = [
     name: "Sticker Pack · Black",
     category: "accessories",
     price_satang: 9000,
+    cost_satang: 2500,
     shipping_fee_satang: 2000,
     send_later_enabled: true,
     is_active: true,
@@ -100,6 +109,7 @@ export const mockProducts: Product[] = [
     name: "Cat Scarf · Beige",
     category: "apparel",
     price_satang: 49000,
+    cost_satang: 22000,
     shipping_fee_satang: 5000,
     send_later_enabled: true,
     is_active: true,

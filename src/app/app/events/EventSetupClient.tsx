@@ -11,9 +11,12 @@ import { useDemoEventSetup } from "@/lib/demo/useDemoEventSetup";
 import {
   allocationTotal,
   computeEventSummary,
+  giftRuleIsActive,
   MAX_DAYS,
   MIN_DAYS,
+  type BoothRules,
 } from "@/lib/demo/event-setup";
+import { Switch } from "@/components/ui/Switch";
 import { formatTHB } from "@/lib/money/format";
 import type { Product } from "@/lib/pos/types";
 
@@ -38,6 +41,8 @@ export function EventSetupClient({
     setDayCount,
     setDayQty,
     setSample,
+    setBoothRule,
+    setGiftRule,
     reset,
   } = useDemoEventSetup();
 
@@ -54,6 +59,10 @@ export function EventSetupClient({
     () => (setup ? computeEventSummary(setup, products) : null),
     [setup, products],
   );
+  const activeProducts = useMemo(
+    () => products.filter((p) => p.is_active),
+    [products],
+  );
 
   if (!evReady || !catReady || !setup || !summary) {
     return (
@@ -65,6 +74,12 @@ export function EventSetupClient({
 
   const dayCols = Array.from({ length: setup.dayCount }, (_, i) => i);
   const gridTemplate = `52px minmax(0,1.6fr) 78px repeat(${setup.dayCount}, 52px) 60px 84px`;
+
+  const giftRule = setup.giftRule;
+  const giftProduct = giftRule.giftProductId
+    ? (productById.get(giftRule.giftProductId) ?? null)
+    : null;
+  const giftActive = giftRuleIsActive(giftRule) && !!giftProduct;
 
   return (
     <div className="mx-auto max-w-[1280px] px-5 py-6 sm:px-8">
@@ -285,30 +300,182 @@ export function EventSetupClient({
                 label="Sample bucket"
                 value={String(summary.sampleTotal)}
               />
+              <SummaryRow
+                label="Estimated retail"
+                value={formatTHB(summary.estimatedRetailSatang)}
+              />
               <div className="mt-2 flex items-baseline justify-between border-t border-line pt-3">
                 <span className="text-sm font-bold text-text">
-                  Estimated retail
+                  Reserved warehouse value
                 </span>
-                <span className="num text-lg font-black text-accent-strong">
-                  {formatTHB(summary.estimatedRetailSatang)}
+                <span
+                  className="num text-lg font-black text-accent-strong"
+                  title="Landed cost of every unit pulled from the warehouse (booth + sample)."
+                >
+                  {summary.reservedWarehouseSatang > 0
+                    ? formatTHB(summary.reservedWarehouseSatang)
+                    : "—"}
                 </span>
               </div>
             </div>
           </section>
 
-          <section
-            className="rounded-[var(--radius-lg)] border border-line p-5"
-            style={{ background: "var(--indigo-50)" }}
-          >
-            <p className="text-[11px] font-extrabold uppercase tracking-wider text-accent">
-              Coming next
+          {/* Booth rules */}
+          <section className="panel p-6">
+            <h2 className="font-display text-lg font-extrabold tracking-tight text-accent-strong">
+              Booth rules
+            </h2>
+            <p className="mt-1 text-[12px] leading-relaxed text-muted">
+              What this booth can do. Cashiers inherit these for the event.
             </p>
-            <p className="mt-2 text-[13px] leading-relaxed text-text/80">
-              Schedule, booth-rule toggles (Send Later, QR pet registration,
-              offline mode) and free-gift promo rules land in a follow-up. This
-              MVP covers event details + per-day stock allocation.
-            </p>
+            <div className="mt-3">
+              {BOOTH_RULE_ROWS.map((row, i) => (
+                <div
+                  key={row.key}
+                  className={`flex items-center justify-between gap-3 py-3.5 ${
+                    i > 0
+                      ? "border-t border-[var(--color-line-quiet,var(--line))]"
+                      : ""
+                  }`}
+                >
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-bold leading-tight text-text">
+                      {row.name}
+                    </p>
+                    <p className="mt-0.5 text-[11px] leading-snug text-muted">
+                      {row.sub}
+                    </p>
+                  </div>
+                  <Switch
+                    label={row.name}
+                    checked={setup.boothRules[row.key]}
+                    onChange={(v) => setBoothRule(row.key, v)}
+                  />
+                </div>
+              ))}
+            </div>
           </section>
+
+          {/* Free-gift rule */}
+          <section className="panel p-6">
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="font-display text-lg font-extrabold tracking-tight text-accent-strong">
+                Free-gift rule
+              </h2>
+              <Switch
+                label="Offer a free gift"
+                checked={giftRule.enabled}
+                onChange={(v) => setGiftRule({ enabled: v })}
+              />
+            </div>
+
+            {giftRule.enabled ? (
+              <div className="mt-4 grid gap-3">
+                <label className="block">
+                  <span className="mb-1.5 block text-xs font-extrabold uppercase tracking-wider text-muted">
+                    Subtotal at or above (฿)
+                  </span>
+                  <input
+                    type="number"
+                    min={0}
+                    inputMode="numeric"
+                    value={
+                      giftRule.thresholdSatang === 0
+                        ? ""
+                        : giftRule.thresholdSatang / 100
+                    }
+                    placeholder="500"
+                    onChange={(e) =>
+                      setGiftRule({
+                        thresholdSatang: Math.max(
+                          0,
+                          Math.round(Number(e.target.value) * 100) || 0,
+                        ),
+                      })
+                    }
+                    className={`num ${inputCls}`}
+                  />
+                </label>
+
+                <div className="grid grid-cols-[1fr_84px] gap-3">
+                  <label className="block">
+                    <span className="mb-1.5 block text-xs font-extrabold uppercase tracking-wider text-muted">
+                      Gift product
+                    </span>
+                    <select
+                      value={giftRule.giftProductId ?? ""}
+                      onChange={(e) =>
+                        setGiftRule({ giftProductId: e.target.value || null })
+                      }
+                      className={inputCls}
+                    >
+                      <option value="">Choose a product…</option>
+                      {activeProducts.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="block">
+                    <span className="mb-1.5 block text-xs font-extrabold uppercase tracking-wider text-muted">
+                      Qty
+                    </span>
+                    <input
+                      type="number"
+                      min={1}
+                      inputMode="numeric"
+                      value={giftRule.giftQty}
+                      onChange={(e) =>
+                        setGiftRule({
+                          giftQty: Math.max(
+                            1,
+                            Math.round(Number(e.target.value)) || 1,
+                          ),
+                        })
+                      }
+                      className={`num ${inputCls}`}
+                    />
+                  </label>
+                </div>
+
+                <div
+                  className="rounded-[var(--radius-md)] p-3.5 text-[13px] leading-relaxed"
+                  style={{
+                    background: "var(--lavender-100)",
+                    color: "var(--color-accent)",
+                  }}
+                >
+                  {giftActive && giftProduct ? (
+                    <>
+                      When subtotal ≥{" "}
+                      <strong>{formatTHB(giftRule.thresholdSatang)}</strong>, add{" "}
+                      <strong>
+                        {giftRule.giftQty}× {giftProduct.name}
+                      </strong>{" "}
+                      as a gift. Deducts from the gift bucket — not counted as
+                      paid sales.
+                    </>
+                  ) : (
+                    "Pick a gift product to activate this rule."
+                  )}
+                </div>
+              </div>
+            ) : (
+              <p className="mt-3 text-[13px] leading-relaxed text-muted">
+                No free-gift promo for this event. Flip the switch to reward
+                bills over a threshold with a gift SKU.
+              </p>
+            )}
+          </section>
+
+          {/* Still deferred */}
+          <p className="px-1 text-[12px] leading-relaxed text-muted">
+            <span className="font-bold text-accent">Coming next:</span> a guided
+            schedule step and staff assignment + review. This screen now covers
+            event details, stock allocation, booth rules, and the free-gift
+            promo.
+          </p>
         </aside>
       </div>
     </div>
@@ -317,6 +484,35 @@ export function EventSetupClient({
 
 const inputCls =
   "w-full rounded-[var(--radius-md)] border border-line bg-panel px-3 py-2.5 text-base text-text shadow-sm placeholder:text-muted/60 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25";
+
+const BOOTH_RULE_ROWS: { key: keyof BoothRules; name: string; sub: string }[] =
+  [
+    {
+      key: "sendLater",
+      name: "Send Later available",
+      sub: "Pay now, ship after event",
+    },
+    {
+      key: "qrPetRegistration",
+      name: "QR pet registration",
+      sub: "Print on every receipt",
+    },
+    {
+      key: "bilingualUI",
+      name: "EN / TH bilingual UI",
+      sub: "Cashier toggles per shift",
+    },
+    {
+      key: "offlineMode",
+      name: "Offline mode",
+      sub: "Sync when wifi returns",
+    },
+    {
+      key: "cashDrawer",
+      name: "Cash drawer",
+      sub: "Reconcile cash at close-of-day",
+    },
+  ];
 
 function Field({
   label,

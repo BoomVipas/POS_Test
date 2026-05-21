@@ -10,7 +10,9 @@ import {
   syncToCatalog,
   withDayCount,
   writeDemoEventSetup,
+  type BoothRules,
   type EventSetup,
+  type GiftRule,
 } from "./event-setup";
 
 export function useDemoEventSetup(): {
@@ -23,6 +25,8 @@ export function useDemoEventSetup(): {
   setDayCount: (dayCount: number) => void;
   setDayQty: (productId: string, dayIndex: number, qty: number) => void;
   setSample: (productId: string, qty: number) => void;
+  setBoothRule: (key: keyof BoothRules, value: boolean) => void;
+  setGiftRule: (patch: Partial<GiftRule>) => void;
   reset: () => void;
 } {
   const [setup, setSetup] = useState<EventSetup | null>(null);
@@ -125,6 +129,21 @@ export function useDemoEventSetup(): {
     [patch],
   );
 
+  const setBoothRule = useCallback(
+    (key: keyof BoothRules, value: boolean) =>
+      patch((s) => ({
+        ...s,
+        boothRules: { ...s.boothRules, [key]: value },
+      })),
+    [patch],
+  );
+
+  const setGiftRule = useCallback(
+    (giftPatch: Partial<GiftRule>) =>
+      patch((s) => ({ ...s, giftRule: { ...s.giftRule, ...giftPatch } })),
+    [patch],
+  );
+
   const reset = useCallback(() => {
     clearDemoEventSetup();
     setSetup(null);
@@ -140,6 +159,8 @@ export function useDemoEventSetup(): {
     setDayCount,
     setDayQty,
     setSample,
+    setBoothRule,
+    setGiftRule,
     reset,
   };
 }

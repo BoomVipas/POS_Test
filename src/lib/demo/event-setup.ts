@@ -14,6 +14,61 @@ export const MIN_DAYS = 1;
 export const MAX_DAYS = 8;
 export const DEFAULT_DAYS = 4;
 
+/** Per-event operating switches shown in the booth-rules card. Each gates a
+ *  field-proven feature on/off for this booth. Demo-only booleans now; they
+ *  become columns on `events` when Supabase lands. */
+export type BoothRules = {
+  /** Pay-now-ship-later orders (meowmeow Send Later, Wave 16/17). */
+  sendLater: boolean;
+  /** Print a pet-profile QR on every receipt (Customer Portal, Wave 40b). */
+  qrPetRegistration: boolean;
+  /** Let cashiers flip EN/TH per shift (Wave 19). */
+  bilingualUI: boolean;
+  /** Keep selling with no wifi, sync on reconnect. */
+  offlineMode: boolean;
+  /** Booth has a physical cash drawer to reconcile at close. */
+  cashDrawer: boolean;
+};
+
+export const DEFAULT_BOOTH_RULES: BoothRules = {
+  sendLater: true,
+  qrPetRegistration: true,
+  bilingualUI: true,
+  offlineMode: true,
+  cashDrawer: false,
+};
+
+/** Free-gift promo: when a bill's subtotal clears the threshold, a gift SKU is
+ *  added off a gift bucket — never counted as paid sales. Ports the meowmeow
+ *  free-gift promo pattern. Demo config only; not yet wired into the cart. */
+export type GiftRule = {
+  enabled: boolean;
+  /** Subtotal (satang) at or above which the gift triggers. */
+  thresholdSatang: number;
+  /** Catalog product handed out as the gift, or null until chosen. */
+  giftProductId: string | null;
+  /** Units given per qualifying bill. */
+  giftQty: number;
+};
+
+export const DEFAULT_GIFT_RULE: GiftRule = {
+  enabled: false,
+  thresholdSatang: 50000, // ฿500
+  giftProductId: null,
+  giftQty: 1,
+};
+
+/** A gift rule only affects checkout once it is enabled, points at a product,
+ *  and gives at least one unit above a positive threshold. */
+export function giftRuleIsActive(rule: GiftRule): boolean {
+  return (
+    rule.enabled &&
+    rule.giftProductId !== null &&
+    rule.giftQty > 0 &&
+    rule.thresholdSatang > 0
+  );
+}
+
 export type EventAllocation = {
   productId: string;
   /** Units sent to the booth per event day. Length always equals `dayCount`. */
@@ -30,6 +85,8 @@ export type EventSetup = {
   location: string;
   dayCount: number;
   allocations: EventAllocation[];
+  boothRules: BoothRules;
+  giftRule: GiftRule;
   status: "draft" | "open";
   createdAt: string;
   updatedAt: string;
@@ -40,6 +97,9 @@ export type EventSummary = {
   totalBoothUnits: number;
   sampleTotal: number;
   estimatedRetailSatang: number;
+  /** Cost basis of every unit pulled from the warehouse (booth + sample),
+   *  using each product's landed cost. 0 when the catalog carries no cost. */
+  reservedWarehouseSatang: number;
 };
 
 export function newEventId(): string {
@@ -84,6 +144,8 @@ export function buildDraftFromCatalog(
     allocations: catalog
       .filter((p) => p.is_active)
       .map((p) => emptyAllocation(p.id, days)),
+    boothRules: { ...DEFAULT_BOOTH_RULES },
+    giftRule: { ...DEFAULT_GIFT_RULE },
     status: "draft",
     createdAt: now,
     updatedAt: now,
@@ -140,21 +202,41 @@ export function computeEventSummary(
   setup: EventSetup,
   catalog: Product[],
 ): EventSummary {
-  const priceById = new Map(catalog.map((p) => [p.id, p.price_satang]));
+  const byId = new Map(catalog.map((p) => [p.id, p]));
   let skusAllocated = 0;
   let totalBoothUnits = 0;
   let sampleTotal = 0;
   let estimatedRetailSatang = 0;
+  let reservedWarehouseSatang = 0;
 
   for (const a of setup.allocations) {
+    const product = byId.get(a.productId);
     const booth = allocationTotal(a);
+    const sample = Number.isFinite(a.sample) ? a.sample : 0;
     if (booth > 0) skusAllocated += 1;
     totalBoothUnits += booth;
-    sampleTotal += Number.isFinite(a.sample) ? a.sample : 0;
-    estimatedRetailSatang += booth * (priceById.get(a.productId) ?? 0);
+    sampleTotal += sample;
+    estimatedRetailSatang += booth * (product?.price_satang ?? 0);
+    reservedWarehouseSatang += (booth + sample) * (product?.cost_satang ?? 0);
   }
 
-  return { skusAllocated, totalBoothUnits, sampleTotal, estimatedRetailSatang };
+  return {
+    skusAllocated,
+    totalBoothUnits,
+    sampleTotal,
+    estimatedRetailSatang,
+    reservedWarehouseSatang,
+  };
+}
+
+/** Backfill fields added after a draft was first persisted, so an older
+ *  localStorage draft never lands the newer UI on `undefined`. */
+export function migrateSetup(parsed: EventSetup): EventSetup {
+  return {
+    ...parsed,
+    boothRules: { ...DEFAULT_BOOTH_RULES, ...(parsed.boothRules ?? {}) },
+    giftRule: { ...DEFAULT_GIFT_RULE, ...(parsed.giftRule ?? {}) },
+  };
 }
 
 export function readDemoEventSetup(): EventSetup | null {
@@ -163,7 +245,9 @@ export function readDemoEventSetup(): EventSetup | null {
     const raw = window.localStorage.getItem(DEMO_EVENT_SETUP_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as EventSetup;
-    return parsed && Array.isArray(parsed.allocations) ? parsed : null;
+    return parsed && Array.isArray(parsed.allocations)
+      ? migrateSetup(parsed)
+      : null;
   } catch {
     return null;
   }

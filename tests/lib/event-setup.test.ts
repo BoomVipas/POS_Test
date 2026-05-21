@@ -4,9 +4,13 @@ import {
   buildDraftFromCatalog,
   clampDays,
   computeEventSummary,
+  giftRuleIsActive,
+  migrateSetup,
   syncToCatalog,
   withDayCount,
+  DEFAULT_BOOTH_RULES,
   DEFAULT_DAYS,
+  DEFAULT_GIFT_RULE,
   MAX_DAYS,
   MIN_DAYS,
   type EventSetup,
@@ -26,6 +30,26 @@ function p(overrides: Partial<Product> = {}): Product {
     is_active: true,
     image_path: null,
     current_qty: 10,
+    ...overrides,
+  };
+}
+
+function baseSetup(
+  dayCount: number,
+  overrides: Partial<EventSetup> = {},
+): EventSetup {
+  return {
+    id: "e",
+    name: "",
+    startDate: "",
+    location: "",
+    dayCount,
+    allocations: [],
+    boothRules: { ...DEFAULT_BOOTH_RULES },
+    giftRule: { ...DEFAULT_GIFT_RULE },
+    status: "draft",
+    createdAt: "",
+    updatedAt: "",
     ...overrides,
   };
 }
@@ -50,6 +74,13 @@ describe("buildDraftFromCatalog", () => {
   it("clamps out-of-range day counts", () => {
     expect(buildDraftFromCatalog([], 99).dayCount).toBe(MAX_DAYS);
     expect(buildDraftFromCatalog([], 0).dayCount).toBe(MIN_DAYS);
+  });
+
+  it("seeds default booth rules and a disabled gift rule", () => {
+    const draft = buildDraftFromCatalog([p()], 4);
+    expect(draft.boothRules).toEqual(DEFAULT_BOOTH_RULES);
+    expect(draft.giftRule).toEqual(DEFAULT_GIFT_RULE);
+    expect(draft.giftRule.enabled).toBe(false);
   });
 });
 
@@ -76,25 +107,40 @@ describe("computeEventSummary", () => {
       p({ id: "a", price_satang: 10000 }),
       p({ id: "b", price_satang: 5000 }),
     ];
-    const setup: EventSetup = {
-      id: "e",
-      name: "",
-      startDate: "",
-      location: "",
-      dayCount: 2,
-      status: "draft",
-      createdAt: "",
-      updatedAt: "",
+    const setup = baseSetup(2, {
       allocations: [
         { productId: "a", days: [3, 2], sample: 1 }, // 5 booth units × 10000
         { productId: "b", days: [0, 0], sample: 2 }, // 0 booth → not "allocated"
       ],
-    };
+    });
     const s = computeEventSummary(setup, catalog);
     expect(s.skusAllocated).toBe(1);
     expect(s.totalBoothUnits).toBe(5);
     expect(s.sampleTotal).toBe(3);
     expect(s.estimatedRetailSatang).toBe(50000);
+  });
+
+  it("reserves warehouse value at cost over booth + sample units", () => {
+    const catalog = [
+      p({ id: "a", price_satang: 10000, cost_satang: 4000 }),
+      p({ id: "b", price_satang: 5000 }), // no cost → contributes 0
+    ];
+    const setup = baseSetup(2, {
+      allocations: [
+        { productId: "a", days: [3, 2], sample: 1 }, // (5 + 1) × 4000
+        { productId: "b", days: [1, 0], sample: 4 }, // no cost → 0
+      ],
+    });
+    const s = computeEventSummary(setup, catalog);
+    expect(s.reservedWarehouseSatang).toBe(24000);
+  });
+
+  it("reserves 0 when the catalog carries no cost", () => {
+    const catalog = [p({ id: "a", price_satang: 10000 })];
+    const setup = baseSetup(1, {
+      allocations: [{ productId: "a", days: [5], sample: 2 }],
+    });
+    expect(computeEventSummary(setup, catalog).reservedWarehouseSatang).toBe(0);
   });
 });
 
@@ -130,5 +176,79 @@ describe("withDayCount", () => {
   it("returns the same reference when dayCount is unchanged", () => {
     const setup = buildDraftFromCatalog([p()], 3);
     expect(withDayCount(setup, 3)).toBe(setup);
+  });
+});
+
+describe("migrateSetup", () => {
+  it("backfills booth rules and gift rule on an older draft", () => {
+    // Simulate a v1 draft persisted before these fields existed.
+    const legacy = {
+      id: "e",
+      name: "Old",
+      startDate: "",
+      location: "",
+      dayCount: 2,
+      allocations: [{ productId: "a", days: [1, 1], sample: 0 }],
+      status: "draft",
+      createdAt: "",
+      updatedAt: "",
+    } as unknown as EventSetup;
+
+    const migrated = migrateSetup(legacy);
+    expect(migrated.boothRules).toEqual(DEFAULT_BOOTH_RULES);
+    expect(migrated.giftRule).toEqual(DEFAULT_GIFT_RULE);
+    expect(migrated.name).toBe("Old"); // preserves existing fields
+    expect(migrated.allocations).toBe(legacy.allocations);
+  });
+
+  it("preserves partially-set rules while filling gaps", () => {
+    const partial = baseSetup(2, {
+      boothRules: { ...DEFAULT_BOOTH_RULES, cashDrawer: true },
+      giftRule: { ...DEFAULT_GIFT_RULE, enabled: true, giftProductId: "a" },
+    });
+    const migrated = migrateSetup(partial);
+    expect(migrated.boothRules.cashDrawer).toBe(true);
+    expect(migrated.boothRules.sendLater).toBe(true); // untouched default
+    expect(migrated.giftRule.enabled).toBe(true);
+    expect(migrated.giftRule.giftProductId).toBe("a");
+    expect(migrated.giftRule.giftQty).toBe(DEFAULT_GIFT_RULE.giftQty);
+  });
+});
+
+describe("giftRuleIsActive", () => {
+  it("is inactive unless enabled, pointed at a product, qty>0, threshold>0", () => {
+    expect(giftRuleIsActive(DEFAULT_GIFT_RULE)).toBe(false); // disabled
+    expect(
+      giftRuleIsActive({
+        enabled: true,
+        thresholdSatang: 50000,
+        giftProductId: null,
+        giftQty: 1,
+      }),
+    ).toBe(false); // no product
+    expect(
+      giftRuleIsActive({
+        enabled: true,
+        thresholdSatang: 0,
+        giftProductId: "a",
+        giftQty: 1,
+      }),
+    ).toBe(false); // zero threshold
+    expect(
+      giftRuleIsActive({
+        enabled: true,
+        thresholdSatang: 50000,
+        giftProductId: "a",
+        giftQty: 0,
+      }),
+    ).toBe(false); // zero qty
+    expect(
+      giftRuleIsActive({
+        enabled: true,
+        thresholdSatang: 50000,
+        giftProductId: "a",
+        giftQty: 1,
+      }),
+    ).toBe(true);
   });
 });
