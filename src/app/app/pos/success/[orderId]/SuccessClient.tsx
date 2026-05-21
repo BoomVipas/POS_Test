@@ -28,10 +28,10 @@ export function SuccessClient({ orderId }: { orderId: string }) {
     return (
       <main className="mx-auto max-w-xl px-5 py-12">
         <div className="panel p-6 text-center">
-          <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[var(--color-ok-soft-bg)] text-2xl text-[var(--color-ok-soft-fg)]">
+          <span className="success-pop mx-auto grid h-16 w-16 place-items-center rounded-full bg-[var(--color-ok-soft-bg)] text-3xl text-[var(--color-ok-soft-fg)] shadow-rest ring-4 ring-[color-mix(in_oklch,var(--color-ok-soft-fg)_15%,transparent)]">
             ✓
           </span>
-          <h1 className="mt-4 font-display text-3xl text-accent-strong">
+          <h1 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-accent-strong">
             Sale recorded
           </h1>
           <p className="num mt-2 text-sm text-muted">{orderId}</p>
@@ -63,10 +63,13 @@ export function SuccessClient({ orderId }: { orderId: string }) {
     <main className="mx-auto max-w-xl px-5 py-10">
       <div className="panel p-6">
         <div className="text-center">
-          <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[var(--color-ok-soft-bg)] text-2xl text-[var(--color-ok-soft-fg)]">
+          <span className="success-pop mx-auto grid h-16 w-16 place-items-center rounded-full bg-[var(--color-ok-soft-bg)] text-3xl text-[var(--color-ok-soft-fg)] shadow-rest ring-4 ring-[color-mix(in_oklch,var(--color-ok-soft-fg)_15%,transparent)]">
             ✓
           </span>
-          <h1 className="mt-3 font-display text-3xl text-accent-strong">
+          <p className="mt-3 text-[11px] font-extrabold uppercase tracking-[0.12em] text-[var(--color-ok-soft-fg)]">
+            Sale complete
+          </p>
+          <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight text-accent-strong">
             {order.orderNumber}
           </h1>
           <p className="mt-1 text-xs text-muted">

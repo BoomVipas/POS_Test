@@ -176,6 +176,17 @@ body {
   cursor: not-allowed;
 }
 
+/* celebratory pop for the checkout-success checkmark; the global
+   prefers-reduced-motion rule above collapses it to a static end state. */
+@keyframes success-pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.success-pop {
+  animation: success-pop 360ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
 /* ============================================================
    Print receipt — used on /app/pos/success/[orderId].
    Hides app chrome and the controls; renders the panel full-width.

@@ -26,7 +26,7 @@ Founder direction (2026-05-22): **start with branded loading skeletons** (least 
 
 1. ✅ **Branded loading skeletons (DONE)** — `ListSkeleton` (shimmer bars) on every list screen (customers, send-later, pre-orders, audit-log, correction, stock-count, close-day, setup/products, inventory/samples) + a single `Skeleton` block on `pos/success`. Bare "Loading…" text is gone app-wide. *(passes 6–8)*
 2. ✅ **Dashboard hero** — full-width indigo gradient revenue card (big ฿figure + delta + a subtle white `Sparkline` trend) above a clean 3-metric strip (orders / margin / avg bill). Founder chose the "hero card" direction. Conservative, pilot-ready; no workflow change. *(pass 9)*
-3. Checkout-success delight (`/app/pos/success`) — **present options first**.
+3. ✅ **Checkout-success delight** — polished checkmark badge (larger, soft ring + shadow, gentle `success-pop` entrance that respects `prefers-reduced-motion`), a "Sale complete" eyebrow, and the heavier title treatment. Conservative. Verified via the not-found state (shares the badge); the full success screen uses the same header + order summary. *(pass 10)*
 4. Illustrated empty states.
 
 ## Done
