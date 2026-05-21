@@ -8,6 +8,7 @@ import { PromptPayDisplay } from "../../PromptPayDisplay";
 import { RegistrationLinkBlock } from "./RegistrationLinkBlock";
 import { formatTHB } from "@/lib/money/format";
 import { formatDateTimeTH } from "@/lib/date";
+import { Skeleton } from "@/components/ui/States";
 
 export function SuccessClient({ orderId }: { orderId: string }) {
   const { orders, ready } = useDemoSales();
@@ -18,9 +19,7 @@ export function SuccessClient({ orderId }: { orderId: string }) {
   if (!ready) {
     return (
       <main className="mx-auto max-w-xl px-5 py-12">
-        <div className="panel p-6 text-center text-sm text-muted">
-          Loading…
-        </div>
+        <Skeleton className="h-72" />
       </main>
     );
   }
