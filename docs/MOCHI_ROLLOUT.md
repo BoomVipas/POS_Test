@@ -34,6 +34,7 @@ Each loop fire takes the top unblocked item. Items marked 👁 want a visual eye
 - **ok-greens** — plus-qty / "paid" greens are still the original green, not Mochi success `#1f7a4d`. Align or keep as distinct "positive" cue?
 
 ## Working rules
+- **UX-polish loop** (`/loop`, every 10 min): cross-cutting polish — the `confirm()` migration (item 1) and empty-state consistency (item 2) — accumulates on branch `pos/ux-polish` (**PR #84**). Append commits there; don't open a new branch per tick. Per-surface redesigns still get their own branch.
 - Per-surface work goes on its own branch + PR; never to `main` directly; no self-merge.
 - Keep `npm run build` + lint + typecheck green.
 - Keep the post-purchase-CRM rule: no customer/pet capture in the checkout flow.
