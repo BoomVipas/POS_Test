@@ -95,7 +95,7 @@ export function CartPanel({
               <button
                 type="button"
                 onClick={() => dispatch({ type: "CLEAR" })}
-                className="rounded-full bg-[#f2e6d7] px-3 py-1 text-xs font-extrabold text-[#6a4a26]"
+                className="rounded-full bg-[#efeafd] px-3 py-1 text-xs font-extrabold text-[#2a2557]"
               >
                 {t.pos.clear}
               </button>
@@ -134,7 +134,7 @@ export function CartPanel({
           label={t.pos.discount}
         />
 
-        <div className="grid gap-2 rounded-2xl border border-line bg-[#fffdf9] p-4 text-sm">
+        <div className="grid gap-2 rounded-2xl border border-line bg-[#ffffff] p-4 text-sm">
           <Row label={t.pos.subtotal} value={formatTHB(subtotal)} muted />
           {shipping > 0 && (
             <Row
@@ -283,8 +283,8 @@ function DiscountInput({
             onClick={() => onChange(p)}
             className={
               satang === p && p > 0
-                ? "rounded-full bg-[#e7dbc6] px-2 py-1 text-[11px] font-extrabold text-[#5d3f1e]"
-                : "rounded-full bg-[#fff8ef] px-2 py-1 text-[11px] font-extrabold text-[#6a4a26]"
+                ? "rounded-full bg-[#e5dff0] px-2 py-1 text-[11px] font-extrabold text-[#1c1838]"
+                : "rounded-full bg-[#faf8fd] px-2 py-1 text-[11px] font-extrabold text-[#2a2557]"
             }
           >
             {p === 0 ? "0" : `${p / 100}`}

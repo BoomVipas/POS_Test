@@ -21,7 +21,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
         type="radio"
         id={id}
         className={cn(
-          "mt-0.5 h-5 w-5 cursor-pointer accent-[var(--color-accent)]",
+          "mt-0.5 h-5 w-5 cursor-pointer accent-[var(--color-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-1",
           className,
         )}
         {...rest}

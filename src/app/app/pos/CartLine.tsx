@@ -24,7 +24,7 @@ export function CartLine({
     <li
       className={`grid grid-cols-[minmax(0,1fr)_auto] gap-3 rounded-2xl border border-line p-3 ${
         isLater
-          ? "bg-gradient-to-b from-[#fffdf8] to-[#f8efe2]"
+          ? "bg-gradient-to-b from-[#ffffff] to-[#efeafd]"
           : "bg-white"
       }`}
     >
@@ -45,7 +45,7 @@ export function CartLine({
             }
             className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-wider ${
               isLater
-                ? "border-[#ddc4a2] bg-[#fff7ec] text-[#6d4c28]"
+                ? "border-[#e5dff0] bg-[#faf8fd] text-[#2a2557]"
                 : "border-[#b8d2ab] bg-[var(--color-ok-soft-bg)] text-[var(--color-ok-soft-fg)]"
             }`}
           >
@@ -121,7 +121,7 @@ export function CartLine({
           type="button"
           aria-label="Remove from cart"
           onClick={() => dispatch({ type: "REMOVE", productId: product.id })}
-          className="grid h-6 w-6 place-items-center rounded-full bg-[#f6edde] text-muted hover:text-text"
+          className="grid h-6 w-6 place-items-center rounded-full bg-[#efeafd] text-muted hover:text-text"
         >
           <X size={12} />
         </button>

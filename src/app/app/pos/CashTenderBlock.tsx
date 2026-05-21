@@ -38,7 +38,7 @@ export function CashTenderBlock({ totalSatang }: { totalSatang: number }) {
             onClick={() => setTendered(p * 100)}
             className={
               tendered === p * 100
-                ? "rounded-full bg-gradient-to-b from-[#a9763f] to-[#7e552a] px-3 py-1.5 text-xs font-extrabold text-white"
+                ? "rounded-full bg-gradient-to-b from-[#3d3686] to-[#2a2557] px-3 py-1.5 text-xs font-extrabold text-white"
                 : "rounded-full border border-line bg-panel px-3 py-1.5 text-xs font-extrabold text-accent-strong hover:bg-soft"
             }
           >
@@ -50,7 +50,7 @@ export function CashTenderBlock({ totalSatang }: { totalSatang: number }) {
           onClick={() => setTendered(totalSatang)}
           className={
             tendered === totalSatang && totalSatang > 0
-              ? "rounded-full bg-gradient-to-b from-[#a9763f] to-[#7e552a] px-3 py-1.5 text-xs font-extrabold text-white"
+              ? "rounded-full bg-gradient-to-b from-[#3d3686] to-[#2a2557] px-3 py-1.5 text-xs font-extrabold text-white"
               : "rounded-full border border-line bg-panel px-3 py-1.5 text-xs font-extrabold text-accent-strong hover:bg-soft"
           }
         >

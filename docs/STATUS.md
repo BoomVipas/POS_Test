@@ -1,11 +1,11 @@
 # Status — pos-for-sell
 
-Rolling snapshot. The "What's live" section below is the original 2026-05-04 baseline (end of the credential-free build sprint); the "Latest waves" section near the bottom tracks newer work appended per wave. Last meaningful update: 2026-05-07 (Wave 40c).
+Rolling snapshot. The "What's live" section below is the original 2026-05-04 baseline (end of the credential-free build sprint); the "Latest waves" section near the bottom tracks newer work appended per wave. Last meaningful update: 2026-05-21 (Mochi indigo design rebrand — PR #73).
 
 ## What's live
 
 - **Build**: 29 routes (`page.tsx` files in `src/app/`). Static where appropriate, dynamic for auth-gated layouts.
-- **Tests**: 304 unit tests across 34 files all pass — verified 2026-05-18 (`npm test`, 1.7s). Pure-logic libs only; no Supabase, no browser.
+- **Tests**: 304 unit tests across 34 files all pass — re-verified 2026-05-21 (`npm test`, 1.8s). Pure-logic libs only; no Supabase, no browser.
 - **No external creds yet** — every Supabase / Resend touch degrades to mock data with a "Demo mode" badge.
 
 ## Routes
@@ -190,6 +190,7 @@ Snapshot at the end of 2026-05-07:
 - **Wave 40b** *(merged PR #6, `56f743d`, 2026-05-07)*: Customer Portal UI in demo mode — receipt success screen issues a 16-char token + QR + share link via `RegistrationLinkBlock`; new `/register/[token]` route validates the token in the demo store and renders a mobile-first bilingual EN/TH form (customer profile + multi-channel contacts + optional pet block); `useDemoCustomerTokens` hook backed by localStorage (mirrors `useDemoPets` / `useDemoClaims` patterns). Real Supabase wiring lands in Wave 40d. 15 new vitest tests for token logic.
 - **Wave 39b** *(merged PR #8, `e9cab46`, 2026-05-07)*: sample bucket UI (demo mode) — port of meowmeow Batch DD UI into `/app/inventory/samples`.
 - **Wave 40c** *(merged PR #9, `4522862`, 2026-05-07)*: cashier-side repeat-customer lookup (lookup by phone, attach to current sale, "returning customer" badge with pet preview). Validates the moat in action.
+- **Mochi design rebrand** *(PR #73, open — branch `pos/mochi-design-foundation`)*: adopted the Mochi POS design system across the whole app — one unified **indigo/lavender** brand (founder decision: indigo everywhere). `globals.css` `:root` tokens remapped to indigo (`--color-accent #2d2960`, lavender highlight `#b8a9f0`, page `#f7f5fb`), Nunito, cool indigo-tinted shadows, radii 16/20/28; ~24 component files recolored (brown/cream hex literals → tokens); `Button` focus-ring + cursor a11y fix; **the full multi-period dashboard (`DashboardLive`) wired into `/app/dashboard`** (PRD F15 "built but not composed" gap). WCAG-AA verified across the palette. Spec lives in the `mochipos-design` skill; rollout backlog in [MOCHI_ROLLOUT.md](MOCHI_ROLLOUT.md). Supersedes CLAUDE.md hard rule #9 (cream/brown).
 
 Test count: **263 vitest tests pass** as of Wave 40b on its branch (was 65 at end of original 100-batch plan; 248 at end of Wave 38).
 

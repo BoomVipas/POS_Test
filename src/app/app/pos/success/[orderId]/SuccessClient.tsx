@@ -89,7 +89,7 @@ export function SuccessClient({ orderId }: { orderId: string }) {
                   {it.fulfillmentType === "send_later" && " · send later"}
                 </p>
                 {it.note && (
-                  <p className="mt-0.5 text-[11px] italic text-[#6d4c28]">
+                  <p className="mt-0.5 text-[11px] italic text-[#2a2557]">
                     “{it.note}”
                   </p>
                 )}

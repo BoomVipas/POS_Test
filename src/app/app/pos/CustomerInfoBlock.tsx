@@ -164,7 +164,7 @@ export function CustomerInfoBlock() {
                           }
                           className={
                             active
-                              ? "rounded-full bg-gradient-to-b from-[#a9763f] to-[#7e552a] px-2 py-0.5 text-[10px] font-extrabold text-white"
+                              ? "rounded-full bg-gradient-to-b from-[#3d3686] to-[#2a2557] px-2 py-0.5 text-[10px] font-extrabold text-white"
                               : "rounded-full border border-line bg-panel px-2 py-0.5 text-[10px] font-extrabold text-accent-strong hover:bg-soft"
                           }
                         >

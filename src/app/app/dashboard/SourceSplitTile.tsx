@@ -6,7 +6,7 @@ import {
 import type { SourceSplitRow } from "@/lib/demo/source-split";
 
 const TONE: Record<OrderSource, string> = {
-  booth: "from-[#a9763f] to-[#7e552a]",
+  booth: "from-[#3d3686] to-[#2a2557]",
   qr_menu: "from-[#5b8a72] to-[#3f6a55]",
   line: "from-[#4cc764] to-[#2f9b48]",
   shopee: "from-[#ee4d2d] to-[#c93b1f]",

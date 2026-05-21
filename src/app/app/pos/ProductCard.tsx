@@ -39,9 +39,9 @@ export function ProductCard({
       type="button"
       onClick={handleClick}
       disabled={soldout && !onPreOrder}
-      className="group grid gap-1 rounded-2xl border border-[color-mix(in_oklch,var(--color-accent)_12%,transparent)] bg-gradient-to-b from-[#fffefd] via-[#fff8f0] to-[#f8eedf] p-2 text-left shadow-[0_10px_20px_rgba(77,53,29,0.05)] transition hover:-translate-y-px hover:shadow-[0_16px_28px_rgba(77,53,29,0.10)] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-[0_10px_20px_rgba(77,53,29,0.05)]"
+      className="group grid gap-1 rounded-2xl border border-[color-mix(in_oklch,var(--color-accent)_12%,transparent)] bg-gradient-to-b from-[#ffffff] via-[#faf8fd] to-[#efeafd] p-2 text-left shadow-[0_10px_20px_rgba(77,53,29,0.05)] transition hover:-translate-y-px hover:shadow-[0_16px_28px_rgba(77,53,29,0.10)] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-[0_10px_20px_rgba(77,53,29,0.05)]"
     >
-      <div className="relative grid aspect-[5/1.95] place-items-center overflow-hidden rounded-xl border border-[color-mix(in_oklch,var(--color-accent)_10%,transparent)] bg-gradient-to-b from-[#fffaf4] to-[#f3e5cf]">
+      <div className="relative grid aspect-[5/1.95] place-items-center overflow-hidden rounded-xl border border-[color-mix(in_oklch,var(--color-accent)_10%,transparent)] bg-gradient-to-b from-[#ffffff] to-[#efeafd]">
         {product.image_path ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -50,11 +50,11 @@ export function ProductCard({
             className="h-full w-full object-cover"
           />
         ) : (
-          <span className="px-3 text-center text-xs font-extrabold leading-tight text-[#8d704f]">
+          <span className="px-3 text-center text-xs font-extrabold leading-tight text-[#6b6489]">
             {product.name}
           </span>
         )}
-        <span className="absolute left-2 top-2 rounded-full border border-[color-mix(in_oklch,var(--color-accent)_10%,transparent)] bg-[rgba(255,251,245,0.94)] px-1.5 py-0.5 text-[11px] font-extrabold text-[#5f462a]">
+        <span className="absolute left-2 top-2 rounded-full border border-[color-mix(in_oklch,var(--color-accent)_10%,transparent)] bg-[rgba(255,251,245,0.94)] px-1.5 py-0.5 text-[11px] font-extrabold text-[#1c1838]">
           {product.sku}
         </span>
         <span

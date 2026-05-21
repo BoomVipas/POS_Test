@@ -208,7 +208,7 @@ export function ReviewModal({
                     {line.fulfillment === "send_later" && " · send later"}
                   </p>
                   {line.note && (
-                    <p className="mt-0.5 text-[11px] italic text-[#6d4c28]">
+                    <p className="mt-0.5 text-[11px] italic text-[#2a2557]">
                       “{line.note}”
                     </p>
                   )}
@@ -288,7 +288,7 @@ export function ReviewModal({
             </p>
           )}
           {hasSendLater && (
-            <p className="rounded-xl border border-[#ddc4a2] bg-[#fff7ec] px-3 py-2 text-xs text-[#6d4c28]">
+            <p className="rounded-xl border border-[#e5dff0] bg-[#faf8fd] px-3 py-2 text-xs text-[#2a2557]">
               Send-later: customer info will be required at confirm (DD-76).
             </p>
           )}

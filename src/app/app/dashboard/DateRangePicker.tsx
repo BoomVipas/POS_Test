@@ -27,7 +27,7 @@ export function DateRangePicker({
           aria-pressed={value === p.id}
           className={
             value === p.id
-              ? "rounded-full bg-[#7e552a] px-3 py-1 text-xs font-extrabold text-white"
+              ? "rounded-full bg-[#2a2557] px-3 py-1 text-xs font-extrabold text-white"
               : "rounded-full bg-panel px-3 py-1 text-xs font-bold text-muted hover:text-accent-strong"
           }
         >

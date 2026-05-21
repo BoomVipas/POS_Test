@@ -103,7 +103,7 @@ export function CustomersList() {
             aria-pressed={filter === s}
             className={
               filter === s
-                ? "rounded-full bg-[#7e552a] px-3 py-1 text-xs font-extrabold text-white"
+                ? "rounded-full bg-[#2a2557] px-3 py-1 text-xs font-extrabold text-white"
                 : "rounded-full bg-panel px-3 py-1 text-xs font-bold text-muted hover:text-accent-strong"
             }
           >

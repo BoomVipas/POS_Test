@@ -84,7 +84,7 @@ export function SplitPaymentBlock({ totalSatang }: { totalSatang: number }) {
                   }
                   className={
                     s.method === m
-                      ? "rounded-full bg-gradient-to-b from-[#a9763f] to-[#7e552a] px-2.5 py-1 text-[11px] font-extrabold text-white"
+                      ? "rounded-full bg-gradient-to-b from-[#3d3686] to-[#2a2557] px-2.5 py-1 text-[11px] font-extrabold text-white"
                       : "rounded-full border border-line bg-panel px-2.5 py-1 text-[11px] font-extrabold text-accent-strong hover:bg-soft"
                   }
                 >
@@ -119,7 +119,7 @@ export function SplitPaymentBlock({ totalSatang }: { totalSatang: number }) {
                 dispatch({ type: "REMOVE_SPLIT", index: i })
               }
               aria-label="Remove split"
-              className="ml-auto grid h-7 w-7 place-items-center rounded-full bg-[#f6edde] text-muted hover:text-text"
+              className="ml-auto grid h-7 w-7 place-items-center rounded-full bg-[#efeafd] text-muted hover:text-text"
             >
               <Trash2 size={14} />
             </button>

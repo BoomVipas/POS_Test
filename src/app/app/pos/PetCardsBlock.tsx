@@ -172,7 +172,7 @@ export function PetCardsBlock({ phone }: { phone: string }) {
               type="button"
               onClick={handleAdd}
               disabled={draftName.trim().length === 0}
-              className="rounded-full bg-[#7e552a] px-3 py-1 text-[11px] font-extrabold text-white disabled:opacity-50"
+              className="rounded-full bg-[#2a2557] px-3 py-1 text-[11px] font-extrabold text-white disabled:opacity-50"
             >
               Save pet
             </button>

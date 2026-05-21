@@ -74,7 +74,7 @@ export function UpsellPrompt({ products }: { products: Product[] }) {
                 onClick={() =>
                   dispatch({ type: "ADD", productId: p.id })
                 }
-                className="rounded-full bg-gradient-to-b from-[#a9763f] to-[#7e552a] px-3 py-1 text-[11px] font-extrabold text-white"
+                className="rounded-full bg-gradient-to-b from-[#3d3686] to-[#2a2557] px-3 py-1 text-[11px] font-extrabold text-white"
               >
                 {t.pos.upsellAdd}
               </button>

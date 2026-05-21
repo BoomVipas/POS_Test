@@ -30,7 +30,7 @@ export function PaceStrip({
         aria-valuenow={pct}
       >
         <div
-          className="h-full rounded-full bg-gradient-to-r from-[#a9763f] to-[#7e552a] transition-all"
+          className="h-full rounded-full bg-gradient-to-r from-[#3d3686] to-[#2a2557] transition-all"
           style={{ width: `${pct}%` }}
         />
       </div>

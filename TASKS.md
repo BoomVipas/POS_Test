@@ -17,7 +17,9 @@ Anything inside `pos-for-sell/`. Do not edit files in the root or in `meowmeow_p
 
 ## Currently active
 
-_None — Waves 39a, 39b, 40a, 40b, 40c all merged 2026-05-07. See **Done** section below._
+_None claimed in the DD-XX board. The project is in **Wave mode** (post-DD-100 organic work); the current effort is the **Mochi indigo design rebrand** (PR #73, branch `pos/mochi-design-foundation`) — see [docs/MOCHI_ROLLOUT.md](docs/MOCHI_ROLLOUT.md) and [docs/STATUS.md](docs/STATUS.md). Waves 39a/39b/40a/40b/40c merged 2026-05-07 (see **Done**)._
+
+> **DD-board status (2026-05-21):** every remaining DD-XX batch is either `done` (often superseded by a later Wave) or `blocked` on **B-1 (Supabase project)** / B-2 (Resend). DD-20 is now `done`. There is **no unblocked DD implementation work left** — provisioning Supabase (B-1, recipe in the Blockers section) is what unblocks the next batches._
 
 ## What landed in this initial run (Phase 0 + part of Phase 1)
 
@@ -152,7 +154,8 @@ Plus also done:
 - **Depends on:** DD-15
 
 ### DD-20 — TH/EN toggle on public pages
-- **Status:** ready-for-claude
+- **Status:** done
+- **Notes:** Shipped via Wave 19 (EN/TH bilingual UI). `LanguageSwitcher` + `getDict()` on `/` and `/apply` with `t.landing.*` strings; POS chrome translated too.
 
 ### DD-21 — Form analytics
 - **Status:** blocked

@@ -24,7 +24,7 @@ export function PromptPayDisplay({
           type: "svg",
           margin: 0,
           width: 220,
-          color: { dark: "#2b231d", light: "#fffaf3" },
+          color: { dark: "#1c1838", light: "#ffffff" },
           errorCorrectionLevel: "L",
         });
         if (!cancelled) setSvg(dataString);

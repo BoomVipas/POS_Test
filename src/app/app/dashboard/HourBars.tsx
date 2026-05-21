@@ -37,7 +37,7 @@ export function HourBars({
                 />
                 <div
                   aria-hidden
-                  className="w-2 rounded-t bg-gradient-to-t from-[#a9763f] to-[#7e552a]"
+                  className="w-2 rounded-t bg-gradient-to-t from-[#3d3686] to-[#2a2557]"
                   style={{ height: `${todayH}%` }}
                 />
               </div>

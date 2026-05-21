@@ -386,7 +386,7 @@ function CountLineRow({
                 onClick={() => onSetReason(r, line.reasonNote)}
                 className={
                   line.reason === r
-                    ? "rounded-full bg-[#7e552a] px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-white"
+                    ? "rounded-full bg-[#2a2557] px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-white"
                     : "rounded-full bg-panel px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted hover:text-accent-strong"
                 }
               >

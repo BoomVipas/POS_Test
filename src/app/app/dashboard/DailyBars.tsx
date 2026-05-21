@@ -22,7 +22,7 @@ export function DailyBars({
               </span>
               <div className="h-3 overflow-hidden rounded-full bg-soft">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-[#a9763f] to-[#7e552a]"
+                  className="h-full rounded-full bg-gradient-to-r from-[#3d3686] to-[#2a2557]"
                   style={{ width: `${pct}%` }}
                 />
               </div>

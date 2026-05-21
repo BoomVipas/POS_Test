@@ -10,7 +10,7 @@ When working anywhere inside `pos-for-sell/`, **this file overrides the root `CL
 2. [docs/PROJECT_VISION.md](docs/PROJECT_VISION.md) — pilot-mechanics overview: hard requirements, non-goals, success criteria. Read after ROADMAP for the operational layer.
 3. [docs/BATCH_PLAN.md](docs/BATCH_PLAN.md) — all ~100 planned batches in order, by phase.
 4. [TASKS.md](TASKS.md) — live status board (which batch is claimed/in-progress/done).
-5. [docs/DESIGN_TOKENS.md](docs/DESIGN_TOKENS.md) — meowmeow visual language carried over.
+5. [docs/DESIGN_TOKENS.md](docs/DESIGN_TOKENS.md) — Mochi indigo/lavender design system.
 6. [docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md) — table list and RLS approach.
 
 ## Stack (do not change without batch)
@@ -43,7 +43,7 @@ Treat meowmeow as a source of validated patterns, **not** a target for edits —
 6. **Orders are written through a Postgres function** that updates `orders`, `order_items`, `payment_records`, and `event_inventory` in one transaction. The client never decrements stock directly.
 7. **Audit log on every admin/correction/refund action.** `audit_logs` row written in the same transaction as the change.
 8. **Email goes through `lib/email/resend.ts`.** No direct fetch to Resend in components.
-9. **Visual language matches meowmeow.** Cream/brown palette, large radii, tabular numerics. See `docs/DESIGN_TOKENS.md`.
+9. **Visual language follows Mochi.** Unified indigo/lavender brand across the whole app, generous radii, tabular numerics. See `docs/DESIGN_TOKENS.md` and the `mochipos-design` skill.
 
 ## Batch flow
 

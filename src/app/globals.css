@@ -1,57 +1,75 @@
 @import "tailwindcss";
 
 /* ============================================================
-   pos-for-sell theme (carried over from meowmeow_pos_event.html)
-   See docs/DESIGN_TOKENS.md.
+   pos-for-sell theme — Mochi POS design system.
+   See docs/DESIGN_TOKENS.md and .claude/skills/mochipos-design/SKILL.md.
+
+   ONE unified brand across the WHOLE app (every SaaS surface AND the
+   booth cashier flow + receipt): indigo #2d2960 + lavender #b8a9f0 +
+   cream accents, Nunito, cool indigo-tinted shadows, generous radii.
+
+   Tokens are CSS custom properties on :root, exposed to Tailwind v4 via
+   @theme inline so utilities (bg-bg, text-accent, …) and the .panel /
+   .btn-accent helpers all resolve from them. Re-skin = change values here.
+
    Light mode only — booth lighting is unreliable.
    ============================================================ */
 
 :root {
-  /* canvas */
-  --color-bg: #f6f0e6;
-  --color-bg-grad-from: #fbf7ef;
-  --color-bg-grad-to: #f1e7d6;
+  /* canvas — soft warm-cool indigo wash */
+  --color-bg: #f7f5fb;
+  --color-bg-grad-from: #fbfaff;
+  --color-bg-grad-to: #f3eef9;
 
   /* surfaces */
-  --color-panel: #fffaf3;
-  --color-panel-strong: #fffdf9;
-  --color-soft: #efe5d6;
+  --color-panel: #ffffff;
+  --color-panel-strong: #faf8fd;
+  --color-soft: #efeaf6;
 
   /* text */
-  --color-text: #2b231d;
-  --color-muted: #736555;
+  --color-text: #1c1838;
+  --color-muted: #6b6489;
 
-  /* accent (brand brown) */
-  --color-accent: #8d6236;
-  --color-accent-strong: #6e4b27;
-  --color-gold: #c59a54;
+  /* accent (brand indigo) + lavender highlight */
+  --color-accent: #2d2960;
+  --color-accent-strong: #1c1838;
+  --color-gold: #b8a9f0; /* lavender highlight (was warm gold) */
 
   /* line / border */
-  --color-line: #ddcfbe;
+  --color-line: #e5dff0;
 
-  /* status */
-  --color-danger: #b44b3f;
-  --color-danger-soft-bg: #f8e1de;
-  --color-danger-soft-fg: #8b3d34;
-  --color-warn-soft-bg: #fff2dd;
-  --color-warn-soft-fg: #9a641d;
-  --color-ok-soft-bg: #e4f0dc;
-  --color-ok-soft-fg: #3f6d34;
+  /* status — Mochi semantic; fg darkened for AA contrast on the soft bg */
+  --color-danger: #b8362d;
+  --color-danger-soft-bg: #fbdcd8;
+  --color-danger-soft-fg: #8f2a22;
+  --color-warn-soft-bg: #fcecc8;
+  --color-warn-soft-fg: #7c5614;
+  --color-ok-soft-bg: #d8efe2;
+  --color-ok-soft-fg: #195e3b;
 
-  /* radii */
-  --radius-md: 14px;
+  /* radii — generous (Mochi mascot-roundness) */
+  --radius-md: 16px;
   --radius-lg: 20px;
   --radius-xl: 28px;
 
-  /* shadow */
-  --shadow-card: 0 22px 52px rgba(77, 53, 29, 0.1);
+  /* shadow — cool indigo-tinted */
+  --shadow-card: 0 4px 12px rgba(28, 24, 56, 0.06), 0 24px 48px rgba(28, 24, 56, 0.08);
+
+  /* primary-button gradient + glow (tokenised so .theme-cashier can override) */
+  --btn-grad-from: #3d3686;
+  --btn-grad-to: #2a2557;
+  --btn-shadow: rgba(45, 41, 96, 0.25);
+
+  /* panel gradient bottom */
+  --panel-grad-to: #f7f4fd;
 
   /* fonts */
-  --font-sans: "Aptos", "Segoe UI", Tahoma, sans-serif;
-  --font-display: Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-nunito), "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-nunito), "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
-/* expose tokens to Tailwind's utility classes (bg-bg, text-accent, etc.) */
+/* expose tokens to Tailwind's utility classes (bg-bg, text-accent, etc.).
+   `inline` keeps utilities referencing the vars at use-site. */
 @theme inline {
   --color-bg: var(--color-bg);
   --color-bg-grad-from: var(--color-bg-grad-from);
@@ -113,20 +131,20 @@ body {
   }
 }
 
-/* meowmeow-style soft panel */
+/* soft panel — adapts per layer via tokens */
 .panel {
   border: 1px solid color-mix(in oklch, var(--color-accent) 16%, transparent);
   border-radius: var(--radius-xl);
-  background: linear-gradient(180deg, var(--color-panel-strong) 0%, #fcf5e9 100%);
+  background: linear-gradient(180deg, var(--color-panel-strong) 0%, var(--panel-grad-to) 100%);
   box-shadow: var(--shadow-card);
 }
 
-/* meowmeow-style active button */
+/* active button — adapts per layer via tokens */
 .btn-accent {
-  background: linear-gradient(180deg, #a9763f 0%, #7e552a 100%);
+  background: linear-gradient(180deg, var(--btn-grad-from) 0%, var(--btn-grad-to) 100%);
   color: #fffdf8;
   border: 1px solid color-mix(in oklch, var(--color-accent-strong) 24%, transparent);
-  box-shadow: 0 12px 24px rgba(141, 98, 54, 0.2);
+  box-shadow: 0 12px 24px var(--btn-shadow);
 }
 .btn-accent:hover {
   filter: brightness(1.04);

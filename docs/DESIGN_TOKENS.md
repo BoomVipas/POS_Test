@@ -1,84 +1,86 @@
-# Design Tokens (carried over from meowmeow)
+# Design Tokens — Mochi POS
 
-The look-and-feel must match `meowmeow_pos_event.html`. Tokens below are extracted from its `:root` and translated for Tailwind CSS v4's `@theme` directive (see `src/app/globals.css`).
+`pos-for-sell` uses the **Mochi POS design system** — one unified indigo/lavender brand across the **whole** app (every SaaS surface and the booth cashier flow + receipt alike). See `.claude/skills/mochipos-design/SKILL.md`.
+
+Tokens are CSS custom properties on `:root` in `src/app/globals.css`, exposed to Tailwind v4 via the `@theme inline` directive (so utilities like `bg-bg`, `text-accent` and the `.panel` / `.btn-accent` helpers all resolve from them). Re-skin the app by changing the values in `:root`.
+
+> Heritage note: the cream/brown palette of `meowmeow_pos_event.html` (the sibling event-POS app) is **no longer used here** — pos-for-sell is fully Mochi indigo. This supersedes the old "match meowmeow" rule (CLAUDE.md hard rule #9).
 
 ## Palette
 
 | Token | Hex | Use |
 |---|---|---|
-| `--color-bg` | `#f6f0e6` | page base |
-| `--color-bg-grad-from` | `#fbf7ef` | top of page gradient |
-| `--color-bg-grad-to` | `#f1e7d6` | bottom of page gradient |
-| `--color-panel` | `#fffaf3` | card / panel background |
-| `--color-panel-strong` | `#fffdf9` | inner card highlight |
-| `--color-line` | `#ddcfbe` | borders, dividers |
-| `--color-text` | `#2b231d` | primary text |
-| `--color-muted` | `#736555` | secondary text |
-| `--color-accent` | `#8d6236` | brand brown |
-| `--color-accent-strong` | `#6e4b27` | hover, totals, emphasis |
-| `--color-soft` | `#efe5d6` | inactive chip, soft tile |
-| `--color-gold` | `#c59a54` | highlight pill |
-| `--color-danger` | `#b44b3f` | destructive, soldout |
-| `--color-danger-soft-bg` | `#f8e1de` | soldout/danger chip bg |
-| `--color-danger-soft-fg` | `#8b3d34` | soldout/danger chip fg |
-| `--color-warn-soft-bg` | `#fff2dd` | low-stock chip bg |
-| `--color-warn-soft-fg` | `#9a641d` | low-stock chip fg |
-| `--color-ok-soft-bg` | `#e4f0dc` | paid/ok chip bg |
-| `--color-ok-soft-fg` | `#3f6d34` | paid/ok chip fg |
+| `--color-bg` | `#f7f5fb` | page base (warm-cool wash) |
+| `--color-bg-grad-from` | `#fbfaff` | top of page gradient |
+| `--color-bg-grad-to` | `#f3eef9` | bottom of page gradient |
+| `--color-panel` | `#ffffff` | card / panel background |
+| `--color-panel-strong` | `#faf8fd` | inner card / muted panel |
+| `--color-line` | `#e5dff0` | borders, dividers |
+| `--color-text` | `#1c1838` | primary text (near-black indigo) |
+| `--color-muted` | `#6b6489` | secondary text |
+| `--color-accent` | `#2d2960` | brand indigo |
+| `--color-accent-strong` | `#1c1838` | hover, totals, emphasis |
+| `--color-soft` | `#efeaf6` | inactive chip, soft tile |
+| `--color-gold` | `#b8a9f0` | lavender highlight (the "POS" accent) |
+| `--color-danger` | `#b8362d` | destructive, soldout |
+| `--color-danger-soft-bg` | `#fbdcd8` | danger chip bg |
+| `--color-danger-soft-fg` | `#8f2a22` | danger chip fg |
+| `--color-warn-soft-bg` | `#fcecc8` | low-stock chip bg |
+| `--color-warn-soft-fg` | `#7c5614` | low-stock chip fg |
+| `--color-ok-soft-bg` | `#d8efe2` | paid/ok chip bg |
+| `--color-ok-soft-fg` | `#195e3b` | paid/ok chip fg |
 
-Active button gradient: `linear-gradient(180deg, #a9763f 0%, #7e552a 100%)` with `color: #fffdf8`.
+Primary button gradient: `linear-gradient(180deg, #3d3686 0%, #2a2557 100%)` with `color: #fffdf8` (tokens `--btn-grad-from` / `--btn-grad-to`). Shadows are cool indigo-tinted, never warm-brown.
 
 ## Radii
 
 | Token | Value | Use |
 |---|---|---|
-| `--radius-md` | `14px` | buttons, small chips |
+| `--radius-md` | `16px` | buttons, small chips |
 | `--radius-lg` | `20px` | inner panel, cart item |
 | `--radius-xl` | `28px` | top-level panel, top bar |
 | pill | `999px` | chip, pill, round button |
 
+Generous radii (mascot-roundness) — no sharp corners.
+
 ## Shadow
 
-`--shadow-card: 0 22px 52px rgba(77,53,29,0.10)` — applied to top-level panels.
+`--shadow-card: 0 4px 12px rgba(28,24,56,.06), 0 24px 48px rgba(28,24,56,.08)` — cool indigo-tinted, applied to top-level panels.
 
 ## Typography
 
-- Body: `"Aptos", "Segoe UI", Tahoma, sans-serif`
-- Display headings (h1 brand): `Georgia, "Times New Roman", serif`, font-weight 700, letter-spacing `-0.045em`, line-height `0.88`
-- Numerics in totals: `font-variant-numeric: tabular-nums lining-nums`
+- Body + display: **Nunito** 400/600/700/800/900 (Google Fonts, loaded in `globals.css`). Geometric, friendly, rounded — the closest free match to the logo's custom face.
+- Display weights 800–900 with `-.02em` to `-.025em` letter-spacing.
+- Numerics in totals: `font-variant-numeric: tabular-nums lining-nums` (the `.num` class).
+- Codes / SKUs / order ids: monospace.
 
-In Tailwind v4 we expose:
-
-- `font-sans` → Aptos stack
-- `font-display` → Georgia stack
+In Tailwind v4 we expose `font-sans` and `font-display` (both Nunito).
 
 ## Component patterns
 
-- **Panel**: `border-radius: var(--radius-xl)`, gradient background `linear-gradient(180deg, #fffdf9 0%, #fcf5e9 100%)`, 1px border at `rgba(141,98,54,0.14)`, card shadow.
-- **Tab (active)**: gradient brown background, off-white text, soft brown shadow.
+- **Panel** (`.panel`): `border-radius: var(--radius-xl)`, near-white gradient background, hairline indigo border (~16% accent), cool card shadow.
+- **Tab (active)**: indigo gradient background, off-white text, indigo shadow.
 - **Pill (chip)**: 999px radius, soft tinted background, bold text.
-- **Product card**: 16px radius, cream gradient, subtle shadow, hover `translateY(-1px)` + deepened shadow.
-- **Sticky cart**: 30px radius, `rgba(255,251,246,0.98)` with `backdrop-filter: blur(14px)`, fixed top-right on desktop.
-- **Quantity buttons**: minus = pink/danger, plus = green/ok.
+- **Product card**: 16px radius, white surface, subtle shadow, hover `translateY(-1px)` + deepened shadow.
+- **Sticky cart**: large radius, near-white with `backdrop-filter: blur`, fixed top-right on desktop.
+- **Quantity buttons**: minus = danger tint, plus = ok tint.
 
 ## Light-mode only
 
-The booth lighting is unreliable. We do not implement dark mode. `globals.css` defines no `prefers-color-scheme: dark` block — the create-next-app default was removed when the meowmeow palette was wired in.
+Booth lighting is unreliable. No dark mode — `globals.css` defines no `prefers-color-scheme: dark` block.
 
-## Mobile/iPad
+## Mobile / iPad
 
-- Product grid: 2 columns at `<640px`, 3 columns at `≥640px`, 4 columns at `≥1024px`.
+- Product grid: 2 columns at `<640px`, 3 at `≥640px`, 4 at `≥1024px`.
 - Sticky cart: bottom drawer at `<1024px`, right column at `≥1024px`.
 - Touch targets: minimum 36px tall, ideally 44px.
 
 ## Print (receipt)
 
-`globals.css` defines a `@media print` block used by `/app/pos/success/[orderId]` and any future printable view:
+`globals.css` defines a `@media print` block used by `/app/pos/success/[orderId]`:
 
 - `html, body` → white background, black text.
-- `header`, `nav`, `.no-print` → `display: none`. Add `.no-print` to anything (banners, controls) that must not appear on paper.
-- `.panel` → flattens (no border, no shadow, no radius, no padding) so it prints as plain text rather than a card.
-- `main` → capped at `80mm` (thermal-receipt width) and centered.
+- `header`, `nav`, `.no-print` → `display: none`.
+- `.panel` → flattens (no border, shadow, radius, padding).
+- `main` → capped at `80mm` (thermal-receipt width), centered.
 - Tabular numerics preserved.
-
-If you add a new printable surface, prefer reusing `.panel` and tagging non-receipt UI with `.no-print` rather than introducing more print-specific rules.

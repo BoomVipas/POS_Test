@@ -43,7 +43,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
           className={cn(
             "px-2.5 py-1.5 transition",
             lang === l
-              ? "bg-gradient-to-b from-[#a9763f] to-[#7e552a] text-white"
+              ? "bg-gradient-to-b from-[#3d3686] to-[#2a2557] text-white"
               : "text-accent-strong hover:bg-soft",
           )}
         >

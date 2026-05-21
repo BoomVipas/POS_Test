@@ -43,7 +43,7 @@ export function RegistrationLinkBlock({ orderId }: { orderId: string }) {
         type: "svg",
         width: 220,
         margin: 1,
-        color: { dark: "#3a2509", light: "#fdf7ec" },
+        color: { dark: "#1c1838", light: "#f7f5fb" },
         errorCorrectionLevel: "M",
       });
       setQrSvg(svg);
@@ -135,7 +135,7 @@ export function RegistrationLinkBlock({ orderId }: { orderId: string }) {
         {qrSvg && (
           <div
             aria-hidden
-            className="grid h-[220px] w-[220px] place-items-center rounded-xl bg-[#fdf7ec] p-2"
+            className="grid h-[220px] w-[220px] place-items-center rounded-xl bg-[#f7f5fb] p-2"
             dangerouslySetInnerHTML={{ __html: qrSvg }}
           />
         )}

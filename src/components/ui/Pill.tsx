@@ -9,7 +9,7 @@ const TONE_CLS: Record<PillTone, string> = {
   danger:
     "bg-[var(--color-danger-soft-bg)] text-[var(--color-danger-soft-fg)]",
   accent:
-    "bg-gradient-to-b from-[#a9763f] to-[#7e552a] text-[#fffdf8]",
+    "bg-gradient-to-b from-[#3d3686] to-[#2a2557] text-[#ffffff]",
 };
 
 export function Pill({
