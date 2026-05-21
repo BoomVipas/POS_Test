@@ -135,7 +135,7 @@ export function PetCardsBlock({ phone }: { phone: string }) {
               placeholder="Name (e.g. Mochi)"
               value={draftName}
               onChange={(e) => setDraftName(e.currentTarget.value)}
-              className="rounded-md border border-line bg-white px-2 py-1.5 text-xs focus:border-accent focus:outline-none"
+              className="rounded-md border border-line bg-white px-2 py-1.5 text-xs focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
               autoFocus
             />
             <select
@@ -143,7 +143,7 @@ export function PetCardsBlock({ phone }: { phone: string }) {
               onChange={(e) =>
                 setDraftSpecies(e.currentTarget.value as PetSpecies)
               }
-              className="rounded-md border border-line bg-white px-2 py-1.5 text-xs focus:border-accent focus:outline-none"
+              className="rounded-md border border-line bg-white px-2 py-1.5 text-xs focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
             >
               {SPECIES_OPTIONS.map((s) => (
                 <option key={s} value={s}>
@@ -156,7 +156,7 @@ export function PetCardsBlock({ phone }: { phone: string }) {
               placeholder="Breed (optional)"
               value={draftBreed}
               onChange={(e) => setDraftBreed(e.currentTarget.value)}
-              className="rounded-md border border-line bg-white px-2 py-1.5 text-xs focus:border-accent focus:outline-none"
+              className="rounded-md border border-line bg-white px-2 py-1.5 text-xs focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
             />
             <input
               type="number"
@@ -165,7 +165,7 @@ export function PetCardsBlock({ phone }: { phone: string }) {
               onChange={(e) => setDraftWeight(e.currentTarget.value)}
               min={0}
               step={0.1}
-              className="rounded-md border border-line bg-white px-2 py-1.5 text-xs focus:border-accent focus:outline-none"
+              className="rounded-md border border-line bg-white px-2 py-1.5 text-xs focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
             />
           </div>
           <div className="flex justify-end gap-1.5">

@@ -189,7 +189,7 @@ export function CustomerInfoBlock() {
                       }
                     }}
                     placeholder={t.pos.addCustomTag}
-                    className="w-20 rounded-full border border-line bg-white px-2 py-0.5 text-[10px] focus:border-accent focus:outline-none"
+                    className="w-20 rounded-full border border-line bg-white px-2 py-0.5 text-[10px] focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
                   />
                 </div>
                 <textarea
