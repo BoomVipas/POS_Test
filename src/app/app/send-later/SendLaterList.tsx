@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useDemoSales } from "@/lib/demo/useDemoSales";
 import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Pill, type PillTone } from "@/components/ui/Pill";
 import { useToast } from "@/components/ui/Toast";
 import { formatTHB } from "@/lib/money/format";
@@ -39,6 +40,7 @@ export function SendLaterList() {
   const [trackingDraft, setTrackingDraft] = useState<Record<string, string>>(
     {},
   );
+  const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);
 
   if (!ready) {
     return (
@@ -76,10 +78,15 @@ export function SendLaterList() {
   }
 
   function cancel(orderId: string) {
-    if (!confirm("Cancel this fulfillment? This does NOT refund or restock in demo mode."))
-      return;
+    setPendingCancelId(orderId);
+  }
+
+  function confirmCancel() {
+    const orderId = pendingCancelId;
+    if (!orderId) return;
     update(orderId, { sendLaterStatus: "cancelled" });
     push({ kind: "info", title: "Cancelled", message: "Order marked cancelled." });
+    setPendingCancelId(null);
   }
 
   if (sendLaterOrders.length === 0) {
@@ -101,6 +108,11 @@ export function SendLaterList() {
       </div>
     );
   }
+
+  const pendingCancelOrder =
+    pendingCancelId !== null
+      ? (orders.find((o) => o.id === pendingCancelId) ?? null)
+      : null;
 
   return (
     <>
@@ -226,6 +238,21 @@ export function SendLaterList() {
           </li>
         )}
       </ul>
+
+      <ConfirmDialog
+        open={pendingCancelId !== null}
+        destructive
+        title={
+          pendingCancelOrder
+            ? `Cancel fulfillment ${pendingCancelOrder.orderNumber}?`
+            : "Cancel fulfillment?"
+        }
+        body="The order is marked cancelled. In demo mode this does NOT refund the customer or restock inventory."
+        confirmLabel="Cancel fulfillment"
+        cancelLabel="Keep it"
+        onConfirm={confirmCancel}
+        onCancel={() => setPendingCancelId(null)}
+      />
     </>
   );
 }
