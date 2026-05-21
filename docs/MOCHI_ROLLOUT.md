@@ -18,8 +18,7 @@ The original per-surface backlog is largely done — verified against merged PRs
 ## Backlog (prioritized) — cross-cutting UX polish
 Each loop fire takes the top unblocked item. Items marked 👁 want a visual eyeball.
 
-1. **Native `confirm()` → `ConfirmDialog`** — replace bare browser dialogs (unstyled, off-brand, can't name the object or color the destructive button) with `components/ui/ConfirmDialog` (named title, styled, red destructive button, Esc/backdrop = cancel). **Done:** `settings/DangerZone.tsx` (reset all), `setup/products/CatalogManager.tsx` (delete product). Remaining destructive sites, one per tick:
-   - `stock-count/StockCountManager.tsx` (commit/cancel a count session)
+1. **Native `confirm()` → `ConfirmDialog`** — replace bare browser dialogs (unstyled, off-brand, can't name the object or color the destructive button) with `components/ui/ConfirmDialog` (named title, styled, red destructive button, Esc/backdrop = cancel). **Done:** `settings/DangerZone.tsx` (reset all), `setup/products/CatalogManager.tsx` (delete product), `stock-count/StockCountManager.tsx` (discard count session). Remaining destructive sites, one per tick:
    - `send-later/SendLaterList.tsx` (cancel a fulfillment)
    - `pre-orders/PreOrderList.tsx` (cancel a pre-order)
    - `pos/PetCardsBlock.tsx` (remove pet — note: Wave-35 block, may be refactored out by the portal work)

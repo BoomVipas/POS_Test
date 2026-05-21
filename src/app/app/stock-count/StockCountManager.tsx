@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Pill } from "@/components/ui/Pill";
 import { useToast } from "@/components/ui/Toast";
 import { useDemoCatalog } from "@/lib/demo/useDemoCatalog";
@@ -24,6 +25,7 @@ export function StockCountManager() {
   const counts = useDemoStockCount();
   const audit = useDemoAudit();
   const { push } = useToast();
+  const [cancelOpen, setCancelOpen] = useState(false);
 
   const open = counts.sessions.find((s) => s.status === "open") ?? null;
   const history = useMemo(
@@ -119,12 +121,12 @@ export function StockCountManager() {
 
   function handleCancel() {
     if (!open) return;
-    if (
-      !confirm(
-        "Discard this count? Any entered counts will be lost; product stock is unchanged.",
-      )
-    )
-      return;
+    setCancelOpen(true);
+  }
+
+  function confirmCancel() {
+    setCancelOpen(false);
+    if (!open) return;
     counts.cancel(open.id);
     audit.log({
       action: "stock_count_cancel",
@@ -225,6 +227,17 @@ export function StockCountManager() {
           </ul>
         </section>
       )}
+
+      <ConfirmDialog
+        open={cancelOpen}
+        destructive
+        title="Discard this count session?"
+        body="Any counts you've entered will be lost. Product stock is left unchanged."
+        confirmLabel="Discard count"
+        cancelLabel="Keep counting"
+        onConfirm={confirmCancel}
+        onCancel={() => setCancelOpen(false)}
+      />
     </>
   );
 }
