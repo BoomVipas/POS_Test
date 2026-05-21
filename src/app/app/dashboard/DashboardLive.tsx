@@ -16,6 +16,7 @@ import {
   type RangePresetId,
 } from "@/lib/demo/dashboard-range";
 import { formatTHB } from "@/lib/money/format";
+import { Sparkline } from "@/components/ui/Sparkline";
 import { mockToday } from "./mock";
 import { PaymentSplitTile } from "./PaymentSplitTile";
 import { InventoryTile } from "./InventoryTile";
@@ -147,65 +148,81 @@ export function DashboardLive() {
         </p>
       )}
 
-      {/* KPI strip — feature card (revenue) + 3 metric cards */}
-      <section className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      {/* Hero revenue card (full-width) + 3-metric strip */}
+      <section className="mb-6 grid gap-4">
         <div
-          className="rounded-[20px] p-[22px] text-white shadow-[var(--shadow-card)]"
+          className="overflow-hidden rounded-[24px] p-6 text-white shadow-[var(--shadow-card)] sm:p-7"
           style={{ background: "var(--grad-primary)" }}
         >
-          <div className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-white/75">
-            {rangeId === "today" ? "Today's revenue" : "Revenue"}
-          </div>
-          <div className="num mt-1.5 text-[36px] font-black leading-none tracking-[-0.025em]">
-            ฿{formatTHB(totals.totalSatang)}
-          </div>
-          <div className="mt-2 text-xs font-bold text-white/80">
-            {revDelta}
-            {goal.targetSatang > 0 &&
-              ` · target ฿${formatTHB(goal.targetSatang)}`}
-          </div>
-        </div>
-
-        <div className="rounded-[20px] border border-line bg-panel p-[22px] shadow-[var(--shadow-card)]">
-          <div className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-muted">
-            Orders
-          </div>
-          <div className="num mt-1.5 text-[36px] font-black leading-none tracking-[-0.025em] text-text">
-            {totals.bills}
-          </div>
-          <div className="mt-2 text-xs text-muted">
-            Avg ฿{formatTHB(totals.avgBillSatang)} per order
-          </div>
-        </div>
-
-        <div className="rounded-[20px] border border-line bg-panel p-[22px] shadow-[var(--shadow-card)]">
-          <div className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-muted">
-            Gross margin
-          </div>
-          <div
-            className="num mt-1.5 text-[36px] font-black leading-none tracking-[-0.025em]"
-            style={{ color: "var(--color-ok-soft-fg)" }}
-          >
-            {margin && margin.marginPct !== null
-              ? `${Math.round(margin.marginPct)}%`
-              : "—"}
-          </div>
-          <div className="mt-2 text-xs text-muted">
-            {margin && margin.marginPct !== null
-              ? `After COGS · ฿${formatTHB(margin.profitSatang)} profit`
-              : "Add product cost to see margin"}
+          <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+            <div>
+              <div className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-white/75">
+                {rangeId === "today" ? "Today's revenue" : "Revenue"}
+              </div>
+              <div className="num mt-2 text-[44px] font-black leading-none tracking-[-0.03em] sm:text-[52px]">
+                ฿{formatTHB(totals.totalSatang)}
+              </div>
+              <div className="mt-2.5 text-xs font-bold text-white/80">
+                {revDelta}
+                {goal.targetSatang > 0 &&
+                  ` · target ฿${formatTHB(goal.targetSatang)}`}
+              </div>
+            </div>
+            <div className="w-full shrink-0 sm:w-[260px]">
+              <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-white/55">
+                {chartTitle}
+              </div>
+              <Sparkline
+                values={chartBars.map((b) => b.value)}
+                fill="rgba(255,255,255,0.14)"
+                className="mt-1.5 h-12 w-full text-white/85"
+              />
+            </div>
           </div>
         </div>
 
-        <div className="rounded-[20px] border border-line bg-panel p-[22px] shadow-[var(--shadow-card)]">
-          <div className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-muted">
-            Avg bill
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="rounded-[20px] border border-line bg-panel p-[22px] shadow-rest">
+            <div className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-muted">
+              Orders
+            </div>
+            <div className="num mt-1.5 text-[32px] font-black leading-none tracking-[-0.025em] text-text">
+              {totals.bills}
+            </div>
+            <div className="mt-2 text-xs text-muted">
+              Avg ฿{formatTHB(totals.avgBillSatang)} per order
+            </div>
           </div>
-          <div className="num mt-1.5 text-[36px] font-black leading-none tracking-[-0.025em] text-text">
-            ฿{formatTHB(totals.avgBillSatang)}
+
+          <div className="rounded-[20px] border border-line bg-panel p-[22px] shadow-rest">
+            <div className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-muted">
+              Gross margin
+            </div>
+            <div
+              className="num mt-1.5 text-[32px] font-black leading-none tracking-[-0.025em]"
+              style={{ color: "var(--color-ok-soft-fg)" }}
+            >
+              {margin && margin.marginPct !== null
+                ? `${Math.round(margin.marginPct)}%`
+                : "—"}
+            </div>
+            <div className="mt-2 text-xs text-muted">
+              {margin && margin.marginPct !== null
+                ? `After COGS · ฿${formatTHB(margin.profitSatang)} profit`
+                : "Add product cost to see margin"}
+            </div>
           </div>
-          <div className="mt-2 text-xs text-muted">
-            {totals.bills} order{totals.bills === 1 ? "" : "s"} in range
+
+          <div className="rounded-[20px] border border-line bg-panel p-[22px] shadow-rest">
+            <div className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-muted">
+              Avg bill
+            </div>
+            <div className="num mt-1.5 text-[32px] font-black leading-none tracking-[-0.025em] text-text">
+              ฿{formatTHB(totals.avgBillSatang)}
+            </div>
+            <div className="mt-2 text-xs text-muted">
+              {totals.bills} order{totals.bills === 1 ? "" : "s"} in range
+            </div>
           </div>
         </div>
       </section>
