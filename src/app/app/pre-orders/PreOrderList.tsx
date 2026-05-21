@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useDemoPreOrders } from "@/lib/demo/useDemoPreOrders";
 import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Pill, type PillTone } from "@/components/ui/Pill";
 import { useToast } from "@/components/ui/Toast";
 import { useT } from "@/lib/i18n/provider";
@@ -34,6 +35,7 @@ export function PreOrderList() {
   const { t } = useT();
   const { push } = useToast();
   const [filter, setFilter] = useState<PreOrderStatus | "all">("pending");
+  const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);
 
   if (!ready) {
     return (
@@ -72,6 +74,26 @@ export function PreOrderList() {
     if (s === "fulfilled") return t.preOrders.statusFulfilled;
     return t.preOrders.statusCancelled;
   }
+
+  function confirmCancel() {
+    const id = pendingCancelId;
+    if (!id) return;
+    const po = items.find((p) => p.id === id);
+    setStatus(id, "cancelled");
+    if (po) {
+      push({
+        kind: "info",
+        title: t.preOrders.statusCancelled,
+        message: po.customerName,
+      });
+    }
+    setPendingCancelId(null);
+  }
+
+  const pendingCancel =
+    pendingCancelId !== null
+      ? (items.find((p) => p.id === pendingCancelId) ?? null)
+      : null;
 
   return (
     <>
@@ -159,15 +181,7 @@ export function PreOrderList() {
                 <Button
                   size="sm"
                   variant="danger"
-                  onClick={() => {
-                    if (
-                      confirm(
-                        `Cancel pre-order for ${p.customerName}?`,
-                      )
-                    ) {
-                      setStatus(p.id, "cancelled");
-                    }
-                  }}
+                  onClick={() => setPendingCancelId(p.id)}
                 >
                   {t.preOrders.markCancelled}
                 </Button>
@@ -181,6 +195,21 @@ export function PreOrderList() {
           </li>
         )}
       </ul>
+
+      <ConfirmDialog
+        open={pendingCancelId !== null}
+        destructive
+        title={
+          pendingCancel
+            ? `Cancel pre-order for ${pendingCancel.customerName}?`
+            : "Cancel pre-order?"
+        }
+        body="The pre-order is marked cancelled. The customer won't be notified automatically."
+        confirmLabel="Cancel pre-order"
+        cancelLabel="Keep it"
+        onConfirm={confirmCancel}
+        onCancel={() => setPendingCancelId(null)}
+      />
     </>
   );
 }
