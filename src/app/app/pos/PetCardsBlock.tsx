@@ -9,6 +9,7 @@ import {
 } from "@/lib/demo/pets";
 import { useDemoPets } from "@/lib/demo/useDemoPets";
 import { useDemoAudit } from "@/lib/demo/useDemoAudit";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 const SPECIES_OPTIONS: PetSpecies[] = [
   "cat",
@@ -27,6 +28,7 @@ export function PetCardsBlock({ phone }: { phone: string }) {
   const trimmed = phone.trim();
   const list = trimmed ? pets.forPhone(trimmed) : [];
   const [adding, setAdding] = useState(false);
+  const [pendingRemove, setPendingRemove] = useState<DemoPet | null>(null);
   const [draftName, setDraftName] = useState("");
   const [draftSpecies, setDraftSpecies] = useState<PetSpecies>("cat");
   const [draftBreed, setDraftBreed] = useState("");
@@ -63,7 +65,12 @@ export function PetCardsBlock({ phone }: { phone: string }) {
   }
 
   function handleRemove(p: DemoPet) {
-    if (!confirm(`Remove pet "${p.name}"?`)) return;
+    setPendingRemove(p);
+  }
+
+  function confirmRemove() {
+    const p = pendingRemove;
+    if (!p) return;
     pets.remove(p.id);
     audit.log({
       action: "pet_delete",
@@ -72,6 +79,7 @@ export function PetCardsBlock({ phone }: { phone: string }) {
       summary: `− ${p.name} (${p.species})`,
       oldValue: { name: p.name, species: p.species },
     });
+    setPendingRemove(null);
   }
 
   if (list.length === 0 && !adding) {
@@ -187,6 +195,17 @@ export function PetCardsBlock({ phone }: { phone: string }) {
           + Add another
         </button>
       )}
+
+      <ConfirmDialog
+        open={pendingRemove !== null}
+        destructive
+        title={pendingRemove ? `Remove ${pendingRemove.name}?` : "Remove pet?"}
+        body="This removes the pet from this customer's profile in demo mode."
+        confirmLabel="Remove pet"
+        cancelLabel="Keep it"
+        onConfirm={confirmRemove}
+        onCancel={() => setPendingRemove(null)}
+      />
     </div>
   );
 }

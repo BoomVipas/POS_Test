@@ -29,10 +29,9 @@ Audit recipe (reproducible): a temporary Playwright spec navigating the demo rou
 ## Backlog (prioritized) — cross-cutting UX polish
 Each loop fire takes the top unblocked item. Items marked 👁 want a visual eyeball.
 
-1. **Native `confirm()` → `ConfirmDialog`** — replace bare browser dialogs (unstyled, off-brand, can't name the object or color the destructive button) with `components/ui/ConfirmDialog` (named title, styled, red destructive button, Esc/backdrop = cancel). **Done:** `settings/DangerZone.tsx` (reset all), `setup/products/CatalogManager.tsx` (delete product), `stock-count/StockCountManager.tsx` (discard count session), `send-later/SendLaterList.tsx` (cancel fulfillment), `pre-orders/PreOrderList.tsx` (cancel pre-order). Remaining destructive site:
-   - `pos/PetCardsBlock.tsx` (remove pet — note: Wave-35 block, may be refactored out by the portal work) — **last one in the queue**
+1. ✅ **Native `confirm()` → `ConfirmDialog` — DONE.** All 6 destructive dialogs migrated to `components/ui/ConfirmDialog` (named title, red destructive button, Esc/backdrop = cancel): `settings/DangerZone` (reset all), `setup/products/CatalogManager` (delete product), `stock-count/StockCountManager` (discard count), `send-later/SendLaterList` (cancel fulfillment), `pre-orders/PreOrderList` (cancel pre-order), `pos/PetCardsBlock` (remove pet).
 
-   Non-destructive `confirm()`s (lower priority): `pos/ImportClaimButton.tsx` (replace cart); `CatalogManager` "add samples on top" (also currently unreachable — only fires when the catalog is non-empty, but that handler is only called from the empty state).
+   Remaining are **non-destructive** confirmations (proceed/benign — a styled dialog is nice-to-have, not a UX defect), left as-is for now: `pos/ImportClaimButton.tsx` (replace cart); `CatalogManager` "add samples on top" (also currently unreachable).
 2. **Empty-state consistency** — optionally route the ad-hoc list empties (send-later, pre-orders, correction, audit-log) through the shared `EmptyState` component. Cosmetic only; they already function.
 3. **Admin tables** 👁 — `/admin/*` lists to Mochi table conventions (sticky header, right-aligned numerics, consistent 4-state status chips) where not yet applied.
 4. **POS till + receipt** 👁 — confirm the indigo reads at booth speed (large touch targets, PAY prominence).
