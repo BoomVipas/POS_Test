@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Pill, type PillTone } from "@/components/ui/Pill";
 import { useDemoSales } from "@/lib/demo/useDemoSales";
@@ -88,6 +89,12 @@ export function CustomersList() {
           Customers appear here when a sale captures a phone number. Try
           adding a phone in the POS, or convert a QR self-order claim.
         </p>
+        <Link
+          href="/app/pos"
+          className="btn-accent mt-4 inline-flex rounded-[var(--radius-md)] px-4 py-2 text-sm font-bold"
+        >
+          Open POS
+        </Link>
       </div>
     );
   }

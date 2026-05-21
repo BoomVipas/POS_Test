@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useToast } from "@/components/ui/Toast";
 import { useDemoCatalog } from "@/lib/demo/useDemoCatalog";
 import { useDemoSales } from "@/lib/demo/useDemoSales";
@@ -24,15 +26,10 @@ export function DangerZone() {
   const { clear: clearStockCount } = useDemoStockCount();
   const { clear: clearPets } = useDemoPets();
   const { push } = useToast();
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
-  function clearAll() {
-    if (
-      !confirm(
-        "Reset all demo data? This wipes your demo catalog, recorded sales, customer notes, audit log, and settings from this browser. Cannot be undone.",
-      )
-    ) {
-      return;
-    }
+  function performReset() {
+    setConfirmOpen(false);
     // Log the reset BEFORE clearing audit, then clear audit.
     log({
       action: "demo_reset",
@@ -75,10 +72,29 @@ export function DangerZone() {
         variant="danger"
         size="sm"
         className="mt-3"
-        onClick={clearAll}
+        onClick={() => setConfirmOpen(true)}
       >
         Reset all demo data
       </Button>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        destructive
+        title="Reset all demo data?"
+        confirmLabel="Reset everything"
+        cancelLabel="Keep data"
+        body={
+          <>
+            This wipes {items.length} product{items.length === 1 ? "" : "s"},{" "}
+            {orders.length} recorded sale{orders.length === 1 ? "" : "s"},{" "}
+            {entries.length} audit entr{entries.length === 1 ? "y" : "ies"},
+            customer notes, and settings from this browser. Real Supabase data
+            is unaffected. This cannot be undone.
+          </>
+        }
+        onConfirm={performReset}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </div>
   );
 }

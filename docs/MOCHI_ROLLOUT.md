@@ -8,16 +8,26 @@ Tracks the migration of `pos-for-sell` to the Mochi design system — one unifie
 - **Verified** — `npm run build` (29 routes) + lint (0 errors) + typecheck green.
 - **Accessibility (WCAG AA)** — contrast audit of the token palette: every real text pair passes ≥4.5:1 (text/bg 15.7 · muted/bg 5.1 · accent/bg 12.2 · status pairs 5.6–6.5 · white-on-indigo-button 10.1–14.0). The lavender highlight (`--color-gold` `#b8a9f0`) measures 2.1 on white, so keep it to backgrounds/accents only — it is not used as text anywhere today.
 
-## Backlog (prioritized) — discretionary polish, best reviewed visually
+## Shipped since PR #73 (reconciled 2026-05-22)
+The original per-surface backlog is largely done — verified against merged PRs + live code:
+- **Brand identity** ✅ — Mochi mascot + wordmark live in the app header (`app/layout.tsx`), plus onboarding / apply / register / learn.
+- **Landing `/`**, **Dashboard** (#76), **Customer portal `/register/[token]`** (#77), **`/apply`** (#78), **Onboarding wizard** (#79) — all redesigned to their mockups. ✅
+- **Event setup `/app/events`** — MVP + booth-rules/free-gift config rail in flight on `pos/mochi-events` (PR #83).
+- **Empty states** — audited 2026-05-22: products uses the shared `EmptyState`; send-later / pre-orders / correction / audit-log are ad-hoc but already carry body + CTA; `CustomersList` CTA added this pass. Every list empty now has a next action.
+
+## Backlog (prioritized) — cross-cutting UX polish
 Each loop fire takes the top unblocked item. Items marked 👁 want a visual eyeball.
 
-1. **Brand identity** 👁 — add the Mochi wordmark (`.wm`: "Mochi" indigo + "POS" lavender) + mascot to the landing `/` hero and the app header (today it shows only the workspace name). Assets in the handoff `project/assets/`.
-2. **Landing `/`** 👁 — match the handoff tone: hero, value prop ("Sell fast at the booth. Save the data for later."), apply CTA.
-3. **Dashboard `/app/dashboard`** 👁 — align to `screens/dashboard.html`: 3–5 KPI cards, hourly chart, Send Later queue, low-stock. Also compose in the built-but-unwired tiles (Profit/Reorder/ActivityFeed/SourceSplit/multi-period) flagged in PRD F15.
-4. **Event setup `/app/events*`** 👁 — `screens/event-setup.html`: stock allocator + sample bucket.
-5. **Customer portal `/register/[token]`** 👁 — `screens/pet-portal.html`: mobile-first, pet chips (emoji), warm voice.
-6. **Onboarding / apply / admin** — forms + tables to Mochi conventions (labels above fields, 4-state status chips, one primary CTA per view).
-7. **POS till + receipt** 👁 — confirm the indigo reads well at booth speed (large touch targets, PAY prominence).
+1. **Native `confirm()` → `ConfirmDialog`** — replace bare browser dialogs (unstyled, off-brand, can't name the object or color the destructive button) with `components/ui/ConfirmDialog` (named title, styled, red destructive button, Esc/backdrop = cancel). **`settings/DangerZone.tsx` done** as the proof. Remaining sites, one per tick:
+   - `setup/products/CatalogManager.tsx` ×2 (delete product; restore-defaults)
+   - `stock-count/StockCountManager.tsx` (commit/cancel a count session)
+   - `send-later/SendLaterList.tsx` (cancel a fulfillment)
+   - `pre-orders/PreOrderList.tsx` (cancel a pre-order)
+   - `pos/PetCardsBlock.tsx` (remove pet — note: Wave-35 block, may be refactored out by the portal work)
+   - `pos/ImportClaimButton.tsx` (replace cart) — non-destructive; lowest priority
+2. **Empty-state consistency** — optionally route the ad-hoc list empties (send-later, pre-orders, correction, audit-log) through the shared `EmptyState` component. Cosmetic only; they already function.
+3. **Admin tables** 👁 — `/admin/*` lists to Mochi table conventions (sticky header, right-aligned numerics, consistent 4-state status chips) where not yet applied.
+4. **POS till + receipt** 👁 — confirm the indigo reads at booth speed (large touch targets, PAY prominence).
 
 ## Pending founder decisions (loop will NOT auto-decide)
 - **CLAUDE.md rule #9** — still reads cream/brown; superseded by Mochi indigo. Update?
