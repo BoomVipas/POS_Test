@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -169,20 +170,24 @@ export function ApplyForm() {
       <button
         type="submit"
         disabled={pending}
-        className="btn-accent rounded-[var(--radius-md)] px-6 py-3 text-base font-bold"
+        className="mt-2 w-full rounded-[14px] py-3.5 text-[15px] font-extrabold text-white shadow-[var(--shadow-card)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45 disabled:opacity-60"
+        style={{ background: "var(--grad-primary)" }}
       >
         {pending ? "Submitting…" : "Submit application"}
       </button>
 
-      <p className="text-xs text-muted">
-        We review applications manually. Expect a reply within 3 working days.
+      <p className="text-center text-xs text-muted">
+        Already approved?{" "}
+        <Link href="/register" className="font-bold text-accent hover:underline">
+          Redeem your invite code →
+        </Link>
       </p>
     </form>
   );
 }
 
 const inputCls =
-  "w-full rounded-[var(--radius-md)] border border-line bg-panel px-3 py-2.5 text-base text-text shadow-sm placeholder:text-muted/60 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25";
+  "w-full rounded-[12px] border border-line bg-panel px-3.5 py-3 text-sm text-text outline-none transition placeholder:text-muted/60 focus:border-[var(--indigo-500)] focus:ring-4 focus:ring-[var(--lavender-200)]";
 
 function Field({
   label,
@@ -195,7 +200,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-sm font-bold text-accent-strong">
+      <span className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-[0.04em] text-muted">
         {label}
       </span>
       {children}
