@@ -88,7 +88,7 @@ function Tile({
     <li>
       <Link
         href={href}
-        className="block rounded-[var(--radius-lg)] border border-line bg-panel px-5 py-4 hover:border-accent"
+        className="group block h-full rounded-[var(--radius-lg)] border border-line bg-panel px-5 py-4 shadow-rest transition duration-150 ease-out hover:-translate-y-0.5 hover:border-accent hover:shadow-lift active:translate-y-0 active:shadow-rest"
       >
         <p className="font-display text-xl text-accent-strong">{title}</p>
         <p className="mt-1 text-sm text-text/80">{body}</p>

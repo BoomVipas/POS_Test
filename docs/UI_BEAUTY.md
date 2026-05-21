@@ -12,9 +12,9 @@ Tracks the "make the UI more beautiful" loop (founder request, 2026-05-22). Moch
 ## Phase 1 — broad refinement (current)
 A pervasive quality lift across screens. Each loop fire takes the top open item.
 
-1. **Elevation system** — *(in progress)* add a reusable shadow scale (`--shadow-rest`, `--shadow-lift`) cohesive with `--shadow-card`; apply to POS product cards with a premium hover; fix the 2 leftover **brown** shadows (`rgba(77,53,29…)` in `ProductCard`, `POSWorkspace`) → indigo.
-2. **Hover / press micro-interactions** — consistent, tasteful transitions on cards, app-home tiles, and buttons (lift + shadow bloom on hover; subtle press). Respect `prefers-reduced-motion` (already handled globally).
-3. **Type scale & rhythm** — audit heading/body sizes and vertical spacing for a consistent scale across screens; tighten where cramped, breathe where dense.
+1. ✅ **Elevation system** — `--shadow-rest` / `--shadow-lift` scale added (cohesive with `--shadow-card`); POS product cards rest→lift on hover; 2 leftover **brown** shadows fixed. *(pass 1)*
+2. ✅ **Hover / press micro-interactions** — app-home tiles lift + accent border + shadow-bloom on hover, settle on press; every `Button` gets a subtle `active:translate-y-px` press. Product cards already lift (pass 1); list rows already have subtle hover. *(pass 2)*
+3. **Type scale & rhythm** — *(next)* audit heading/body sizes and vertical spacing for a consistent scale across screens; tighten where cramped, breathe where dense.
 4. **Inputs & focus states** — unify input styling + focus ring across the bespoke inline inputs and the `ui/` components.
 5. **App-home tiles** — give the launcher tiles depth + hover lift so they read as tappable; consider a subtle category accent.
 6. **Card surfaces** — make list rows / panels share one elevation + radius rhythm.
