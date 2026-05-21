@@ -39,7 +39,7 @@ export function ProductCard({
       type="button"
       onClick={handleClick}
       disabled={soldout && !onPreOrder}
-      className="group grid gap-1 rounded-2xl border border-[color-mix(in_oklch,var(--color-accent)_12%,transparent)] bg-gradient-to-b from-[#ffffff] via-[#faf8fd] to-[#efeafd] p-2 text-left shadow-[0_10px_20px_rgba(77,53,29,0.05)] transition hover:-translate-y-px hover:shadow-[0_16px_28px_rgba(77,53,29,0.10)] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-[0_10px_20px_rgba(77,53,29,0.05)]"
+      className="group grid gap-1 rounded-2xl border border-[color-mix(in_oklch,var(--color-accent)_12%,transparent)] bg-gradient-to-b from-[#ffffff] via-[#faf8fd] to-[#efeafd] p-2 text-left shadow-rest transition duration-150 ease-out hover:-translate-y-0.5 hover:shadow-lift disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-rest"
     >
       <div className="relative grid aspect-[5/1.95] place-items-center overflow-hidden rounded-xl border border-[color-mix(in_oklch,var(--color-accent)_10%,transparent)] bg-gradient-to-b from-[#ffffff] to-[#efeafd]">
         {product.image_path ? (

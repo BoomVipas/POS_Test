@@ -34,7 +34,7 @@ export function POSWorkspace({
           </div>
         </aside>
       </div>
-      <div className="fixed inset-x-0 bottom-0 z-30 max-h-[80dvh] overflow-y-auto rounded-t-3xl border-t border-line bg-panel/95 backdrop-blur shadow-[0_-12px_30px_rgba(77,53,29,0.12)] lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-30 max-h-[80dvh] overflow-y-auto rounded-t-3xl border-t border-line bg-panel/95 backdrop-blur shadow-[0_-12px_30px_rgba(28,24,56,0.12)] lg:hidden">
         <CartPanel products={products} compact />
       </div>
     </CartProvider>
