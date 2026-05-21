@@ -173,6 +173,7 @@ export function CatalogManager() {
       <>
         <div className="mt-8">
           <EmptyState
+            icon="🏷️"
             title="No products yet."
             body="Add your first product card, or load the sample catalog to skip ahead and see the POS in action."
             action={

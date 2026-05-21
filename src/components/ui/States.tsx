@@ -40,16 +40,26 @@ export function ListSkeleton({
 }
 
 export function EmptyState({
+  icon,
   title,
   body,
   action,
 }: {
+  icon?: React.ReactNode;
   title: string;
   body?: string;
   action?: React.ReactNode;
 }) {
   return (
     <div className="panel flex flex-col items-center gap-3 px-6 py-10 text-center">
+      {icon && (
+        <span
+          className="grid h-14 w-14 place-items-center rounded-full bg-[var(--lavender-100)] text-2xl"
+          aria-hidden
+        >
+          {icon}
+        </span>
+      )}
       <p className="font-display text-xl text-accent-strong">{title}</p>
       {body && <p className="max-w-sm text-sm text-muted">{body}</p>}
       {action}

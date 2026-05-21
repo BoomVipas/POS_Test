@@ -50,6 +50,9 @@ export function PreOrderList() {
   if (items.length === 0) {
     return (
       <div className="panel mt-8 p-8 text-center">
+        <span className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-full bg-[var(--lavender-100)] text-2xl" aria-hidden>
+          ⏳
+        </span>
         <p className="font-display text-xl text-accent-strong">
           No pre-orders yet.
         </p>
