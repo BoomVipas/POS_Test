@@ -50,8 +50,10 @@ export function ProductCard({
             className="h-full w-full object-cover"
           />
         ) : (
-          <span className="px-3 text-center text-xs font-extrabold leading-tight text-[#6b6489]">
-            {product.name}
+          // No image: show a 2-letter monogram, not the full name — the name
+          // already renders below the tile, so repeating it here looked doubled.
+          <span className="text-2xl font-black uppercase tracking-wide text-muted">
+            {product.name.slice(0, 2)}
           </span>
         )}
         <span className="absolute left-2 top-2 rounded-full border border-[color-mix(in_oklch,var(--color-accent)_10%,transparent)] bg-[rgba(255,251,245,0.94)] px-1.5 py-0.5 text-[11px] font-extrabold text-[#1c1838]">

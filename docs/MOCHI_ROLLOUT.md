@@ -15,6 +15,17 @@ The original per-surface backlog is largely done — verified against merged PRs
 - **Event setup `/app/events`** — MVP + booth-rules/free-gift config rail in flight on `pos/mochi-events` (PR #83).
 - **Empty states** — audited 2026-05-22: products uses the shared `EmptyState`; send-later / pre-orders / correction / audit-log are ad-hoc but already carry body + CTA; `CustomersList` CTA added this pass. Every list empty now has a next action.
 
+## Visual audit (2026-05-22)
+Ran a Playwright full-page screenshot pass over the main demo screens and eyeballed each. **The system is visually pilot-ready** — Mochi indigo is consistent across surfaces, empty states carry CTAs, the dashboard is rich and composed, and the new `ConfirmDialog` renders correctly (named title, red destructive button). Findings:
+
+- ✅ **Fixed this pass:** POS product cards rendered the product name twice (image-area fallback **and** below the tile). Image-less cards now show a 2-letter monogram (`ProductCard.tsx`).
+- **Landing `/`** — no Mochi wordmark/mark at top-left (only the language toggle). The hero is the brand moment so it's minor; a small top-left mark would reinforce it. *(low priority)*
+- **App-home tiles** — text-only, no icons. Fine for low training burden; icons would add scannability. *(optional)*
+- **Admin tables (👁)** — render "Admin offline" in demo mode (Supabase-gated). Cannot be visually audited without creds; parked until a Supabase project exists.
+- Confirmed good: landing, app home, POS, products, dashboard, send-later, settings + ConfirmDialog, customers (empty-state CTAs working).
+
+Audit recipe (reproducible): a temporary Playwright spec navigating the demo routes with `page.screenshot({ fullPage: true })`, run via `npx playwright test`; deleted after each pass so it never runs in CI.
+
 ## Backlog (prioritized) — cross-cutting UX polish
 Each loop fire takes the top unblocked item. Items marked 👁 want a visual eyeball.
 
