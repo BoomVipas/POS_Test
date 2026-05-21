@@ -6,6 +6,7 @@ import { useDemoCatalog } from "@/lib/demo/useDemoCatalog";
 import { useDemoAudit } from "@/lib/demo/useDemoAudit";
 import { useDemoSales } from "@/lib/demo/useDemoSales";
 import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Pill } from "@/components/ui/Pill";
 import { EmptyState } from "@/components/ui/States";
 import { useToast } from "@/components/ui/Toast";
@@ -25,6 +26,7 @@ export function CatalogManager() {
   const { t } = useT();
   const [editing, setEditing] = useState<Product | null>(null);
   const [open, setOpen] = useState(false);
+  const [pendingRemove, setPendingRemove] = useState<Product | null>(null);
   const { push } = useToast();
 
   const forecastsByProduct = useMemo(() => {
@@ -88,22 +90,23 @@ export function CatalogManager() {
     }
   }
 
-  function handleRemove(p: Product) {
-    if (confirm(`Remove ${p.sku} — ${p.name}? This cannot be undone in demo mode.`)) {
-      remove(p.id);
-      audit.log({
-        action: "catalog_delete",
-        targetTable: "products",
-        targetId: p.id,
-        summary: `−${p.sku} — ${p.name}`,
-        oldValue: { sku: p.sku, name: p.name },
-      });
-      push({
-        kind: "info",
-        title: "Removed",
-        message: `${p.sku} deleted from demo catalog.`,
-      });
-    }
+  function confirmRemove() {
+    const p = pendingRemove;
+    if (!p) return;
+    remove(p.id);
+    audit.log({
+      action: "catalog_delete",
+      targetTable: "products",
+      targetId: p.id,
+      summary: `−${p.sku} — ${p.name}`,
+      oldValue: { sku: p.sku, name: p.name },
+    });
+    push({
+      kind: "info",
+      title: "Removed",
+      message: `${p.sku} deleted from demo catalog.`,
+    });
+    setPendingRemove(null);
   }
 
   function handleSetActive(p: Product, isActive: boolean) {
@@ -311,7 +314,7 @@ export function CatalogManager() {
               <Button
                 size="sm"
                 variant="danger"
-                onClick={() => handleRemove(p)}
+                onClick={() => setPendingRemove(p)}
               >
                 Remove
               </Button>
@@ -333,6 +336,21 @@ export function CatalogManager() {
         initial={editing}
         workspaceId={DEMO_WORKSPACE_ID}
         onSubmit={handleSubmit}
+      />
+
+      <ConfirmDialog
+        open={pendingRemove !== null}
+        destructive
+        title={
+          pendingRemove
+            ? `Remove ${pendingRemove.sku} — ${pendingRemove.name}?`
+            : "Remove product?"
+        }
+        body="This deletes the product from your demo catalog. It cannot be undone in demo mode."
+        confirmLabel="Remove product"
+        cancelLabel="Keep it"
+        onConfirm={confirmRemove}
+        onCancel={() => setPendingRemove(null)}
       />
     </>
   );

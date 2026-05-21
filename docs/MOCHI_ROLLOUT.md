@@ -18,13 +18,13 @@ The original per-surface backlog is largely done — verified against merged PRs
 ## Backlog (prioritized) — cross-cutting UX polish
 Each loop fire takes the top unblocked item. Items marked 👁 want a visual eyeball.
 
-1. **Native `confirm()` → `ConfirmDialog`** — replace bare browser dialogs (unstyled, off-brand, can't name the object or color the destructive button) with `components/ui/ConfirmDialog` (named title, styled, red destructive button, Esc/backdrop = cancel). **`settings/DangerZone.tsx` done** as the proof. Remaining sites, one per tick:
-   - `setup/products/CatalogManager.tsx` ×2 (delete product; restore-defaults)
+1. **Native `confirm()` → `ConfirmDialog`** — replace bare browser dialogs (unstyled, off-brand, can't name the object or color the destructive button) with `components/ui/ConfirmDialog` (named title, styled, red destructive button, Esc/backdrop = cancel). **Done:** `settings/DangerZone.tsx` (reset all), `setup/products/CatalogManager.tsx` (delete product). Remaining destructive sites, one per tick:
    - `stock-count/StockCountManager.tsx` (commit/cancel a count session)
    - `send-later/SendLaterList.tsx` (cancel a fulfillment)
    - `pre-orders/PreOrderList.tsx` (cancel a pre-order)
    - `pos/PetCardsBlock.tsx` (remove pet — note: Wave-35 block, may be refactored out by the portal work)
-   - `pos/ImportClaimButton.tsx` (replace cart) — non-destructive; lowest priority
+
+   Non-destructive `confirm()`s (lower priority): `pos/ImportClaimButton.tsx` (replace cart); `CatalogManager` "add samples on top" (also currently unreachable — only fires when the catalog is non-empty, but that handler is only called from the empty state).
 2. **Empty-state consistency** — optionally route the ad-hoc list empties (send-later, pre-orders, correction, audit-log) through the shared `EmptyState` component. Cosmetic only; they already function.
 3. **Admin tables** 👁 — `/admin/*` lists to Mochi table conventions (sticky header, right-aligned numerics, consistent 4-state status chips) where not yet applied.
 4. **POS till + receipt** 👁 — confirm the indigo reads at booth speed (large touch targets, PAY prominence).
