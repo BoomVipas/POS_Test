@@ -35,6 +35,23 @@
   --color-accent-strong: #1c1838;
   --color-gold: #b8a9f0; /* lavender highlight (was warm gold) */
 
+  /* Mochi extended scale — fuller shades the redesigned screens need
+     (chart bars, nav-active bg, gradients, avatars). From the design handoff
+     colors_and_type.css. Used via var(...) in components, not @theme, so they
+     don't clobber Tailwind's built-in indigo-* palette. */
+  --indigo-700: #3a3478;
+  --indigo-600: #4a4396;
+  --indigo-500: #5d54b8;
+  --indigo-100: #e7e3f6;
+  --indigo-50: #f1eff9;
+  --lavender-700: #7a6ad6;
+  --lavender-300: #d3c8f6;
+  --lavender-200: #e2dafa;
+  --lavender-100: #efeafd;
+  --grad-primary: linear-gradient(180deg, #3d3686 0%, #2a2557 100%);
+  --grad-accent: linear-gradient(135deg, #b8a9f0 0%, #7a6ad6 100%);
+  --cream: #f4eedf;
+
   /* line / border */
   --color-line: #e5dff0;
 
