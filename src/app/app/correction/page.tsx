@@ -4,7 +4,7 @@ import { CorrectionList } from "./CorrectionList";
 export default function CorrectionPage() {
   return (
     <main className="mx-auto max-w-4xl px-5 py-10">
-      <h1 className="font-display text-3xl text-accent-strong">Corrections</h1>
+      <h1 className="font-display text-3xl font-extrabold tracking-tight text-accent-strong">Corrections</h1>
       <p className="mt-2 text-text/85">
         Void recorded sales and restore inventory. Voided orders are excluded
         from dashboard totals.

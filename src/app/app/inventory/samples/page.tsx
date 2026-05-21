@@ -19,7 +19,7 @@ export default function InventorySamplesPage() {
         <p className="text-xs font-bold uppercase tracking-wide text-muted">
           Inventory · Wave 39b · demo mode
         </p>
-        <h1 className="mt-1 font-display text-3xl text-accent-strong">
+        <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight text-accent-strong">
           Sample bucket
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-text/85">

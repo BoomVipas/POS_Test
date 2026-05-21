@@ -5,7 +5,7 @@ export default function CustomersPage() {
   return (
     <main className="mx-auto max-w-3xl px-5 py-8">
       <div className="flex items-baseline justify-between gap-3">
-        <h1 className="font-display text-3xl text-accent-strong">Customers</h1>
+        <h1 className="font-display text-3xl font-extrabold tracking-tight text-accent-strong">Customers</h1>
         <Link
           href="/app"
           className="text-xs font-bold uppercase tracking-wider text-accent-strong"

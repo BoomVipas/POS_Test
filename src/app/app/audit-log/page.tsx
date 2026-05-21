@@ -4,7 +4,7 @@ import { AuditLogList } from "./AuditLogList";
 export default function AuditLogPage() {
   return (
     <main className="mx-auto max-w-4xl px-5 py-10">
-      <h1 className="font-display text-3xl text-accent-strong">Audit log</h1>
+      <h1 className="font-display text-3xl font-extrabold tracking-tight text-accent-strong">Audit log</h1>
       <p className="mt-2 text-text/85">
         Append-only history of demo-mode actions: settings updates, catalog
         edits, sales, voids, and send-later transitions.

@@ -5,7 +5,7 @@ export default function StockCountPage() {
   return (
     <main className="mx-auto max-w-3xl px-5 py-8">
       <div className="flex items-baseline justify-between gap-3">
-        <h1 className="font-display text-3xl text-accent-strong">
+        <h1 className="font-display text-3xl font-extrabold tracking-tight text-accent-strong">
           Stock count
         </h1>
         <Link

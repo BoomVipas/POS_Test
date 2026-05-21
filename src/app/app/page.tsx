@@ -5,7 +5,7 @@ export default async function AppHomePage() {
   const { t } = await getDict();
   return (
     <main className="mx-auto max-w-3xl px-5 py-12">
-      <h1 className="font-display text-4xl text-accent-strong">
+      <h1 className="font-display text-4xl font-extrabold tracking-tight text-accent-strong">
         {t.appHome.title}
       </h1>
       <p className="mt-3 text-text/85">{t.appHome.subtitle}</p>

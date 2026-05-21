@@ -6,7 +6,7 @@ export default async function PreOrdersPage() {
   const { t } = await getDict();
   return (
     <main className="mx-auto max-w-4xl px-5 py-10">
-      <h1 className="font-display text-3xl text-accent-strong">
+      <h1 className="font-display text-3xl font-extrabold tracking-tight text-accent-strong">
         {t.preOrders.title}
       </h1>
       <p className="mt-2 text-text/85">{t.preOrders.body}</p>
