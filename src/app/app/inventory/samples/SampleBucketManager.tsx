@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useDemoCatalog } from "@/lib/demo/useDemoCatalog";
 import { useDemoSampleBucket } from "@/lib/demo/useDemoSampleBucket";
 import { useToast } from "@/components/ui/Toast";
+import { ListSkeleton } from "@/components/ui/States";
 
 /** Demo event id — matches the seed event in pos-for-sell/database/seed.sql. */
 const DEMO_EVENT_ID = "demo-event-1";
@@ -32,7 +33,7 @@ export function SampleBucketManager() {
 
   if (!catalog.ready || !samples.ready) {
     return (
-      <div className="panel p-6 text-center text-sm text-muted">Loading…</div>
+      <ListSkeleton rows={4} />
     );
   }
 

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Pill } from "@/components/ui/Pill";
+import { ListSkeleton } from "@/components/ui/States";
 import { useToast } from "@/components/ui/Toast";
 import { useDemoCatalog } from "@/lib/demo/useDemoCatalog";
 import { useDemoStockCount } from "@/lib/demo/useDemoStockCount";
@@ -143,9 +144,7 @@ export function StockCountManager() {
 
   if (!catalog.ready || !counts.ready) {
     return (
-      <p className="mt-8 rounded-2xl border border-line bg-panel px-4 py-6 text-center text-sm text-muted">
-        Loading…
-      </p>
+      <ListSkeleton className="mt-8" />
     );
   }
 

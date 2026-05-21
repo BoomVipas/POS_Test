@@ -8,6 +8,7 @@ import { useDemoAudit } from "@/lib/demo/useDemoAudit";
 import { useT } from "@/lib/i18n/provider";
 import { useToast } from "@/components/ui/Toast";
 import { Button } from "@/components/ui/Button";
+import { ListSkeleton } from "@/components/ui/States";
 import { isoDateInTZ } from "@/lib/date";
 import { formatTHB, bahtToSatang } from "@/lib/money/format";
 import {
@@ -35,9 +36,7 @@ export function CloseDayWorkspace() {
 
   if (!salesReady) {
     return (
-      <p className="rounded-2xl border border-line bg-panel px-4 py-6 text-center text-sm text-muted">
-        {t.common.loading}
-      </p>
+      <ListSkeleton rows={3} />
     );
   }
 

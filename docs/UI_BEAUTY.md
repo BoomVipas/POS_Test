@@ -24,7 +24,7 @@ A pervasive quality lift across screens. Each loop fire takes the top open item.
 ## Phase 2 — signature moments
 Founder direction (2026-05-22): **start with branded loading skeletons** (least subjective). The opinionated ones below need options presented first.
 
-1. 🔄 **Branded loading skeletons** *(in progress — founder-chosen)* — new `ListSkeleton` (shimmer bars, screenshot-verified on customers) shipped on **customers / send-later / pre-orders**. Remaining loading states to convert (one+ per fire): `audit-log`, `correction`, `stock-count`, `close-day`, `setup/products` (CatalogManager), `inventory/samples`, `pos/success`.
+1. ✅ **Branded loading skeletons** — `ListSkeleton` (shimmer bars, screenshot-verified) now replaces bare "Loading…" on every list screen: customers, send-later, pre-orders, audit-log, correction, stock-count, close-day, setup/products, inventory/samples. *(passes 6–7)* Only `pos/success` left — it's a single-panel screen, so use one `Skeleton` block (not list rows); pick it up next fire.
 2. Elevated dashboard hero ("Today's takings") — **present options first**.
 3. Checkout-success delight (`/app/pos/success`) — **present options first**.
 4. Illustrated empty states.

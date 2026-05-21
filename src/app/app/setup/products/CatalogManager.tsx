@@ -8,7 +8,7 @@ import { useDemoSales } from "@/lib/demo/useDemoSales";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Pill } from "@/components/ui/Pill";
-import { EmptyState } from "@/components/ui/States";
+import { EmptyState, ListSkeleton } from "@/components/ui/States";
 import { useToast } from "@/components/ui/Toast";
 import { formatTHB } from "@/lib/money/format";
 import { useT } from "@/lib/i18n/provider";
@@ -164,9 +164,7 @@ export function CatalogManager() {
 
   if (!ready) {
     return (
-      <div className="panel mt-8 p-8 text-center text-sm text-muted">
-        Loading…
-      </div>
+      <ListSkeleton className="mt-8" />
     );
   }
 
