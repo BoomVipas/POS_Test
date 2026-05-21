@@ -127,7 +127,7 @@ export function CloseDayWorkspace() {
           value={counted}
           onChange={(e) => setCounted(e.currentTarget.value)}
           placeholder={`${formatTHB(expected)} THB`}
-          className="num mt-3 w-full rounded-[var(--radius-md)] border border-line bg-white px-4 py-3 text-right text-2xl font-black text-accent-strong focus:border-accent focus:outline-none"
+          className="num mt-3 w-full rounded-[var(--radius-md)] border border-line bg-white px-4 py-3 text-right text-2xl font-black text-accent-strong focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
         />
 
         {counted.trim() !== "" && (

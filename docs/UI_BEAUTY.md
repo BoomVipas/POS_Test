@@ -15,7 +15,7 @@ A pervasive quality lift across screens. Each loop fire takes the top open item.
 1. ✅ **Elevation system** — `--shadow-rest` / `--shadow-lift` scale added (cohesive with `--shadow-card`); POS product cards rest→lift on hover; 2 leftover **brown** shadows fixed. *(pass 1)*
 2. ✅ **Hover / press micro-interactions** — app-home tiles lift + accent border + shadow-bloom on hover, settle on press; every `Button` gets a subtle `active:translate-y-px` press. Product cards already lift (pass 1); list rows already have subtle hover. *(pass 2)*
 3. ✅ **Type scale & rhythm** — page titles were rendering at Nunito 400 (no weight class) and inconsistent (only the dashboard had weight/tracking). Standardized all 11 `/app` page titles to `font-extrabold tracking-tight` — heavier, tighter, more intentional + consistent. *(pass 3)*
-4. **Inputs & focus states** — unify input styling + focus ring across the bespoke inline inputs and the `ui/` components.
+4. ✅ **Inputs & focus states** — shared `ui/` inputs were already unified; the bespoke money/number-entry inputs (close-day counted-cash, import-claim code, cash tender, cart qty, split-payment, correction qty, stock-count qty) lacked the focus ring and send-later tracking had no focus at all. All now use `focus:ring-2 focus:ring-accent/25` consistently. *(pass 4)* — remaining: a few tiny cosmetic inputs (pet form, customer-info chips).
 5. **App-home tiles** — give the launcher tiles depth + hover lift so they read as tappable; consider a subtle category accent.
 6. **Card surfaces** — make list rows / panels share one elevation + radius rhythm.
 

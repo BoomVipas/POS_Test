@@ -373,7 +373,7 @@ export function CorrectionList() {
                     }));
                   }}
                   disabled={remaining === 0}
-                  className="num w-full rounded-md border border-line bg-white px-2 py-1.5 text-right text-sm font-extrabold disabled:opacity-50 focus:border-accent focus:outline-none"
+                  className="num w-full rounded-md border border-line bg-white px-2 py-1.5 text-right text-sm font-extrabold disabled:opacity-50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
                 />
               </li>
             );

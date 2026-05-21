@@ -94,7 +94,7 @@ export function ImportClaimButton() {
           placeholder="ABCD"
           autoFocus
           maxLength={6}
-          className="num mt-3 w-full rounded-[var(--radius-md)] border border-line bg-white px-3 py-3 text-center text-3xl font-black tracking-[0.4em] uppercase text-accent-strong focus:border-accent focus:outline-none"
+          className="num mt-3 w-full rounded-[var(--radius-md)] border border-line bg-white px-3 py-3 text-center text-3xl font-black tracking-[0.4em] uppercase text-accent-strong focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
         />
         {error && (
           <p className="mt-2 text-xs text-[var(--color-danger-soft-fg)]">

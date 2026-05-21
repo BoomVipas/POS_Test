@@ -69,7 +69,7 @@ export function CashTenderBlock({ totalSatang }: { totalSatang: number }) {
               setTendered(Math.max(0, Math.round(n * 100)));
           }}
           placeholder="custom"
-          className="num w-24 rounded-md border border-line bg-white px-2 py-1.5 text-right text-sm font-extrabold focus:border-accent focus:outline-none"
+          className="num w-24 rounded-md border border-line bg-white px-2 py-1.5 text-right text-sm font-extrabold focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
         />
       </div>
 

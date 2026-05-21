@@ -273,7 +273,7 @@ function DiscountInput({
           if (Number.isFinite(n)) onChange(Math.max(0, Math.round(n * 100)));
         }}
         placeholder="0"
-        className="num w-20 rounded-lg border border-line bg-white px-2 py-1 text-right text-sm font-extrabold focus:border-accent focus:outline-none"
+        className="num w-20 rounded-lg border border-line bg-white px-2 py-1 text-right text-sm font-extrabold focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
       />
       <div className="ml-auto flex gap-1">
         {presets.map((p) => (

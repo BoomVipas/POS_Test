@@ -111,7 +111,7 @@ export function SplitPaymentBlock({ totalSatang }: { totalSatang: number }) {
                 });
               }}
               placeholder="amount"
-              className="num w-full rounded-md border border-line bg-white px-2 py-1.5 text-right text-sm font-extrabold focus:border-accent focus:outline-none"
+              className="num w-full rounded-md border border-line bg-white px-2 py-1.5 text-right text-sm font-extrabold focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
             />
             <button
               type="button"

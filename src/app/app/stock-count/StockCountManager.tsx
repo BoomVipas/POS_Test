@@ -424,7 +424,7 @@ function CountLineRow({
           }}
           placeholder="—"
           aria-label={`Counted qty for ${line.sku}`}
-          className="num w-20 rounded-md border border-line bg-white px-2 py-1.5 text-right text-sm font-extrabold focus:border-accent focus:outline-none"
+          className="num w-20 rounded-md border border-line bg-white px-2 py-1.5 text-right text-sm font-extrabold focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
         />
         {v !== null && v !== 0 && !committable && (
           <span className="text-[10px] font-bold text-[var(--color-warn-soft-fg)]">
