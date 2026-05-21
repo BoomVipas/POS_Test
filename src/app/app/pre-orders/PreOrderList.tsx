@@ -6,6 +6,7 @@ import { useDemoPreOrders } from "@/lib/demo/useDemoPreOrders";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Pill, type PillTone } from "@/components/ui/Pill";
+import { ListSkeleton } from "@/components/ui/States";
 import { useToast } from "@/components/ui/Toast";
 import { useT } from "@/lib/i18n/provider";
 import { formatDateTimeTH } from "@/lib/date";
@@ -39,9 +40,7 @@ export function PreOrderList() {
 
   if (!ready) {
     return (
-      <p className="rounded-2xl border border-line bg-panel px-4 py-6 text-center text-sm text-muted">
-        {t.common.loading}
-      </p>
+      <ListSkeleton className="mt-5" />
     );
   }
 

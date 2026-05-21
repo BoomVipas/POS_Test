@@ -6,6 +6,7 @@ import { useDemoSales } from "@/lib/demo/useDemoSales";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Pill, type PillTone } from "@/components/ui/Pill";
+import { ListSkeleton } from "@/components/ui/States";
 import { useToast } from "@/components/ui/Toast";
 import { formatTHB } from "@/lib/money/format";
 import { formatDateTimeTH } from "@/lib/date";
@@ -44,9 +45,7 @@ export function SendLaterList() {
 
   if (!ready) {
     return (
-      <p className="rounded-2xl border border-line bg-panel px-4 py-6 text-center text-sm text-muted">
-        Loading…
-      </p>
+      <ListSkeleton className="mt-5" />
     );
   }
 

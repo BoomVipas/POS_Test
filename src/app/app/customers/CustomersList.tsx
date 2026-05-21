@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Pill, type PillTone } from "@/components/ui/Pill";
+import { ListSkeleton } from "@/components/ui/States";
 import { useDemoSales } from "@/lib/demo/useDemoSales";
 import { useDemoCustomers } from "@/lib/demo/useDemoCustomers";
 import { useDemoCustomerNotes } from "@/lib/demo/useDemoCustomerNotes";
@@ -75,9 +76,7 @@ export function CustomersList() {
 
   if (!customers.ready || !ready) {
     return (
-      <p className="mt-8 rounded-2xl border border-line bg-panel px-4 py-6 text-center text-sm text-muted">
-        Loading…
-      </p>
+      <ListSkeleton className="mt-8" rows={5} />
     );
   }
 
