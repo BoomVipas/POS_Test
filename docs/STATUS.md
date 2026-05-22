@@ -4,13 +4,13 @@ Rolling snapshot. The "What's live" section below is the original 2026-05-04 bas
 
 ## What's live
 
-- **Build**: 29 routes (`page.tsx` files in `src/app/`). Static where appropriate, dynamic for auth-gated layouts.
-- **Tests**: 304 unit tests across 34 files all pass — re-verified 2026-05-21 (`npm test`, 1.8s). Pure-logic libs only; no Supabase, no browser.
+- **Build**: 31 routes (`page.tsx` files in `src/app/`; +`/onboarding` +`/app/events` since the last count). Static where appropriate, dynamic for auth-gated layouts.
+- **Tests**: 347 unit tests across 37 files all pass — re-verified 2026-05-22 (`npm test`, 2.6s). Pure-logic libs only; no Supabase, no browser.
 - **No external creds yet** — every Supabase / Resend touch degrades to mock data with a "Demo mode" badge.
 
 ## Routes
 
-29 routes total (verified 2026-05-18 by `find src/app -name page.tsx | wc -l`). Status legend: **live** = real page; **wired** = real impl with optional Supabase; **demo** = full UI on localStorage; **mock** = real UI on mock data; **placeholder** = stub page saying "not yet built"; **gated** = checks for auth/config.
+31 routes total (verified 2026-05-22 by `find src/app -name page.tsx | wc -l`). Status legend: **live** = real page; **wired** = real impl with optional Supabase; **demo** = full UI on localStorage; **mock** = real UI on mock data; **placeholder** = stub page saying "not yet built"; **gated** = checks for auth/config.
 
 | Path | Status | Notes |
 |---|---|---|
@@ -36,6 +36,7 @@ Rolling snapshot. The "What's live" section below is the original 2026-05-04 bas
 | `/app/pos` | demo | full POS, mock catalog, full cart UX, search, payment picker |
 | `/app/pos/success/[orderId]` | demo | success screen + PromptPay QR + Customer Portal token (Wave 8 + 40b) |
 | `/app/dashboard` | demo | multi-period dashboard, 10+ tiles (Wave 29/34) |
+| `/app/events` | demo | event setup: details + per-day stock allocation + booth-rule toggles + free-gift rule + reserved warehouse value |
 | `/app/customers` | demo | auto-derived from past sales with lifecycle stage (Wave 38) |
 | `/app/correction` | demo | bill-correction flow (`correct_order` analog) |
 | `/app/audit-log` | demo | activity history (Wave 18) |
@@ -97,7 +98,7 @@ None applied to a real DB yet — applying is the Supabase-provisioning unblock 
 
 `pos-for-sell/tests/lib/`:
 
-- 34 test files, 304 assertions — all pass as of 2026-05-18 (`npm test`, 1.7s).
+- 37 test files, 347 assertions — all pass as of 2026-05-22 (`npm test`, 2.6s).
 - Coverage by area:
   - **Pure utilities**: csv, date, invite-code, order-number, phone, slug, sku.
   - **POS logic**: cart calc, split payments, upsell.
