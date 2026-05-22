@@ -21,6 +21,14 @@ _None claimed in the DD-XX board. The project is in **Wave mode** (post-DD-100 o
 
 > **DD-board status (2026-05-21):** every remaining DD-XX batch is either `done` (often superseded by a later Wave) or `blocked` on **B-1 (Supabase project)** / B-2 (Resend). DD-20 is now `done`. There is **no unblocked DD implementation work left** — provisioning Supabase (B-1, recipe in the Blockers section) is what unblocks the next batches._
 
+## Event-setup follow-ups (post-PR #83, merged 2026-05-22 · `5999982`)
+
+`/app/events` shipped as a **demo/config screen only.** ⚠️ The booth-rule toggles and the free-gift rule **persist to localStorage but are NOT enforced in POS checkout** — they do not yet control any selling behavior. Treat it as planning/setup UI, not an operational control system.
+
+- **F1 — Beautify `/app/events`** to match the merged UI polish (PR #84/#85): elevation tokens (`shadow-rest`/`shadow-lift`), hover/press micro-interactions, `font-extrabold tracking-tight` page title, unified input focus rings, `ListSkeleton` loading, illustrated empty states. *UI-only; mirrors the beauty pass.* Status: `planning`.
+- **F2 — Wire event-setup rules into POS checkout** so the booth-rule toggles (Send Later, QR pet reg, offline, cash drawer) and the free-gift rule actually affect the cart/sale flow. *Behavioral — needs founder sign-off on the free-gift semantics first.* Status: `planning`.
+- **F3 — Persist event setup to Supabase** (`events` + `event_inventory`) instead of demo/localStorage, when real event operations need it. *Blocked on B-1 (Supabase), like the rest of Phase 4+.* Status: `blocked`.
+
 ## What landed in this initial run (Phase 0 + part of Phase 1)
 
 | Batch | Status | Notes |
