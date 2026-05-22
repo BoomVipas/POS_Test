@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Minus, Plus, ShoppingCart } from "lucide-react";
+import { Minus, Plus, ShoppingCart, Store } from "lucide-react";
 import { useDemoCatalog } from "@/lib/demo/useDemoCatalog";
 import { useDemoClaims } from "@/lib/demo/useDemoClaims";
 import { Button } from "@/components/ui/Button";
@@ -108,8 +108,14 @@ export function CustomerView() {
 
   if (catalog.length === 0) {
     return (
-      <main className="mx-auto max-w-md px-4 py-12 text-center">
-        <h1 className="font-display text-2xl text-accent-strong">
+      <main className="mx-auto flex max-w-md flex-col items-center px-4 py-16 text-center">
+        <span
+          className="grid h-14 w-14 place-items-center rounded-full bg-[var(--lavender-100)]"
+          aria-hidden
+        >
+          <Store className="h-6 w-6 text-[var(--lavender-700)]" />
+        </span>
+        <h1 className="mt-3 font-display text-2xl font-extrabold tracking-tight text-accent-strong">
           {t.qrMenu.noCatalogTitle}
         </h1>
         <p className="mt-2 text-sm text-muted">{t.qrMenu.noCatalogBody}</p>

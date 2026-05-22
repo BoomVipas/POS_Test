@@ -36,9 +36,9 @@ All queued work shipped on `pos/ui-beauty` (PR #85) across passes 1–11: elevat
 Applying the merged conventions to demo screens that lagged the beauty pass. **Visual/UI-only; excludes the separate-PR surfaces (#80 landing, #81 POS-till, #82 admin) and the Supabase-gated admin.** Each item is screenshot-archived to `docs/ui-history/`. Stop (CronDelete) when the list is empty.
 
 - ✅ **F1 — `/app/events`** — branded loading `Skeleton` + an illustrated (lucide `Tags`) allocation empty state. The screen was already on-convention (panels, `font-black` title, focus-ring inputs, Switch toggles), so this only closed the edge-state gaps. *(2026-05-22)*
-- **`/qr-menu` empty state** — the "Booth not ready yet" state is bare centered text; give it the illustrated empty treatment (lucide icon in a lavender circle) to match the other empties. *(next)*
+- ✅ **`/qr-menu` empty state** — illustrated with a lucide `Store` icon in a soft lavender circle + heavier title (was bare centered text). *(2026-05-22)*
 
-After these, the demo UI is uniformly at-convention — there is **no large remaining "rest"**. The meaningful remaining UI work is the parked items: the #80/#81/#82 surfaces (separate PRs) and the admin screens (need Supabase).
+**✅ Loop complete (2026-05-22) — backlog empty; cron stopped.** The demo UI is now uniformly at-convention. The meaningful remaining UI work is the parked items: the #80/#81/#82 surfaces (separate PRs) and the admin screens (need Supabase).
 
 ## Done
 _(moved here per tick with the commit SHA)_
