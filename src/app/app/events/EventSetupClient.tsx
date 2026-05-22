@@ -17,6 +17,8 @@ import {
   type BoothRules,
 } from "@/lib/demo/event-setup";
 import { Switch } from "@/components/ui/Switch";
+import { Skeleton } from "@/components/ui/States";
+import { Tags } from "lucide-react";
 import { formatTHB } from "@/lib/money/format";
 import type { Product } from "@/lib/pos/types";
 
@@ -67,7 +69,10 @@ export function EventSetupClient({
   if (!evReady || !catReady || !setup || !summary) {
     return (
       <div className="mx-auto max-w-[1280px] px-5 py-10 sm:px-8">
-        <div className="panel p-6 text-sm text-muted">Loading…</div>
+        <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
+          <Skeleton className="h-96" />
+          <Skeleton className="h-96" />
+        </div>
       </div>
     );
   }
@@ -270,10 +275,18 @@ export function EventSetupClient({
                     );
                   })}
                   {setup.allocations.length === 0 && (
-                    <p className="px-4 py-6 text-center text-sm text-muted">
-                      No active products yet. Add products in Setup → Products
-                      first.
-                    </p>
+                    <div className="flex flex-col items-center gap-2 px-4 py-8 text-center">
+                      <span
+                        className="grid h-12 w-12 place-items-center rounded-full bg-[var(--lavender-100)]"
+                        aria-hidden
+                      >
+                        <Tags className="h-5 w-5 text-[var(--lavender-700)]" />
+                      </span>
+                      <p className="text-sm text-muted">
+                        No active products yet. Add products in Setup → Products
+                        first.
+                      </p>
+                    </div>
                   )}
                 </div>
               </div>

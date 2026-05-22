@@ -32,5 +32,13 @@ Founder direction (2026-05-22): **start with branded loading skeletons** (least 
 ## ✅ Beauty loop complete (2026-05-22)
 All queued work shipped on `pos/ui-beauty` (PR #85) across passes 1–11: elevation scale, hover/press micro-interactions, premium page titles, unified input focus, card-surface review, branded loading skeletons, dashboard gradient hero + sparkline, checkout-success delight, illustrated empty states. The recurring loop was stopped on completion. Ready for the founder's one-time review of PR #85.
 
+## Remaining UI polish (loop — branch `pos/ui-polish-rest`)
+Applying the merged conventions to demo screens that lagged the beauty pass. **Visual/UI-only; excludes the separate-PR surfaces (#80 landing, #81 POS-till, #82 admin) and the Supabase-gated admin.** Each item is screenshot-archived to `docs/ui-history/`. Stop (CronDelete) when the list is empty.
+
+- ✅ **F1 — `/app/events`** — branded loading `Skeleton` + an illustrated (lucide `Tags`) allocation empty state. The screen was already on-convention (panels, `font-black` title, focus-ring inputs, Switch toggles), so this only closed the edge-state gaps. *(2026-05-22)*
+- **`/qr-menu` empty state** — the "Booth not ready yet" state is bare centered text; give it the illustrated empty treatment (lucide icon in a lavender circle) to match the other empties. *(next)*
+
+After these, the demo UI is uniformly at-convention — there is **no large remaining "rest"**. The meaningful remaining UI work is the parked items: the #80/#81/#82 surfaces (separate PRs) and the admin screens (need Supabase).
+
 ## Done
 _(moved here per tick with the commit SHA)_
