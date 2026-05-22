@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Pill, type PillTone } from "@/components/ui/Pill";
 import { ListSkeleton } from "@/components/ui/States";
+import { Package } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
 import { formatTHB } from "@/lib/money/format";
 import { formatDateTimeTH } from "@/lib/date";
@@ -91,8 +92,8 @@ export function SendLaterList() {
   if (sendLaterOrders.length === 0) {
     return (
       <div className="panel mt-8 p-8 text-center">
-        <span className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-full bg-[var(--lavender-100)] text-2xl" aria-hidden>
-          📦
+        <span className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-full bg-[var(--lavender-100)]" aria-hidden>
+          <Package className="h-6 w-6 text-[var(--lavender-700)]" />
         </span>
         <p className="font-display text-xl text-accent-strong">
           No send-later orders yet.

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Pill } from "@/components/ui/Pill";
 import { EmptyState, ListSkeleton } from "@/components/ui/States";
+import { Tags } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
 import { formatTHB } from "@/lib/money/format";
 import { useT } from "@/lib/i18n/provider";
@@ -173,7 +174,7 @@ export function CatalogManager() {
       <>
         <div className="mt-8">
           <EmptyState
-            icon="🏷️"
+            icon={<Tags className="h-6 w-6 text-[var(--lavender-700)]" />}
             title="No products yet."
             body="Add your first product card, or load the sample catalog to skip ahead and see the POS in action."
             action={

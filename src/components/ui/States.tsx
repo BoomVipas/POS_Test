@@ -54,7 +54,7 @@ export function EmptyState({
     <div className="panel flex flex-col items-center gap-3 px-6 py-10 text-center">
       {icon && (
         <span
-          className="grid h-14 w-14 place-items-center rounded-full bg-[var(--lavender-100)] text-2xl"
+          className="grid h-14 w-14 place-items-center rounded-full bg-[var(--lavender-100)]"
           aria-hidden
         >
           {icon}

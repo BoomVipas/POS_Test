@@ -45,7 +45,13 @@ Generous radii (mascot-roundness) — no sharp corners.
 
 ## Shadow
 
-`--shadow-card: 0 4px 12px rgba(28,24,56,.06), 0 24px 48px rgba(28,24,56,.08)` — cool indigo-tinted, applied to top-level panels.
+Cool indigo-tinted elevation scale (never warm-brown). Use the `var(--shadow-*)` custom properties or the Tailwind `shadow-{card,rest,lift}` utilities.
+
+| Token | Value | Use |
+|---|---|---|
+| `--shadow-card` | `0 4px 12px rgba(28,24,56,.06), 0 24px 48px rgba(28,24,56,.08)` | top-level panels (`.panel`) and the dashboard hero |
+| `--shadow-rest` | `0 1px 2px rgba(28,24,56,.04), 0 8px 20px rgba(28,24,56,.06)` | resting state of interactive cards/tiles (product cards, app-home tiles, secondary KPI cards) |
+| `--shadow-lift` | `0 4px 10px rgba(28,24,56,.07), 0 18px 36px rgba(28,24,56,.13)` | hover/lifted state of those cards, paired with `-translate-y-0.5` |
 
 ## Typography
 
