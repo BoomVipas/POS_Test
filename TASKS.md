@@ -69,11 +69,7 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
 
 - **41k — Vitest D-series regression suite** *(new)* — **done · see Done section.**
 
-- **41l — Wave 41 ADR + memory + post-mortem** *(new)*
-  - Why: future agents shouldn't re-audit. Pin the breadcrumb.
-  - Touched: `docs/adr/2026-05-24-wave-41-hardening.md`, plus a memory entry linking the audit ledger to the wave.
-  - Done when: ADR landed, memory updated, [STATUS.md](docs/STATUS.md) "Latest waves" appended.
-  - **Owner:** claude · **Status:** in-progress · **Branch:** pos/wave-41l-adr-wrap · **Claimed:** 2026-05-24
+- **41l — Wave 41 ADR + memory + post-mortem** *(new)* — **done · see Done section.**
 
 ### Suggested execution order
 
@@ -331,6 +327,10 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 ## Done
 
 (Move completed batches here with the merging commit SHA.)
+
+### Wave 41l — Wave 41 ADR + STATUS wrap-up (Phase D close-out)
+- **Merged:** 2026-05-24 · `5639d25` (PR #103)
+- **Result:** `docs/adr/2026-05-24-wave-41-hardening.md` records the full sweep (L1–L6 + D1–D6, each decision + PR), the pglite test-infra decision with the Codex post-hoc review flag, consequences, and the 41e open question. `docs/STATUS.md` "Latest waves" appended; test count 263 → 398. Auto-memory entry added linking the audit ledger to the wave. **Wave 41 complete except 41e (deferred — founder sign-off).**
 
 ### Wave 41k — D-series regression suite close-out + pglite harness doc (Phase D)
 - **Merged:** 2026-05-24 · `0758dff` (PR #102)
