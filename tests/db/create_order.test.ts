@@ -115,3 +115,68 @@ describe("create_order payment guards (Wave 41g, D1/D2)", () => {
     expect(await paymentRecordCount(orderId)).toBe(1);
   });
 });
+
+describe("create_order discount cap (Wave 41h, D3)", () => {
+  let ws: SeededWorkspace;
+
+  beforeAll(async () => {
+    ws = await seedWorkspace(db);
+  });
+
+  async function orderRow(orderId: string) {
+    const r = await db.query<{
+      discount_satang: number;
+      total_satang: number;
+      subtotal_satang: number;
+    }>(
+      `select discount_satang, total_satang, subtotal_satang
+         from public.orders where id = $1`,
+      [orderId],
+    );
+    return r.rows[0];
+  }
+
+  it("caps an absurd discount at subtotal+shipping and zeroes the total", async () => {
+    // 1 x 10000 satang, no shipping => max discount is 10000.
+    const orderId = await createOrder(db, {
+      workspace_id: ws.workspaceId,
+      event_id: ws.eventId,
+      payment_method: "cash",
+      discount_satang: 999_000_000_000_000,
+      items: [{ product_id: ws.productId, qty: 1, fulfillment: "take_now" }],
+    });
+    const row = await orderRow(orderId);
+    expect(row.subtotal_satang).toBe(10000);
+    expect(row.discount_satang).toBe(10000); // capped, not the absurd value
+    expect(row.total_satang).toBe(0);
+  });
+
+  it("records an audit breadcrumb noting the discount was capped", async () => {
+    const orderId = await createOrder(db, {
+      workspace_id: ws.workspaceId,
+      event_id: ws.eventId,
+      payment_method: "cash",
+      discount_satang: 999_000_000_000_000,
+      items: [{ product_id: ws.productId, qty: 1, fulfillment: "take_now" }],
+    });
+    const r = await db.query<{ new_value: Record<string, unknown> }>(
+      `select new_value from public.audit_logs
+         where target_id = $1 and action = 'create_order'`,
+      [orderId],
+    );
+    expect(r.rows[0].new_value.discount_capped).toBe(true);
+  });
+
+  it("leaves a within-range discount untouched", async () => {
+    const orderId = await createOrder(db, {
+      workspace_id: ws.workspaceId,
+      event_id: ws.eventId,
+      payment_method: "cash",
+      discount_satang: 3000,
+      items: [{ product_id: ws.productId, qty: 1, fulfillment: "take_now" }],
+    });
+    const row = await orderRow(orderId);
+    expect(row.discount_satang).toBe(3000);
+    expect(row.total_satang).toBe(7000);
+  });
+});

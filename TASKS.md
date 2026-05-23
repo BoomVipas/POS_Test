@@ -59,9 +59,9 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
 
 - **41h — Cap `discount_satang` inside `create_order` at subtotal+shipping** *(finding D3)*
   - Why: today the client can pass any discount; total is clamped to 0 but the discount value persists into the DB unchecked, breaking dashboard/margin reports.
-  - Touched: `database/functions/create_order.sql`.
+  - Touched: `database/functions/create_order.sql`, `tests/db/create_order.test.ts`.
   - Done when: a 999-trillion-satang discount on a 100-satang sale stores `discount_satang = 100`, total = 0, with an audit-log breadcrumb noting the cap.
-  - Status: `planning`.
+  - **Owner:** claude · **Status:** in-progress · **Branch:** pos/wave-41h-cap-discount · **Claimed:** 2026-05-24
 
 - **41i — Remove dead `CASE` on `payment_status`** *(finding D4)*
   - Why: `case when v_payment_method = 'sample' then 'paid' else 'paid' end` — both branches return `'paid'`. Refactor leftover. Either keep literal `'paid'` or restore the intended branch (likely `'pending'` for non-sample cash awaiting tender confirm).

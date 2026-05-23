@@ -42,6 +42,8 @@ declare
   v_has_send_later boolean := false;
   v_has_take_now   boolean := false;
   v_order_type     text;
+  v_discount_max   bigint;
+  v_discount_capped boolean := false;
   v_item           jsonb;
 begin
   if v_user_id is null then
@@ -175,12 +177,23 @@ begin
     v_order_type := 'take_now';
   end if;
 
+  -- D3: cap the discount at what the order can actually absorb. Without this a
+  -- client-supplied discount persists into orders.discount_satang unchecked
+  -- (the total is clamped to 0 but the absurd discount value still poisons
+  -- dashboard/margin reports).
+  v_discount_max := v_subtotal + v_shipping;
+  if v_discount > v_discount_max then
+    v_discount := v_discount_max;
+    v_discount_capped := true;
+  end if;
+
   v_total := greatest(0, v_subtotal + v_shipping - v_discount);
 
   update public.orders
     set order_type          = v_order_type,
         subtotal_satang     = v_subtotal,
         shipping_fee_satang = v_shipping,
+        discount_satang     = v_discount,
         total_satang        = v_total
     where id = v_order_id;
 
@@ -247,6 +260,8 @@ begin
     jsonb_build_object(
       'order_number', v_order_number,
       'total_satang', v_total,
+      'discount_satang', v_discount,
+      'discount_capped', v_discount_capped,
       'order_type', v_order_type,
       'payment_method', v_payment_method
     )
