@@ -33,14 +33,18 @@ begin
     raise exception 'create_registration_token: forbidden' using errcode = '42501';
   end if;
 
-  -- 24-char base32-ish token. Re-roll on the (extremely unlikely) collision.
+  -- 16-char url-safe token. Re-roll on collision OR when stripping url-unsafe
+  -- chars drops the candidate below the 16-char floor (D6 — the old code only
+  -- truncated when long enough and would otherwise emit a short token). 18 raw
+  -- bytes -> 24 base64 chars gives ample headroom so re-rolls are rare.
   loop
-    v_token := encode(gen_random_bytes(15), 'base64');
+    v_token := encode(gen_random_bytes(18), 'base64');
     -- Strip url-unsafe chars so the QR / link stays clean.
     v_token := replace(replace(replace(v_token, '/', ''), '+', ''), '=', '');
-    if length(v_token) >= 16 then
-      v_token := substr(v_token, 1, 16);
+    if length(v_token) < 16 then
+      continue;  -- strip-heavy draw; re-roll rather than ship a short token
     end if;
+    v_token := substr(v_token, 1, 16);
     exit when not exists (
       select 1 from public.customer_registration_tokens t where t.token = v_token
     );

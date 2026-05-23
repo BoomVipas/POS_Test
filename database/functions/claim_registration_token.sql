@@ -48,11 +48,20 @@ declare
   v_pet          jsonb;
   v_now          timestamptz := now();
 begin
+  -- D5: every token-validation failure returns ONE indistinguishable error so
+  -- the anon endpoint can't be used to enumerate which tokens exist / are live
+  -- / are already claimed. The specific reason goes to the server log via
+  -- RAISE LOG (which survives the transaction abort; an audit_logs row would
+  -- be rolled back with the failed call, so it can't carry the reason here).
   if p_token is null or length(p_token) < 8 then
+    raise log 'claim_registration_token: reject reason=malformed token_len=%',
+      coalesce(length(p_token), 0);
     raise exception 'claim_registration_token: invalid token'
       using errcode = '22023';
   end if;
   if p_payload is null then
+    -- Not a token oracle (the caller controls its own payload), so this stays
+    -- a distinct, honest client error.
     raise exception 'claim_registration_token: payload required'
       using errcode = '22023';
   end if;
@@ -63,15 +72,20 @@ begin
     for update;
 
   if v_token_row.id is null then
-    raise exception 'claim_registration_token: token not found'
+    raise log 'claim_registration_token: reject reason=not_found';
+    raise exception 'claim_registration_token: invalid token'
       using errcode = '22023';
   end if;
   if v_token_row.claimed_at is not null then
-    raise exception 'claim_registration_token: token already claimed'
+    raise log 'claim_registration_token: reject reason=already_claimed token_id=%',
+      v_token_row.id;
+    raise exception 'claim_registration_token: invalid token'
       using errcode = '22023';
   end if;
   if v_token_row.expires_at < v_now then
-    raise exception 'claim_registration_token: token expired'
+    raise log 'claim_registration_token: reject reason=expired token_id=%',
+      v_token_row.id;
+    raise exception 'claim_registration_token: invalid token'
       using errcode = '22023';
   end if;
 

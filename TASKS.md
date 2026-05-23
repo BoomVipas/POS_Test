@@ -65,9 +65,9 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
 
 - **41j — Collapse `claim_registration_token` error codes; tighten generator floor** *(findings D5, D6)*
   - Why: today `claim_registration_token` raises distinct exceptions for "token not found" / "already claimed" / "expired" — enumeration oracle for valid tokens. `create_registration_token` may emit short tokens when `gen_random_bytes` yields many strip-chars.
-  - Touched: `database/functions/claim_registration_token.sql`, `database/functions/create_registration_token.sql`.
+  - Touched: `database/functions/claim_registration_token.sql`, `database/functions/create_registration_token.sql`, new `tests/db/registration_token.test.ts`.
   - Done when: all token-failure paths return a single generic "invalid token" error (with internal logging preserved via `audit_logs` row for ops); generator re-rolls until length ≥ 16.
-  - Status: `planning`.
+  - **Owner:** claude · **Status:** in-progress · **Branch:** pos/wave-41j-token-hardening · **Claimed:** 2026-05-24
 
 ### Phase D — Regression suite + close-out
 

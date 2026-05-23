@@ -45,6 +45,33 @@ export async function bootDb(functionFiles: string[]): Promise<PGlite> {
       select nullif(current_setting('test.user_id', true), '')::uuid
     $$;
   `);
+  // gen_random_bytes lives in the pgcrypto extension, which we don't load (only
+  // gen_random_uuid is core). The token generator under test calls it, so we
+  // provide a NON-cryptographic test shim: enough to exercise token shaping /
+  // the length floor, never used to assess randomness quality.
+  //
+  // The shim is adversarial-injectable: while the GUC `test.strip_heavy_rolls`
+  // is > 0, the first that-many calls return all-0xFF bytes (which base64-encode
+  // to all '/' and strip to an empty string), letting a test deterministically
+  // force the strip-heavy path that the D6 length floor must survive. Reset the
+  // sequence to 0 before using it. Defaults to clean pseudo-random bytes.
+  await db.exec(`
+    create sequence if not exists public._grb_call_no;
+    create or replace function public.gen_random_bytes(n int)
+    returns bytea language plpgsql volatile as $$
+    declare
+      v_heavy int := coalesce(nullif(current_setting('test.strip_heavy_rolls', true), ''), '0')::int;
+    begin
+      if v_heavy > 0 and nextval('public._grb_call_no') <= v_heavy then
+        return decode(repeat('ff', n), 'hex');
+      end if;
+      return decode(
+        (select string_agg(lpad(to_hex((random() * 255)::int), 2, '0'), '')
+           from generate_series(1, n)),
+        'hex'
+      );
+    end $$;
+  `);
   await db.exec(readSql("schema.sql"));
   for (const f of functionFiles) {
     await db.exec(readSql(path.join("functions", f)));
