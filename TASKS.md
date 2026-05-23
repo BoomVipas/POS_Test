@@ -45,11 +45,7 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
 
 - **41d — Verify `src/proxy.ts` actually runs on every request** *(finding L4)* — **done · see Done section.**
 
-- **41e — orphan-user → redirect to `/onboarding` in `/app` layout** *(finding L5)*
-  - Decision (founder delegated, 2026-05-24): **redirect to `/onboarding`** — cleanest post-Supabase UX. Demo mode stays only for the credential-free pilot (`Supabase not configured`).
-  - Touched: new `src/lib/app-guard.ts` (pure `resolveAppGuard`), `src/app/app/layout.tsx`, `tests/lib/app-guard.test.ts`.
-  - Done when: an authenticated user with no `workspace_members` row (or a dangling member→missing workspace) is redirected to `/onboarding`; demo mode preserved when Supabase is unconfigured; pure guard unit-tested. ⚠ auth-gating change — flag for Codex review.
-  - **Owner:** claude · **Status:** in-progress · **Branch:** pos/wave-41e-orphan-redirect · **Claimed:** 2026-05-24
+- **41e — orphan-user → redirect to `/onboarding` in `/app` layout** *(finding L5)* — **done · see Done section.**
   - Status: `planning`. **Founder sign-off required** before code change.
 
 - **41f — App-level `/apply` rate limit + de-oracle the duplicate-email path** *(finding L2)* — **done · see Done section.**
@@ -328,6 +324,10 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 ## Done
 
 (Move completed batches here with the merging commit SHA.)
+
+### Wave 41e — /app layout redirects orphan users to /onboarding (finding L5)
+- **Merged:** 2026-05-24 · `4481e3e` (PR #104)
+- **Result:** founder delegated the call → redirect-to-`/onboarding`. An authenticated user with no `workspace_members` row (or a member row dangling to a missing workspace) now redirects to `/onboarding` instead of dropping into the demo sandbox; demo mode reserved for the `Supabase not configured` pilot path. Decision logic extracted to a pure `resolveAppGuard` (`src/lib/app-guard.ts`) consumed by `src/app/app/layout.tsx`; 5 unit cases in `tests/lib/app-guard.test.ts`. ⚠ auth-gating change — flagged for Codex review. **Wave 41 now fully complete (all 12 sub-batches shipped).**
 
 ### Wave 41l — Wave 41 ADR + STATUS wrap-up (Phase D close-out)
 - **Merged:** 2026-05-24 · `5639d25` (PR #103)
