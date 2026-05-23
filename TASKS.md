@@ -55,7 +55,7 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
   - Why: today `/apply` accepts unlimited POSTs (Hard Rule violation), and the 23505 path reveals whether an email has applied (enumeration oracle). DD-16 plans the Supabase-backed version; this is the pre-deploy bridge.
   - Touched: new `src/lib/rate-limit/index.ts` (in-memory + cookie keyed by IP + email-hash; falls back to permissive when running in tests), `src/app/apply/actions.ts` (call rate-limit + collapse the 23505 response to the generic "thanks, we'll be in touch" same as success).
   - Done when: 6th POST from the same IP in 1h returns 429; duplicate-email submission returns the same success UI as a new submission (no oracle); new test in `tests/app/apply.test.ts`.
-  - Status: `planning`.
+  - **Owner:** claude · **Status:** in-progress · **Branch:** pos/wave-41f-apply-ratelimit · **Claimed:** 2026-05-24
 
 ### Phase B — `create_order` pre-flight guards (latent — SQL-only, no Supabase needed to ship code)
 
@@ -358,7 +358,7 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 (Move completed batches here with the merging commit SHA.)
 
 ### Wave 41b — Mock admin Approve/Reject honesty (finding L3)
-- **Merged:** 2026-05-24 · `<pending>` (PR #<pending>)
+- **Merged:** 2026-05-24 · `616c471` (PR #96)
 - **Result:** the Approve/Reject buttons no longer fire "Approved (mock)" / "Rejected (mock)" success toasts. Toast content moved to a new pure module `src/lib/admin/applications-pending.ts` (kind="info", title "Not yet wired — DD-26", message explains nothing changed and points to TASKS.md / DD-26). A small warn-toned "Awaiting DD-26 wire-up" caption now sits beside the buttons so admins see the state before clicking. 6 unit tests pin the toast content. When DD-26 lands, the pending module gets deleted and `Actions.tsx` re-points its toast helper at the real server-action result.
 
 ### Wave 41c — `validateSplits` rejects negative line amounts (finding L6)

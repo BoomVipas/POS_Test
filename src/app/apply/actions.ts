@@ -1,8 +1,13 @@
 "use server";
 
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { sendEmail, adminEmail } from "@/lib/email/resend";
 import { renderNewApplicationEmail } from "@/lib/email/templates/new-application";
+import {
+  checkApplyRateLimit,
+  clientIpFromHeaders,
+} from "@/lib/rate-limit";
 import { applicationFormSchema, type ApplicationFormValues } from "./schema";
 
 export type SubmitApplicationResult =
@@ -41,6 +46,17 @@ export async function submitApplication(
     return { ok: true };
   }
 
+  // Rate-limit by IP + hashed email (Hard Rule: public forms must be rate-limited).
+  // Pre-Supabase in-process bridge; DD-16 ships the shared Supabase-backed version.
+  const ip = clientIpFromHeaders(await headers());
+  const limit = checkApplyRateLimit(ip, data.email);
+  if (!limit.allowed) {
+    return {
+      ok: false,
+      error: "Too many submissions. Please try again later.",
+    };
+  }
+
   if (
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
     !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -71,12 +87,10 @@ export async function submitApplication(
 
   if (dbErr) {
     if (dbErr.code === "23505") {
-      return {
-        ok: false,
-        error:
-          "We already have an application for this email. Check status at /apply/status.",
-        fieldErrors: { email: "Already applied" },
-      };
+      // De-oracle: a duplicate email returns the same success UI as a new
+      // submission, so the form can't be used to enumerate who has applied
+      // (finding L2). The applicant can still check progress at /apply/status.
+      return { ok: true };
     }
     return { ok: false, error: dbErr.message };
   }
