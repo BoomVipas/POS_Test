@@ -70,4 +70,45 @@ describe("splits/validateSplits", () => {
       ),
     ).toEqual({ ok: true });
   });
+
+  // Wave 41c — finding L6. splitsTotal silently clamps negatives to 0 in the
+  // sum, so a split array like [cash 100, cash -50] would look like 100 (and
+  // could even pass validation if the cart total were also 100). UI shows the
+  // -50 row though, so what the cashier reads contradicts what gets recorded.
+  // validateSplits now rejects any negative amount before the empty/short/over
+  // checks — the negative is a corruption signal, not a payment mode.
+  describe("rejects negative line amounts (defense-in-depth)", () => {
+    it("flags a single negative line with reason='negative'", () => {
+      expect(
+        validateSplits([split("cash", -50)], 100),
+      ).toEqual({ ok: false, reason: "negative", offBy: 50 });
+    });
+
+    it("flags a negative line even when the rest sum to total (the audit repro)", () => {
+      // 100 + (-50) silently looks like 50 via splitsTotal, but the array is
+      // corrupt: surface it before the short/over math runs.
+      expect(
+        validateSplits([split("cash", 10000), split("promptpay", -5000)], 5000),
+      ).toEqual({ ok: false, reason: "negative", offBy: 5000 });
+    });
+
+    it("offBy reports the absolute value of the most-negative line", () => {
+      // If multiple negatives, the user should see the worst offender so they
+      // can locate and fix it.
+      expect(
+        validateSplits(
+          [split("cash", 100), split("promptpay", -200), split("card", -50)],
+          100,
+        ),
+      ).toEqual({ ok: false, reason: "negative", offBy: 200 });
+    });
+
+    it("a zero amount is not negative", () => {
+      // Zero is degenerate but not a corruption signal — the regular short/empty
+      // path handles it.
+      expect(
+        validateSplits([split("cash", 0)], 100),
+      ).toEqual({ ok: false, reason: "short", offBy: 100 });
+    });
+  });
 });

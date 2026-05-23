@@ -139,7 +139,7 @@ export function SplitPaymentBlock({ totalSatang }: { totalSatang: number }) {
           className={`rounded-full px-3 py-1.5 text-xs font-extrabold ${
             validation.ok
               ? "bg-[var(--color-ok-soft-bg)] text-[var(--color-ok-soft-fg)]"
-              : validation.reason === "over"
+              : validation.reason === "over" || validation.reason === "negative"
                 ? "bg-[var(--color-danger-soft-bg)] text-[var(--color-danger-soft-fg)]"
                 : "bg-[var(--color-warn-soft-bg)] text-[var(--color-warn-soft-fg)]"
           }`}
@@ -148,6 +148,8 @@ export function SplitPaymentBlock({ totalSatang }: { totalSatang: number }) {
             <>✓ {formatTHB(total)} / {formatTHB(totalSatang)}</>
           ) : validation.reason === "over" ? (
             <>{t.pos.splitOver} {formatTHB(validation.offBy)}</>
+          ) : validation.reason === "negative" ? (
+            <>{t.pos.splitNegative}: −{formatTHB(validation.offBy)}</>
           ) : (
             <>{t.pos.splitRemaining}: {formatTHB(validation.offBy)}</>
           )}

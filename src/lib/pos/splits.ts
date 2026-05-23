@@ -23,10 +23,17 @@ export function splitsRemaining(
 
 export type SplitsValidation =
   | { ok: true }
-  | { ok: false; reason: "empty" | "short" | "over"; offBy: number };
+  | {
+      ok: false;
+      reason: "empty" | "short" | "over" | "negative";
+      offBy: number;
+    };
 
 /**
  * Validates a splits array against a target total.
+ * - negative: any line has amount < 0 (corruption signal — runs before the
+ *   sum-based checks since `splitsTotal` would silently clamp it to 0 and a
+ *   negative line beside a balancing positive could otherwise validate clean)
  * - empty: no splits at all
  * - short: sum < total (customer hasn't paid enough)
  * - over: sum > total (would owe change — but split flow doesn't model change;
@@ -36,6 +43,13 @@ export function validateSplits(
   splits: PaymentSplit[],
   totalSatang: number,
 ): SplitsValidation {
+  let mostNegative = 0;
+  for (const s of splits) {
+    if (s.amountSatang < mostNegative) mostNegative = s.amountSatang;
+  }
+  if (mostNegative < 0) {
+    return { ok: false, reason: "negative", offBy: -mostNegative };
+  }
   if (splits.length === 0) return { ok: false, reason: "empty", offBy: totalSatang };
   const sum = splitsTotal(splits);
   if (sum < totalSatang) return { ok: false, reason: "short", offBy: totalSatang - sum };
