@@ -21,6 +21,113 @@ _None claimed in the DD-XX board. The project is in **Wave mode** (post-DD-100 o
 
 > **DD-board status (2026-05-21):** every remaining DD-XX batch is either `done` (often superseded by a later Wave) or `blocked` on **B-1 (Supabase project)** / B-2 (Resend). DD-20 is now `done`. There is **no unblocked DD implementation work left** — provisioning Supabase (B-1, recipe in the Blockers section) is what unblocks the next batches._
 
+## Wave 41 — Pre-Supabase hardening sweep (planning · 2026-05-24)
+
+Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/debug-mantra` audit sweep done 2026-05-24 against the full pos-for-sell tree (read-only, no edits). Two threads run in parallel:
+
+- **Live thread (41a–41f)**: visible UX/auth/spam issues hittable in today's demo-mode app. Ships now; doesn't need Supabase.
+- **Latent thread (41g–41k)**: guards on the Supabase RPCs (`create_order`, `claim_registration_token`, `create_registration_token`) that activate the moment DD-65 wires the cashier flow to real RPCs. Code-only changes to SQL files; can be reviewed without a live database.
+- **Wrap (41l)**: ADR + memory + post-mortem links so the next agent can pick up cold.
+
+**Mantra discipline.** Each sub-batch must land a failing test (Vitest for TS, fixture or SQL assertion for DB) before the fix. No fix without a repro — that's the contract for this whole wave.
+
+**Investigation breadcrumbs** — the audit ledger lives in the conversation transcript at `<session 2026-05-24>`. Findings tagged **L1–L6** (live) and **D1–D6** (latent) map 1:1 to sub-batches below. If anything below is unclear, re-read the ledger first; do not re-audit.
+
+> ⚠ Branch protocol — claim a sub-batch by setting `Owner: claude · Status: in-progress · Branch: pos/wave-41a-...` on its line before any edit. One sub-batch at a time. Commit + push every change (founder monitors via GitHub).
+
+### Phase A — Live UX honesty (no Supabase needed)
+
+- **41a — Cap discount at subtotal+shipping; inline "capped to total" hint** *(finding L1)*
+  - Why: today the discount input has no upper bound; entering 99999 silently saturates total to 0 with no warning, producing absurd discount values on the receipt.
+  - Touched: `src/app/app/pos/CartPanel.tsx` (`DiscountInput`), new test in `tests/lib/pos-discount.test.ts`.
+  - Done when: typing > (subtotal+shipping) caps the *stored* discount to that ceiling, the input shows an inline "capped" hint, and the receipt records the capped value. Vitest covers the cap.
+  - Status: `planning`.
+
+- **41b — Mark mock admin Approve/Reject as "(awaiting DD-26)"** *(finding L3)*
+  - Why: `src/app/admin/applications/Actions.tsx` toasts "Approved (mock)" but does nothing to the DB. A real admin would believe they acted. DD-26 is blocked on Supabase; until then the button must not lie.
+  - Touched: `src/app/admin/applications/Actions.tsx`.
+  - Done when: button is visually disabled (or labeled "Pending Supabase wire-up — DD-26") and click toast says "not yet wired — DD-26".
+  - Status: `planning`.
+
+- **41c — `validateSplits` rejects negative line amounts** *(finding L6)*
+  - Why: `splitsTotal` clamps negatives to 0 in the sum but UI shows them; defense-in-depth so a corrupted state can't pass validation.
+  - Touched: `src/lib/pos/splits.ts` (add `reason: "negative"` case), `tests/lib/splits.test.ts`.
+  - Done when: a split array containing any line < 0 fails `validateSplits` with `reason: "negative"`; test covers it.
+  - Status: `planning`.
+
+- **41d — Verify `src/proxy.ts` actually runs on every request** *(finding L4)*
+  - Why: `src/proxy.ts` exports `proxy` as a *named* export; in Next 16 the convention is `export default`. If named export isn't honored, the Supabase session-refresh middleware is dead and auth degrades silently when access tokens expire.
+  - Repro: `npm run build` and read the build log for "Middleware not found" / "no proxy export"; then write a Playwright test that logs in, observes the `sb-…-auth-token` cookie, fast-forwards an hour, navigates to `/app`, and asserts the cookie was refreshed (or the request still completes without a login redirect).
+  - Touched: `src/proxy.ts` (only if the export shape is wrong); new `tests/e2e/session-refresh.spec.ts` if Playwright is set up — otherwise document the manual verification in the PR description.
+  - Done when: an empirical answer exists ("works" or "broken, fixed by N-char change") and is in the PR.
+  - Status: `planning`. **High priority** — every later auth-touching batch sits on top of this.
+
+- **41e — ADR: orphan-user → demo-mode behavior in `/app` layout** *(finding L5)*
+  - Why: today an authenticated user with no `workspace_members` row falls into demo mode showing localStorage data. Post-Supabase that's surprising: a removed seller would still see (their own) demo data. Decision needed: keep as feature, or redirect to `/onboarding`.
+  - Touched: `docs/adr/2026-05-XX-orphan-user-demo-mode.md` (new); possibly `src/app/app/layout.tsx`.
+  - Done when: ADR records the decision with reasoning; if "redirect to /onboarding", layout change + test ships in same PR.
+  - Status: `planning`. **Founder sign-off required** before code change.
+
+- **41f — App-level `/apply` rate limit + de-oracle the duplicate-email path** *(finding L2)*
+  - Why: today `/apply` accepts unlimited POSTs (Hard Rule violation), and the 23505 path reveals whether an email has applied (enumeration oracle). DD-16 plans the Supabase-backed version; this is the pre-deploy bridge.
+  - Touched: new `src/lib/rate-limit/index.ts` (in-memory + cookie keyed by IP + email-hash; falls back to permissive when running in tests), `src/app/apply/actions.ts` (call rate-limit + collapse the 23505 response to the generic "thanks, we'll be in touch" same as success).
+  - Done when: 6th POST from the same IP in 1h returns 429; duplicate-email submission returns the same success UI as a new submission (no oracle); new test in `tests/app/apply.test.ts`.
+  - Status: `planning`.
+
+### Phase B — `create_order` pre-flight guards (latent — SQL-only, no Supabase needed to ship code)
+
+- **41g — Require `payments[]` when `payment_method=mixed`; validate sum** *(findings D1, D2)*
+  - Why: today an order with method=mixed and empty payments creates zero payment records (D1); even with a payments array, sum is never validated against total (D2). Both manifest as "order totals don't match payments" the moment DD-65 wires create_order.
+  - Touched: `database/functions/create_order.sql`; new `tests/db/create_order.spec.ts` (Vitest + sql-mock or pgTAP — pick during 41k).
+  - Done when: passing `payment_method=mixed` with empty/missing payments raises an exception; passing a short-sum payments array raises an exception with the off-by satang amount.
+  - Status: `planning`.
+
+- **41h — Cap `discount_satang` inside `create_order` at subtotal+shipping** *(finding D3)*
+  - Why: today the client can pass any discount; total is clamped to 0 but the discount value persists into the DB unchecked, breaking dashboard/margin reports.
+  - Touched: `database/functions/create_order.sql`.
+  - Done when: a 999-trillion-satang discount on a 100-satang sale stores `discount_satang = 100`, total = 0, with an audit-log breadcrumb noting the cap.
+  - Status: `planning`.
+
+- **41i — Remove dead `CASE` on `payment_status`** *(finding D4)*
+  - Why: `case when v_payment_method = 'sample' then 'paid' else 'paid' end` — both branches return `'paid'`. Refactor leftover. Either keep literal `'paid'` or restore the intended branch (likely `'pending'` for non-sample cash awaiting tender confirm).
+  - Touched: `database/functions/create_order.sql`.
+  - Done when: dead CASE is gone; behaviour either documented as identical (literal) or intentionally split. Single-commit.
+  - Status: `planning`.
+
+### Phase C — Registration-token hardening (latent — SQL-only)
+
+- **41j — Collapse `claim_registration_token` error codes; tighten generator floor** *(findings D5, D6)*
+  - Why: today `claim_registration_token` raises distinct exceptions for "token not found" / "already claimed" / "expired" — enumeration oracle for valid tokens. `create_registration_token` may emit short tokens when `gen_random_bytes` yields many strip-chars.
+  - Touched: `database/functions/claim_registration_token.sql`, `database/functions/create_registration_token.sql`.
+  - Done when: all token-failure paths return a single generic "invalid token" error (with internal logging preserved via `audit_logs` row for ops); generator re-rolls until length ≥ 16.
+  - Status: `planning`.
+
+### Phase D — Regression suite + close-out
+
+- **41k — Vitest D-series regression suite** *(new)*
+  - Why: each D-finding gets a failing test that pins the fix. Without this, future schema edits can silently regress.
+  - Touched: `tests/db/create_order.spec.ts`, `tests/db/registration_token.spec.ts`, possibly `vitest.config.ts` (include `tests/db/**`).
+  - Decision needed: SQL-mock vs Dockerised Postgres vs pgTAP. Default to **sql-mock** (no infra dep) unless 41g–41j need DB-side behavior (then introduce a `vitest.db.config.ts` with a docker-compose Postgres). Codex review on this choice before 41g starts.
+  - Done when: 6+ tests covering D1–D6, all green, runnable via `npm test`.
+  - Status: `planning`. Blocks final merge of 41g–41j.
+
+- **41l — Wave 41 ADR + memory + post-mortem** *(new)*
+  - Why: future agents shouldn't re-audit. Pin the breadcrumb.
+  - Touched: `docs/adr/2026-05-XX-wave-41-hardening.md`, plus a memory entry linking the audit ledger to the wave.
+  - Done when: ADR landed, memory updated, [STATUS.md](docs/STATUS.md) "Latest waves" appended.
+  - Status: `planning`.
+
+### Suggested execution order
+
+41a → 41b → 41c → 41d → 41e (decide) → 41f → 41g → 41h → 41i → 41j → 41k → 41l. The Phase A items are independent and could parallel if multiple agents run, but the protocol is one-at-a-time.
+
+### Out of scope (deliberately)
+
+- DD-15 / DD-16 / DD-26 themselves — those are Supabase-backed and wait on B-1.
+- Performance/index work on `event_inventory` and `orders` — different audit.
+- Mochi UI parity for any new components introduced here (41b's disabled-button state must still use Mochi tokens).
+- Anything in the MeowMeow Event POS at the repo root (different protocol; off-limits from this wave's branches).
+
 ## Event-setup follow-ups (post-PR #83, merged 2026-05-22 · `5999982`)
 
 `/app/events` shipped as a **demo/config screen only.** ⚠️ The booth-rule toggles and the free-gift rule **persist to localStorage but are NOT enforced in POS checkout** — they do not yet control any selling behavior. Treat it as planning/setup UI, not an operational control system.
