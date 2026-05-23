@@ -67,12 +67,7 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
 
 ### Phase D — Regression suite + close-out
 
-- **41k — Vitest D-series regression suite** *(new)*
-  - Why: each D-finding gets a failing test that pins the fix. Without this, future schema edits can silently regress.
-  - Touched: `tests/db/README.md` (harness doc), `tests/db/d-series-coverage.test.ts` (coverage guard), `package.json` (`test:db` script). The actual D-series tests (`create_order.test.ts`, `registration_token.test.ts`) + the pglite harness shipped inside 41g–41j.
-  - Decision made: **pglite** (Postgres-in-WASM, no Docker, no infra) over the original sql-mock default — it executes the real plpgsql, so each D-finding got a genuine repro. ⚠ flagged for Codex post-hoc review (originally asked for review before 41g; proceeded under run-non-stop directive).
-  - Done when: 6+ tests covering D1–D6, all green, runnable via `npm test`.
-  - **Owner:** claude · **Status:** in-progress · **Branch:** pos/wave-41k-dseries-suite · **Claimed:** 2026-05-24
+- **41k — Vitest D-series regression suite** *(new)* — **done · see Done section.**
 
 - **41l — Wave 41 ADR + memory + post-mortem** *(new)*
   - Why: future agents shouldn't re-audit. Pin the breadcrumb.
@@ -336,6 +331,10 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 ## Done
 
 (Move completed batches here with the merging commit SHA.)
+
+### Wave 41k — D-series regression suite close-out + pglite harness doc (Phase D)
+- **Merged:** 2026-05-24 · `0758dff` (PR #102)
+- **Result:** closed out the D-series suite. The behavioural D1–D6 tests + pglite harness shipped in 41g–41j; this batch added `tests/db/README.md` (harness rationale: pglite over sql-mock/pgTAP/Docker, the auth + `gen_random_bytes` stubs, stripped SQL, Codex post-hoc review flag), `tests/db/d-series-coverage.test.ts` (guard that fails if any D1–D6 loses its pin), and an `npm run test:db` script. 23 db-layer tests across 3 files, green via `npm test`. **Test-infra decision = pglite** (no Docker); ⚠ flagged for Codex post-hoc review.
 
 ### Wave 41j — registration-token de-oracle + generator floor (findings D5, D6)
 - **Merged:** 2026-05-24 · `843594f` (PR #101)
