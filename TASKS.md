@@ -37,11 +37,7 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
 
 ### Phase A — Live UX honesty (no Supabase needed)
 
-- **41a — Cap discount at subtotal+shipping; inline "capped to total" hint** *(finding L1)*
-  - Why: today the discount input has no upper bound; entering 99999 silently saturates total to 0 with no warning, producing absurd discount values on the receipt.
-  - Touched: `src/app/app/pos/CartPanel.tsx` (`DiscountInput`), new test in `tests/lib/pos-discount.test.ts`.
-  - Done when: typing > (subtotal+shipping) caps the *stored* discount to that ceiling, the input shows an inline "capped" hint, and the receipt records the capped value. Vitest covers the cap.
-  - Status: `planning`.
+- **41a — Cap discount at subtotal+shipping; inline "capped to total" hint** *(finding L1)* — **done · see Done section.**
 
 - **41b — Mark mock admin Approve/Reject as "(awaiting DD-26)"** *(finding L3)*
   - Why: `src/app/admin/applications/Actions.tsx` toasts "Approved (mock)" but does nothing to the DB. A real admin would believe they acted. DD-26 is blocked on Supabase; until then the button must not lie.
@@ -369,8 +365,12 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 
 (Move completed batches here with the merging commit SHA.)
 
-### Wave 41d — Verify `src/proxy.ts` runs on every request (finding L4)
+### Wave 41a — Cap discount at subtotal+shipping; inline "capped" hint (finding L1)
 - **Merged:** 2026-05-24 · `<pending>` (PR #<pending>)
+- **Result:** new pure `capDiscount(typedSatang, maxSatang) → {satang, capped}` in `lib/pos/calc.ts`; `DiscountInput` in CartPanel now passes `subtotal+shipping` as max, dispatches the capped value, and shows an inline warn-toned "Capped at X THB (cart total)" hint when the user typed more than the ceiling. Presets also go through the cap (safe — they're small). 7 new unit tests covering the boundary (zero, exact, over-by-one, wildly-over, negative, zero-max). Receipt now records the capped value, not the absurd one.
+
+### Wave 41d — Verify `src/proxy.ts` runs on every request (finding L4)
+- **Merged:** 2026-05-24 · `a6a3df2` (PR #93)
 - **Result:** verified working. Next 16 + Turbopack honours the named `export async function proxy(...)`. Real registration lives in `.next/server/functions-config-manifest.json` under `/_middleware`; the legacy `middleware-manifest.json` is emitted empty in Turbopack builds — that was the red herring. Pinned by `tests/lib/proxy.test.ts` (5 tests: 3 unit shape + 2 build-output integration). Code-change: a 4-line comment in `src/proxy.ts` documenting the verification so future readers don't re-investigate.
 
 ### Wave 39a — Sample bucket data layer (schema + RPCs + types)

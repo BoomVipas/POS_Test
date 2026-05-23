@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { formatTHB } from "@/lib/money/format";
+import { capDiscount } from "@/lib/pos/calc";
 import { useCart, useCartDispatch } from "@/lib/pos/cart-store";
 import type { Product, PaymentMethod } from "@/lib/pos/types";
 import { CartLine } from "./CartLine";
@@ -130,6 +131,7 @@ export function CartPanel({
       <div className="mt-4 grid gap-3">
         <DiscountInput
           satang={cart.discountSatang}
+          maxSatang={subtotal + shipping}
           onChange={(s) => dispatch({ type: "SET_DISCOUNT", satang: s })}
           label={t.pos.discount}
         />
@@ -248,49 +250,72 @@ function Row({
 
 function DiscountInput({
   satang,
+  maxSatang,
   onChange,
   label,
 }: {
   satang: number;
+  maxSatang: number;
   onChange: (s: number) => void;
   label: string;
 }) {
   const presets = [0, 5000, 10000]; // 0, 50, 100 THB
+  const [capped, setCapped] = useState(false);
   return (
-    <div className="flex items-center gap-2 rounded-2xl border border-line bg-panel px-3 py-2">
-      <span className="text-xs font-extrabold uppercase tracking-wider text-muted">
-        {label}
-      </span>
-      <input
-        type="number"
-        min={0}
-        step={50}
-        value={satang === 0 ? "" : (satang / 100).toString()}
-        onChange={(e) => {
-          const v = e.target.value;
-          if (v === "") return onChange(0);
-          const n = Number(v);
-          if (Number.isFinite(n)) onChange(Math.max(0, Math.round(n * 100)));
-        }}
-        placeholder="0"
-        className="num w-20 rounded-lg border border-line bg-white px-2 py-1 text-right text-sm font-extrabold focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
-      />
-      <div className="ml-auto flex gap-1">
-        {presets.map((p) => (
-          <button
-            key={p}
-            type="button"
-            onClick={() => onChange(p)}
-            className={
-              satang === p && p > 0
-                ? "rounded-full bg-[#e5dff0] px-2 py-1 text-[11px] font-extrabold text-[#1c1838]"
-                : "rounded-full bg-[#faf8fd] px-2 py-1 text-[11px] font-extrabold text-[#2a2557]"
+    <div className="rounded-2xl border border-line bg-panel px-3 py-2">
+      <div className="flex items-center gap-2">
+        <span className="text-xs font-extrabold uppercase tracking-wider text-muted">
+          {label}
+        </span>
+        <input
+          type="number"
+          min={0}
+          step={50}
+          value={satang === 0 ? "" : (satang / 100).toString()}
+          onChange={(e) => {
+            const v = e.target.value;
+            if (v === "") {
+              setCapped(false);
+              return onChange(0);
             }
-          >
-            {p === 0 ? "0" : `${p / 100}`}
-          </button>
-        ))}
+            const n = Number(v);
+            if (!Number.isFinite(n)) return;
+            const result = capDiscount(Math.round(n * 100), maxSatang);
+            setCapped(result.capped);
+            onChange(result.satang);
+          }}
+          placeholder="0"
+          className="num w-20 rounded-lg border border-line bg-white px-2 py-1 text-right text-sm font-extrabold focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
+        />
+        <div className="ml-auto flex gap-1">
+          {presets.map((p) => (
+            <button
+              key={p}
+              type="button"
+              onClick={() => {
+                const result = capDiscount(p, maxSatang);
+                setCapped(result.capped);
+                onChange(result.satang);
+              }}
+              className={
+                satang === p && p > 0
+                  ? "rounded-full bg-[#e5dff0] px-2 py-1 text-[11px] font-extrabold text-[#1c1838]"
+                  : "rounded-full bg-[#faf8fd] px-2 py-1 text-[11px] font-extrabold text-[#2a2557]"
+              }
+            >
+              {p === 0 ? "0" : `${p / 100}`}
+            </button>
+          ))}
+        </div>
       </div>
+      {capped && maxSatang > 0 && (
+        <p
+          className="mt-1.5 text-[11px] font-bold"
+          style={{ color: "var(--color-warn-soft-fg)" }}
+        >
+          Capped at {formatTHB(maxSatang)} THB (cart total)
+        </p>
+      )}
     </div>
   );
 }
