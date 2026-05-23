@@ -59,11 +59,7 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
 
 - **41h — Cap `discount_satang` inside `create_order` at subtotal+shipping** *(finding D3)* — **done · see Done section.**
 
-- **41i — Remove dead `CASE` on `payment_status`** *(finding D4)*
-  - Why: `case when v_payment_method = 'sample' then 'paid' else 'paid' end` — both branches return `'paid'`. Refactor leftover. Either keep literal `'paid'` or restore the intended branch (likely `'pending'` for non-sample cash awaiting tender confirm).
-  - Touched: `database/functions/create_order.sql`, `tests/db/create_order.test.ts`.
-  - Done when: dead CASE is gone; behaviour either documented as identical (literal) or intentionally split. Single-commit.
-  - **Owner:** claude · **Status:** in-progress · **Branch:** pos/wave-41i-dead-case · **Claimed:** 2026-05-24
+- **41i — Remove dead `CASE` on `payment_status`** *(finding D4)* — **done · see Done section.**
 
 ### Phase C — Registration-token hardening (latent — SQL-only)
 
@@ -344,6 +340,10 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 ## Done
 
 (Move completed batches here with the merging commit SHA.)
+
+### Wave 41i — `create_order` removes dead payment_status CASE (finding D4)
+- **Merged:** 2026-05-24 · `06f80d6` (PR #100)
+- **Result:** the no-op `case when method='sample' then 'paid' else 'paid' end` collapsed to the literal `'paid'`, with a comment noting a future `pending` (awaiting-tender) state belongs to the cashier-flow batch. No behaviour change; 2 characterization cases in `tests/db/create_order.test.ts` pin `payment_status='paid'` for cash + sample orders.
 
 ### Wave 41h — `create_order` caps discount_satang at subtotal+shipping (finding D3)
 - **Merged:** 2026-05-24 · `8514131` (PR #99)
