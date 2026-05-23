@@ -1,68 +1,56 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
+import { pendingApplicationToast } from "@/lib/admin/applications-pending";
 
+/**
+ * Approve/Reject buttons for /admin/applications.
+ *
+ * **Not yet wired** to Supabase — DD-26 lands the real server actions. Until
+ * then the buttons stay clickable (so admins can see WHY nothing happens)
+ * but the toast is honest about the pre-DD-26 state and no DB row changes.
+ * Pinned by `tests/lib/admin-applications-pending.test.ts` (Wave 41b, finding L3).
+ */
 export function ApproveRejectButtons({
   applicationId,
 }: {
   applicationId: string;
 }) {
   const [pending, startTransition] = useTransition();
-  const [done, setDone] = useState<"approved" | "rejected" | null>(null);
   const { push } = useToast();
 
-  function approve() {
-    startTransition(async () => {
-      // DD-26 will call the real server action.
-      await fakeDelay();
-      setDone("approved");
-      push({
-        kind: "success",
-        title: "Approved (mock)",
-        message: `Application ${applicationId.slice(0, 8)}… → invite code generated.`,
-      });
+  function emit(action: "approve" | "reject") {
+    startTransition(() => {
+      push(pendingApplicationToast(action, applicationId));
     });
-  }
-
-  function reject() {
-    startTransition(async () => {
-      await fakeDelay();
-      setDone("rejected");
-      push({
-        kind: "info",
-        title: "Rejected (mock)",
-        message: `Application ${applicationId.slice(0, 8)}… → status set to rejected.`,
-      });
-    });
-  }
-
-  if (done) {
-    return (
-      <p className="text-xs font-bold uppercase tracking-wider text-muted">
-        {done}
-      </p>
-    );
   }
 
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-wrap items-center gap-2">
       <Button
         variant="primary"
         size="sm"
-        onClick={approve}
+        onClick={() => emit("approve")}
         loading={pending}
       >
         Approve
       </Button>
-      <Button variant="danger" size="sm" onClick={reject} loading={pending}>
+      <Button
+        variant="danger"
+        size="sm"
+        onClick={() => emit("reject")}
+        loading={pending}
+      >
         Reject
       </Button>
+      <span
+        className="ml-1 text-[11px] font-bold uppercase tracking-wider"
+        style={{ color: "var(--color-warn-soft-fg)" }}
+      >
+        Awaiting DD-26 wire-up
+      </span>
     </div>
   );
-}
-
-function fakeDelay(ms: number = 300): Promise<void> {
-  return new Promise((r) => setTimeout(r, ms));
 }
