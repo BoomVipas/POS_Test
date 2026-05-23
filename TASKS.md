@@ -55,12 +55,7 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
   - Done when: a split array containing any line < 0 fails `validateSplits` with `reason: "negative"`; test covers it.
   - Status: `planning`.
 
-- **41d — Verify `src/proxy.ts` actually runs on every request** *(finding L4)*
-  - Why: `src/proxy.ts` exports `proxy` as a *named* export; in Next 16 the convention is `export default`. If named export isn't honored, the Supabase session-refresh middleware is dead and auth degrades silently when access tokens expire.
-  - Repro: `npm run build` and read the build log for "Middleware not found" / "no proxy export"; then write a Playwright test that logs in, observes the `sb-…-auth-token` cookie, fast-forwards an hour, navigates to `/app`, and asserts the cookie was refreshed (or the request still completes without a login redirect).
-  - Touched: `src/proxy.ts` (only if the export shape is wrong); new `tests/e2e/session-refresh.spec.ts` if Playwright is set up — otherwise document the manual verification in the PR description.
-  - Done when: an empirical answer exists ("works" or "broken, fixed by N-char change") and is in the PR.
-  - Status: `planning`. **High priority** — every later auth-touching batch sits on top of this.
+- **41d — Verify `src/proxy.ts` actually runs on every request** *(finding L4)* — **done · see Done section.**
 
 - **41e — ADR: orphan-user → demo-mode behavior in `/app` layout** *(finding L5)*
   - Why: today an authenticated user with no `workspace_members` row falls into demo mode showing localStorage data. Post-Supabase that's surprising: a removed seller would still see (their own) demo data. Decision needed: keep as feature, or redirect to `/onboarding`.
@@ -373,6 +368,10 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 ## Done
 
 (Move completed batches here with the merging commit SHA.)
+
+### Wave 41d — Verify `src/proxy.ts` runs on every request (finding L4)
+- **Merged:** 2026-05-24 · `<pending>` (PR #<pending>)
+- **Result:** verified working. Next 16 + Turbopack honours the named `export async function proxy(...)`. Real registration lives in `.next/server/functions-config-manifest.json` under `/_middleware`; the legacy `middleware-manifest.json` is emitted empty in Turbopack builds — that was the red herring. Pinned by `tests/lib/proxy.test.ts` (5 tests: 3 unit shape + 2 build-output integration). Code-change: a 4-line comment in `src/proxy.ts` documenting the verification so future readers don't re-investigate.
 
 ### Wave 39a — Sample bucket data layer (schema + RPCs + types)
 - **Merged:** 2026-05-07 · `6455917` (PR #4)
