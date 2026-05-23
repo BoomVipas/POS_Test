@@ -63,11 +63,7 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
 
 ### Phase C — Registration-token hardening (latent — SQL-only)
 
-- **41j — Collapse `claim_registration_token` error codes; tighten generator floor** *(findings D5, D6)*
-  - Why: today `claim_registration_token` raises distinct exceptions for "token not found" / "already claimed" / "expired" — enumeration oracle for valid tokens. `create_registration_token` may emit short tokens when `gen_random_bytes` yields many strip-chars.
-  - Touched: `database/functions/claim_registration_token.sql`, `database/functions/create_registration_token.sql`, new `tests/db/registration_token.test.ts`.
-  - Done when: all token-failure paths return a single generic "invalid token" error (with internal logging preserved via `audit_logs` row for ops); generator re-rolls until length ≥ 16.
-  - **Owner:** claude · **Status:** in-progress · **Branch:** pos/wave-41j-token-hardening · **Claimed:** 2026-05-24
+- **41j — Collapse `claim_registration_token` error codes; tighten generator floor** *(findings D5, D6)* — **done · see Done section.**
 
 ### Phase D — Regression suite + close-out
 
@@ -340,6 +336,10 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 ## Done
 
 (Move completed batches here with the merging commit SHA.)
+
+### Wave 41j — registration-token de-oracle + generator floor (findings D5, D6)
+- **Merged:** 2026-05-24 · `843594f` (PR #101)
+- **Result:** D5 — `claim_registration_token` now returns one byte-identical `invalid token` error for not-found / already-claimed / expired (was 3 distinct messages = enumeration oracle); the reason goes to the server log via `RAISE LOG` (an `audit_logs` row would roll back with the failed call). `payload required` stays distinct (not a token oracle). D6 — `create_registration_token` re-rolls when url-unsafe stripping drops below 16 chars instead of shipping a short token (raw entropy raised to 18 bytes). 5 cases in `tests/db/registration_token.test.ts`; D6 repro is deterministic via an injectable `gen_random_bytes` shim (`test.strip_heavy_rolls` GUC).
 
 ### Wave 41i — `create_order` removes dead payment_status CASE (finding D4)
 - **Merged:** 2026-05-24 · `06f80d6` (PR #100)
