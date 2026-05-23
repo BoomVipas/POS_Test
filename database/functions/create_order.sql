@@ -88,7 +88,12 @@ begin
     nullif(payload->>'customer_email', ''),
     'take_now', -- patched below
     v_payment_method,
-    case when v_payment_method = 'sample' then 'paid' else 'paid' end,
+    -- All orders created here are settled at the point of sale (cash tendered,
+    -- slip confirmed, or a free sample), so payment_status is always 'paid'.
+    -- (Was a no-op CASE that returned 'paid' on both branches — D4.) A future
+    -- "awaiting tender confirm" (pending) state belongs to the cashier-flow
+    -- batch that introduces it, not here.
+    'paid',
     0, v_discount, 0, 0,
     'completed',
     nullif(payload->>'note', '')

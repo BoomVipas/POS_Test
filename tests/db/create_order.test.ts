@@ -180,3 +180,49 @@ describe("create_order discount cap (Wave 41h, D3)", () => {
     expect(row.total_satang).toBe(7000);
   });
 });
+
+describe("create_order payment_status (Wave 41i, D4)", () => {
+  // Characterization guard for the dead-CASE removal: both branches of the old
+  // `case when method='sample' then 'paid' else 'paid' end` returned 'paid', so
+  // collapsing it to the literal must not change observable behaviour.
+  let ws: SeededWorkspace;
+
+  beforeAll(async () => {
+    ws = await seedWorkspace(db);
+  });
+
+  async function paymentStatus(orderId: string): Promise<string> {
+    const r = await db.query<{ payment_status: string }>(
+      `select payment_status from public.orders where id = $1`,
+      [orderId],
+    );
+    return r.rows[0].payment_status;
+  }
+
+  it("marks a plain cash order 'paid'", async () => {
+    const orderId = await createOrder(db, {
+      workspace_id: ws.workspaceId,
+      event_id: ws.eventId,
+      payment_method: "cash",
+      items: [{ product_id: ws.productId, qty: 1, fulfillment: "take_now" }],
+    });
+    expect(await paymentStatus(orderId)).toBe("paid");
+  });
+
+  it("marks a sample order 'paid'", async () => {
+    const orderId = await createOrder(db, {
+      workspace_id: ws.workspaceId,
+      event_id: ws.eventId,
+      payment_method: "sample",
+      items: [
+        {
+          product_id: ws.productId,
+          qty: 1,
+          fulfillment: "take_now",
+          is_sample: true,
+        },
+      ],
+    });
+    expect(await paymentStatus(orderId)).toBe("paid");
+  });
+});
