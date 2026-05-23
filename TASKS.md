@@ -55,11 +55,7 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
 
 ### Phase B — `create_order` pre-flight guards (latent — SQL-only, no Supabase needed to ship code)
 
-- **41g — Require `payments[]` when `payment_method=mixed`; validate sum** *(findings D1, D2)*
-  - Why: today an order with method=mixed and empty payments creates zero payment records (D1); even with a payments array, sum is never validated against total (D2). Both manifest as "order totals don't match payments" the moment DD-65 wires create_order.
-  - Touched: `database/functions/create_order.sql`; new `tests/db/create_order.test.ts` + `tests/db/helpers/pglite.ts` (Vitest + **pglite** — real Postgres-in-WASM, no Docker; chosen over sql-mock so the plpgsql executes for real. This becomes the 41k harness).
-  - Done when: passing `payment_method=mixed` with empty/missing payments raises an exception; passing a short-sum payments array raises an exception with the off-by satang amount.
-  - **Owner:** claude · **Status:** in-progress · **Branch:** pos/wave-41g-mixed-payments · **Claimed:** 2026-05-24
+- **41g — Require `payments[]` when `payment_method=mixed`; validate sum** *(findings D1, D2)* — **done · see Done section.**
 
 - **41h — Cap `discount_satang` inside `create_order` at subtotal+shipping** *(finding D3)*
   - Why: today the client can pass any discount; total is clamped to 0 but the discount value persists into the DB unchecked, breaking dashboard/margin reports.
@@ -352,6 +348,10 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 ## Done
 
 (Move completed batches here with the merging commit SHA.)
+
+### Wave 41g — `create_order` requires payments for mixed + validates sum (findings D1, D2)
+- **Merged:** 2026-05-24 · `5c213c2` (PR #98)
+- **Result:** D1 — `payment_method=mixed` with empty/missing `payments[]` now raises instead of recording a completed "paid" order with zero payment records. D2 — a supplied `payments[]` must sum to the order total; mismatch raises naming the off-by satang amount. Sample (free) and single-tender auto-record paths unchanged. **Test infra:** adopted **pglite** (Postgres-in-WASM, no Docker) over the 41k `sql-mock` default so plpgsql executes for real — new reusable harness `tests/db/helpers/pglite.ts` (auth stub + schema/function loader + workspace seeder) is the foundation for 41k. 6 cases in `tests/db/create_order.test.ts`. ⚠ pglite-vs-sql-mock choice flagged for Codex post-hoc review (the 41k note asked for review before 41g; proceeded under the founder's run-non-stop directive).
 
 ### Wave 41f — App-level `/apply` rate limit + de-oracle duplicate email (finding L2)
 - **Merged:** 2026-05-24 · `5bdf48d` (PR #97)
