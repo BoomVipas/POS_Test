@@ -69,10 +69,10 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
 
 - **41k — Vitest D-series regression suite** *(new)*
   - Why: each D-finding gets a failing test that pins the fix. Without this, future schema edits can silently regress.
-  - Touched: `tests/db/create_order.spec.ts`, `tests/db/registration_token.spec.ts`, possibly `vitest.config.ts` (include `tests/db/**`).
-  - Decision needed: SQL-mock vs Dockerised Postgres vs pgTAP. Default to **sql-mock** (no infra dep) unless 41g–41j need DB-side behavior (then introduce a `vitest.db.config.ts` with a docker-compose Postgres). Codex review on this choice before 41g starts.
+  - Touched: `tests/db/README.md` (harness doc), `tests/db/d-series-coverage.test.ts` (coverage guard), `package.json` (`test:db` script). The actual D-series tests (`create_order.test.ts`, `registration_token.test.ts`) + the pglite harness shipped inside 41g–41j.
+  - Decision made: **pglite** (Postgres-in-WASM, no Docker, no infra) over the original sql-mock default — it executes the real plpgsql, so each D-finding got a genuine repro. ⚠ flagged for Codex post-hoc review (originally asked for review before 41g; proceeded under run-non-stop directive).
   - Done when: 6+ tests covering D1–D6, all green, runnable via `npm test`.
-  - Status: `planning`. Blocks final merge of 41g–41j.
+  - **Owner:** claude · **Status:** in-progress · **Branch:** pos/wave-41k-dseries-suite · **Claimed:** 2026-05-24
 
 - **41l — Wave 41 ADR + memory + post-mortem** *(new)*
   - Why: future agents shouldn't re-audit. Pin the breadcrumb.
