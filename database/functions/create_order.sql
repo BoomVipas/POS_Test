@@ -199,6 +199,21 @@ begin
   end if;
 
   if payload ? 'payments' and jsonb_array_length(payload->'payments') > 0 then
+    -- D2: a supplied payments array must reconcile to the order total, or the
+    -- order's recorded tenders silently disagree with what was charged.
+    declare
+      v_pay_sum bigint;
+    begin
+      select coalesce(sum((p->>'amount_satang')::bigint), 0)
+        into v_pay_sum
+        from jsonb_array_elements(payload->'payments') p;
+      if v_pay_sum <> v_total then
+        raise exception
+          'create_order: payments sum (% satang) does not match order total (% satang); off by %',
+          v_pay_sum, v_total, abs(v_pay_sum - v_total)
+          using errcode = '22000';
+      end if;
+    end;
     for v_item in select * from jsonb_array_elements(payload->'payments')
     loop
       insert into public.payment_records(
@@ -212,7 +227,14 @@ begin
         v_user_id, now()
       );
     end loop;
-  elsif v_payment_method <> 'sample' and v_payment_method <> 'mixed' then
+  elsif v_payment_method = 'mixed' then
+    -- D1: a "mixed" order with no payments[] would otherwise record a paid,
+    -- completed order with zero payment records. Itemising the tenders is the
+    -- whole point of the mixed method, so require them.
+    raise exception
+      'create_order: payment_method=mixed requires a non-empty payments array'
+      using errcode = '22000';
+  elsif v_payment_method <> 'sample' then
     insert into public.payment_records(
       workspace_id, order_id, payment_method, amount_satang, confirmed_by, confirmed_at
     ) values (v_workspace_id, v_order_id, v_payment_method, v_total, v_user_id, now());
