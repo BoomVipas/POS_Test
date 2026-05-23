@@ -71,9 +71,9 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
 
 - **41l — Wave 41 ADR + memory + post-mortem** *(new)*
   - Why: future agents shouldn't re-audit. Pin the breadcrumb.
-  - Touched: `docs/adr/2026-05-XX-wave-41-hardening.md`, plus a memory entry linking the audit ledger to the wave.
+  - Touched: `docs/adr/2026-05-24-wave-41-hardening.md`, plus a memory entry linking the audit ledger to the wave.
   - Done when: ADR landed, memory updated, [STATUS.md](docs/STATUS.md) "Latest waves" appended.
-  - Status: `planning`.
+  - **Owner:** claude · **Status:** in-progress · **Branch:** pos/wave-41l-adr-wrap · **Claimed:** 2026-05-24
 
 ### Suggested execution order
 
