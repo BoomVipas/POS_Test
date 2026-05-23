@@ -45,10 +45,11 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
 
 - **41d — Verify `src/proxy.ts` actually runs on every request** *(finding L4)* — **done · see Done section.**
 
-- **41e — ADR: orphan-user → demo-mode behavior in `/app` layout** *(finding L5)*
-  - Why: today an authenticated user with no `workspace_members` row falls into demo mode showing localStorage data. Post-Supabase that's surprising: a removed seller would still see (their own) demo data. Decision needed: keep as feature, or redirect to `/onboarding`.
-  - Touched: `docs/adr/2026-05-XX-orphan-user-demo-mode.md` (new); possibly `src/app/app/layout.tsx`.
-  - Done when: ADR records the decision with reasoning; if "redirect to /onboarding", layout change + test ships in same PR.
+- **41e — orphan-user → redirect to `/onboarding` in `/app` layout** *(finding L5)*
+  - Decision (founder delegated, 2026-05-24): **redirect to `/onboarding`** — cleanest post-Supabase UX. Demo mode stays only for the credential-free pilot (`Supabase not configured`).
+  - Touched: new `src/lib/app-guard.ts` (pure `resolveAppGuard`), `src/app/app/layout.tsx`, `tests/lib/app-guard.test.ts`.
+  - Done when: an authenticated user with no `workspace_members` row (or a dangling member→missing workspace) is redirected to `/onboarding`; demo mode preserved when Supabase is unconfigured; pure guard unit-tested. ⚠ auth-gating change — flag for Codex review.
+  - **Owner:** claude · **Status:** in-progress · **Branch:** pos/wave-41e-orphan-redirect · **Claimed:** 2026-05-24
   - Status: `planning`. **Founder sign-off required** before code change.
 
 - **41f — App-level `/apply` rate limit + de-oracle the duplicate-email path** *(finding L2)* — **done · see Done section.**

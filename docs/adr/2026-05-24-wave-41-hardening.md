@@ -1,6 +1,6 @@
 # ADR 2026-05-24 — Wave 41: Pre-Supabase hardening sweep
 
-- **Status:** Accepted (41a–41d, 41f–41k shipped). 41e deferred — needs founder sign-off.
+- **Status:** Accepted — all twelve sub-batches (41a–41l) shipped. 41e resolved 2026-05-24 (founder delegated the call): redirect orphan users to `/onboarding`.
 - **Date:** 2026-05-24
 - **Context source:** a `/debug-mantra` read-only audit of the full `pos-for-sell` tree, 2026-05-24. Findings tagged **L1–L6** (live, hittable in today's demo app) and **D1–D6** (latent, on the Supabase RPCs that activate when DD-65 wires the cashier flow).
 
@@ -26,7 +26,7 @@ functions instead of inheriting six latent defects.
 | L3 (41b) | Mock admin Approve/Reject fired fake success | Toasts now say "Not yet wired — DD-26"; caption beside buttons | #96 |
 | L6 (41c) | `validateSplits` accepted negative lines | New `negative` reason runs before empty/short/over; localized chip | #95 |
 | L4 (41d) | Was `src/proxy.ts` actually wired by Next 16? | Verified yes (Turbopack `functions-config-manifest.json`); pinned by build-output test + documenting comment | #93 |
-| **L5 (41e)** | **Orphan auth user (no `workspace_members` row) silently falls into demo mode** | **DEFERRED — see Open question** | — |
+| L5 (41e) | Orphan auth user (no `workspace_members` row) silently falls into demo mode | Redirect to `/onboarding` (demo mode kept only for the unconfigured pilot); pure `resolveAppGuard` + unit tests | #104 |
 | L2 (41f) | `/apply` unlimited POSTs + 23505 duplicate-email enumeration oracle | App-level rate limit (IP + sha256(email), 5/hr) + collapse duplicate path to generic success | #97 |
 
 ### Latent thread (D-series) — all on `create_order` / token RPCs
@@ -71,18 +71,20 @@ has a deterministic repro.
 - `d-series-coverage.test.ts` fails if any D1–D6 loses its pinning test.
 - Total suite grew 375 → 398 tests across the wave.
 
-## Open question (blocks 41e)
+## Resolved question — L5 (41e)
 
-**L5 — orphan-user → demo-mode behaviour in `/app` layout.** Today an
-authenticated user with no `workspace_members` row falls into demo mode and sees
-localStorage data. Post-Supabase that is surprising: a *removed* seller would
-still see (their own) demo data instead of being told they have no workspace.
+**Orphan-user → demo-mode behaviour in `/app` layout.** An authenticated user
+with no `workspace_members` row used to fall into demo mode and see localStorage
+data. Post-Supabase that is surprising: a *removed* seller would still see (their
+own) demo data instead of being told they have no workspace.
 
-Two options, founder's call:
+**Decision (2026-05-24, founder delegated "the best and cleanest way"):**
+**redirect to `/onboarding`.** "Authenticated but workspace-less" (and the
+dangling member→missing-workspace edge) is treated as onboarding-incomplete and
+routed to `/onboarding`. Demo mode is now reserved exclusively for the
+`Supabase not configured` path (the credential-free pilot build).
 
-1. **Keep as a feature** — demo mode is a friendly sandbox for not-yet-onboarded
-   users; document it as intended.
-2. **Redirect to `/onboarding`** — treat "authenticated but workspace-less" as an
-   onboarding-incomplete state and route there; ships with a layout change + test.
-
-41e is deferred until this is decided; it does not block DD-65.
+Implemented in #104: the decision logic is extracted into a pure
+`resolveAppGuard` (`src/lib/app-guard.ts`) consumed by `src/app/app/layout.tsx`,
+with `tests/lib/app-guard.test.ts` covering all five branches. ⚠ auth-gating
+change — flagged for Codex review.
