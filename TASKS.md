@@ -51,11 +51,7 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
   - Done when: ADR records the decision with reasoning; if "redirect to /onboarding", layout change + test ships in same PR.
   - Status: `planning`. **Founder sign-off required** before code change.
 
-- **41f — App-level `/apply` rate limit + de-oracle the duplicate-email path** *(finding L2)*
-  - Why: today `/apply` accepts unlimited POSTs (Hard Rule violation), and the 23505 path reveals whether an email has applied (enumeration oracle). DD-16 plans the Supabase-backed version; this is the pre-deploy bridge.
-  - Touched: new `src/lib/rate-limit/index.ts` (in-memory + cookie keyed by IP + email-hash; falls back to permissive when running in tests), `src/app/apply/actions.ts` (call rate-limit + collapse the 23505 response to the generic "thanks, we'll be in touch" same as success).
-  - Done when: 6th POST from the same IP in 1h returns 429; duplicate-email submission returns the same success UI as a new submission (no oracle); new test in `tests/app/apply.test.ts`.
-  - **Owner:** claude · **Status:** in-progress · **Branch:** pos/wave-41f-apply-ratelimit · **Claimed:** 2026-05-24
+- **41f — App-level `/apply` rate limit + de-oracle the duplicate-email path** *(finding L2)* — **done · see Done section.**
 
 ### Phase B — `create_order` pre-flight guards (latent — SQL-only, no Supabase needed to ship code)
 
@@ -356,6 +352,10 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 ## Done
 
 (Move completed batches here with the merging commit SHA.)
+
+### Wave 41f — App-level `/apply` rate limit + de-oracle duplicate email (finding L2)
+- **Merged:** 2026-05-24 · `5bdf48d` (PR #97)
+- **Result:** new `src/lib/rate-limit/` — pure sliding-window `checkRateLimit(store, key, now, {max, windowMs})` (mutates the store only on allowed hits; exclusive window boundary) plus a Server Action bridge `checkApplyRateLimit` keyed by IP + sha256(email), permissive under `VITEST`. The `/apply` action now gates on 5 submissions per IP+email per hour before insert. Separately, the duplicate-email `23505` path now returns the same generic success result as a new submission, closing the enumeration oracle (applicants still check progress at `/apply/status`). 6 new unit tests in `tests/lib/rate-limit.test.ts`. In-process bridge for the pilot; DD-16 ships the shared Supabase-backed version. Note: kept to the codebase's pure-function test convention (zero `vi.mock`), so the de-oracle is a reviewed 4-line edit rather than a mock-heavy action test.
 
 ### Wave 41b — Mock admin Approve/Reject honesty (finding L3)
 - **Merged:** 2026-05-24 · `616c471` (PR #96)
