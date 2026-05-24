@@ -1,6 +1,8 @@
 # Status — pos-for-sell
 
-Rolling snapshot. The "What's live" section below is the original 2026-05-04 baseline (end of the credential-free build sprint); the "Latest waves" section near the bottom tracks newer work appended per wave. Last meaningful update: 2026-05-21 (Mochi indigo design rebrand — PR #73).
+Rolling snapshot. The "What's live" section below is the original 2026-05-04 baseline (end of the credential-free build sprint); the "Latest waves" section near the bottom tracks newer work appended per wave.
+
+**Repo provenance:** on 2026-05-25 this project was extracted into a **standalone repo** (`visanchan/mochipos`) via a history-preserving `git subtree split` from the `meowmeow_sandbox` monorepo, where it had lived as the `pos-for-sell/` folder beside the single-file MeowMeow Event POS. The 158-commit history (DD-01 → Wave 42) is preserved; the MeowMeow booth app stayed behind in `meowmeow_sandbox`. Last meaningful code update before the split: 2026-05-24 (Wave 42 auth-error guard); design baseline 2026-05-21 (Mochi indigo rebrand, PR #73).
 
 ## What's live
 
@@ -161,7 +163,7 @@ Latest waves landed:
 
 ## Latest waves (post-DD-100, organic numbering)
 
-After DD-100 the project shifted from the original 100-batch plan into organic "Wave NN" feature batches driven by competitor research, the meowmeow Pet Expo field findings, and the strategic correction in [VISION.md](../../VISION.md). Each wave is 1–N batches that ship as a cohesive unit.
+After DD-100 the project shifted from the original 100-batch plan into organic "Wave NN" feature batches driven by competitor research, the meowmeow Pet Expo field findings, and the strategic correction in [ROADMAP.md](ROADMAP.md). Each wave is 1–N batches that ship as a cohesive unit.
 
 Snapshot at the end of 2026-05-07:
 
@@ -187,7 +189,7 @@ Snapshot at the end of 2026-05-07:
 - **Wave 37**: order source / channel attribution.
 - **Wave 38**: customer lifecycle + LTV view.
 - **Wave 39a** *(merged PR #4, `6455917`, 2026-05-06)*: sample bucket data layer — `event_inventory.sample_qty` + `convert_event_to_sample` / `convert_sample_to_event` RPCs + types + 6 vitest type guards. Carries the meowmeow Batch DD field-tested model into the SaaS.
-- **Wave 40a** *(merged PR #5, `2c5d908`, 2026-05-07)*: Customer Portal data layer — 5 new tables (`customers`, `customer_contacts`, `pets`, `customer_order_links`, `customer_registration_tokens`) + 2 RPCs (`create_registration_token` workspace-only, `claim_registration_token` anon-callable with token-as-credential) + RLS + 11 vitest type guards. Implements the "checkout first, profile later" correction from [VISION.md](../../VISION.md).
+- **Wave 40a** *(merged PR #5, `2c5d908`, 2026-05-07)*: Customer Portal data layer — 5 new tables (`customers`, `customer_contacts`, `pets`, `customer_order_links`, `customer_registration_tokens`) + 2 RPCs (`create_registration_token` workspace-only, `claim_registration_token` anon-callable with token-as-credential) + RLS + 11 vitest type guards. Implements the "checkout first, profile later" correction from [ROADMAP.md](ROADMAP.md).
 - **Wave 40b** *(merged PR #6, `56f743d`, 2026-05-07)*: Customer Portal UI in demo mode — receipt success screen issues a 16-char token + QR + share link via `RegistrationLinkBlock`; new `/register/[token]` route validates the token in the demo store and renders a mobile-first bilingual EN/TH form (customer profile + multi-channel contacts + optional pet block); `useDemoCustomerTokens` hook backed by localStorage (mirrors `useDemoPets` / `useDemoClaims` patterns). Real Supabase wiring lands in Wave 40d. 15 new vitest tests for token logic.
 - **Wave 39b** *(merged PR #8, `e9cab46`, 2026-05-07)*: sample bucket UI (demo mode) — port of meowmeow Batch DD UI into `/app/inventory/samples`.
 - **Wave 40c** *(merged PR #9, `4522862`, 2026-05-07)*: cashier-side repeat-customer lookup (lookup by phone, attach to current sale, "returning customer" badge with pet preview). Validates the moat in action.

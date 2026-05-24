@@ -666,7 +666,7 @@ After the original 100-batch plan was working in demo mode, work shifted to a "W
 
 ### Why "Wave" replaces "DD-XX" after 100
 
-The 100-batch plan was authored upfront in solo mode at the user's request to plan + execute end-to-end through the pilot launch. Once the demo flows worked and the design language was settled, post-100 work became driven by competitor research, the meowmeow Pet Expo field findings, and the strategic correction in [VISION.md](../../VISION.md) — none of which fit cleanly into the original phase structure. "Wave NN" is the post-launch organic numbering that records what shipped, in order, without forcing every change to map back to the original plan.
+The 100-batch plan was authored upfront in solo mode at the user's request to plan + execute end-to-end through the pilot launch. Once the demo flows worked and the design language was settled, post-100 work became driven by competitor research, the meowmeow Pet Expo field findings, and the strategic correction in [ROADMAP.md](ROADMAP.md) — none of which fit cleanly into the original phase structure. "Wave NN" is the post-launch organic numbering that records what shipped, in order, without forcing every change to map back to the original plan.
 
 ### Waves shipped (snapshot 2026-05-07)
 

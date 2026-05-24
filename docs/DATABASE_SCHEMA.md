@@ -31,7 +31,7 @@ Source of truth: `database/schema.sql`. RLS in `database/rls-policies.sql`. Seed
 
 ### Customer Portal (Wave 40a — post-purchase, customer-facing)
 
-The pet/customer profile system is **never** part of the cashier checkout flow. It is captured after the sale via a QR / link on the receipt that opens a customer-facing registration page. See [VISION.md](../../VISION.md) and [PROJECT_VISION.md](PROJECT_VISION.md) for the strategic rationale.
+The pet/customer profile system is **never** part of the cashier checkout flow. It is captured after the sale via a QR / link on the receipt that opens a customer-facing registration page. See [ROADMAP.md](ROADMAP.md) and [PROJECT_VISION.md](PROJECT_VISION.md) for the strategic rationale.
 
 14. **customers** — workspace-scoped customer profile. Created via the portal claim flow or by an explicit cashier-side tag. `registered_via` records origin (portal / cashier / admin / import).
 15. **customer_contacts** — multi-channel contact rows per customer (phone / email / line / other). Unique on `(workspace_id, channel, value)` so repeat lookups can match without duplicates.

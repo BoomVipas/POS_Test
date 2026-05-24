@@ -2,7 +2,7 @@
 
 Multi-tenant POS SaaS for cat-product booth sellers. Built on Next.js 16 + Supabase + Vercel + Resend.
 
-This project lives inside the `meowmeow_sandbox` repo as a sibling to `meowmeow_pos_event.html` — see the [parent readme](../readme.md) for the meowmeow event-POS context that informs many SaaS patterns (sample bucket, Send Later, free-gift). MochiPOS has its own protocol, batch namespace, and architecture — see [`CLAUDE.md`](./CLAUDE.md).
+MochiPOS is a **standalone repo** (`visanchan/mochipos`), extracted May 2026 from the `meowmeow_sandbox` monorepo where it started as the `pos-for-sell/` folder. Several SaaS patterns (sample bucket, Send Later, free-gift) are ported from the field-proven **MeowMeow Event POS** booth app, which lives in its own repo (`visanchan/meowmeow_sandbox`). MochiPOS has its own protocol, batch namespace, and architecture — see [`CLAUDE.md`](./CLAUDE.md).
 
 ## Quick links
 
@@ -136,7 +136,7 @@ pos-for-sell/
 
 Foundation (Phase 0, batches DD-01 through DD-12) — see `TASKS.md`. Phase 1 (public application flow) is partially scaffolded; persistence batches (DD-15+) are blocked on Supabase credentials.
 
-After the original 100-batch plan, work shifted to **organic "Wave NN" feature batches** driven by competitor research, the meowmeow Pet Expo field findings, and the strategic correction in [`../VISION.md`](../VISION.md). For the current snapshot — routes, libraries, test count, latest waves landed — see [`docs/STATUS.md`](docs/STATUS.md), which is the live source of truth and stays current as waves merge. Wave naming convention in [`docs/BATCH_PLAN.md`](docs/BATCH_PLAN.md) "Post-DD-100 Waves" section.
+After the original 100-batch plan, work shifted to **organic "Wave NN" feature batches** driven by competitor research, the meowmeow Pet Expo field findings, and the strategic correction in [`docs/ROADMAP.md`](docs/ROADMAP.md). For the current snapshot — routes, libraries, test count, latest waves landed — see [`docs/STATUS.md`](docs/STATUS.md), which is the live source of truth and stays current as waves merge. Wave naming convention in [`docs/BATCH_PLAN.md`](docs/BATCH_PLAN.md) "Post-DD-100 Waves" section.
 
 ## Architecture in one paragraph
 

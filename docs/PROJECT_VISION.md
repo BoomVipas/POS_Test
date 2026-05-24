@@ -78,7 +78,7 @@ The system has two connected layers:
 1. **POS App (seller-facing)** — used by cashier and staff during the event. Optimised for speed, low typing, mistake-resistance. Customer info entry is **optional** in this layer (Send Later orders need shipping info; take-now does not). Pet info is **never** entered here.
 2. **Customer Portal (customer-facing)** — used by customers after purchase, accessed via QR on receipt or link by Line/SMS. Captures customer profile, pet profile (optional), connects to past orders, joins loyalty. Mobile-first, bilingual EN/TH.
 
-The pet profile feature remains the **competitive moat** vs generic POS — but it is implemented as a **post-purchase relationship engine**, never as a checkout burden. See [Wave 40 (Customer Portal)](../TASKS.md) for the implementation plan and [VISION.md](../../VISION.md) at the repo root for the umbrella strategy.
+The pet profile feature remains the **competitive moat** vs generic POS — but it is implemented as a **post-purchase relationship engine**, never as a checkout burden. See [Wave 40 (Customer Portal)](../TASKS.md) for the implementation plan and [ROADMAP.md](ROADMAP.md) for the umbrella strategy.
 
 ### Cashier UX rules
 

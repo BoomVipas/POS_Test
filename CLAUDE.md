@@ -1,8 +1,22 @@
-# Claude — Execution Protocol (pos-for-sell)
+# Claude — Execution Protocol (MochiPOS / pos-for-sell)
 
-This is the **Cat Booth POS SaaS** project. It is co-located in the same git repo as `meowmeow_pos_event.html` but is a **distinct project** with its own protocol, batch namespace (`DD-XX`), and architecture.
+This is the **MochiPOS** Cat Booth POS SaaS — a **standalone repo** (`visanchan/mochipos`). It was extracted in May 2026 from the `meowmeow_sandbox` monorepo, where it began as the `pos-for-sell/` folder beside the single-file **MeowMeow Event POS** (`meowmeow_pos_event.html`). It keeps its own protocol, batch namespace (`DD-XX` / `Wave NN`), and architecture. (The npm package name is still `pos-for-sell` until a later rename batch.)
 
-When working anywhere inside `pos-for-sell/`, **this file overrides the root `CLAUDE.md`**. The "Working with this user" section in the root `CLAUDE.md` still applies here — read it for tone and assumed capabilities.
+## Working with this user
+
+The user is a **builder / founder-developer**, not a full-time professional programmer. Read this before adopting a tone:
+
+- **Role**: product owner + business founder + AI-assisted developer (MeowMeow Event POS — production internal use; MochiPOS — SaaS in active build).
+- **Domain expertise**: deep, real, hard-won. Pet Expo Thailand booth. Family business operations. Stock movement, sample handling, Send Later orders, free-gift promos, customer behaviour at peak hours, post-event reconciliation. They will catch product / UX issues that pure-tech reviewers miss.
+- **Toolchain**: ChatGPT, Codex, Claude (this), GitHub, Vercel, Supabase, VS Code.
+- **What to assume they can do**: code structure, repo work, prompt engineering, deploy, PR review, product decisions, workflow logic from real-world experience, real-business testing.
+
+**Communication style** — *technical enough for building, but always connected to business workflow and real user behavior:*
+
+- Skip syntax / boilerplate explanations.
+- Connect architectural choices to operational reality (cashier speed, queue impact, customer experience, drift risk in a real event).
+- Their broken-English messages are normal — "warehouse inventory is mess" is a precise field finding, not hand-waving. Translate to specifics, propose concrete actions, ask one targeted question at a time when genuinely ambiguous.
+- "do whatever you want" / "run end to end" / "do it now" is an autonomous-mode trigger — execute end-to-end without mid-run confirmation pauses; surface only real blockers.
 
 ## Read first, every session
 
@@ -23,15 +37,15 @@ When working anywhere inside `pos-for-sell/`, **this file overrides the root `CL
 - Vercel (hosting)
 - npm (package manager)
 
-## Sister project — MeowMeow Event POS
+## Sister project — MeowMeow Event POS (separate repo)
 
-Several SaaS features port field-proven patterns from the **MeowMeow Event POS** (single-file app at the repo root). When implementing a wave that names a meowmeow analog — sample bucket (Wave 39a/b ↔ meowmeow Batch DD), Send Later (Wave 16/17), free-gift promo, bill correction, void audit — consult the source docs to understand *why* the pattern works under real booth conditions:
+Several SaaS features port field-proven patterns from the **MeowMeow Event POS**, the single-file booth app these patterns were validated in. It now lives in a **separate repo** (`visanchan/meowmeow_sandbox`, file `meowmeow_pos_event.html`) — **not** in this tree. When implementing a wave that names a meowmeow analog — sample bucket (Wave 39a/b ↔ meowmeow Batch DD), Send Later (Wave 16/17), free-gift promo, bill correction, void audit — consult that repo to understand *why* the pattern works under real booth conditions:
 
-- [`../readme.md`](../readme.md) — meowmeow product direction, behavior rules, current shape (look for the relevant section: Send Later, Inventory, Correction Center, Free Gift Rules).
-- [`../TASKS.md`](../TASKS.md) — meowmeow batch history (the Done section names which batches shipped each pattern, e.g. Batch DD for sample bucket, Batch EE for bill-correction allowance).
-- [`../meowmeow_pos_event.html`](../meowmeow_pos_event.html) — the source app itself; grep it for the feature name to find the live implementation.
+- `readme.md` (in that repo) — meowmeow product direction + behavior rules (Send Later, Inventory, Correction Center, Free Gift Rules).
+- `TASKS.md` (in that repo) — meowmeow batch history; the Done section names which batch shipped each pattern (e.g. Batch DD = sample bucket, Batch EE = bill-correction allowance).
+- `meowmeow_pos_event.html` (in that repo) — the source app itself; grep it for the feature name.
 
-Treat meowmeow as a source of validated patterns, **not** a target for edits — its protocol is at [`../CLAUDE.md`](../CLAUDE.md) and its batch naming (`batch/<letter>`) is distinct from this project's `pos/DD-XX` / `pos/wave-NN`. Do not edit meowmeow files from a SaaS batch (and vice versa).
+Treat meowmeow as a source of validated patterns, **not** a target for edits. It has its own protocol and batch naming (`batch/<letter>`), distinct from this project's `DD-XX` / `Wave NN`. The two repos are independent now — don't assume relative paths between them.
 
 ## Hard rules
 
@@ -53,7 +67,7 @@ Two naming conventions are in use — pick based on which kind of work you're st
   - Branch: `pos/DD-XX-short-slug` (the `pos/` prefix keeps SaaS branches visually distinct from `batch/...` branches that target `meowmeow_pos_event.html`).
   - Commit prefix: `[DD-XX] one-line summary`.
   - PR title: `pos: DD-XX <one-line summary>`.
-- **Wave NN** (post-DD-100 organic work) — feature-cohesive multi-batch work driven by competitor research, meowmeow field findings, and the strategic correction in `../VISION.md`. Used for everything from Wave 12 onwards.
+- **Wave NN** (post-DD-100 organic work) — feature-cohesive multi-batch work driven by competitor research, meowmeow field findings, and the strategic correction captured in [`docs/ROADMAP.md`](docs/ROADMAP.md) (the canonical strategy doc). Used for everything from Wave 12 onwards.
   - Branch: `pos/wave-NN-short-slug` (or `pos/wave-NNa-...` when a wave is split).
   - Commit prefix: `[Wave NN] one-line summary` (or `[Wave NNa] ...`).
   - PR title: includes Wave NN.

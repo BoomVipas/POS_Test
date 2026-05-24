@@ -64,7 +64,7 @@ If/when the pilot graduates to a paid product, larger tenants can be migrated to
 
 ## Two-layer architecture: POS App + Customer Portal (added 2026-05-07)
 
-Per [VISION.md](../../VISION.md) and [PROJECT_VISION.md](PROJECT_VISION.md), MochiPOS is split into two connected layers so the cashier never has to do CRM work during peak sales time.
+Per [ROADMAP.md](ROADMAP.md) and [PROJECT_VISION.md](PROJECT_VISION.md), MochiPOS is split into two connected layers so the cashier never has to do CRM work during peak sales time.
 
 ### Layer A — POS App (seller-facing)
 
