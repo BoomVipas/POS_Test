@@ -52,11 +52,14 @@ cp .env.example .env.local
 
 ### 4. Apply database
 
-In the Supabase SQL editor, run in this order:
+In the Supabase SQL editor, paste-and-run each file in this order:
 
-1. `database/schema.sql`
-2. `database/rls-policies.sql`
-3. `database/seed.sql` (optional — only after you've created at least one Auth user)
+1. `database/schema.sql` — tables + helper functions.
+2. `database/functions/*.sql` — the 8 security-definer RPCs (`create_order`, `void_order`, `correct_order`, `redeem_invite_code`, `create_registration_token`, `claim_registration_token`, `convert_event_to_sample`, `convert_sample_to_event`). RLS routes order/audit writes **through** these, so don't skip them.
+3. `database/rls-policies.sql`
+4. `database/seed.sql` (optional — only after you've created at least one Auth user via the app).
+
+Do **not** run `database/migrations/` on a fresh DB — `schema.sql` is the source of truth and already includes them; migrations only move an *existing* DB forward.
 
 ### 5. Run
 
