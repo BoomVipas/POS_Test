@@ -24,6 +24,9 @@ export type Dict = {
     demoMode: string;
     print: string;
     export: string;
+    tryAgain: string;
+    workspaceErrorTitle: string;
+    workspaceErrorBody: string;
   };
   chrome: {
     pos: string;
@@ -299,6 +302,10 @@ const en: Dict = {
     demoMode: "Demo mode",
     print: "Print",
     export: "Export",
+    tryAgain: "Try again",
+    workspaceErrorTitle: "Couldn't load your workspace",
+    workspaceErrorBody:
+      "We hit a problem reaching the database. Your account is fine — this is on our side. Please try again in a moment.",
   },
   chrome: {
     pos: "POS",
@@ -580,6 +587,10 @@ const th: Dict = {
     demoMode: "โหมดทดลอง",
     print: "พิมพ์",
     export: "ส่งออก",
+    tryAgain: "ลองอีกครั้ง",
+    workspaceErrorTitle: "โหลดเวิร์กสเปซไม่สำเร็จ",
+    workspaceErrorBody:
+      "เกิดปัญหาในการเชื่อมต่อฐานข้อมูล บัญชีของคุณไม่มีปัญหา กรุณาลองอีกครั้งในอีกสักครู่",
   },
   chrome: {
     pos: "POS",

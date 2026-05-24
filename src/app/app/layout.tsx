@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getDict } from "@/lib/i18n/server";
 import { resolveAppGuard, type AppGuardDecision } from "@/lib/app-guard";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ErrorState } from "@/components/ui/States";
 import { TopNav } from "./TopNav";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +19,7 @@ async function checkClient(): Promise<AppGuard> {
     return resolveAppGuard({
       configured: false,
       authenticated: false,
+      queryError: false,
       hasMember: false,
       hasWorkspace: false,
     });
@@ -28,30 +30,39 @@ async function checkClient(): Promise<AppGuard> {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Wave 42: maybeSingle() returns { data: null, error } on a transient failure,
+  // which is indistinguishable from "no row" if `error` is discarded. Track it
+  // so a DB blip surfaces as an error state rather than masquerading as an
+  // orphan user (which would wrongly redirect a real seller to /onboarding).
+  let queryError = false;
+
   let member: { workspace_id: string } | null = null;
   if (user) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("workspace_members")
       .select("workspace_id")
       .eq("user_id", user.id)
       .limit(1)
       .maybeSingle();
     member = data;
+    if (error) queryError = true;
   }
 
   let ws: { brand_name: string } | null = null;
   if (member) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("workspaces")
       .select("brand_name")
       .eq("id", member.workspace_id)
       .maybeSingle();
     ws = data;
+    if (error) queryError = true;
   }
 
   const decision = resolveAppGuard({
     configured: true,
     authenticated: Boolean(user),
+    queryError,
     hasMember: Boolean(member),
     hasWorkspace: Boolean(ws),
   });
@@ -73,6 +84,31 @@ export default async function AppLayout({
   if (guard.kind === "redirect") redirect(guard.to);
 
   const { t } = await getDict();
+
+  // Wave 42: a membership/workspace lookup errored. Show an honest, retryable
+  // error rather than guessing the user is an orphan and redirecting them to
+  // /onboarding — that would hide a real seller's workspace behind a server blip.
+  if (guard.kind === "error") {
+    return (
+      <main className="grid min-h-dvh place-items-center px-4 py-10">
+        <div className="w-full max-w-md">
+          <ErrorState
+            title={t.common.workspaceErrorTitle}
+            body={t.common.workspaceErrorBody}
+            action={
+              <a
+                href="/app"
+                className="text-sm font-extrabold underline underline-offset-4"
+              >
+                {t.common.tryAgain}
+              </a>
+            }
+          />
+        </div>
+      </main>
+    );
+  }
+
   const isDemo = guard.kind === "demo";
   const headerName =
     guard.kind === "configured" ? guard.workspaceName! : "Demo Brand";

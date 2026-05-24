@@ -88,3 +88,26 @@ Implemented in #104: the decision logic is extracted into a pure
 `resolveAppGuard` (`src/lib/app-guard.ts`) consumed by `src/app/app/layout.tsx`,
 with `tests/lib/app-guard.test.ts` covering all five branches. ⚠ auth-gating
 change — flagged for Codex review.
+
+## Post-hoc review outcome (2026-05-24)
+
+Codex reviewed the two items flagged above (test-infra and 41e) and **approved
+both**:
+
+- **pglite over sql-mock** — approved as the better choice. The D-series bugs are
+  behavioural PL/pgSQL; the tests exercise `create_order`,
+  `create_registration_token`, and `claim_registration_token` through a real
+  Postgres interpreter rather than asserting on SQL text. A mock would test text
+  shape, not behaviour.
+- **41e auth-gating** — approved. Redirecting authenticated-but-workspace-less
+  users to `/onboarding` is cleaner than silently dropping them into demo mode;
+  the pure `resolveAppGuard` is well covered.
+
+One **Medium** follow-up was raised and is fixed in **Wave 42** (branch
+`pos/wave-42-auth-error-guard`): the `/app` layout discarded the Supabase
+`error` from the `workspace_members` / `workspaces` lookups, so a transient
+query failure read as `hasMember=false` and would redirect a real, provisioned
+seller to `/onboarding`. `resolveAppGuard` now takes a `queryError` input and
+returns a distinct `{ kind: "error" }`; the layout renders a bilingual,
+retryable error state instead. Latent until DD-65 wires Supabase. See
+`TASKS.md` § Wave 42.

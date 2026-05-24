@@ -17,7 +17,9 @@ Anything inside `pos-for-sell/`. Do not edit files in the root or in `meowmeow_p
 
 ## Currently active
 
-_None claimed in the DD-XX board. The project is in **Wave mode** (post-DD-100 organic work); the current effort is the **Mochi indigo design rebrand** (PR #73, branch `pos/mochi-design-foundation`) — see [docs/MOCHI_ROLLOUT.md](docs/MOCHI_ROLLOUT.md) and [docs/STATUS.md](docs/STATUS.md). Waves 39a/39b/40a/40b/40c merged 2026-05-07 (see **Done**)._
+- **Wave 42 — Auth-error guard** · `Owner: claude` · `Status: ready-for-review (PR #105)` · `Branch: pos/wave-42-auth-error-guard` · `Claimed: 2026-05-24 11:13`. See the **Wave 42** section below.
+
+_DD-XX board: none claimed — every remaining DD batch is `done` or `blocked` on B-1 (Supabase). The project is in **Wave mode** (post-DD-100 organic work). Waves 39a/39b/40a/40b/40c merged 2026-05-07; Wave 41 hardening sweep complete (see **Done**)._
 
 > **DD-board status (2026-05-21):** every remaining DD-XX batch is either `done` (often superseded by a later Wave) or `blocked` on **B-1 (Supabase project)** / B-2 (Resend). DD-20 is now `done`. There is **no unblocked DD implementation work left** — provisioning Supabase (B-1, recipe in the Blockers section) is what unblocks the next batches._
 
@@ -78,6 +80,22 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
 - Performance/index work on `event_inventory` and `orders` — different audit.
 - Mochi UI parity for any new components introduced here (41b's disabled-button state must still use Mochi tokens).
 - Anything in the MeowMeow Event POS at the repo root (different protocol; off-limits from this wave's branches).
+
+## Wave 42 — Auth-error guard: a Supabase query error must not masquerade as onboarding-incomplete (in-progress · 2026-05-24)
+
+- **Owner:** claude
+- **Status:** ready-for-review · PR #105 (high-risk auth — review requested before merge)
+- **Branch:** pos/wave-42-auth-error-guard
+- **Claimed:** 2026-05-24 11:13
+- **Verified:** `npm run typecheck` clean · `npm test` 407 pass / 45 files · `npm run test:db` 23 pass · `next build` clean.
+- **Origin:** Codex post-hoc review of Wave 41 (Medium finding). The `/app` layout discards the Supabase `error` from the `workspace_members` / `workspaces` lookups (it destructures only `{ data }`), so a transient query failure (network / RLS / schema blip) reads as `hasMember=false` and a fully-provisioned seller is redirected to `/onboarding` as if they were an orphan. **Latent today** — demo mode returns before the queries run; it bites once Supabase is wired (DD-65 / Wave 40d). This is the one open item from the otherwise-approved Wave 41 review (pglite + 41e both approved).
+- **Scope:**
+  1. `resolveAppGuard` gains a `queryError` input and an `{ kind: "error" }` decision that takes precedence over the membership check (placed after the auth check — no queries run pre-auth).
+  2. `src/app/app/layout.tsx` captures `error` from both lookups and, on error, renders a safe bilingual `ErrorState` ("try again") instead of computing membership from an unreliable `null`.
+  3. i18n keys for the error copy (en + th) in `common`.
+  4. Unit tests for the new decision; existing `app-guard.test.ts` cases updated for the new required field.
+- **Acceptance:** authenticated + query error → error state (NOT `/onboarding`); genuine orphan (no error, no member) → still `/onboarding`; unconfigured → still demo; fully provisioned → still admitted. `npm test` + `npm run typecheck` green.
+- **Risk:** touches the auth path → high-risk per CLAUDE.md → **request review before merge.** The pure-core change keeps the decision unit-testable; the only I/O change is reading an `error` that Supabase already returned.
 
 ## Event-setup follow-ups (post-PR #83, merged 2026-05-22 · `5999982`)
 
