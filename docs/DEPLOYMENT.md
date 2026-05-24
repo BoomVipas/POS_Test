@@ -1,15 +1,46 @@
 # Deployment (Vercel)
 
+## Deploy loop — operational rules (read first)
+
+GitHub + Vercel + Supabase are wired. The day-to-day loop:
+
+**Code change → live:**
+
+```
+feature branch (pos/DD-XX-…) → push → PR → Vercel PREVIEW deploy (own URL)
+→ review → merge to main → Vercel PRODUCTION deploy (automatic)
+```
+
+- **Never push to `main` directly for code.** **High-risk batches (auth, RLS, payments, money totals, inventory atomicity, refunds) require PR + review before merge.**
+- **Preview deploys currently run in DEMO mode** — Supabase env vars are set for **Production only**, so PR previews have no DB connection. Safe (previews can't touch prod data), but Supabase-connected behavior is only testable on `main` until we add Preview-scoped env vars or a separate staging Supabase project.
+
+**Database change → live (manual, by design for the pilot):**
+
+```
+edit database/*.sql → apply it in the Supabase SQL editor → THEN merge/deploy the app code that depends on it
+```
+
+- **Apply the SQL to Supabase _before_ the dependent app code deploys** — otherwise the live app calls a function/column that doesn't exist yet.
+- Conventions: a **schema** change also gets a `database/migrations/` file (see `migrations/README.md`); **functions** are `create or replace` (apply directly, order among them irrelevant); **RLS** (`rls-policies.sql`) re-applies the whole file (`drop policy if exists` + `create`) — review carefully, a wrong policy can leak or lock out tenant data.
+- Vercel does **not** touch the database. Only app code auto-deploys; SQL is always a separate, deliberate step (until a future Supabase CLI + GitHub Actions setup automates it).
+
+**Secrets — never commit:**
+
+- `.env.local` stays local and git-ignored. The **service-role key** never goes into chat, GitHub, or any client/frontend code (it's server-only and bypasses RLS).
+- Vercel keeps its own copy in Project → Settings → Environment Variables. Rotating a key means updating it in both places.
+
+Details for each below.
+
 ## One-time setup
 
 1. **Push the repo to GitHub** if not already there.
 2. https://vercel.com → New Project → Import the repo.
-3. **Root Directory**: `pos-for-sell` (this is critical — Vercel will run `npm install` and `npm run build` inside this folder).
+3. **Root Directory**: `./` (repo root — the Next app *is* the whole repo since the May-2026 extraction to its own repo; do **not** set `pos-for-sell`, that folder no longer exists).
 4. **Framework Preset**: Next.js (auto-detected).
 5. **Build Command**: `npm run build` (default).
 6. **Output Directory**: `.next` (default).
 7. **Install Command**: `npm install` (default).
-8. **Environment Variables**: copy from `pos-for-sell/.env.local` (see `docs/ENV_VARS.md`).
+8. **Environment Variables**: copy from `.env.local` (see `docs/ENV_VARS.md`). Set them for **Production** (and Preview too if you want DB-connected previews).
 9. **Deploy**.
 
 ## After first deploy
@@ -29,7 +60,7 @@
 | Preview | every PR | review per change |
 | Development | `npm run dev` | local |
 
-Set per-environment env vars in Vercel — production should point at the production Supabase project, preview at a staging project (or share production read-only).
+Set per-environment env vars in Vercel — production points at the production Supabase project. **Currently env vars are Production-only, so Preview deploys run in demo mode** (no DB); add Preview-scoped vars or a staging Supabase project when you need DB-connected previews.
 
 ## Domains
 
