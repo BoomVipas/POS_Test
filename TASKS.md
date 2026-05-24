@@ -17,7 +17,14 @@ Anything inside `pos-for-sell/`. Do not edit files in the root or in `meowmeow_p
 
 ## Currently active
 
-_None claimed. The project is in **Wave mode** (post-DD-100 organic work). **Infra milestone (2026-05-25): standalone repo + Supabase + Vercel all live** (see **Repo migration** below) — B-1 is now provisioned. Next dev arc: **DD-39** (wire `/login` to Supabase Auth) → **DD-65** (real `create_order`). Most recent code: **Wave 42 — Auth-error guard** (`ea6d512`, PR #105 — see **Done**). Waves 39a–40c merged 2026-05-07; Wave 41 hardening complete._
+### DD-39 — /login wired to Supabase Auth
+- **Owner:** claude
+- **Status:** in-progress
+- **Branch:** pos/DD-39-login-supabase-auth
+- **Claimed:** 2026-05-25 05:52
+- **Goal:** email + password sign-in via Supabase Auth; redirect to `/app` (or a safe `?next=`) on success; inline error on fail. First batch of the post-Supabase wire-up arc (**DD-39 login → DD-65 `create_order`**).
+
+_Context: the project is in **Wave mode** (post-DD-100 organic work), but the post-Supabase wire-up reuses the original DD-XX Phase 3/5 batch numbers. **Infra milestone (2026-05-25): standalone repo + Supabase + Vercel all live** (see **Repo migration** below) — B-1 is now provisioned. Most recent code: **Wave 42 — Auth-error guard** (`ea6d512`, PR #105 — see **Done**). Waves 39a–40c merged 2026-05-07; Wave 41 hardening complete._
 
 ## Repo migration — pos-for-sell → standalone `mochipos` ✅ COMPLETE (2026-05-25)
 

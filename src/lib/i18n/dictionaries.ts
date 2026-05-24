@@ -28,6 +28,23 @@ export type Dict = {
     workspaceErrorTitle: string;
     workspaceErrorBody: string;
   };
+  login: {
+    title: string;
+    subtitle: string;
+    emailLabel: string;
+    emailPlaceholder: string;
+    passwordLabel: string;
+    passwordPlaceholder: string;
+    submit: string;
+    submitting: string;
+    errorInvalid: string;
+    errorConfig: string;
+    invitedPrefix: string;
+    registerCta: string;
+    newHerePrefix: string;
+    applyCta: string;
+    backHome: string;
+  };
   chrome: {
     pos: string;
     products: string;
@@ -306,6 +323,23 @@ const en: Dict = {
     workspaceErrorTitle: "Couldn't load your workspace",
     workspaceErrorBody:
       "We hit a problem reaching the database. Your account is fine — this is on our side. Please try again in a moment.",
+  },
+  login: {
+    title: "Sign in",
+    subtitle: "For pilot sellers and platform admins.",
+    emailLabel: "Email",
+    emailPlaceholder: "you@brand.com",
+    passwordLabel: "Password",
+    passwordPlaceholder: "Your password",
+    submit: "Sign in",
+    submitting: "Signing in…",
+    errorInvalid: "Email or password is incorrect.",
+    errorConfig: "Sign-in isn't available in demo mode yet.",
+    invitedPrefix: "Got an invite?",
+    registerCta: "Redeem your code →",
+    newHerePrefix: "New here?",
+    applyCta: "Apply to join",
+    backHome: "← Home",
   },
   chrome: {
     pos: "POS",
@@ -591,6 +625,23 @@ const th: Dict = {
     workspaceErrorTitle: "โหลดเวิร์กสเปซไม่สำเร็จ",
     workspaceErrorBody:
       "เกิดปัญหาในการเชื่อมต่อฐานข้อมูล บัญชีของคุณไม่มีปัญหา กรุณาลองอีกครั้งในอีกสักครู่",
+  },
+  login: {
+    title: "เข้าสู่ระบบ",
+    subtitle: "สำหรับผู้ขายในโครงการนำร่องและแอดมิน",
+    emailLabel: "อีเมล",
+    emailPlaceholder: "you@brand.com",
+    passwordLabel: "รหัสผ่าน",
+    passwordPlaceholder: "รหัสผ่านของคุณ",
+    submit: "เข้าสู่ระบบ",
+    submitting: "กำลังเข้าสู่ระบบ…",
+    errorInvalid: "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
+    errorConfig: "ยังเข้าสู่ระบบไม่ได้ในโหมดทดลอง",
+    invitedPrefix: "มีรหัสเชิญแล้ว?",
+    registerCta: "ใช้รหัสเชิญของคุณ →",
+    newHerePrefix: "เพิ่งเริ่มใช้งาน?",
+    applyCta: "สมัครเข้าร่วม",
+    backHome: "← หน้าหลัก",
   },
   chrome: {
     pos: "POS",
