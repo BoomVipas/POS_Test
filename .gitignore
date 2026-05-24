@@ -27,6 +27,10 @@
 .DS_Store
 *.pem
 
+# Claude Code scheduler transient files (the .claude/skills/ dir stays tracked)
+.claude/scheduled_tasks.lock
+.claude/scheduled_tasks.json
+
 # debug
 npm-debug.log*
 yarn-debug.log*
