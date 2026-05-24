@@ -19,6 +19,16 @@ Anything inside `pos-for-sell/`. Do not edit files in the root or in `meowmeow_p
 
 _None claimed. The project is in **Wave mode** (post-DD-100 organic work). Most recent: **Wave 42 — Auth-error guard** merged 2026-05-24 (`ea6d512`, PR #105 — see **Done**). DD-XX board: every remaining DD batch is `done` or `blocked` on B-1 (Supabase); Waves 39a/39b/40a/40b/40c merged 2026-05-07; Wave 41 hardening sweep complete._
 
+## Repo migration — pos-for-sell → standalone `mochipos` (2026-05-25)
+
+Extracted from the `meowmeow_sandbox` monorepo into its own repo (`visanchan/mochipos`) via history-preserving `git subtree split` (158 commits, DD-01 → Wave 42). Status:
+
+- ✅ New repo created + pushed; verified green (`npm ci` + typecheck + 407 tests + `next build`).
+- ✅ Docs de-monorepo'd (cross-repo refs repointed, founder profile vendored into `CLAUDE.md`, provenance note in `docs/STATUS.md`).
+- ⏳ **Deferred — do NOT do yet:** removing the original `pos-for-sell/` folder from `meowmeow_sandbox`. **Keep it as a fallback until MochiPOS is deployed (Vercel) and DB-verified (Supabase); remove only after that.** — *Codex direction, 2026-05-25 (keeps the migration reversible).*
+- ⏸ **Parked cleanup (post-deploy):** delete the `Mochi POS Design System-handoff/` folder (a committed design export with a nested duplicate project copy; left in place for now since it doesn't affect build/test/deploy).
+- Next: B-1 Supabase (recipe below) → verify locally → Vercel (B-3) → then the deferred removal.
+
 > **DD-board status (2026-05-21):** every remaining DD-XX batch is either `done` (often superseded by a later Wave) or `blocked` on **B-1 (Supabase project)** / B-2 (Resend). DD-20 is now `done`. There is **no unblocked DD implementation work left** — provisioning Supabase (B-1, recipe in the Blockers section) is what unblocks the next batches._
 
 ## Wave 41 — Pre-Supabase hardening sweep (planning · 2026-05-24)
@@ -284,15 +294,17 @@ All blocked on prior phases.
 The user must:
 
 1. Go to https://app.supabase.com → **New project**.
-2. Name: `pos-for-sell` (or similar). Region: closest to Bangkok (`Singapore` is fine).
-3. From `Settings → API`, copy the three keys into `pos-for-sell/.env.local`:
+2. Name: `mochipos` (or similar). Region: closest to Bangkok (`Singapore` is fine).
+3. From `Settings → API`, copy the three keys into `.env.local` (already scaffolded at repo root; git-ignored):
    - **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
    - **anon public** → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - **service_role** → `SUPABASE_SERVICE_ROLE_KEY`
-4. Open the SQL editor, run in this order:
-   - `pos-for-sell/database/schema.sql`
-   - `pos-for-sell/database/rls-policies.sql`
-   - (optional) `pos-for-sell/database/seed.sql` — only after creating one Auth user via the app.
+4. In the SQL editor, paste-and-run each file **in this order**:
+   - `database/schema.sql` — full current schema (tables + helper functions `is_admin` / `is_workspace_member` / `touch_updated_at`).
+   - `database/functions/*.sql` — the **8 security-definer RPCs** (`create_order`, `void_order`, `correct_order`, `redeem_invite_code`, `create_registration_token`, `claim_registration_token`, `convert_event_to_sample`, `convert_sample_to_event`). All `create or replace`, so order among them is irrelevant — but RLS routes order/audit writes **through** these, so don't skip them.
+   - `database/rls-policies.sql` — RLS (uses `drop policy if exists`, safe to re-run).
+   - (optional) `database/seed.sql` — **only after** signing up one Auth user via the app. It promotes the first `auth.users` row to admin + demo-workspace owner, and self-guards (no-ops with a notice) if no user exists yet.
+   - **Do NOT run `database/migrations/`** on a fresh DB — `schema.sql` is the source of truth and already includes both migrations (`sample_qty`, customer-portal tables). Migrations exist only to move an *existing* DB forward.
 5. In `Authentication → Providers`, ensure **Email** is enabled with password sign-in.
 6. In `Storage`, create two buckets:
    - `product-images` — public read.
