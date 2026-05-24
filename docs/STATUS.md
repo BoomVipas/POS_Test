@@ -2,7 +2,7 @@
 
 Rolling snapshot. The "What's live" section below is the original 2026-05-04 baseline (end of the credential-free build sprint); the "Latest waves" section near the bottom tracks newer work appended per wave.
 
-**Repo provenance:** on 2026-05-25 this project was extracted into a **standalone repo** (`visanchan/mochipos`) via a history-preserving `git subtree split` from the `meowmeow_sandbox` monorepo, where it had lived as the `pos-for-sell/` folder beside the single-file MeowMeow Event POS. The 158-commit history (DD-01 → Wave 42) is preserved; the MeowMeow booth app stayed behind in `meowmeow_sandbox`. Last meaningful code update before the split: 2026-05-24 (Wave 42 auth-error guard); design baseline 2026-05-21 (Mochi indigo rebrand, PR #73).
+**Repo provenance:** on 2026-05-25 this project was extracted into a **standalone repo** (`visanchan/mochipos`) via a history-preserving `git subtree split` from the `meowmeow_sandbox` monorepo, where it had lived as the `pos-for-sell/` folder beside the single-file MeowMeow Event POS. The 158-commit history (DD-01 → Wave 42) is preserved; the MeowMeow booth app stayed behind in `meowmeow_sandbox`. Last meaningful code update before the split: 2026-05-24 (Wave 42 auth-error guard); design baseline 2026-05-21 (Mochi indigo rebrand, PR #73). **Migration complete (2026-05-25):** Supabase wired (18 tables / 10 RPCs / RLS / Email auth), deployed to Vercel (`mochipos.vercel.app`, configured against Supabase), CI added, and the original `pos-for-sell/` folder removed from `meowmeow_sandbox` (`59e80af`).
 
 ## What's live
 

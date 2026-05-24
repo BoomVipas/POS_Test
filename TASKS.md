@@ -17,17 +17,21 @@ Anything inside `pos-for-sell/`. Do not edit files in the root or in `meowmeow_p
 
 ## Currently active
 
-_None claimed. The project is in **Wave mode** (post-DD-100 organic work). Most recent: **Wave 42 — Auth-error guard** merged 2026-05-24 (`ea6d512`, PR #105 — see **Done**). DD-XX board: every remaining DD batch is `done` or `blocked` on B-1 (Supabase); Waves 39a/39b/40a/40b/40c merged 2026-05-07; Wave 41 hardening sweep complete._
+_None claimed. The project is in **Wave mode** (post-DD-100 organic work). **Infra milestone (2026-05-25): standalone repo + Supabase + Vercel all live** (see **Repo migration** below) — B-1 is now provisioned. Next dev arc: **DD-39** (wire `/login` to Supabase Auth) → **DD-65** (real `create_order`). Most recent code: **Wave 42 — Auth-error guard** (`ea6d512`, PR #105 — see **Done**). Waves 39a–40c merged 2026-05-07; Wave 41 hardening complete._
 
-## Repo migration — pos-for-sell → standalone `mochipos` (2026-05-25)
+## Repo migration — pos-for-sell → standalone `mochipos` ✅ COMPLETE (2026-05-25)
 
-Extracted from the `meowmeow_sandbox` monorepo into its own repo (`visanchan/mochipos`) via history-preserving `git subtree split` (158 commits, DD-01 → Wave 42). Status:
+Extracted from the `meowmeow_sandbox` monorepo into this standalone repo (`visanchan/mochipos`) via history-preserving `git subtree split` (158 commits, DD-01 → Wave 42). **Migration complete:**
 
 - ✅ New repo created + pushed; verified green (`npm ci` + typecheck + 407 tests + `next build`).
 - ✅ Docs de-monorepo'd (cross-repo refs repointed, founder profile vendored into `CLAUDE.md`, provenance note in `docs/STATUS.md`).
-- ⏳ **Deferred — do NOT do yet:** removing the original `pos-for-sell/` folder from `meowmeow_sandbox`. **Keep it as a fallback until MochiPOS is deployed (Vercel) and DB-verified (Supabase); remove only after that.** — *Codex direction, 2026-05-25 (keeps the migration reversible).*
-- ⏸ **Parked cleanup (post-deploy):** delete the `Mochi POS Design System-handoff/` folder (a committed design export with a nested duplicate project copy; left in place for now since it doesn't affect build/test/deploy).
-- Next: B-1 Supabase (recipe below) → verify locally → Vercel (B-3) → then the deferred removal.
+- ✅ GitHub Actions CI added (push/PR to main; `npm ci` → typecheck → test → build; green).
+- ✅ **Supabase** wired + verified (18 tables / 10 RPCs / RLS active / Email auth on).
+- ✅ **Vercel** deployed at `mochipos.vercel.app` — confirmed in **configured** mode against Supabase (the `/app` guard redirects unauthenticated users to `/login`).
+- ✅ Original `pos-for-sell/` folder **removed** from `meowmeow_sandbox` (commit `59e80af`) with migration notes in that repo's `CLAUDE.md` / `AGENTS.md`. History recoverable from git if ever needed.
+- ⏸ **Remaining cleanup (low priority):** delete the `Mochi POS Design System-handoff/` folder here (a committed design export with a nested duplicate project copy; doesn't affect build/test/deploy).
+
+**Next dev arc:** **DD-39** — wire the `/login` form to Supabase Auth (currently a stub) → **DD-65** — point the cashier flow at the real `create_order` RPC (where the Wave 41 server-side guards activate). To create the first admin user before DD-39 lands: add a user in the Supabase dashboard (Auth → Users, auto-confirm), then run `database/seed.sql`.
 
 > **DD-board status (2026-05-21):** every remaining DD-XX batch is either `done` (often superseded by a later Wave) or `blocked` on **B-1 (Supabase project)** / B-2 (Resend). DD-20 is now `done`. There is **no unblocked DD implementation work left** — provisioning Supabase (B-1, recipe in the Blockers section) is what unblocks the next batches._
 
