@@ -201,6 +201,16 @@ Test count: **407 vitest tests** across 45 files as of Wave 42 on `main` (`npm t
 
 - **Wave 42 — Auth-error guard** *(2026-05-24, branch `pos/wave-42-auth-error-guard`)*: the one Medium follow-up from the Wave 41 Codex post-hoc review. The `/app` layout discarded the Supabase `error` from the `workspace_members` / `workspaces` lookups (it destructured only `{ data }`), so a transient query failure (network / RLS / schema blip) read as `hasMember=false` and would redirect a fully-provisioned seller to `/onboarding` as if they were an orphan. `resolveAppGuard` now takes a `queryError` input and returns a distinct `{ kind: "error" }` (precedence: demo → auth → query-error → membership → admit); the layout captures the `error` and renders a bilingual, retryable `ErrorState` ("try again") instead of guessing orphan-hood. **Latent until DD-65 wires Supabase** — fixed now while the decision core is fresh. +4 unit cases (`tests/lib/app-guard.test.ts`, 9 total); suite 403 → **407**. Merged to `main` 2026-05-24 (`ea6d512`, PR #105); Codex review: ship.
 
+## Post-Supabase wire-up arc (DD-39 → DD-65) — in progress (2026-05-25)
+
+Now that Supabase + Vercel are live, the original DD-XX Phase 3/5 batch numbers are being wired to the real backend, one batch per autonomous-loop tick (cron, ~10 min). Reaches a real atomic sale at DD-65 (`create_order`) + DD-66 (inventory atomicity). Shipped so far:
+
+- **DD-39** (`3df4bb1`, PR #1) — `/login` → Supabase Auth. `signIn` action (`signInWithPassword` → generic error, no enumeration oracle → `redirect(safeNextPath(next))`); new `lib/auth/safe-next.ts` open-redirect guard (+8 tests); bilingual form.
+- **DD-41** (`4832d1c`, PR #2) — session lifecycle. Verified the per-request cookie refresh (`proxy.ts` → `updateSession`); added **sign-out** (action + header button, configured mode only).
+- **DD-42** (this PR) — RLS tenant-isolation test. Extended the pglite harness with `bootRlsDb` (loads `rls-policies.sql`, creates the `authenticated` role + grants) + `actAs`/`actAsSuperuser`; `tests/db/rls-isolation.test.ts` proves user A can't SELECT user B's products/workspace/inventory, with a disable/re-enable control encoding "red without policies, green with them". Suite 415 → 422.
+
+Next: invite-redeem register flow (DD-33–38) → DD-40 forgot-password → product persistence (DD-43–54) → POS wired to real catalog (DD-55–64) → **DD-65** → DD-66.
+
 ## Pending waves
 
 - **Wave 39c**: bill-correction Send Later queue rebuild + warehouse-aware allowance check (port of meowmeow Batch EE).

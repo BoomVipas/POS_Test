@@ -17,14 +17,14 @@ Anything inside `pos-for-sell/`. Do not edit files in the root or in `meowmeow_p
 
 ## Currently active
 
-### DD-41 — Session lifecycle: verify per-request refresh + sign-out
+### DD-42 — RLS isolation test (tenant data isolation)
 - **Owner:** claude
 - **Status:** in-progress
-- **Branch:** pos/DD-41-session-signout
-- **Claimed:** 2026-05-25 06:06
-- **Goal:** the per-request session-cookie refresh half of DD-41 is already handled by `src/proxy.ts` → `updateSession` (verified Wave 41d, pinned by `tests/lib/proxy.test.ts`). Close DD-41 by documenting that **and** adding a **sign-out** Server Action + header control, so the login→logout loop is complete and testable on Vercel.
+- **Branch:** pos/DD-42-rls-isolation-test
+- **Claimed:** 2026-05-25 06:18
+- **Goal:** DB-level test proving user A cannot SELECT user B's workspace data. "Red without policies; green with them." Extends the pglite harness to load `rls-policies.sql`, create the `authenticated` role + grants, and query *as* that role (seeding happens as the RLS-exempt superuser).
 
-_Context: post-Supabase wire-up arc (**DD-39 login → DD-65 `create_order`**), advanced by the autonomous loop (cron `c627795e`, one batch per tick). **Infra (Supabase + Vercel) live.** Most recent: **DD-39 login** (`3df4bb1`, PR #1 — see **Done**)._
+_Context: post-Supabase wire-up arc (**DD-39 login → DD-65 `create_order`**), advanced by the autonomous loop (cron `c627795e`, one batch per tick). **Infra (Supabase + Vercel) live.** Most recent: **DD-41 session lifecycle** (`4832d1c`, PR #2 — see **Done**)._
 
 ## Repo migration — pos-for-sell → standalone `mochipos` ✅ COMPLETE (2026-05-25)
 
@@ -351,6 +351,10 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 ## Done
 
 (Move completed batches here with the merging commit SHA.)
+
+### DD-41 — Session lifecycle: verify per-request refresh + sign-out
+- **Merged:** 2026-05-25 · `4832d1c` (PR #2)
+- **Result:** the per-request session-cookie refresh half of DD-41 was already satisfied by `src/proxy.ts` → `updateSession` (`getUser()` revalidates the token every non-asset request; supabase-js rotates the cookies via `setAll`) — verified Wave 41d, shape pinned by `tests/lib/proxy.test.ts`; documented in `middleware.ts`. Completed DD-41 by adding **sign-out**: `signOut` Server Action (`src/app/app/actions.ts`) clears the session (`supabase.auth.signOut()` → `setAll` removes the cookies), `revalidatePath` + `redirect("/login")`, no-ops in demo mode; a **"Sign out"** button in the `/app` header (configured mode only); `chrome.signOut` dict (EN + TH). The login↔logout loop is now whole. typecheck/lint/test (415)/build green; CI green. (Follow-up chore `25432d8`/PR #3: `git add -A` had swept in the scheduler's `.claude/scheduled_tasks.lock` — untracked + gitignored it.)
 
 ### DD-39 — /login wired to Supabase Auth
 - **Merged:** 2026-05-25 · `3df4bb1` (PR #1) — first PR of the standalone repo; the post-Supabase wire-up arc begins.

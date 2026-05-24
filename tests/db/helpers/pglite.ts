@@ -140,3 +140,53 @@ export async function createOrder(
   );
   return r.rows[0].oid;
 }
+
+// ---------------------------------------------------------------------------
+// DD-42 — RLS isolation harness.
+//
+// The functions above run as pglite's bootstrap role, which is a SUPERUSER and
+// therefore BYPASSES row-level security (that's why create_order's seeding works
+// at all). To actually exercise the RLS policies we have to (a) load
+// rls-policies.sql, (b) create the `authenticated`/`anon` roles the policies are
+// scoped `to`, (c) grant the privileges Supabase grants those roles out-of-band,
+// and (d) run the queries *as* `authenticated`. Seeding still happens as the
+// superuser (RLS-exempt) — the isolation we test is what `authenticated` sees.
+// ---------------------------------------------------------------------------
+
+/**
+ * Like {@link bootDb}, but also applies the RLS policies and sets up the roles
+ * + grants needed to query as `authenticated`. Seed via {@link seedWorkspace}
+ * (runs as the superuser, bypassing RLS), then switch with {@link actAs}.
+ */
+export async function bootRlsDb(functionFiles: string[] = []): Promise<PGlite> {
+  const db = await bootDb(functionFiles);
+  // The roles the policies reference (`to anon, authenticated`) must exist
+  // before the policies load.
+  await db.exec(`
+    create role anon;
+    create role authenticated;
+  `);
+  await db.exec(readSql("rls-policies.sql"));
+  // Supabase grants schema/table/function privileges to these roles in its
+  // managed bootstrap; mirror the minimum the isolation test needs. RLS sits on
+  // TOP of these grants — a grant lets you reach the table, the policy decides
+  // which rows. `auth.uid()` lives in the `auth` schema, so grant usage there too.
+  await db.exec(`
+    grant usage on schema public to anon, authenticated;
+    grant usage on schema auth to anon, authenticated;
+    grant select, insert, update, delete on all tables in schema public to authenticated;
+    grant execute on all functions in schema public to anon, authenticated;
+    grant execute on function auth.uid() to anon, authenticated;
+  `);
+  return db;
+}
+
+/** Act as a specific seeded user under the `authenticated` role (RLS applies). */
+export async function actAs(db: PGlite, userId: string): Promise<void> {
+  await db.exec(`set role authenticated; set test.user_id = '${userId}';`);
+}
+
+/** Return to the bootstrap superuser role (RLS-exempt) for seeding / setup. */
+export async function actAsSuperuser(db: PGlite): Promise<void> {
+  await db.exec(`reset role; set test.user_id = '';`);
+}
