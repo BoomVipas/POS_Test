@@ -17,14 +17,14 @@ Anything inside `pos-for-sell/`. Do not edit files in the root or in `meowmeow_p
 
 ## Currently active
 
-### DD-42 — RLS isolation test (tenant data isolation)
+### DD-33–38 — Invite-redeem register flow
 - **Owner:** claude
 - **Status:** in-progress
-- **Branch:** pos/DD-42-rls-isolation-test
-- **Claimed:** 2026-05-25 06:18
-- **Goal:** DB-level test proving user A cannot SELECT user B's workspace data. "Red without policies; green with them." Extends the pglite harness to load `rls-policies.sql`, create the `authenticated` role + grants, and query *as* that role (seeding happens as the RLS-exempt superuser).
+- **Branch:** pos/DD-33-38-register-invite-redeem
+- **Claimed:** 2026-05-25 06:27
+- **Goal:** the path a pilot seller uses to turn an invite code into a live workspace. `/register`: enter code → server validates it (service-role lookup, de-oracled failure) → shows brand + chosen workspace slug → create account (admin `createUser` auto-confirmed, sign in) → `redeem_invite_code` RPC creates the workspace + owner membership → land in `/app`. Covers DD-33 (page), DD-34 (validate), DD-35 (signup), DD-36 (workspace via RPC), DD-37 (slug suggest + uniqueness), DD-38 (owner membership).
 
-_Context: post-Supabase wire-up arc (**DD-39 login → DD-65 `create_order`**), advanced by the autonomous loop (cron `c627795e`, one batch per tick). **Infra (Supabase + Vercel) live.** Most recent: **DD-41 session lifecycle** (`4832d1c`, PR #2 — see **Done**)._
+_Context: post-Supabase wire-up arc (**DD-39 login → DD-65 `create_order`**), advanced by the autonomous loop (cron `c627795e`, one batch per tick). **Infra (Supabase + Vercel) live.** Most recent: **DD-42 RLS isolation test** (`ab89614`, PR #4 — see **Done**)._
 
 ## Repo migration — pos-for-sell → standalone `mochipos` ✅ COMPLETE (2026-05-25)
 
@@ -351,6 +351,10 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 ## Done
 
 (Move completed batches here with the merging commit SHA.)
+
+### DD-42 — RLS tenant-isolation test
+- **Merged:** 2026-05-25 · `ab89614` (PR #4)
+- **Result:** proves hard rules #2/#3 hold — user A can't SELECT user B's workspace data — by running real queries through the shipped RLS policies in pglite. New `bootRlsDb` harness (`tests/db/helpers/pglite.ts`) loads `rls-policies.sql`, creates the `anon`/`authenticated` roles + the grants Supabase provides out-of-band (incl. `usage on schema auth` for `auth.uid()`), plus `actAs`/`actAsSuperuser` (pglite boots as an RLS-exempt superuser, so seeding stays there; isolation is tested as `authenticated`). `tests/db/rls-isolation.test.ts` — 7 cases: two tenants; A & B each see only their own products/workspace/event_inventory; a no-membership user sees nothing; a disable/re-enable control encodes "red without policies, green with them". Test-only (no schema/app change). Suite 415 → 422; CI green.
 
 ### DD-41 — Session lifecycle: verify per-request refresh + sign-out
 - **Merged:** 2026-05-25 · `4832d1c` (PR #2)

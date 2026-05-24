@@ -45,6 +45,30 @@ export type Dict = {
     applyCta: string;
     backHome: string;
   };
+  register: {
+    title: string;
+    subtitle: string;
+    codeLabel: string;
+    codePlaceholder: string;
+    codeCta: string;
+    accountTitle: string;
+    accountSubtitle: string;
+    brandLabel: string;
+    emailLabel: string;
+    emailHint: string;
+    slugLabel: string;
+    slugHint: string;
+    passwordLabel: string;
+    passwordPlaceholder: string;
+    confirmLabel: string;
+    confirmPlaceholder: string;
+    submit: string;
+    submitting: string;
+    useDifferentCode: string;
+    haveAccount: string;
+    signInCta: string;
+    backHome: string;
+  };
   chrome: {
     pos: string;
     products: string;
@@ -340,6 +364,30 @@ const en: Dict = {
     registerCta: "Redeem your code →",
     newHerePrefix: "New here?",
     applyCta: "Apply to join",
+    backHome: "← Home",
+  },
+  register: {
+    title: "Redeem your invite",
+    subtitle: "Enter the invite code from your email to set up your workspace.",
+    codeLabel: "Invite code",
+    codePlaceholder: "CATBOOTH-XXXX-YYYY",
+    codeCta: "Continue",
+    accountTitle: "Create your account",
+    accountSubtitle: "Set a password and choose your workspace address.",
+    brandLabel: "Brand",
+    emailLabel: "Email",
+    emailHint: "This is your sign-in email (from your invite).",
+    slugLabel: "Workspace address",
+    slugHint: "Lowercase letters, numbers and hyphens. You can't change it later.",
+    passwordLabel: "Password",
+    passwordPlaceholder: "At least 8 characters",
+    confirmLabel: "Confirm password",
+    confirmPlaceholder: "Re-enter your password",
+    submit: "Create account & workspace",
+    submitting: "Setting up…",
+    useDifferentCode: "← Use a different code",
+    haveAccount: "Already have an account?",
+    signInCta: "Sign in",
     backHome: "← Home",
   },
   chrome: {
@@ -643,6 +691,30 @@ const th: Dict = {
     registerCta: "ใช้รหัสเชิญของคุณ →",
     newHerePrefix: "เพิ่งเริ่มใช้งาน?",
     applyCta: "สมัครเข้าร่วม",
+    backHome: "← หน้าหลัก",
+  },
+  register: {
+    title: "ใช้รหัสเชิญของคุณ",
+    subtitle: "กรอกรหัสเชิญจากอีเมลของคุณเพื่อตั้งค่าเวิร์กสเปซ",
+    codeLabel: "รหัสเชิญ",
+    codePlaceholder: "CATBOOTH-XXXX-YYYY",
+    codeCta: "ต่อไป",
+    accountTitle: "สร้างบัญชีของคุณ",
+    accountSubtitle: "ตั้งรหัสผ่านและเลือกที่อยู่เวิร์กสเปซ",
+    brandLabel: "แบรนด์",
+    emailLabel: "อีเมล",
+    emailHint: "นี่คืออีเมลสำหรับเข้าสู่ระบบ (จากรหัสเชิญของคุณ)",
+    slugLabel: "ที่อยู่เวิร์กสเปซ",
+    slugHint: "ตัวพิมพ์เล็ก ตัวเลข และขีดกลางเท่านั้น เปลี่ยนภายหลังไม่ได้",
+    passwordLabel: "รหัสผ่าน",
+    passwordPlaceholder: "อย่างน้อย 8 ตัวอักษร",
+    confirmLabel: "ยืนยันรหัสผ่าน",
+    confirmPlaceholder: "กรอกรหัสผ่านอีกครั้ง",
+    submit: "สร้างบัญชีและเวิร์กสเปซ",
+    submitting: "กำลังตั้งค่า…",
+    useDifferentCode: "← ใช้รหัสอื่น",
+    haveAccount: "มีบัญชีอยู่แล้ว?",
+    signInCta: "เข้าสู่ระบบ",
     backHome: "← หน้าหลัก",
   },
   chrome: {

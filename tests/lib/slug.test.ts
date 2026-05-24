@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { generateSlug, generateSlugCandidates } from "@/lib/slug";
+import { generateSlug, generateSlugCandidates, isValidSlug } from "@/lib/slug";
 
 describe("slug/generateSlug", () => {
   it("lowercases and replaces spaces", () => {
@@ -30,5 +30,31 @@ describe("slug/generateSlugCandidates", () => {
       "meow-house-2",
       "meow-house-3",
     ]);
+  });
+});
+
+describe("slug/isValidSlug (matches the redeem_invite_code RPC regex)", () => {
+  it("accepts lowercase alphanumerics with internal hyphens", () => {
+    expect(isValidSlug("meow-house")).toBe(true);
+    expect(isValidSlug("brand2")).toBe(true);
+    expect(isValidSlug("a")).toBe(true);
+    expect(isValidSlug("cat-booth-2")).toBe(true);
+  });
+
+  it("rejects leading/trailing hyphens and empties", () => {
+    expect(isValidSlug("-meow")).toBe(false);
+    expect(isValidSlug("meow-")).toBe(false);
+    expect(isValidSlug("")).toBe(false);
+  });
+
+  it("rejects uppercase, spaces, and other punctuation", () => {
+    expect(isValidSlug("Meow")).toBe(false);
+    expect(isValidSlug("meow house")).toBe(false);
+    expect(isValidSlug("meow_house")).toBe(false);
+    expect(isValidSlug("meow.house")).toBe(false);
+  });
+
+  it("agrees with generateSlug's output", () => {
+    expect(isValidSlug(generateSlug("Meow House!! "))).toBe(true);
   });
 });

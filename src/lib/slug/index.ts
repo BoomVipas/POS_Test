@@ -21,6 +21,16 @@ export function generateSlug(input: string, opts: SlugOpts = {}): string {
   return slug || fallback;
 }
 
+// Same rule the `redeem_invite_code` RPC enforces server-side: lowercase
+// alphanumerics + internal hyphens, no leading/trailing hyphen. Keeping the
+// client/zod check identical to the DB regex means a slug that passes here
+// won't be rejected by the RPC for format (only for uniqueness).
+const SLUG_RE = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+
+export function isValidSlug(s: string): boolean {
+  return SLUG_RE.test(s);
+}
+
 /** Returns base + numbered fallbacks ("brand", "brand-2", "brand-3", ...). */
 export function generateSlugCandidates(input: string, count: number = 5): string[] {
   const base = generateSlug(input);
