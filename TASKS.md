@@ -17,14 +17,14 @@ Anything inside `pos-for-sell/`. Do not edit files in the root or in `meowmeow_p
 
 ## Currently active
 
-### DD-33–38 — Invite-redeem register flow
+### DD-40 — Forgot password / reset flow
 - **Owner:** claude
 - **Status:** in-progress
-- **Branch:** pos/DD-33-38-register-invite-redeem
-- **Claimed:** 2026-05-25 06:27
-- **Goal:** the path a pilot seller uses to turn an invite code into a live workspace. `/register`: enter code → server validates it (service-role lookup, de-oracled failure) → shows brand + chosen workspace slug → create account (admin `createUser` auto-confirmed, sign in) → `redeem_invite_code` RPC creates the workspace + owner membership → land in `/app`. Covers DD-33 (page), DD-34 (validate), DD-35 (signup), DD-36 (workspace via RPC), DD-37 (slug suggest + uniqueness), DD-38 (owner membership).
+- **Branch:** pos/DD-40-password-reset
+- **Claimed:** 2026-05-25 06:39
+- **Goal:** "Forgot password" on `/login` → `/login/forgot` requests a Supabase recovery email (`resetPasswordForEmail`) → the link lands on `/auth/confirm` (exchanges the code/token for a session) → `/login/reset` sets a new password (`updateUser`). De-oracled request response (always "sent if it exists"); safe redirect of `?next=` (reuses `safeNextPath`).
 
-_Context: post-Supabase wire-up arc (**DD-39 login → DD-65 `create_order`**), advanced by the autonomous loop (cron `c627795e`, one batch per tick). **Infra (Supabase + Vercel) live.** Most recent: **DD-42 RLS isolation test** (`ab89614`, PR #4 — see **Done**)._
+_Context: post-Supabase wire-up arc (**DD-39 login → DD-65 `create_order`**), advanced by the autonomous loop (cron `c627795e`, one batch per tick). **Infra (Supabase + Vercel) live.** Most recent: **DD-33–38 register flow** (`11edcfc`, PR #5 — see **Done**)._
 
 ## Repo migration — pos-for-sell → standalone `mochipos` ✅ COMPLETE (2026-05-25)
 
@@ -351,6 +351,10 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 ## Done
 
 (Move completed batches here with the merging commit SHA.)
+
+### DD-33–38 — Invite-redeem register flow
+- **Merged:** 2026-05-25 · `11edcfc` (PR #5)
+- **Result:** the full path from invite code → live workspace. `/register` step 1 validates the code via a **service-role** lookup (anon can't read `invite_codes` under RLS) gated by the pure `checkInviteUsable` (mirrors the RPC) and returns ONE generic failure (no enumeration oracle; real reason logged). Step 2 collects a workspace slug (pre-filled from brand) + password; `completeRegistration` re-validates invite + slug uniqueness server-side, `admin.createUser({email_confirm:true})` (invite is the verification), signs in, then the `redeem_invite_code` RPC creates the workspace + owner membership transactionally → `/app`. New `lib/auth/invite-status.ts` + `lib/slug isValidSlug` (both mirror the RPC); typed the RPC in `database.types.ts`; `register` i18n (EN+TH). **First** pglite coverage of `redeem_invite_code` (8 cases) — happy path + all guards. Covers DD-33–38. Suite 422 → 443. **Latent finding (pinned, not fixed):** the RPC's `set status='expired'` write rolls back under its own `raise` (cosmetic dead code; functional gate is correct) — cleanup candidate. CI green.
 
 ### DD-42 — RLS tenant-isolation test
 - **Merged:** 2026-05-25 · `ab89614` (PR #4)

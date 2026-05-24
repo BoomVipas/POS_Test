@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Dict } from "@/lib/i18n/dictionaries";
@@ -73,6 +74,15 @@ export function LoginForm({
           autoComplete="current-password"
         />
       </Field>
+
+      <div className="-mt-2 text-right">
+        <Link
+          href="/login/forgot"
+          className="text-xs font-bold text-accent hover:underline"
+        >
+          {t.forgotPassword}
+        </Link>
+      </div>
 
       {serverError && (
         <p

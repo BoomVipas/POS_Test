@@ -39,6 +39,7 @@ export type Dict = {
     submitting: string;
     errorInvalid: string;
     errorConfig: string;
+    forgotPassword: string;
     invitedPrefix: string;
     registerCta: string;
     newHerePrefix: string;
@@ -68,6 +69,28 @@ export type Dict = {
     haveAccount: string;
     signInCta: string;
     backHome: string;
+  };
+  passwordReset: {
+    forgotTitle: string;
+    forgotSubtitle: string;
+    emailLabel: string;
+    emailPlaceholder: string;
+    sendCta: string;
+    sending: string;
+    sentTitle: string;
+    sentBody: string;
+    resetTitle: string;
+    resetSubtitle: string;
+    newPasswordLabel: string;
+    newPasswordPlaceholder: string;
+    confirmLabel: string;
+    confirmPlaceholder: string;
+    updateCta: string;
+    updating: string;
+    expiredTitle: string;
+    expiredBody: string;
+    requestNewCta: string;
+    backToLogin: string;
   };
   chrome: {
     pos: string;
@@ -360,6 +383,7 @@ const en: Dict = {
     submitting: "Signing in…",
     errorInvalid: "Email or password is incorrect.",
     errorConfig: "Sign-in isn't available in demo mode yet.",
+    forgotPassword: "Forgot password?",
     invitedPrefix: "Got an invite?",
     registerCta: "Redeem your code →",
     newHerePrefix: "New here?",
@@ -389,6 +413,30 @@ const en: Dict = {
     haveAccount: "Already have an account?",
     signInCta: "Sign in",
     backHome: "← Home",
+  },
+  passwordReset: {
+    forgotTitle: "Reset your password",
+    forgotSubtitle: "Enter your email and we'll send you a reset link.",
+    emailLabel: "Email",
+    emailPlaceholder: "you@brand.com",
+    sendCta: "Send reset link",
+    sending: "Sending…",
+    sentTitle: "Check your email",
+    sentBody:
+      "If an account exists for that email, we've sent a link to reset your password. The link expires soon.",
+    resetTitle: "Set a new password",
+    resetSubtitle: "Choose a new password for your account.",
+    newPasswordLabel: "New password",
+    newPasswordPlaceholder: "At least 8 characters",
+    confirmLabel: "Confirm password",
+    confirmPlaceholder: "Re-enter your new password",
+    updateCta: "Update password",
+    updating: "Updating…",
+    expiredTitle: "Link expired",
+    expiredBody:
+      "This password-reset link is invalid or has expired. Request a fresh one.",
+    requestNewCta: "Request a new link",
+    backToLogin: "← Back to sign in",
   },
   chrome: {
     pos: "POS",
@@ -687,6 +735,7 @@ const th: Dict = {
     submitting: "กำลังเข้าสู่ระบบ…",
     errorInvalid: "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
     errorConfig: "ยังเข้าสู่ระบบไม่ได้ในโหมดทดลอง",
+    forgotPassword: "ลืมรหัสผ่าน?",
     invitedPrefix: "มีรหัสเชิญแล้ว?",
     registerCta: "ใช้รหัสเชิญของคุณ →",
     newHerePrefix: "เพิ่งเริ่มใช้งาน?",
@@ -716,6 +765,29 @@ const th: Dict = {
     haveAccount: "มีบัญชีอยู่แล้ว?",
     signInCta: "เข้าสู่ระบบ",
     backHome: "← หน้าหลัก",
+  },
+  passwordReset: {
+    forgotTitle: "รีเซ็ตรหัสผ่าน",
+    forgotSubtitle: "กรอกอีเมลของคุณ แล้วเราจะส่งลิงก์รีเซ็ตให้",
+    emailLabel: "อีเมล",
+    emailPlaceholder: "you@brand.com",
+    sendCta: "ส่งลิงก์รีเซ็ต",
+    sending: "กำลังส่ง…",
+    sentTitle: "ตรวจสอบอีเมลของคุณ",
+    sentBody:
+      "หากมีบัญชีสำหรับอีเมลนี้ เราได้ส่งลิงก์สำหรับรีเซ็ตรหัสผ่านไปแล้ว ลิงก์จะหมดอายุในไม่ช้า",
+    resetTitle: "ตั้งรหัสผ่านใหม่",
+    resetSubtitle: "เลือกรหัสผ่านใหม่สำหรับบัญชีของคุณ",
+    newPasswordLabel: "รหัสผ่านใหม่",
+    newPasswordPlaceholder: "อย่างน้อย 8 ตัวอักษร",
+    confirmLabel: "ยืนยันรหัสผ่าน",
+    confirmPlaceholder: "กรอกรหัสผ่านใหม่อีกครั้ง",
+    updateCta: "อัปเดตรหัสผ่าน",
+    updating: "กำลังอัปเดต…",
+    expiredTitle: "ลิงก์หมดอายุ",
+    expiredBody: "ลิงก์รีเซ็ตรหัสผ่านนี้ไม่ถูกต้องหรือหมดอายุแล้ว กรุณาขอลิงก์ใหม่",
+    requestNewCta: "ขอลิงก์ใหม่",
+    backToLogin: "← กลับไปเข้าสู่ระบบ",
   },
   chrome: {
     pos: "POS",

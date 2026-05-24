@@ -24,6 +24,9 @@ Rolling snapshot. The "What's live" section below is the original 2026-05-04 bas
 | **Seller onboarding** | | |
 | `/login` | **wired** | email + password sign-in via Supabase Auth; safe `?next=` redirect (DD-39) |
 | `/register` | **wired** | invite-code redemption → account + workspace via `redeem_invite_code` (DD-33–38) |
+| `/login/forgot` | **wired** | request a Supabase password-reset email; de-oracled (DD-40) |
+| `/login/reset` | **wired** | set a new password inside the recovery session (DD-40) |
+| `/auth/confirm` | **wired** | route handler — exchanges the recovery code/token for a session (DD-40) |
 | **Founder learning** | | |
 | `/learn` | live | curriculum landing (PR #15) |
 | **Admin (gated)** | | |
@@ -208,9 +211,10 @@ Now that Supabase + Vercel are live, the original DD-XX Phase 3/5 batch numbers 
 - **DD-39** (`3df4bb1`, PR #1) — `/login` → Supabase Auth. `signIn` action (`signInWithPassword` → generic error, no enumeration oracle → `redirect(safeNextPath(next))`); new `lib/auth/safe-next.ts` open-redirect guard (+8 tests); bilingual form.
 - **DD-41** (`4832d1c`, PR #2) — session lifecycle. Verified the per-request cookie refresh (`proxy.ts` → `updateSession`); added **sign-out** (action + header button, configured mode only).
 - **DD-42** (`ab89614`, PR #4) — RLS tenant-isolation test. Extended the pglite harness with `bootRlsDb` (loads `rls-policies.sql`, creates the `authenticated` role + grants) + `actAs`/`actAsSuperuser`; `tests/db/rls-isolation.test.ts` proves user A can't SELECT user B's products/workspace/inventory, with a disable/re-enable control encoding "red without policies, green with them". Suite 415 → 422.
-- **DD-33–38** (this PR) — invite-redeem register flow. `/register`: enter code → `validateInviteCode` (service-role lookup, de-oracled single failure message) → brand/email + chosen workspace slug → `completeRegistration` (admin `createUser` auto-confirmed → sign in → `redeem_invite_code` RPC creates workspace + owner membership) → `/app`. New pure `lib/auth/invite-status.ts` (mirrors the RPC gate) + `lib/slug isValidSlug` (mirrors the RPC slug regex). First pglite test of `redeem_invite_code` (8 cases) — pinned a latent quirk: its `set status='expired'` write is rolled back by the subsequent `raise` (functional gate still correct; cosmetic dead code, flagged for cleanup). Suite 422 → 443.
+- **DD-33–38** (`11edcfc`, PR #5) — invite-redeem register flow. `/register`: enter code → `validateInviteCode` (service-role lookup, de-oracled single failure message) → brand/email + chosen workspace slug → `completeRegistration` (admin `createUser` auto-confirmed → sign in → `redeem_invite_code` RPC creates workspace + owner membership) → `/app`. New pure `lib/auth/invite-status.ts` (mirrors the RPC gate) + `lib/slug isValidSlug` (mirrors the RPC slug regex). First pglite test of `redeem_invite_code` (8 cases) — pinned a latent quirk: its `set status='expired'` write is rolled back by the subsequent `raise` (functional gate still correct; cosmetic dead code, flagged for cleanup). Suite 422 → 443.
+- **DD-40** (this PR) — password reset. `/login` "Forgot password?" → `/login/forgot` (`resetPasswordForEmail`, de-oracled "sent if it exists") → recovery email link → `/auth/confirm` route exchanges the PKCE `code` (or `token_hash`) for a session, then forwards to `/login/reset` (sanitised `next` via `safeNextPath`) → `updateUser` sets the new password → `/app`. `passwordReset` i18n block (EN+TH). Suite 443 → 449.
 
-Next: DD-40 forgot-password → product persistence (DD-43–54, where the Playwright screenshot harness gets established) → POS wired to real catalog (DD-55–64) → **DD-65** → DD-66.
+Next: product persistence (DD-43–54, where the Playwright screenshot harness gets established) → POS wired to real catalog (DD-55–64) → **DD-65** → DD-66.
 
 ## Pending waves
 
