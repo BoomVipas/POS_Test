@@ -2,6 +2,12 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "@/lib/database.types";
 
+// DD-41 — per-request session refresh. `src/proxy.ts` runs this on every
+// non-asset request (matcher verified Wave 41d, pinned by tests/lib/proxy.test.ts).
+// The `getUser()` call below revalidates the access token; when it's refreshed,
+// supabase-js writes the rotated cookies through `setAll`, which rebuilds
+// `response` with the new `Set-Cookie` headers — so a logged-in seller's session
+// is kept alive across navigations and won't expire mid-shift at the booth.
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 

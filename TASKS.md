@@ -17,14 +17,14 @@ Anything inside `pos-for-sell/`. Do not edit files in the root or in `meowmeow_p
 
 ## Currently active
 
-### DD-39 — /login wired to Supabase Auth
+### DD-41 — Session lifecycle: verify per-request refresh + sign-out
 - **Owner:** claude
 - **Status:** in-progress
-- **Branch:** pos/DD-39-login-supabase-auth
-- **Claimed:** 2026-05-25 05:52
-- **Goal:** email + password sign-in via Supabase Auth; redirect to `/app` (or a safe `?next=`) on success; inline error on fail. First batch of the post-Supabase wire-up arc (**DD-39 login → DD-65 `create_order`**).
+- **Branch:** pos/DD-41-session-signout
+- **Claimed:** 2026-05-25 06:06
+- **Goal:** the per-request session-cookie refresh half of DD-41 is already handled by `src/proxy.ts` → `updateSession` (verified Wave 41d, pinned by `tests/lib/proxy.test.ts`). Close DD-41 by documenting that **and** adding a **sign-out** Server Action + header control, so the login→logout loop is complete and testable on Vercel.
 
-_Context: the project is in **Wave mode** (post-DD-100 organic work), but the post-Supabase wire-up reuses the original DD-XX Phase 3/5 batch numbers. **Infra milestone (2026-05-25): standalone repo + Supabase + Vercel all live** (see **Repo migration** below) — B-1 is now provisioned. Most recent code: **Wave 42 — Auth-error guard** (`ea6d512`, PR #105 — see **Done**). Waves 39a–40c merged 2026-05-07; Wave 41 hardening complete._
+_Context: post-Supabase wire-up arc (**DD-39 login → DD-65 `create_order`**), advanced by the autonomous loop (cron `c627795e`, one batch per tick). **Infra (Supabase + Vercel) live.** Most recent: **DD-39 login** (`3df4bb1`, PR #1 — see **Done**)._
 
 ## Repo migration — pos-for-sell → standalone `mochipos` ✅ COMPLETE (2026-05-25)
 
@@ -351,6 +351,10 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 ## Done
 
 (Move completed batches here with the merging commit SHA.)
+
+### DD-39 — /login wired to Supabase Auth
+- **Merged:** 2026-05-25 · `3df4bb1` (PR #1) — first PR of the standalone repo; the post-Supabase wire-up arc begins.
+- **Result:** replaced the `/login` placeholder with real email + password sign-in. Server Action `signIn` (`src/app/login/actions.ts`) calls `signInWithPassword`, returns one generic "Email or password is incorrect." (no enumeration oracle; the real reason is logged server-side only), then `revalidatePath("/", "layout")` + `redirect(safeNextPath(next))`. New open-redirect guard `src/lib/auth/safe-next.ts` sanitises the `?next=` deep-link target (rejects off-site / protocol-relative / control-char values; falls back to `/app`) — **+8 unit tests** (`tests/lib/safe-next.test.ts`). Client form `LoginForm.tsx` is RHF + zod with an inline `role="alert"` error banner (public-page convention from `/apply`; public pages don't mount `ToastProvider`), bilingual via a new `login` dict block (EN + TH). Page redirects an already-authed user to the safe `next`. Suite **407 → 415**; typecheck/lint/build green; CI green.
 
 ### Wave 42 — /app auth-error guard: query error must not masquerade as onboarding-incomplete
 - **Merged:** 2026-05-24 · `ea6d512` (PR #105)

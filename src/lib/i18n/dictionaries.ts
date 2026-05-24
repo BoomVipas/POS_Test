@@ -54,6 +54,7 @@ export type Dict = {
     auditLog: string;
     settings: string;
     appHome: string;
+    signOut: string;
   };
   landing: {
     kicker: string;
@@ -350,6 +351,7 @@ const en: Dict = {
     auditLog: "Audit log",
     settings: "Settings",
     appHome: "App home",
+    signOut: "Sign out",
   },
   landing: {
     kicker: "Pilot · invitation only · Thailand",
@@ -652,6 +654,7 @@ const th: Dict = {
     auditLog: "บันทึกการเปลี่ยนแปลง",
     settings: "ตั้งค่า",
     appHome: "หน้าแอป",
+    signOut: "ออกจากระบบ",
   },
   landing: {
     kicker: "โครงการนำร่อง · เฉพาะผู้ได้รับเชิญ · ประเทศไทย",

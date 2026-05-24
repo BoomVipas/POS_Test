@@ -7,6 +7,7 @@ import { resolveAppGuard, type AppGuardDecision } from "@/lib/app-guard";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ErrorState } from "@/components/ui/States";
 import { TopNav } from "./TopNav";
+import { signOut } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -171,6 +172,18 @@ export default async function AppLayout({
             >
               {initials}
             </div>
+            {/* DD-41: sign-out only when there's a real session (configured
+                mode). In demo mode there's no Supabase session to clear. */}
+            {!isDemo && (
+              <form action={signOut}>
+                <button
+                  type="submit"
+                  className="rounded-[var(--radius-md)] border border-line bg-panel px-3 py-1.5 text-[13px] font-bold text-muted transition-colors hover:text-text"
+                >
+                  {t.chrome.signOut}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </header>
