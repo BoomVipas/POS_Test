@@ -17,14 +17,14 @@ Anything inside `pos-for-sell/`. Do not edit files in the root or in `meowmeow_p
 
 ## Currently active
 
-### DD-43–53 — Product persistence (real `products` table)
+### Wave 43 — Events + event_inventory foundation
 - **Owner:** claude
 - **Status:** in-progress
-- **Branch:** pos/DD-43-product-crud-supabase
-- **Claimed:** 2026-05-25 06:51
-- **Goal:** wire the product catalog to the real Supabase `products` table (currently demo/localStorage) when configured, demo fallback otherwise. Covers DD-43 (list/empty from DB), DD-44 (create), DD-47 (edit), DD-48 (soft delete = `is_active=false`), DD-51 (SKU validation server-side), DD-52 (active toggle), DD-53 (initial stock → `default_starting_qty`). Server Actions resolve the caller's workspace from their session; writes go through the user's RLS-enforced client; only real-schema columns persist (demo's cost/reorder/pins/current_qty are demo-only). **Deferred to follow-up ticks:** DD-45/46 image upload to Storage, DD-49 CSV import, DD-50 categories admin, DD-54 setup-complete gate.
+- **Branch:** pos/wave-43-events-inventory
+- **Claimed:** 2026-05-25 07:04
+- **Goal:** organic prerequisite the DD arc assumed: a real **event** + **event_inventory** so the POS can sell and `create_order` can lock/decrement stock. `/app/events` (configured): create an event (name/venue/dates, status `planned`), **allocate active products** into `event_inventory` at their `default_starting_qty`, start/close the event. Server Actions are workspace-scoped + role-gated (events: owner/manager; inventory: owner/manager/stock_staff) on the RLS-enforced client. Demo `EventSetupClient` stays for the unconfigured build. Unblocks DD-55–64 (POS reads real catalog/inventory) → DD-65.
 
-_Context: post-Supabase wire-up arc (**DD-39 login → DD-65 `create_order`**), advanced by the autonomous loop (cron `c627795e`, one batch per tick). **Infra (Supabase + Vercel) live.** Most recent: **DD-40 password reset** (`8443533`, PR #6 — see **Done**)._
+_Context: post-Supabase wire-up arc (**DD-39 login → DD-65 `create_order`**), advanced by the autonomous loop (cron `c627795e`, one batch per tick). This is organic infra (not an enumerated DD batch), so it takes the next **Wave** number. Most recent: **DD-43–53 product persistence** (`f6bf29b`, PR #7 — see **Done**)._
 
 ## Repo migration — pos-for-sell → standalone `mochipos` ✅ COMPLETE (2026-05-25)
 
@@ -351,6 +351,10 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 ## Done
 
 (Move completed batches here with the merging commit SHA.)
+
+### DD-43–53 — Product persistence (real `products` table)
+- **Merged:** 2026-05-25 · `f6bf29b` (PR #7)
+- **Result:** `/app/setup/products` reads/writes the real `products` table when configured (demo localStorage stays for the unconfigured build). `lib/products/parse.ts` (pure validate/normalise → satang ints; +8 tests), `lib/auth/workspace.ts` (`getActiveWorkspace` + `canWriteCatalog`), Server Actions `createProduct`/`updateProduct`/`setProductActive` (workspace-scoped, RLS-enforced, SKU immutable on edit, soft-delete via `is_active`, 23505→"SKU exists"), lean `ProductFormLive` + `CatalogManagerLive` (real-schema columns only — demo's cost/reorder/pins/`current_qty` are demo-only; `current_qty` is per-event `event_inventory`). pglite test pins `(workspace_id, sku)` uniqueness (+3). Covers DD-43/44/47/48/51/52/53. Deferred: DD-45/46 (image→Storage), DD-49 (CSV), DD-50 (categories), DD-54 (setup gate). No audit row on catalog edits (not hard-rule-7 scope; audit INSERT is RPC-only under RLS). Suite 449 → 460. CI green.
 
 ### DD-40 — Forgot password / reset flow
 - **Merged:** 2026-05-25 · `8443533` (PR #6)

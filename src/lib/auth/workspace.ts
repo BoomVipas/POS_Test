@@ -33,3 +33,11 @@ export const CATALOG_WRITE_ROLES = ["owner", "manager", "stock_staff"] as const;
 export function canWriteCatalog(role: string): boolean {
   return (CATALOG_WRITE_ROLES as readonly string[]).includes(role);
 }
+
+// Roles allowed to create/update events — matches the events RLS policies
+// (events_owner_manager_insert / _update: owner, manager).
+export const EVENT_MANAGE_ROLES = ["owner", "manager"] as const;
+
+export function canManageEvents(role: string): boolean {
+  return (EVENT_MANAGE_ROLES as readonly string[]).includes(role);
+}
