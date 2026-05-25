@@ -2,6 +2,8 @@
 
 100 implementation batches grouped into 8 phases. Each batch is small enough to land in one PR. **TASKS.md** tracks live claim/status; this file is the static plan.
 
+> 📦 **Historical / reference.** Live work now lives on the **[GitHub board](https://github.com/users/visanchan/projects/1)** (Master + Roadmap views), not here — see [`team-guide.html`](team-guide.html) §0 "Start here". M1 is done; this plan is kept for provenance and the not-yet-built later batches. **Don't treat it as the current to-do.**
+
 Format per batch:
 
 > `### DD-NN — <title>`
