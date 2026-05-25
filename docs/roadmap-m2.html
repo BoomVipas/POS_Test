@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MochiPOS — Road to Pet Expo 2026 (M2 launch plan)</title>
+<style>
+  :root{
+    --indigo:#2d2960; --indigo2:#4a3f9e; --lav:#b8a9f0; --lav-bg:#f1edfb;
+    --page:#f7f5fb; --panel:#ffffff; --line:#e7e1f4; --text:#2a2557; --muted:#6b6590;
+    --ok:#1f8a54; --ok-bg:#e7f6ee; --warn:#9a6a00; --warn-bg:#fbf3df; --blue:#2563c9; --gray:#8a85a8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--page);color:var(--text);
+    font:16px/1.65 "Nunito",-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:900px;margin:0 auto;padding:40px 22px 80px}
+  header.hero{background:linear-gradient(135deg,var(--indigo),var(--indigo2));color:#fff;
+    border-radius:22px;padding:30px 32px;box-shadow:0 14px 34px rgba(45,41,96,.22)}
+  header.hero h1{margin:0 0 6px;font-size:28px;letter-spacing:-.5px}
+  header.hero p{margin:0;opacity:.92}
+  .countdown{display:inline-block;margin-top:14px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);
+    border-radius:999px;padding:6px 16px;font-weight:800;font-size:14px}
+  h2{color:var(--indigo);font-size:20px;margin:36px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin:14px 0;
+    box-shadow:0 4px 14px rgba(45,41,96,.05)}
+  table{width:100%;border-collapse:collapse;margin:8px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--lav-bg);color:var(--indigo);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  code{background:var(--lav-bg);color:var(--indigo);padding:1.5px 6px;border-radius:6px;font-size:12.5px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .callout{background:var(--lav-bg);border-left:4px solid var(--lav);border-radius:10px;padding:12px 16px;margin:14px 0}
+  .callout.ok{background:var(--ok-bg);border-left-color:var(--ok)}
+  .callout.warn{background:var(--warn-bg);border-left-color:var(--warn)}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:800}
+  .pill.be{background:#e3edff;color:#1f4fb0}.pill.ui{background:#fdf2cf;color:#8a6400}
+  ul{margin:6px 0 6px 2px;padding-left:20px}li{margin:5px 0}
+  .small{color:var(--muted);font-size:13px}
+  a{color:var(--indigo2)}
+  .seam{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;color:var(--indigo2)}
+  footer{margin-top:42px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>Road to Pet Expo 2026 — the M2 launch plan</h1>
+  <p>What ships by July 30, who builds which half, and how the two of us never edit the same file. Companion to <a href="dev-workflow.html" style="color:#fff;text-decoration:underline">dev-workflow.html</a> and the live <a href="https://github.com/users/visanchan/projects/1" style="color:#fff;text-decoration:underline">board</a> (Master + Roadmap views).</p>
+  <span class="countdown">🚀 LAUNCH: Pet Expo Championship · Jul 30 – Aug 2, 2026 · 5 sellers live</span>
+</header>
+
+<h2>1 · The deadline drives everything</h2>
+<div class="callout warn"><b>~9 weeks out.</b> We plan <b>backward from July 30</b>, not feature-by-feature. Scope is <b>5 recruited sellers running their booths on MochiPOS live</b>. The features are the easy part; <b>recruiting, onboarding, connectivity, and support are what make-or-break a real pilot</b> — so they run in parallel (Track B below), starting now.</div>
+
+<h2>2 · The runway</h2>
+<table>
+  <tr><th>Window</th><th>Dates</th><th>Focus</th></tr>
+  <tr><td>Onboarding ready</td><td>now → <b>Jul 4</b></td><td>admin-invite → seller can self-set-up (so 5 sellers onboard before the show)</td></tr>
+  <tr><td>Build M2 (first 3)</td><td>Jun → <b>~Jul 11</b></td><td>product images · restock · daily dashboard — by lane (§3)</td></tr>
+  <tr><td><b>Feature freeze</b></td><td><b>~Jul 14</b></td><td>stop adding; only fixes after this</td></tr>
+  <tr><td>Harden + onboard</td><td>Jul 14 → 29</td><td>reopen <b>#41</b> (staging + backups), onboard the 5 sellers, <b>dry-run</b>, bug-fix</td></tr>
+  <tr><td>🚀 <b>Launch</b></td><td><b>Jul 30 – Aug 2</b></td><td>5 booths live on MochiPOS at the championship</td></tr>
+</table>
+<p class="small">These dates live on the board's <b>Roadmap view</b> (drag a bar to reschedule). Master view = the detail.</p>
+
+<h2>3 · First 3 features — split by lane (no shared files)</h2>
+<p>Every feature splits into a <b>backend half</b> and a <b>UI half</b>, joined by one agreed function — the <b>seam</b>. Backend builds the function; UI builds against it. Only the type + the page that mounts both is shared (tiny PRs).</p>
+<table>
+  <tr><th>Feature</th><th><span class="pill be">backend</span> Problemiesd's lane</th><th><span class="pill ui">ui</span> visanchan's lane</th><th>Seam</th></tr>
+  <tr>
+    <td><b>Product images</b><br/><span class="small">DD-45/46</span></td>
+    <td>Storage bucket + upload action + persist <code>image_url</code> <span class="small">(#16)</span></td>
+    <td>upload/preview in product form; image on POS card</td>
+    <td class="seam">uploadProductImage(file)→{url}<br/>+ products.image_url</td>
+  </tr>
+  <tr>
+    <td><b>Restock / event stock</b></td>
+    <td>adjust-stock action + <code>audit_logs</code> row <span class="small">(#17)</span></td>
+    <td>in-POS stock-edit control on the event page</td>
+    <td class="seam">adjustEventStock(eventId,productId,delta,reason)→newQty</td>
+  </tr>
+  <tr>
+    <td><b>Daily dashboard</b></td>
+    <td>aggregation queries over <code>orders</code> / <code>event_inventory</code></td>
+    <td>cards + charts (DashboardLive)</td>
+    <td class="seam">getDashboardMetrics(eventId,range)→DashboardMetrics</td>
+  </tr>
+</table>
+<div class="callout">Rule: <b>agree the seam first</b>, then both halves build in parallel — neither waits on the other. Backend issues stay <b>unassigned</b> for Problemiesd to self-pick; UI issues are visanchan's.</div>
+<p class="small"><b>After these 3 prove the workflow, expand to the rest of M2:</b> Send Later (real) · sample stock (real) · stock correction · CSV export — same backend/UI split.</p>
+
+<h2>4 · Two tracks, in parallel</h2>
+<div class="card">
+  <b>Track A — Build</b> (the 6 issues above). ~7 weeks, two of us + Claude, partitioned by lane. Claude reviews every code PR (<code>/review</code>) and keeps <code>main</code> green.
+</div>
+<div class="card">
+  <b>Track B — Pilot operations</b> (starts now — the part pilots actually fail on):
+  <ul>
+    <li>☐ <b>Recruit 5 sellers</b> — a sales pipeline; weeks of lead time. Start this week.</li>
+    <li>☐ <b>Onboarding + 1-page quick-start</b> — sellers go invite → catalog → event + stock before the show.</li>
+    <li>☐ <b>Connectivity plan</b> — checkout needs network (<code>create_order</code> RPC); expo wifi is unreliable → <b>mobile-data/hotspot per booth</b>. (Offline mode = too big for 9 weeks.)</li>
+    <li>☐ <b>Data safety</b> — reopen <b>#41</b> (staging + backups) by early July, before real sales depend on it.</li>
+    <li>☐ <b>Device check</b> — confirm the app works on the sellers' actual phones/tablets.</li>
+    <li>☐ <b>Live-support plan</b> — who fixes a booth jam in 60 seconds during the 4 days.</li>
+  </ul>
+</div>
+
+<h2>5 · Three de-risks (strongly recommended)</h2>
+<ul>
+  <li><b>Be seller #0.</b> Dogfood MochiPOS at your own <b>Meowseum</b> booth (cat scratchers + pet accessories) + a <b>dry-run at a smaller event</b> before July 30. Don't let the first real use be 5 strangers at the championship.</li>
+  <li><b>Recruit + onboard in parallel</b> with the build — not after it.</li>
+  <li><b>Cut ruthlessly.</b> Minimum-viable-booth = catalog · stock · fast checkout · payment · receipt (day-1 must-haves). Samples / fancy dashboard can fast-follow if time runs short.</li>
+</ul>
+
+<footer>
+  Plan companion: <a href="dev-workflow.html">dev-workflow.html</a> (how we build) · <a href="team-guide.html">team-guide.html</a> (board &amp; roles) ·
+  Board: <a href="https://github.com/users/visanchan/projects/1">Master + Roadmap views</a> · Staging setup (reopen at pilot): <code>docs/STAGING_PREVIEWS.md</code>.
+  <br/>MochiPOS — M2 road to Pet Expo 2026. Updated May 2026.
+</footer>
+
+</div>
+</body>
+</html>
