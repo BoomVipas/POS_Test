@@ -11,6 +11,7 @@ import { useToast } from "@/components/ui/Toast";
 import { parseProductInput, type ProductInput } from "@/lib/products/parse";
 import type { ProductActionResult } from "./actions";
 import type { LiveProduct } from "./product-row";
+import { ProductImageField } from "./ProductImageField";
 
 const empty = (): ProductInput => ({
   sku: "",
@@ -171,6 +172,14 @@ export function ProductFormLive({
           label="Send-later enabled"
           hint="Customer can buy this even when it's out of stock at the booth."
         />
+
+        {initial ? (
+          <ProductImageField productId={initial.id} initialPath={initial.image_path} />
+        ) : (
+          <p className="text-[11px] text-muted">
+            Save the product, then re-open it to add a photo.
+          </p>
+        )}
 
         {serverError && (
           <p

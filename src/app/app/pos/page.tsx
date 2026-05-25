@@ -4,6 +4,7 @@ import { POSWorkspace } from "./POSWorkspace";
 import { createClient } from "@/lib/supabase/server";
 import { getActiveWorkspace } from "@/lib/auth/workspace";
 import type { Product } from "@/lib/pos/types";
+import { productImageUrl } from "@/lib/products/image";
 
 export const dynamic = "force-dynamic";
 
@@ -90,7 +91,13 @@ export default async function POSPage() {
       shipping_fee_satang: p.shipping_fee_satang,
       send_later_enabled: p.send_later_enabled,
       is_active: p.is_active,
-      image_path: p.image_path,
+      // Real products store a Storage path in image_path; the POS card renders
+      // it as an <img src>, so resolve it to a public URL here (null stays null
+      // → monogram fallback). #45.
+      image_path: productImageUrl(
+        process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+        p.image_path,
+      ),
       current_qty: qtyByProduct.get(p.id) ?? 0,
     }));
 
