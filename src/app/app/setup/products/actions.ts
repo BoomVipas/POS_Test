@@ -38,22 +38,51 @@ export async function createProduct(
   }
 
   const supabase = await createClient();
-  const { error } = await supabase
+  const { data: created, error } = await supabase
     .from("products")
-    .insert({ workspace_id: ws.workspaceId, ...parsed.value });
-  if (error) {
-    if ((error as { code?: string }).code === "23505") {
+    .insert({ workspace_id: ws.workspaceId, ...parsed.value })
+    .select("id, default_starting_qty")
+    .single();
+  if (error || !created) {
+    if ((error as { code?: string } | null)?.code === "23505") {
       return {
         ok: false,
         error: "That SKU already exists in your catalog.",
         fieldErrors: { sku: "Already exists" },
       };
     }
-    console.error("[products] create failed:", error.message);
+    console.error("[products] create failed:", error?.message);
     return { ok: false, error: "Couldn't save the product. Please try again." };
   }
 
+  // Auto-allocate the new product into any OPEN event (planned/running) at its
+  // starting qty, so it appears in the POS immediately — otherwise it stays
+  // invisible until someone runs "Sync active products" in Events. Best-effort:
+  // a failure here doesn't undo the create (the product still exists; you can
+  // sync from Events). Idempotent via the (event_id, product_id) unique key.
+  const { data: openEvents } = await supabase
+    .from("events")
+    .select("id")
+    .eq("workspace_id", ws.workspaceId)
+    .in("status", ["planned", "running"]);
+  if (openEvents && openEvents.length > 0) {
+    const rows = openEvents.map((e) => ({
+      workspace_id: ws.workspaceId,
+      event_id: e.id,
+      product_id: created.id,
+      starting_qty: created.default_starting_qty,
+      current_qty: created.default_starting_qty,
+    }));
+    const { error: allocErr } = await supabase
+      .from("event_inventory")
+      .upsert(rows, { onConflict: "event_id,product_id", ignoreDuplicates: true });
+    if (allocErr) {
+      console.error("[products] auto-allocate failed:", allocErr.message);
+    }
+  }
+
   revalidatePath("/app/setup/products");
+  revalidatePath("/app/pos");
   return { ok: true };
 }
 
