@@ -60,3 +60,48 @@ export async function adjustEventStock(input: {
   revalidatePath("/app/pos");
   return { ok: true, currentQty: data?.current_qty ?? 0 };
 }
+
+export type EventStockRow = {
+  productId: string;
+  sku: string;
+  name: string;
+  currentQty: number;
+};
+
+// Per-product stock for one event (workspace-scoped), for the restock UI (#46).
+// Two simple queries joined in JS (same pattern as the POS loader) to stay clean
+// with the hand-rolled types.
+export async function getEventStock(eventId: string): Promise<EventStockRow[]> {
+  const ws = await getActiveWorkspace();
+  if (!ws) return [];
+
+  const supabase = await createClient();
+  const { data: inv } = await supabase
+    .from("event_inventory")
+    .select("product_id, current_qty")
+    .eq("workspace_id", ws.workspaceId)
+    .eq("event_id", eventId);
+  if (!inv || inv.length === 0) return [];
+
+  const { data: prods } = await supabase
+    .from("products")
+    .select("id, sku, name")
+    .eq("workspace_id", ws.workspaceId)
+    .in(
+      "id",
+      inv.map((r) => r.product_id),
+    );
+  const byId = new Map((prods ?? []).map((p) => [p.id, p]));
+
+  return inv
+    .map((r) => {
+      const p = byId.get(r.product_id);
+      return {
+        productId: r.product_id,
+        sku: p?.sku ?? "",
+        name: p?.name ?? "",
+        currentQty: r.current_qty,
+      };
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
+}

@@ -14,6 +14,7 @@ import {
   setEventStatus,
 } from "./actions";
 import type { EventStatus } from "@/lib/events/parse";
+import { EventStockPanel } from "./EventStockPanel";
 
 export type EventSummary = {
   id: string;
@@ -51,6 +52,7 @@ export function EventsManagerLive({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [stockOpen, setStockOpen] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   function submitNew(e: React.FormEvent) {
@@ -214,6 +216,17 @@ export function EventsManagerLive({
 
                 {(canManage || canAllocate) && (
                   <div className="mt-2 flex flex-wrap gap-1.5">
+                    {canAllocate && ev.status !== "archived" && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() =>
+                          setStockOpen((id) => (id === ev.id ? null : ev.id))
+                        }
+                      >
+                        {stockOpen === ev.id ? "Hide stock" : "Manage stock"}
+                      </Button>
+                    )}
                     {canAllocate && ev.status !== "closed" && ev.status !== "archived" && (
                       <Button
                         size="sm"
@@ -254,6 +267,9 @@ export function EventsManagerLive({
                       </Button>
                     )}
                   </div>
+                )}
+                {stockOpen === ev.id && (
+                  <EventStockPanel eventId={ev.id} canAdjust={canAllocate} />
                 )}
               </li>
             );
