@@ -33,7 +33,7 @@ npm run dev
 
 ## Vercel deployment
 
-In **Project Settings → Environment Variables** add each of the Required vars for **Production** (and `Preview` if you want PR previews to work end-to-end). `NEXT_PUBLIC_*` vars are exposed to the browser bundle by design; the rest are server-only.
+In **Project Settings → Environment Variables** add the Required vars with **different values per environment**: **Production** → your production Supabase project; **Preview** → a separate **staging** project, so PR previews are DB-connected without touching pilot data (setup: [`STAGING_PREVIEWS.md`](STAGING_PREVIEWS.md)). `NEXT_PUBLIC_*` vars are exposed to the browser bundle by design; the rest are server-only. ⚠ Never cross the wires — production keys on Preview, or staging keys on Production, defeats the isolation.
 
 ## Validating
 

@@ -159,7 +159,7 @@ The app is **multi-tenant with RLS** — every row is scoped to a `workspace_id`
 | **PR preview** | Vercel auto-builds a URL per PR | shared Supabase (Vercel project env) | visible to both on the PR (friend sees the URL via GitHub even without Vercel) |
 | **Production** | `mochipos.vercel.app` (Vercel, branch `main`) | shared Supabase | visanchan holds Vercel access; deploys on every merge to `main` |
 
-There is **no separate staging DB** (by choice). Workspaces (§3a) are the isolation boundary instead. If pilot data ever feels at risk, the upgrade path is a second free-tier Supabase project for staging — but not now.
+We use a **separate staging Supabase project** for PR previews, so changes are tested *with data, before merge*, without risking pilot data — setup in [`STAGING_PREVIEWS.md`](STAGING_PREVIEWS.md). Workspaces (§3a) remain the isolation boundary *within* each project. Point local dev (`.env.local`) at staging too, not production.
 
 ---
 

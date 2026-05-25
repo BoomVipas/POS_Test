@@ -12,7 +12,7 @@ feature branch (pos/DD-XX-…) → push → PR → Vercel PREVIEW deploy (own UR
 ```
 
 - **Never push to `main` directly for code.** **High-risk batches (auth, RLS, payments, money totals, inventory atomicity, refunds) require PR + review before merge.**
-- **Preview deploys currently run in DEMO mode** — Supabase env vars are set for **Production only**, so PR previews have no DB connection. Safe (previews can't touch prod data), but Supabase-connected behavior is only testable on `main` until we add Preview-scoped env vars or a separate staging Supabase project.
+- **Preview deploys should run against a separate STAGING Supabase project** — so PRs are testable *with data, before merge*, without touching pilot data. One-time setup: [`STAGING_PREVIEWS.md`](STAGING_PREVIEWS.md). Until those Preview-scoped env vars are set, previews fall back to **demo mode** (no DB). Previews must **never** point at the production project.
 
 **Database change → live (manual, by design for the pilot):**
 
@@ -60,7 +60,7 @@ Details for each below.
 | Preview | every PR | review per change |
 | Development | `npm run dev` | local |
 
-Set per-environment env vars in Vercel — production points at the production Supabase project. **Currently env vars are Production-only, so Preview deploys run in demo mode** (no DB); add Preview-scoped vars or a staging Supabase project when you need DB-connected previews.
+Set per-environment env vars in Vercel — **Production** points at the production Supabase project; **Preview** points at a separate **staging** project so PR previews are DB-connected without touching pilot data (setup: [`STAGING_PREVIEWS.md`](STAGING_PREVIEWS.md)). Until staging is wired, Preview falls back to demo mode (no DB).
 
 ## Domains
 
