@@ -9,7 +9,7 @@
 //
 // Repro runs the real plpgsql in pglite (see helpers/pglite.ts).
 
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { PGlite } from "@electric-sql/pglite";
 import {
   bootDb,
@@ -17,6 +17,7 @@ import {
   seedWorkspace,
   type SeededWorkspace,
 } from "./helpers/pglite";
+import { buildCreateOrderPayload } from "@/lib/pos/order-payload";
 
 let db: PGlite;
 
@@ -224,5 +225,57 @@ describe("create_order payment_status (Wave 41i, D4)", () => {
       ],
     });
     expect(await paymentStatus(orderId)).toBe("paid");
+  });
+});
+
+describe("create_order stock + atomicity (DD-66, via the real payload builder)", () => {
+  let ws: SeededWorkspace;
+
+  beforeEach(async () => {
+    // Fresh workspace/event/product (stocked at 100) per case so stock state
+    // never bleeds between tests.
+    ws = await seedWorkspace(db);
+  });
+
+  function payload(qty: number): Record<string, unknown> {
+    return buildCreateOrderPayload({
+      workspaceId: ws.workspaceId,
+      eventId: ws.eventId,
+      lines: [{ productId: ws.productId, qty, fulfillment: "take_now" }],
+      paymentMethod: "cash",
+      splits: [],
+      discountSatang: 0,
+      customer: {},
+    }) as unknown as Record<string, unknown>;
+  }
+
+  async function inventory(): Promise<{ current_qty: number; sold_qty: number }> {
+    const r = await db.query<{ current_qty: number; sold_qty: number }>(
+      `select current_qty, sold_qty from public.event_inventory
+       where event_id = $1 and product_id = $2`,
+      [ws.eventId, ws.productId],
+    );
+    return r.rows[0];
+  }
+
+  it("decrements current_qty and bumps sold_qty on a sale", async () => {
+    const orderId = await createOrder(db, payload(3));
+    expect(orderId).toMatch(/^[0-9a-f-]{36}$/);
+    expect(await inventory()).toEqual({ current_qty: 97, sold_qty: 3 });
+  });
+
+  it("rejects a sale beyond available stock and rolls inventory back", async () => {
+    await expect(createOrder(db, payload(101))).rejects.toThrow(
+      /insufficient stock/,
+    );
+    expect((await inventory()).current_qty).toBe(100); // transaction rolled back
+  });
+
+  it("exhausts the locked row then refuses the next unit", async () => {
+    await createOrder(db, payload(100)); // sell the whole allocation
+    expect((await inventory()).current_qty).toBe(0);
+    await expect(createOrder(db, payload(1))).rejects.toThrow(
+      /insufficient stock/,
+    );
   });
 });

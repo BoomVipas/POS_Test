@@ -17,14 +17,14 @@ Anything inside `pos-for-sell/`. Do not edit files in the root or in `meowmeow_p
 
 ## Currently active
 
-### Wave 43 — Events + event_inventory foundation
+### DD-55–66 — Real POS sale (live catalog → create_order → atomicity)
 - **Owner:** claude
 - **Status:** in-progress
-- **Branch:** pos/wave-43-events-inventory
-- **Claimed:** 2026-05-25 07:04
-- **Goal:** organic prerequisite the DD arc assumed: a real **event** + **event_inventory** so the POS can sell and `create_order` can lock/decrement stock. `/app/events` (configured): create an event (name/venue/dates, status `planned`), **allocate active products** into `event_inventory` at their `default_starting_qty`, start/close the event. Server Actions are workspace-scoped + role-gated (events: owner/manager; inventory: owner/manager/stock_staff) on the RLS-enforced client. Demo `EventSetupClient` stays for the unconfigured build. Unblocks DD-55–64 (POS reads real catalog/inventory) → DD-65.
+- **Branch:** pos/DD-55-66-real-pos-sale
+- **Claimed:** 2026-05-25 07:17
+- **Goal:** the arc's destination. `/app/pos` (configured) reads the active event + its `event_inventory`-backed catalog (DD-55–64), and "Confirm sale" calls the real **`create_order`** RPC via a Server Action (DD-65) — the client never decrements stock; the RPC does it atomically (`FOR UPDATE` + insufficient-stock guard = DD-66). Pure `buildCreateOrderPayload` (cart → RPC payload) + an end-to-end pglite test (builder → `create_order` → asserts order/items/inventory). Success page already degrades gracefully for a real order id (full receipt = later DD-67). **This is the loop's stop condition** — on green merge, the cron self-cancels.
 
-_Context: post-Supabase wire-up arc (**DD-39 login → DD-65 `create_order`**), advanced by the autonomous loop (cron `c627795e`, one batch per tick). This is organic infra (not an enumerated DD batch), so it takes the next **Wave** number. Most recent: **DD-43–53 product persistence** (`f6bf29b`, PR #7 — see **Done**)._
+_Context: post-Supabase wire-up arc (**DD-39 login → DD-65 `create_order`**), advanced by the autonomous loop (cron `c627795e`, one batch per tick). Most recent: **Wave 43 events + event_inventory** (`70d8e15`, PR #8 — see **Done**)._
 
 ## Repo migration — pos-for-sell → standalone `mochipos` ✅ COMPLETE (2026-05-25)
 
@@ -351,6 +351,10 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 ## Done
 
 (Move completed batches here with the merging commit SHA.)
+
+### Wave 43 — Events + event_inventory foundation
+- **Merged:** 2026-05-25 · `70d8e15` (PR #8)
+- **Result:** the data spine prerequisite the DD plan assumed. `/app/events` (configured): `createEvent` (status `planned`), `allocateActiveProducts` (idempotent upsert of `event_inventory` from active products at `default_starting_qty`; `ignoreDuplicates` so re-sync never resets current/sold), `setEventStatus` (start/close/reopen) — workspace-scoped + role-gated (events: owner/manager; inventory: owner/manager/stock_staff). `lib/events/parse.ts` (+9 tests) + `canManageEvents`; `EventsManagerLive`; demo `EventSetupClient` stays unconfigured. Gives `create_order` a running event + lockable stock. Suite 460 → 469. CI green.
 
 ### DD-43–53 — Product persistence (real `products` table)
 - **Merged:** 2026-05-25 · `f6bf29b` (PR #7)

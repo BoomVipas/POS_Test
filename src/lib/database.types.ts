@@ -636,6 +636,10 @@ export type Database = {
         Args: { p_code: string; p_brand_name: string; p_slug: string };
         Returns: string;
       };
+      create_order: {
+        Args: { payload: Json };
+        Returns: string;
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;

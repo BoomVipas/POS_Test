@@ -19,6 +19,8 @@ import {
 import type { OrderType, PaymentMethod } from "@/lib/database.types";
 import { useT } from "@/lib/i18n/provider";
 import { useToast } from "@/components/ui/Toast";
+import { usePOSMode } from "@/lib/pos/pos-mode";
+import { submitOrder } from "./actions";
 
 export function ReviewModal({
   products,
@@ -42,6 +44,7 @@ export function ReviewModal({
   const { settings } = useDemoSettings();
   const { t } = useT();
   const { push } = useToast();
+  const posMode = usePOSMode();
 
   const [confirmed, setConfirmed] = useState(false);
   const productIndex = new Map(products.map((p) => [p.id, p]));
@@ -124,7 +127,61 @@ export function ReviewModal({
     };
   }
 
+  // DD-65 — live path: record the sale through the create_order RPC. The client
+  // sends only intent (lines, payment, customer); the RPC owns prices, stock and
+  // totals. No localStorage, no client-side stock math.
+  async function handleLiveConfirm() {
+    if (posMode.mode !== "live") return;
+    if (!posMode.eventId) {
+      push({
+        kind: "error",
+        title: "No active event",
+        message: "Open or create an event before selling.",
+      });
+      return;
+    }
+    setConfirmed(true);
+    const res = await submitOrder({
+      eventId: posMode.eventId,
+      lines: cart.lines.map((l) => ({
+        productId: l.productId,
+        qty: l.qty,
+        fulfillment: l.fulfillment,
+        ...(l.note ? { note: l.note } : {}),
+      })),
+      paymentMethod: cart.paymentMethod ?? "cash",
+      splits: cart.splits.map((s) => ({
+        method: s.method,
+        amountSatang: s.amountSatang,
+      })),
+      discountSatang: cart.discountSatang,
+      customer: {
+        name: cart.customer.name,
+        phone: cart.customer.phone,
+        email: cart.customer.email,
+        address: cart.customer.address,
+      },
+    });
+    if (res.ok) {
+      push({
+        kind: "success",
+        title: "Sale recorded",
+        message: `${formatTHB(total)} THB`,
+      });
+      dispatch({ type: "CLEAR" });
+      onClose();
+      router.push(`/app/pos/success/${res.orderId}`);
+    } else {
+      setConfirmed(false);
+      push({ kind: "error", title: "Sale failed", message: res.error });
+    }
+  }
+
   function handleConfirm() {
+    if (posMode.mode === "live") {
+      void handleLiveConfirm();
+      return;
+    }
     setConfirmed(true);
     const order = buildOrder();
     sales.append(order);
@@ -304,8 +361,16 @@ export function ReviewModal({
         </button>
 
         <p className="mt-2 text-center text-xs text-muted">
-          Demo mode: persists to localStorage. DD-65 swaps in the real{" "}
-          <code>create_order</code> RPC.
+          {posMode.mode === "live" ? (
+            <>
+              Records the sale atomically via the <code>create_order</code> RPC.
+            </>
+          ) : (
+            <>
+              Demo mode: persists to localStorage. Configure Supabase to record
+              real sales via <code>create_order</code>.
+            </>
+          )}
         </p>
       </div>
     </div>
