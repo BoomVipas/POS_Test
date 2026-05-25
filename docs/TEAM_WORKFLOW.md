@@ -21,7 +21,7 @@ cause of merge conflicts):
 | Who | Role | Primary lane (`area:` label) |
 |---|---|---|
 | **Founder** (PM) | Product direction · scope · priorities · UI / UX / flow / brand decisions · real-event field observation · "where are we heading." | `area: ui` — observes + decides; implementation follows the PM's direction. |
-| **Claude** | Implements features, fixes bugs, explores / improves; the PM's assistant. | `area: backend` — RPCs, data, server actions, schema, wiring. |
+| **Claude** | Implements features, fixes bugs, explores / improves; the PM's assistant; **integrator** — keeps `main` green, merges branches, resolves conflicts (see *Integration & conflict handling*). | `area: backend` — RPCs, data, server actions, schema, wiring. |
 | **Problemiesd** | Reads + fixes code; real-human testing / QA. | `area: qa` — testing, bug reports + fixes. |
 
 **Conflict-prevention rules**
@@ -65,6 +65,28 @@ issue carries one):
 - **Migrations:** SQL file under `database/migrations/` + a ledger note in
   `docs/DEPLOYMENT.md` + **a human applies it** in the Supabase SQL editor (Claude can't
   run DDL).
+
+## Integration & conflict handling
+
+Parallel branches are merged together by **Claude (integrator)**, who keeps `main`
+green.
+
+**Prevent first.** Conflicts should be rare and tiny — that's the point of lanes
+(different files), small + frequent PRs, and separate worktrees. The integrator is a
+safety net, not a reason to batch up big "merge it all at the end" merges.
+
+**Two kinds of conflict:**
+- **Textual / compatible** — both sides touched nearby lines, or added different
+  things. Claude resolves to **keep both features**, re-runs CI, and pings the author
+  to confirm their part survived.
+- **Semantic / incompatible** — both sides changed the *same behaviour* in *different
+  ways*. That's a **product decision, not a merge** → Claude surfaces the clash + the
+  trade-off and the **PM decides** (the "never auto-resolve conflicts heuristically"
+  rule).
+
+**A merge is only "done" when all three agree:** Claude's resolution **+** the author's
+quick look (especially code Claude didn't write) **+** **green CI**.
+> Flow: **resolve → author + CI confirm → merge.** No blind merges.
 
 ---
 
