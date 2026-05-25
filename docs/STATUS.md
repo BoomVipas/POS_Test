@@ -51,7 +51,7 @@ Rolling snapshot. The "What's live" section below is the original 2026-05-04 bas
 | `/app/pre-orders` | demo | sold-out pre-orders (Wave 31) |
 | `/app/inventory/samples` | demo | sample bucket Make / Return (Wave 39b) |
 | `/app/settings` | demo | workspace settings |
-| `/app/setup/products` | demo | catalog CRUD with image upload (Wave 13/14) |
+| `/app/setup/products` | wired + demo | real `products` CRUD when configured (DD-43–53); demo localStorage fallback. Image→Storage deferred (DD-45) |
 | **Customer-facing** | | |
 | `/qr-menu` | demo | customer-facing menu via QR (Wave 27) |
 | `/register/[token]` | demo | post-purchase pet-profile claim form (Wave 40b) |
@@ -212,9 +212,10 @@ Now that Supabase + Vercel are live, the original DD-XX Phase 3/5 batch numbers 
 - **DD-41** (`4832d1c`, PR #2) — session lifecycle. Verified the per-request cookie refresh (`proxy.ts` → `updateSession`); added **sign-out** (action + header button, configured mode only).
 - **DD-42** (`ab89614`, PR #4) — RLS tenant-isolation test. Extended the pglite harness with `bootRlsDb` (loads `rls-policies.sql`, creates the `authenticated` role + grants) + `actAs`/`actAsSuperuser`; `tests/db/rls-isolation.test.ts` proves user A can't SELECT user B's products/workspace/inventory, with a disable/re-enable control encoding "red without policies, green with them". Suite 415 → 422.
 - **DD-33–38** (`11edcfc`, PR #5) — invite-redeem register flow. `/register`: enter code → `validateInviteCode` (service-role lookup, de-oracled single failure message) → brand/email + chosen workspace slug → `completeRegistration` (admin `createUser` auto-confirmed → sign in → `redeem_invite_code` RPC creates workspace + owner membership) → `/app`. New pure `lib/auth/invite-status.ts` (mirrors the RPC gate) + `lib/slug isValidSlug` (mirrors the RPC slug regex). First pglite test of `redeem_invite_code` (8 cases) — pinned a latent quirk: its `set status='expired'` write is rolled back by the subsequent `raise` (functional gate still correct; cosmetic dead code, flagged for cleanup). Suite 422 → 443.
-- **DD-40** (this PR) — password reset. `/login` "Forgot password?" → `/login/forgot` (`resetPasswordForEmail`, de-oracled "sent if it exists") → recovery email link → `/auth/confirm` route exchanges the PKCE `code` (or `token_hash`) for a session, then forwards to `/login/reset` (sanitised `next` via `safeNextPath`) → `updateUser` sets the new password → `/app`. `passwordReset` i18n block (EN+TH). Suite 443 → 449.
+- **DD-40** (`8443533`, PR #6) — password reset. `/login` "Forgot password?" → `/login/forgot` (`resetPasswordForEmail`, de-oracled "sent if it exists") → recovery email link → `/auth/confirm` route exchanges the PKCE `code` (or `token_hash`) for a session, then forwards to `/login/reset` (sanitised `next` via `safeNextPath`) → `updateUser` sets the new password → `/app`. `passwordReset` i18n block (EN+TH). Suite 443 → 449.
+- **DD-43–53** (this PR) — product persistence. `/app/setup/products` now reads/writes the real `products` table when configured (demo localStorage stays for the unconfigured pilot build). New `lib/products/parse.ts` (pure validate/normalise → satang ints, +8 tests), `lib/auth/workspace.ts` (`getActiveWorkspace` + `canWriteCatalog`), Server Actions `createProduct`/`updateProduct`/`setProductActive` (workspace-scoped, RLS-enforced, SKU immutable on edit, soft-delete via `is_active`), a lean `ProductFormLive` + `CatalogManagerLive` (real-schema fields only — demo's cost/reorder/pins/`current_qty` are demo-only). pglite test pins the `(workspace_id, sku)` uniqueness (+3). Suite 449 → 460. **Deferred:** DD-45/46 image→Storage, DD-49 CSV, DD-50 categories, DD-54 setup-gate. (No screenshots: the live manager is auth-gated and reuses already-shipped components; reviewable on Vercel with a workspace.)
 
-Next: product persistence (DD-43–54, where the Playwright screenshot harness gets established) → POS wired to real catalog (DD-55–64) → **DD-65** → DD-66.
+Next: image upload to Storage (DD-45/46) and the remaining Phase-4 sub-batches, then POS wired to real catalog (DD-55–64) → **DD-65** → DD-66.
 
 ## Pending waves
 

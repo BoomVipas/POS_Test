@@ -17,14 +17,14 @@ Anything inside `pos-for-sell/`. Do not edit files in the root or in `meowmeow_p
 
 ## Currently active
 
-### DD-40 — Forgot password / reset flow
+### DD-43–53 — Product persistence (real `products` table)
 - **Owner:** claude
 - **Status:** in-progress
-- **Branch:** pos/DD-40-password-reset
-- **Claimed:** 2026-05-25 06:39
-- **Goal:** "Forgot password" on `/login` → `/login/forgot` requests a Supabase recovery email (`resetPasswordForEmail`) → the link lands on `/auth/confirm` (exchanges the code/token for a session) → `/login/reset` sets a new password (`updateUser`). De-oracled request response (always "sent if it exists"); safe redirect of `?next=` (reuses `safeNextPath`).
+- **Branch:** pos/DD-43-product-crud-supabase
+- **Claimed:** 2026-05-25 06:51
+- **Goal:** wire the product catalog to the real Supabase `products` table (currently demo/localStorage) when configured, demo fallback otherwise. Covers DD-43 (list/empty from DB), DD-44 (create), DD-47 (edit), DD-48 (soft delete = `is_active=false`), DD-51 (SKU validation server-side), DD-52 (active toggle), DD-53 (initial stock → `default_starting_qty`). Server Actions resolve the caller's workspace from their session; writes go through the user's RLS-enforced client; only real-schema columns persist (demo's cost/reorder/pins/current_qty are demo-only). **Deferred to follow-up ticks:** DD-45/46 image upload to Storage, DD-49 CSV import, DD-50 categories admin, DD-54 setup-complete gate.
 
-_Context: post-Supabase wire-up arc (**DD-39 login → DD-65 `create_order`**), advanced by the autonomous loop (cron `c627795e`, one batch per tick). **Infra (Supabase + Vercel) live.** Most recent: **DD-33–38 register flow** (`11edcfc`, PR #5 — see **Done**)._
+_Context: post-Supabase wire-up arc (**DD-39 login → DD-65 `create_order`**), advanced by the autonomous loop (cron `c627795e`, one batch per tick). **Infra (Supabase + Vercel) live.** Most recent: **DD-40 password reset** (`8443533`, PR #6 — see **Done**)._
 
 ## Repo migration — pos-for-sell → standalone `mochipos` ✅ COMPLETE (2026-05-25)
 
@@ -351,6 +351,10 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 ## Done
 
 (Move completed batches here with the merging commit SHA.)
+
+### DD-40 — Forgot password / reset flow
+- **Merged:** 2026-05-25 · `8443533` (PR #6)
+- **Result:** full password-recovery flow. `/login` "Forgot password?" → `/login/forgot` calls `resetPasswordForEmail` (de-oracled — always "sent if it exists"; real error logged) with `redirectTo=/auth/confirm?next=/login/reset`. New `/auth/confirm` Route Handler exchanges the PKCE `code` (or `token_hash`+`type`) for a recovery session, then forwards to a `safeNextPath`-sanitised `next`; on failure → `/login/reset` (shows expired state). `/login/reset` detects the recovery session and renders the new-password form (`updateUser`) → `/app`, else a "request a new link" panel. `passwordReset` i18n (EN+TH); +6 schema tests. Suite 443 → 449. Manual-verify on Vercel: the redirect host must be in Supabase's Redirect-URL allowlist; "old session invalidated" depends on the project's logout-on-password-change setting. CI green.
 
 ### DD-33–38 — Invite-redeem register flow
 - **Merged:** 2026-05-25 · `11edcfc` (PR #5)
