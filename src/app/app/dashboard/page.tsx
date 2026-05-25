@@ -1,12 +1,14 @@
 import { DashboardLive } from "./DashboardLive";
+import { DashboardConfigured } from "./DashboardConfigured";
 
-// The full multi-period dashboard (Wave 29/34) lives in DashboardLive — it
-// composes every tile (revenue/orders/avg, payment split, profit/margin,
-// source split, reorder, top sellers, inventory, activity feed, hourly/daily)
-// with a Day/Range picker + period-over-period deltas, and falls back to
-// illustrative mock data when no live sales exist. page.tsx had been rendering
-// an older static 6-tile subset; this wires the real one in (PRD F15 gap:
-// "built but not composed").
+// Configured (real Supabase) renders the live metrics dashboard (#48) backed by
+// getDashboardMetrics (#47) over the workspace's real orders. Demo/unconfigured
+// falls back to DashboardLive — the rich illustrative multi-tile view (Wave
+// 29/34) driven by localStorage demo sales. Mirrors the configured/demo split
+// used across /app (same env check as the /app layout).
 export default function DashboardPage() {
-  return <DashboardLive />;
+  const configured =
+    !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  return configured ? <DashboardConfigured /> : <DashboardLive />;
 }
