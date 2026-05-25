@@ -75,7 +75,7 @@
   <li><b>In Review</b> — a PR is open; CI is running and it's waiting for <b>Claude to integrate + merge</b>. <span class="small">(This is the integrator's queue.)</span></li>
   <li><b>Done</b> — merged into <code>main</code> (which auto-deploys to production).</li>
 </ul>
-<div class="callout">A <b>task = a GitHub Issue</b>, tagged with a <b>Milestone</b> (which stage), an <b>area</b> (whose lane), and an <b>assignee</b> (who). On the board: <b>Milestone = where we are · area = whose lane · assignee = who · column = status.</b></div>
+<div class="callout">A <b>task = a GitHub Issue</b>. On the board it carries <b>fields</b> you can group, sort &amp; filter by — <b>Batch</b> (which batch) · <b>Lane</b> (kind of work) · <b>Arc</b> (feature group) · <b>assignee</b> (who) · <b>Milestone</b> (stage) · <b>Status</b> (column). The fields + the views that use them are in §4.</div>
 
 <h2>3 · Where are we? (Milestones)</h2>
 <table>
@@ -90,6 +90,17 @@
 <p>Cards are <b>Issues and PRs</b> — not raw branches. A branch reaches the board through its <b>PR</b>, and the PR attaches to its issue with one line in the PR description:</p>
 <div class="callout"><code>Closes #15</code> &nbsp;→&nbsp; the PR links to issue&nbsp;#15 (shown in the card's <b>"Linked pull requests"</b> field), and merging it closes the issue.</div>
 
+<h3>What each card shows — the fields</h3>
+<p>Every card now carries the four things we monitor by as real <b>fields</b> — so you can <b>group, sort &amp; filter</b> on them, not just squint at the title:</p>
+<table>
+  <tr><th>Field</th><th>What</th><th>Values</th></tr>
+  <tr><td><b>Batch</b></td><td>which batch this card is</td><td><code>DD-67</code> · <code>DD-45/46</code> · <code>Wave 44</code>… <span class="small">(blank = organic / hygiene work)</span></td></tr>
+  <tr><td><b>Lane</b></td><td>which <i>kind</i> of work</td><td><span class="pill be">backend</span> <span class="pill ui">ui</span> <span class="pill qa">qa</span></td></tr>
+  <tr><td><b>Arc</b></td><td>which feature group</td><td><code>pos-polish</code> · <code>admin-invite</code> · <code>dx</code></td></tr>
+  <tr><td><b>Assignees · Linked PRs · Status · Milestone</b></td><td>who · which PR · column · stage</td><td><span class="small">built-in</span></td></tr>
+</table>
+<div class="callout">A card reads at a glance: <b>Batch</b> DD-67 · <b>Who</b> visanchan · <span class="pill ui">ui</span> · <b>Arc</b> pos-polish · <b>PR</b> #26 · <b>Done</b>.</div>
+
 <h3>How the board updates itself (no magic)</h3>
 <p>The project has <b>Workflows</b> — little <span class="mono">event → action</span> rules:</p>
 <table>
@@ -99,6 +110,17 @@
   <tr><td>new issue / PR created</td><td>Auto-add to project</td><td>card appears (in Todo)</td></tr>
 </table>
 <div class="callout warn"><b>Action needed (you, ~1 min, GitHub UI only):</b> these are currently <b>off</b>, so cards are moved by hand. Turn them on: open the project → top-right <b>⋯ → Workflows</b> → enable <b>Auto-add to project</b> (issues + PRs from <code>visanchan/mochipos</code>), <b>Pull request merged → Done</b>, and <b>Item closed → Done</b>. After that the board keeps itself current.</div>
+
+<h3>The four views — pick how you read the board</h3>
+<p>One project, several saved <b>views</b> (the tabs along the top). Each answers a different question. <b>Views can only be made in the browser UI</b> (the API can't) — here's the one-time setup. To add one: click <b>+ New view</b> beside the tabs, then open the view's <b>⌄ menu</b> (or the <b>⋯</b> top-right) to set its <b>Layout</b>, <b>Column field</b>, and <b>Fields</b>; double-click the tab to rename.</p>
+<table>
+  <tr><th>View</th><th>Answers</th><th>Setup</th></tr>
+  <tr><td><b>Master</b><br/><span class="small">Table</span></td><td>see everything at once</td><td>Layout <b>Table</b> → show columns <b>Batch · Title · Assignees · Lane · Arc · Linked pull requests · Status</b> → <i>(optional)</i> <b>Group by → Milestone</b> → rename "Master".</td></tr>
+  <tr><td><b>By person</b><br/><span class="small">Board</span></td><td>who's on what now</td><td>Layout <b>Board</b> → <b>Column field → Assignees</b> → rename "By person".</td></tr>
+  <tr><td><b>By lane</b><br/><span class="small">Board</span></td><td>which <i>kind</i> of work</td><td>Layout <b>Board</b> → <b>Column field → Lane</b> <span class="small">(or Arc)</span> → rename "By lane".</td></tr>
+  <tr><td><b>By stage</b><br/><span class="small">Board</span></td><td>where in the 6-month plan</td><td>Layout <b>Board</b> → <b>Column field → Milestone</b> → rename "By stage".</td></tr>
+</table>
+<div class="callout ok">Keep the default <b>Status</b> board (Todo → In Progress → In Review → Done) as the everyday "what's moving" view. <span class="small"><b>Tip:</b> in any view, the left-edge <b>Slice by</b> panel splits it live by Lane or Assignee without making a new view — quick for a one-off "show me just visanchan's cards".</span></div>
 
 <h2>5 · One pattern we all follow</h2>
 <ul>
