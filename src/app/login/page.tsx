@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getDict } from "@/lib/i18n/server";
@@ -40,6 +41,24 @@ export default async function LoginPage({
   return (
     <main className="flex-1">
       <section className="mx-auto max-w-md px-5 py-16">
+        <Link href="/" className="mb-6 flex items-center gap-3">
+          <Image
+            src="/mochi-mascot.png"
+            alt=""
+            width={48}
+            height={48}
+            className="h-12 w-12 object-contain"
+            priority
+          />
+          <Image
+            src="/mochi-wordmark.png"
+            alt="MochiPOS"
+            width={132}
+            height={30}
+            className="h-7 w-auto object-contain"
+            priority
+          />
+        </Link>
         <h1 className="font-display text-3xl text-accent-strong">
           {t.login.title}
         </h1>

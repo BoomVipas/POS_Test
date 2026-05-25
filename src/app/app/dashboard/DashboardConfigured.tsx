@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { rangePreset, type RangePresetId } from "@/lib/demo/dashboard-range";
 import { rangeToWindow } from "@/lib/dashboard/window";
 import { getDashboardMetrics } from "./metrics-actions";
@@ -88,13 +89,22 @@ export function DashboardConfigured() {
       </div>
 
       {empty && (
-        <p className="mb-4 text-sm text-muted">
-          No sales in this range yet — record one at{" "}
-          <Link href="/app/pos" className="font-bold text-accent">
-            /app/pos
-          </Link>
-          .
-        </p>
+        <div className="mb-4 flex items-center gap-3 rounded-[var(--radius-lg)] border border-line bg-panel-strong px-4 py-3">
+          <Image
+            src="/mochi-mascot.png"
+            alt=""
+            width={40}
+            height={40}
+            className="h-10 w-10 shrink-0 object-contain"
+          />
+          <p className="text-sm text-muted">
+            No sales in this range yet — record one at{" "}
+            <Link href="/app/pos" className="font-bold text-accent">
+              /app/pos
+            </Link>
+            .
+          </p>
+        </div>
       )}
 
       <section className="mb-6 grid gap-4">

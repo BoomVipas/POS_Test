@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getDict } from "@/lib/i18n/server";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
@@ -7,7 +8,15 @@ export default async function HomePage() {
 
   return (
     <main className="flex-1">
-      <div className="mx-auto flex max-w-3xl items-center justify-end px-5 pt-4">
+      <div className="mx-auto flex max-w-3xl items-center justify-between px-5 pt-4">
+        <Image
+          src="/mochi-wordmark.png"
+          alt="MochiPOS"
+          width={150}
+          height={34}
+          className="h-8 w-auto object-contain"
+          priority
+        />
         <LanguageSwitcher />
       </div>
       <section className="mx-auto max-w-3xl px-5 py-12 sm:py-20">
