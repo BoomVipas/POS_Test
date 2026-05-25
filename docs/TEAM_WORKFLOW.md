@@ -13,6 +13,61 @@ history; `docs/BATCH_PLAN.md` is the long-term plan; `docs/STATUS.md` is the sna
 
 ---
 
+## Roles & lanes (read first)
+
+Three contributors, with lanes chosen so we rarely edit the same files (the main
+cause of merge conflicts):
+
+| Who | Role | Primary lane (`area:` label) |
+|---|---|---|
+| **Founder** (PM) | Product direction · scope · priorities · UI / UX / flow / brand decisions · real-event field observation · "where are we heading." | `area: ui` — observes + decides; implementation follows the PM's direction. |
+| **Claude** | Implements features, fixes bugs, explores / improves; the PM's assistant. | `area: backend` — RPCs, data, server actions, schema, wiring. |
+| **Problemiesd** | Reads + fixes code; real-human testing / QA. | `area: qa` — testing, bug reports + fixes. |
+
+**Conflict-prevention rules**
+- One person per branch/feature. Keep PRs small; merge often.
+- **Two of us coding at once → use separate git worktrees** (same repo, different
+  folder): `git worktree add ../mochipos-<x> -b pos/<branch> origin/main`. Never run
+  two sessions in the same folder (that caused the PR #22/#23 tangle).
+- Lanes are defaults, not fences — if you cross into another lane, say so on the issue.
+
+## Milestones (stages — "where are we")
+
+Stages from the ROADMAP §33 six-month plan, tracked as **GitHub Milestones** (every
+issue carries one):
+
+| Milestone | Goal | Status |
+|---|---|---|
+| **M1 — Onboarding & first sale** | invite → workspace → catalog → event + stock → real POS sale | ✅ essentially done (closing out) |
+| **M2 — Event operations** | receipt · Send Later · sample stock · daily dashboard · restock/correction · CSV · product images | next |
+| **M3 — Customer portal** | QR registration · customer + pet profile · consent · order linking · customer dashboard | later |
+| **M4 — Pilot hardening** | bug fixes · onboarding · admin/pilot monitoring · RLS review · backup/export · real-event test · feedback | before pilot |
+| *cross-cutting* | `dx` hygiene (lint, cleanups) | ongoing |
+
+> On the [board](https://github.com/users/visanchan/projects/1): **Milestone = where we
+> are · `area:` = whose lane · assignee = who · column = status.**
+
+## Conventions cheat-sheet (one pattern for all of us)
+
+- **Branch:** `pos/<id>-slug` — `DD-XX`, `wave-NN`, `fix-…`, or `chore-…`, off latest `main`.
+- **Commit:** `[DD-XX] / [Wave NN] / [fix] / [chore] one-line` + a body with the *why*
+  and any migration / env / risk note. Co-author Claude when it did the work.
+- **A task = a GitHub Issue** → **assignee** (who) · **milestone** (stage) · **`area:`**
+  (lane) · optional **`arc:`** (feature group). "Grab" = assign yourself + move it to
+  *In Progress* on the board.
+- **Labels:** `area: backend|ui|qa` (lane) · `arc: …` (feature) · `good first issue` ·
+  `needs-migration`.
+- **Board:** [GitHub Project](https://github.com/users/visanchan/projects/1) kanban
+  (Todo → In Progress → In Review → Done). `BOARD.md` mirrors it for repo readers.
+- **PR + merge:** every change is a PR; **CI (typecheck · lint · test · build) must be
+  green**; self-merge is OK, **but ping the other dev for a look on risky areas** (auth ·
+  RLS · money/satang · inventory · refunds · migrations). Details in §2–§3 below.
+- **Migrations:** SQL file under `database/migrations/` + a ledger note in
+  `docs/DEPLOYMENT.md` + **a human applies it** in the Supabase SQL editor (Claude can't
+  run DDL).
+
+---
+
 ## 1. Who can touch what
 
 | | GitHub repo | Supabase **data** (rows, auth users) | Supabase **settings & SQL** (schema, RLS, Auth config, Storage, Redirect URLs) | Vercel |
