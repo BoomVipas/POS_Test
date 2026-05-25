@@ -9,7 +9,7 @@ on:
 
 jobs:
   verify:
-    name: typecheck · test · build
+    name: typecheck · lint · test · build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,5 +19,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+      # Self-merge team: CI is the safety net, so lint runs here too. ESLint
+      # exits non-zero only on errors (warnings are allowed), so this gates new
+      # errors without blocking on the pre-existing warning baseline.
+      - run: npm run lint
       - run: npm test
       - run: npm run build

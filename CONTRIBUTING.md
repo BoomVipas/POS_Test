@@ -1,13 +1,23 @@
 # Contributing to pos-for-sell
 
+> **Working as a team?** Read [`docs/TEAM_WORKFLOW.md`](docs/TEAM_WORKFLOW.md)
+> (two-developer + shared-Supabase rules). New here? Start with
+> [`ONBOARDING.md`](ONBOARDING.md).
+
 ## Setup
 
+This is a standalone repo (its root is the app). 
+
 ```bash
-cd pos-for-sell
-npm install
-cp .env.example .env.local      # fill in Supabase + Resend later
+git clone https://github.com/visanchan/mochipos.git
+cd mochipos
+npm ci
+cp .env.example .env.local      # fill in Supabase keys from the dashboard → Settings → API
 npm run dev                     # http://localhost:3000
 ```
+
+CI (`.github/workflows/ci.yml`) enforces **typecheck · lint · test · build** on
+every PR — run them locally before you push.
 
 ## Daily commands
 
