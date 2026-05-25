@@ -1,0 +1,2 @@
+# Fast, staged-only checks. The heavy gate (typecheck+lint+test) runs on pre-push.
+npx lint-staged

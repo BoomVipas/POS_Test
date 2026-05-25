@@ -1,0 +1,28 @@
+# Dependabot keeps npm deps + GitHub Actions current and flags security issues.
+# Free on private repos. Grouped to minimise PR noise for a small team.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    # One combined PR for routine minor/patch bumps; majors + security stay separate.
+    groups:
+      npm-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+    labels:
+      - "arc: dx"
+    commit-message:
+      prefix: "[chore] deps"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "arc: dx"
+    commit-message:
+      prefix: "[chore] ci-deps"

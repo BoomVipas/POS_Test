@@ -1,0 +1,3 @@
+# The merge gate, locally: typecheck + lint + test must pass before code leaves
+# your machine. Mirrors CI (which also runs `build`). Emergency bypass: --no-verify.
+npm run verify
