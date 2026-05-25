@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MochiPOS — Team &amp; Board Guide</title>
+<style>
+  :root{
+    --indigo:#2d2960; --indigo2:#4a3f9e; --lav:#b8a9f0; --lav-bg:#f1edfb;
+    --page:#f7f5fb; --panel:#ffffff; --line:#e7e1f4; --text:#2a2557; --muted:#6b6590;
+    --ok:#1f8a54; --ok-bg:#e7f6ee; --warn:#9a6a00; --warn-bg:#fbf3df; --blue:#2563c9; --gray:#8a85a8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--page);color:var(--text);
+    font:16px/1.65 "Nunito",-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:880px;margin:0 auto;padding:40px 22px 80px}
+  header.hero{background:linear-gradient(135deg,var(--indigo),var(--indigo2));color:#fff;
+    border-radius:22px;padding:30px 32px;box-shadow:0 14px 34px rgba(45,41,96,.22)}
+  header.hero h1{margin:0 0 6px;font-size:30px;letter-spacing:-.5px}
+  header.hero p{margin:0;opacity:.9}
+  h2{color:var(--indigo);font-size:21px;margin:38px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+  h3{color:var(--indigo2);font-size:16px;margin:20px 0 6px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin:14px 0;
+    box-shadow:0 4px 14px rgba(45,41,96,.05)}
+  table{width:100%;border-collapse:collapse;margin:8px 0;font-size:14.5px}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--lav-bg);color:var(--indigo);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  code{background:var(--lav-bg);color:var(--indigo);padding:1.5px 6px;border-radius:6px;font-size:13px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .callout{background:var(--lav-bg);border-left:4px solid var(--lav);border-radius:10px;padding:12px 16px;margin:14px 0}
+  .callout.ok{background:var(--ok-bg);border-left-color:var(--ok)}
+  .callout.warn{background:var(--warn-bg);border-left-color:var(--warn)}
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0;font-weight:800}
+  .col{padding:8px 14px;border-radius:999px;color:#fff;font-size:13.5px;white-space:nowrap}
+  .col.todo{background:var(--gray)} .col.prog{background:var(--blue)}
+  .col.rev{background:#d98324} .col.done{background:var(--ok)}
+  .arrow{color:var(--muted);font-weight:700}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:800}
+  .pill.be{background:#e3edff;color:#1f4fb0}.pill.ui{background:#fdf2cf;color:#8a6400}.pill.qa{background:#e7f6ee;color:var(--ok)}
+  ul{margin:6px 0 6px 2px;padding-left:20px}li{margin:4px 0}
+  .who{font-weight:800;color:var(--indigo)}
+  .small{color:var(--muted);font-size:13px}
+  a{color:var(--indigo2)}
+  footer{margin-top:42px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+  .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>MochiPOS — Team &amp; Board Guide</h1>
+  <p>How the three of us work together, what the kanban means, and how to keep it current. Open this file in a browser; share it with the team.</p>
+</header>
+
+<h2>1 · Who we are &amp; our lanes</h2>
+<p>Three contributors. Each has a <b>lane</b> (the <code>area:</code> label) chosen so we rarely touch the same files — that's how we avoid merge conflicts.</p>
+<table>
+  <tr><th>Who</th><th>Role</th><th>Lane</th></tr>
+  <tr><td class="who">Founder (you)</td><td>Project manager — product direction, scope, priorities, UI / flow / brand decisions, real-event field notes. <b>Decides where we're heading.</b></td><td><span class="pill ui">area: ui</span></td></tr>
+  <tr><td class="who">Claude</td><td>Implements features, fixes bugs, explores improvements. Your assistant. <b>Integrator</b> — merges everyone's branches and keeps <code>main</code> green.</td><td><span class="pill be">area: backend</span></td></tr>
+  <tr><td class="who">Problemiesd</td><td>Reads + fixes code; real-human testing / QA.</td><td><span class="pill qa">area: qa</span></td></tr>
+</table>
+
+<h2>2 · How work flows</h2>
+<div class="flow">
+  <span class="col todo">Todo</span><span class="arrow">→</span>
+  <span class="col prog">In&nbsp;Progress</span><span class="arrow">→</span>
+  <span class="col rev">In&nbsp;Review</span><span class="arrow">→</span>
+  <span class="col done">Done</span>
+</div>
+<ul>
+  <li><b>Todo</b> — picked + scoped, not started.</li>
+  <li><b>In Progress</b> — someone is building it (they assigned themselves + moved the card).</li>
+  <li><b>In Review</b> — a PR is open; CI is running and it's waiting for <b>Claude to integrate + merge</b>. <span class="small">(This is the integrator's queue.)</span></li>
+  <li><b>Done</b> — merged into <code>main</code> (which auto-deploys to production).</li>
+</ul>
+<div class="callout">A <b>task = a GitHub Issue</b>, tagged with a <b>Milestone</b> (which stage), an <b>area</b> (whose lane), and an <b>assignee</b> (who). On the board: <b>Milestone = where we are · area = whose lane · assignee = who · column = status.</b></div>
+
+<h2>3 · Where are we? (Milestones)</h2>
+<table>
+  <tr><th>Milestone</th><th>Goal</th><th>Status</th></tr>
+  <tr><td><b>M1 — Onboarding &amp; first sale</b></td><td>invite → workspace → catalog → event + stock → real POS sale + receipt</td><td>✅ done</td></tr>
+  <tr><td><b>M2 — Event operations</b></td><td>Send Later · sample stock · daily dashboard · restock · CSV · product images</td><td>🚧 next</td></tr>
+  <tr><td><b>M3 — Customer portal</b></td><td>QR registration · customer + pet profile · consent</td><td>⬜ later</td></tr>
+  <tr><td><b>M4 — Pilot hardening</b></td><td>monitoring · RLS review · backup · real-event test · feedback</td><td>⬜ before pilot</td></tr>
+</table>
+
+<h2>4 · The board &amp; branches — the mechanic</h2>
+<p>Cards are <b>Issues and PRs</b> — not raw branches. A branch reaches the board through its <b>PR</b>, and the PR attaches to its issue with one line in the PR description:</p>
+<div class="callout"><code>Closes #15</code> &nbsp;→&nbsp; the PR links to issue&nbsp;#15 (shown in the card's <b>"Linked pull requests"</b> field), and merging it closes the issue.</div>
+
+<h3>How the board updates itself (no magic)</h3>
+<p>The project has <b>Workflows</b> — little <span class="mono">event → action</span> rules:</p>
+<table>
+  <tr><th>GitHub event</th><th>Workflow</th><th>Card change</th></tr>
+  <tr><td>PR merged (<code>Closes #15</code>)</td><td>Pull request merged → Done</td><td>#15 → <b>Done</b></td></tr>
+  <tr><td>issue closed</td><td>Item closed → Done</td><td>card → <b>Done</b></td></tr>
+  <tr><td>new issue / PR created</td><td>Auto-add to project</td><td>card appears (in Todo)</td></tr>
+</table>
+<div class="callout warn"><b>Action needed (you, ~1 min, GitHub UI only):</b> these are currently <b>off</b>, so cards are moved by hand. Turn them on: open the project → top-right <b>⋯ → Workflows</b> → enable <b>Auto-add to project</b> (issues + PRs from <code>visanchan/mochipos</code>), <b>Pull request merged → Done</b>, and <b>Item closed → Done</b>. After that the board keeps itself current.</div>
+
+<h2>5 · One pattern we all follow</h2>
+<ul>
+  <li><b>Branch</b> off latest <code>main</code>: <code>pos/&lt;id&gt;-slug</code> (e.g. <code>pos/17-restock</code>). Pull <code>main</code> first.</li>
+  <li><b>Commit</b>: <code>[DD-XX] / [Wave NN] / [fix] / [chore] one line</code> + a body with the <i>why</i> and any migration / env / risk note.</li>
+  <li><b>PR</b>: always write <code>Closes #N</code>. <b>CI</b> (typecheck · lint · test · build) must be green.</li>
+  <li><b>Merge</b>: self-merge is OK, but <b>ping the other dev on risky areas</b> — auth · RLS · money · inventory · migrations.</li>
+  <li><b>Migrations</b> (schema/SQL): add the file under <code>database/migrations/</code> + a ledger note, then <b>a human applies it</b> in the Supabase SQL editor (Claude can't run database changes).</li>
+  <li><b>Two people coding at once → separate git worktrees</b> (own folder per session) so files never collide.</li>
+</ul>
+
+<h2>6 · Merging &amp; conflicts (Claude = integrator)</h2>
+<p>Parallel branches get merged by Claude, who keeps <code>main</code> green.</p>
+<ul>
+  <li><b>Textual / compatible conflict</b> (you both edited nearby, or added different things) → Claude resolves it, <b>keeping both features</b>, re-runs CI, and pings the author to confirm their part survived.</li>
+  <li><b>Behaviour clash</b> (you both changed the <i>same</i> thing differently) → that's a <b>product decision, not a merge</b> → Claude brings it to <b>you (PM)</b> to decide.</li>
+</ul>
+<div class="callout ok"><b>A merge is "done" only when all three agree:</b> Claude's resolution + the author's quick look + green CI. &nbsp;<b>resolve → confirm → merge.</b> No blind merges.</div>
+
+<h2>7 · Keep the board honest — checklist</h2>
+<ul>
+  <li>☐ Turn on the three workflows (§4) — one time.</li>
+  <li>☐ Every task is a GitHub Issue with a Milestone + area + assignee.</li>
+  <li>☐ Every PR says <code>Closes #N</code> and goes green on CI.</li>
+  <li>☐ Grab work = assign yourself + drag the card to In Progress.</li>
+  <li>☐ Coding in parallel = separate worktrees.</li>
+</ul>
+
+<footer>
+  Live board: <a href="https://github.com/users/visanchan/projects/1">github.com/users/visanchan/projects/1</a> ·
+  Repo: <a href="https://github.com/visanchan/mochipos">visanchan/mochipos</a> ·
+  Dev reference (Markdown): <code>docs/TEAM_WORKFLOW.md</code> · Onboarding: <code>ONBOARDING.md</code>.
+  <br/>MochiPOS team guide — keep this open while you work.
+</footer>
+
+</div>
+</body>
+</html>
