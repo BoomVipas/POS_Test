@@ -7,6 +7,10 @@ a two-person team.
 **Chosen setup:** two co-developers · **one shared Supabase project** · PRs + CI,
 **self-merge allowed** (no mandatory review). This doc makes that safe.
 
+**Live board → [`../BOARD.md`](../BOARD.md)** — who's on what right now (tasks live
+as GitHub issues; the board is the at-a-glance view). `TASKS.md` is the Done/batch
+history; `docs/BATCH_PLAN.md` is the long-term plan; `docs/STATUS.md` is the snapshot.
+
 ---
 
 ## 1. Who can touch what

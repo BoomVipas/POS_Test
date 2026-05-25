@@ -1,6 +1,11 @@
 # TASKS — pos-for-sell SaaS
 
-Live status board for the 100-batch plan in [docs/BATCH_PLAN.md](docs/BATCH_PLAN.md).
+> **Live team board → [`BOARD.md`](BOARD.md)** (who's on what now) + GitHub issues.
+> As of the 2-dev setup (2026-05-25), this file is the **batch/Done history + the
+> link to the plan** — not the live claim board. New work: grab an issue, move it
+> on `BOARD.md`. See [`docs/TEAM_WORKFLOW.md`](docs/TEAM_WORKFLOW.md).
+
+Batch history + index into the 100-batch plan in [docs/BATCH_PLAN.md](docs/BATCH_PLAN.md).
 
 ## Protocol (read before editing)
 
