@@ -93,7 +93,8 @@ Schema changes ship as new SQL files under `database/`. Apply them in order in t
 | 10 | unapplied | `functions/convert_sample_to_event.sql` | Wave 39a: sample bucket → booth |
 | 11 | unapplied | `functions/create_registration_token.sql` | Wave 40a: cashier issues post-sale token |
 | 12 | unapplied | `functions/claim_registration_token.sql` | Wave 40a: anon customer claim (token-as-credential) |
-| 13 | unapplied | `seed.sql` | Demo data (dev only; do NOT run in prod) |
+| 13 | unapplied | `functions/adjust_event_stock.sql` | #17: manual event-stock adjust (restock/correction) + audit, one txn — apply before restock UI is used live |
+| 14 | unapplied | `seed.sql` | Demo data (dev only; do NOT run in prod) |
 
 ## Build sizes
 

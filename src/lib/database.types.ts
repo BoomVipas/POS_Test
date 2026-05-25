@@ -606,6 +606,15 @@ export type Database = {
         Args: Record<string, never>;
         Returns: boolean;
       };
+      adjust_event_stock: {
+        Args: {
+          p_event_id: string;
+          p_product_id: string;
+          p_delta: number;
+          p_reason?: string | null;
+        };
+        Returns: Database["public"]["Tables"]["event_inventory"]["Row"];
+      };
       convert_event_to_sample: {
         Args: {
           p_event_id: string;
