@@ -41,11 +41,19 @@ npm test         # should be all green
 We share **one** Supabase database, so **never test against real pilot data**.
 The app isolates everything by `workspace_id` (RLS), so give yourself a private
 workspace:
-- Easiest: in the Supabase SQL editor, run `database/seed.sql` **after** signing
-  up your own user via the app — it creates a demo workspace + products + an event
-  for the first auth user. (Coordinate with the founder so you don't both fight
-  over "first user"; if needed, ask Claude to seed a workspace for *your* user id.)
-- Then log in → you land in your workspace → Products / Events / POS are yours.
+1. **Sign up** via the app (`/register` needs an invite code, so for dev just
+   create your user in Supabase → Auth → Users, or sign up however the founder
+   set up), so an auth user exists for your email.
+2. Seed **your own** workspace (products + an event + stock):
+   ```bash
+   node --env-file=.env.local scripts/seed-dev-workspace.mjs you@email.com "Your Dev"
+   ```
+   It's idempotent (re-running just reports your existing workspace) and isolated
+   from everyone else via RLS.
+3. Log in → you land in your workspace → Products / Events / POS are yours.
+
+> Don't run `database/seed.sql` as the second dev — it targets the *first* auth
+> user (the founder). Use the script above instead.
 
 See `docs/TEAM_WORKFLOW.md` §3 for the full shared-DB rules.
 
