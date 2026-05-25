@@ -3,7 +3,7 @@ import type {
   ApplicationStatus,
   Database,
 } from "@/lib/database.types";
-import { ApproveRejectButtons } from "./Actions";
+import { ApproveRejectButtons } from "./ApproveRejectButtons";
 
 type App = Database["public"]["Tables"]["applications"]["Row"];
 
@@ -99,7 +99,10 @@ export default async function ApplicationsPage({
             )}
             {filterStatus === "pending" && (
               <div className="mt-3">
-                <ApproveRejectButtons applicationId={row.id} />
+                <ApproveRejectButtons
+                  applicationId={row.id}
+                  brandName={row.brand_name}
+                />
               </div>
             )}
           </li>

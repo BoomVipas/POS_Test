@@ -266,10 +266,10 @@ All Phase 2 batches require Supabase. Status: **blocked** until DD-15 unblocks.
 | DD-23 — Admin auth gate | blocked | Supabase Auth |
 | DD-24 — /admin/applications list | blocked | Supabase |
 | DD-25 — Application search | blocked | Supabase |
-| DD-26 — Approve/reject | blocked | Supabase |
-| DD-27 — Generate invite code | blocked | Supabase |
-| DD-28 — Invite email | blocked | Supabase + Resend |
-| DD-29 — /admin/invite-codes list | blocked | Supabase |
+| DD-26 — Approve/reject | ready-for-review | `pos/DD-26-approve-generate-invite` — `approve_application`/`reject_application` RPCs + wired buttons (issue #20) |
+| DD-27 — Generate invite code | ready-for-review | minted atomically inside `approve_application` (TS generator → RPC) — same branch |
+| DD-28 — Invite email | ready-for-review | best-effort Resend send on approve (gated on `RESEND_API_KEY`) — same branch |
+| DD-29 — /admin/invite-codes list | done | `src/app/admin/invite-codes/page.tsx` (read-only list). |
 | DD-30 — Resend invite | blocked | Supabase + Resend |
 | DD-31 — Cancel invite | blocked | Supabase |
 | DD-32 — Admin audit logging | blocked | Supabase |

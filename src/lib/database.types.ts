@@ -636,6 +636,14 @@ export type Database = {
         Args: { p_code: string; p_brand_name: string; p_slug: string };
         Returns: string;
       };
+      approve_application: {
+        Args: { p_application_id: string; p_code: string };
+        Returns: Database["public"]["Tables"]["invite_codes"]["Row"];
+      };
+      reject_application: {
+        Args: { p_application_id: string };
+        Returns: undefined;
+      };
       create_order: {
         Args: { payload: Json };
         Returns: string;

@@ -55,7 +55,7 @@ cp .env.example .env.local
 In the Supabase SQL editor, paste-and-run each file in this order:
 
 1. `database/schema.sql` — tables + helper functions.
-2. `database/functions/*.sql` — the 8 security-definer RPCs (`create_order`, `void_order`, `correct_order`, `redeem_invite_code`, `create_registration_token`, `claim_registration_token`, `convert_event_to_sample`, `convert_sample_to_event`). RLS routes order/audit writes **through** these, so don't skip them.
+2. `database/functions/*.sql` — the 10 security-definer RPCs (`create_order`, `void_order`, `correct_order`, `redeem_invite_code`, `approve_application`, `reject_application`, `create_registration_token`, `claim_registration_token`, `convert_event_to_sample`, `convert_sample_to_event`). RLS routes order/audit writes **through** these, so don't skip them.
 3. `database/rls-policies.sql`
 4. `database/seed.sql` (optional — only after you've created at least one Auth user via the app).
 
