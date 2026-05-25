@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MochiPOS — How We Develop (Decisions &amp; Why)</title>
+<style>
+  :root{
+    --indigo:#2d2960; --indigo2:#4a3f9e; --lav:#b8a9f0; --lav-bg:#f1edfb;
+    --page:#f7f5fb; --panel:#ffffff; --line:#e7e1f4; --text:#2a2557; --muted:#6b6590;
+    --ok:#1f8a54; --ok-bg:#e7f6ee; --warn:#9a6a00; --warn-bg:#fbf3df; --blue:#2563c9; --gray:#8a85a8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--page);color:var(--text);
+    font:16px/1.65 "Nunito",-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:900px;margin:0 auto;padding:40px 22px 80px}
+  header.hero{background:linear-gradient(135deg,var(--indigo),var(--indigo2));color:#fff;
+    border-radius:22px;padding:30px 32px;box-shadow:0 14px 34px rgba(45,41,96,.22)}
+  header.hero h1{margin:0 0 6px;font-size:29px;letter-spacing:-.5px}
+  header.hero p{margin:0;opacity:.92}
+  h2{color:var(--indigo);font-size:21px;margin:38px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+  h3{color:var(--indigo2);font-size:16px;margin:20px 0 6px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin:14px 0;
+    box-shadow:0 4px 14px rgba(45,41,96,.05)}
+  table{width:100%;border-collapse:collapse;margin:8px 0;font-size:14.5px}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--lav-bg);color:var(--indigo);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  code{background:var(--lav-bg);color:var(--indigo);padding:1.5px 6px;border-radius:6px;font-size:13px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .callout{background:var(--lav-bg);border-left:4px solid var(--lav);border-radius:10px;padding:12px 16px;margin:14px 0}
+  .callout.ok{background:var(--ok-bg);border-left-color:var(--ok)}
+  .callout.warn{background:var(--warn-bg);border-left-color:var(--warn)}
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0;font-weight:800}
+  .chip{padding:8px 13px;border-radius:999px;color:#fff;font-size:13px;white-space:nowrap}
+  .chip.br{background:var(--gray)} .chip.pr{background:var(--blue)} .chip.gate{background:#7c3aed}
+  .chip.me{background:#d98324} .chip.prod{background:var(--ok)}
+  .arrow{color:var(--muted);font-weight:700}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:800}
+  .pill.yes{background:var(--ok-bg);color:var(--ok)} .pill.no{background:#fbe6e6;color:#b42318}
+  .pill.soon{background:var(--warn-bg);color:var(--warn)}
+  ul{margin:6px 0 6px 2px;padding-left:20px}li{margin:5px 0}
+  .small{color:var(--muted);font-size:13px}
+  a{color:var(--indigo2)}
+  footer{margin-top:42px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>How we develop — decisions &amp; why</h1>
+  <p>The way two co-founders (+ Claude) ship MochiPOS without waiting on each other or risking the live booth. This is the "why" behind the rules; the board &amp; roles live in <a href="team-guide.html" style="color:#fff;text-decoration:underline">team-guide.html</a>.</p>
+</header>
+
+<h2>1 · The one principle</h2>
+<div class="callout"><b>Ship fast, don't wait on each other — make the merge gate a robot, not a person.</b> We're two people heading to a real booth. A human approval queue would slow us without adding safety that automation can't already give. So: <b>self-merge stays</b>, and machines (CI, Claude, previews) catch problems <i>before</i> they reach production.</div>
+
+<h2>2 · The loop</h2>
+<div class="flow">
+  <span class="chip br">branch</span><span class="arrow">→</span>
+  <span class="chip pr">open PR</span><span class="arrow">→</span>
+  <span class="chip gate">CI green + Claude /review + preview URL</span><span class="arrow">→</span>
+  <span class="chip me">you click YOUR preview, self-merge</span><span class="arrow">→</span>
+  <span class="chip prod">production</span>
+</div>
+<ul>
+  <li>Each PR gets a <b>real, data-connected preview</b> (own URL) — so you test <i>your own</i> change with data <b>before</b> merge, never on production, never waiting for the other person.</li>
+  <li>A broken build <b>can't</b> get there: the pre-push hook + CI block it.</li>
+  <li><b>Claude reviews every code PR</b> automatically — your always-awake second pair of eyes, so neither of you is a bottleneck.</li>
+</ul>
+
+<h2>3 · What's automated (the safety nets)</h2>
+<p>None of these makes a human wait — they run on their own.</p>
+<table>
+  <tr><th>Net</th><th>What it catches</th><th>Automatic?</th></tr>
+  <tr><td><b>Pre-push hook</b> <span class="small">(Husky)</span></td><td>Runs <code>typecheck + lint + test</code> before code leaves your machine — can't push red.</td><td><span class="pill yes">on push</span></td></tr>
+  <tr><td><b>CI</b> <span class="small">(GitHub Actions)</span></td><td>Re-runs <code>typecheck · lint · test · build</code> on every PR + on <code>main</code>.</td><td><span class="pill yes">on PR</span></td></tr>
+  <tr><td><b>Claude <code>/review</code></b></td><td>Reads the diff for correctness bugs; <code>/security-review</code> on auth · RLS · money.</td><td><span class="pill yes">every code PR</span></td></tr>
+  <tr><td><b>DB-connected preview</b></td><td>Lets you actually <i>use</i> the change with data before merging.</td><td><span class="pill yes">per PR</span></td></tr>
+  <tr><td><b>Dependabot</b></td><td>Weekly dependency + security updates, grouped to cut noise.</td><td><span class="pill yes">weekly</span></td></tr>
+  <tr><td><b>Git guardrails</b></td><td>Blocks Claude from destructive git (force-push, push-to-<code>main</code>, <code>reset --hard</code>…).</td><td><span class="pill yes">Claude only</span></td></tr>
+</table>
+
+<h2>4 · Environments &amp; data safety</h2>
+<p>Each environment points at a <b>different database</b>, so a test can never hit real pilot data.</p>
+<table>
+  <tr><th>Environment</th><th>Runs when</th><th>Database</th></tr>
+  <tr><td><b>Local</b> <span class="small">(<code>npm run dev</code>)</span></td><td>you, on your machine</td><td><b>staging</b> Supabase (via your <code>.env.local</code>)</td></tr>
+  <tr><td><b>Preview</b> <span class="small">(Vercel)</span></td><td>every PR — own URL</td><td><b>staging</b> Supabase</td></tr>
+  <tr><td><b>Production</b> <span class="small">(<code>mochipos.vercel.app</code>)</span></td><td>merge to <code>main</code></td><td><b>production</b> Supabase — real pilot data</td></tr>
+</table>
+<div class="callout warn"><b>The one rule that protects the booth:</b> <b>Preview points at staging, Production at production — never crossed.</b> Inside each project, RLS still isolates every workspace. Setup: <code>docs/STAGING_PREVIEWS.md</code>.</div>
+
+<h2>5 · Decisions &amp; deferrals</h2>
+<p>What we chose, and what we said "not yet" to — so we don't relitigate it.</p>
+<table>
+  <tr><th>Decision</th><th>Choice</th><th>Why</th></tr>
+  <tr><td>Mandatory mutual review</td><td><span class="pill no">No</span></td><td>Waiting on each other is the bottleneck. CI + Claude review cover it.</td></tr>
+  <tr><td>Self-merge</td><td><span class="pill yes">Keep</span></td><td>Either of us merges our own green PR. Speed.</td></tr>
+  <tr><td>Merge gate</td><td><span class="pill yes">CI, not a person</span></td><td>A robot says yes/no in ~90s, day or night.</td></tr>
+  <tr><td>Claude reviews PRs</td><td><span class="pill yes">By default</span></td><td>Free second-eyes that's always awake; no one is a bottleneck.</td></tr>
+  <tr><td>Staging DB + real previews</td><td><span class="pill yes">Adopted</span></td><td>Test with data <i>before</i> merge — fixes "had to test on production."</td></tr>
+  <tr><td>Pre-push hook · Dependabot · guardrails</td><td><span class="pill yes">Adopted</span></td><td>Cheap, automatic, catch mistakes early. Free.</td></tr>
+  <tr><td>GitHub Pro → branch protection</td><td><span class="pill soon">Deferred</span></td><td>Costs money; <b>no revenue yet</b>. CI + honour-system is enough for two people. Revisit when the team or stakes grow.</td></tr>
+  <tr><td>Supabase CLI (versioned migrations)</td><td><span class="pill soon">Deferred</span></td><td>Hand-applying SQL is fine at pilot scale; CLI when it gets tedious.</td></tr>
+  <tr><td>Vercel Pro · paid Supabase</td><td><span class="pill soon">Deferred</span></td><td>Move when real sellers' money + data are in the system (backups, team access).</td></tr>
+</table>
+
+<h2>6 · Who does what</h2>
+<p>Complementary focuses, not ranks — full version + the board in <a href="team-guide.html">team-guide.html</a>.</p>
+<ul>
+  <li><b>visanchan</b> — product, UX &amp; flow, brand, real-event testing. Holds Vercel + Supabase (working on not being the infra bottleneck).</li>
+  <li><b>Problemiesd</b> — engineering, code, real-human testing. Has Supabase access; tests changes on PR previews.</li>
+  <li><b>Claude</b> — implements, reviews every code PR, integrates branches, keeps <code>main</code> green. Serves both equally.</li>
+</ul>
+
+<footer>
+  Board &amp; roles: <a href="team-guide.html">team-guide.html</a> ·
+  Staging/preview setup: <code>docs/STAGING_PREVIEWS.md</code> ·
+  Dev reference: <code>docs/TEAM_WORKFLOW.md</code> · Deploy: <code>docs/DEPLOYMENT.md</code>.
+  <br/>MochiPOS — how we develop. Updated May 2026.
+</footer>
+
+</div>
+</body>
+</html>
