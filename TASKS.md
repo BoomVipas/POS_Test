@@ -17,14 +17,9 @@ Anything inside `pos-for-sell/`. Do not edit files in the root or in `meowmeow_p
 
 ## Currently active
 
-### DD-55–66 — Real POS sale (live catalog → create_order → atomicity)
-- **Owner:** claude
-- **Status:** in-progress
-- **Branch:** pos/DD-55-66-real-pos-sale
-- **Claimed:** 2026-05-25 07:17
-- **Goal:** the arc's destination. `/app/pos` (configured) reads the active event + its `event_inventory`-backed catalog (DD-55–64), and "Confirm sale" calls the real **`create_order`** RPC via a Server Action (DD-65) — the client never decrements stock; the RPC does it atomically (`FOR UPDATE` + insufficient-stock guard = DD-66). Pure `buildCreateOrderPayload` (cart → RPC payload) + an end-to-end pglite test (builder → `create_order` → asserts order/items/inventory). Success page already degrades gracefully for a real order id (full receipt = later DD-67). **This is the loop's stop condition** — on green merge, the cron self-cancels.
+_None claimed. ✅ **The post-Supabase wire-up arc (DD-39 login → DD-65 `create_order`) is COMPLETE** (2026-05-25) — see the arc summary in [docs/STATUS.md](docs/STATUS.md). A pilot seller can go invite → workspace → catalog → event + stock → **real atomic sale** on live Supabase, RLS-isolated per tenant. The autonomous loop that drove it (cron `c627795e`) has self-cancelled at its stop condition. Most recent code: **DD-55–66 real POS sale** (`ba53cbc`, PR #9 — see **Done**)._
 
-_Context: post-Supabase wire-up arc (**DD-39 login → DD-65 `create_order`**), advanced by the autonomous loop (cron `c627795e`, one batch per tick). Most recent: **Wave 43 events + event_inventory** (`70d8e15`, PR #8 — see **Done**)._
+**Suggested next arc (post-sale polish — unclaimed):** DD-67 real receipt page · DD-45/46 product images → Supabase Storage · DD-49 CSV import · DD-54 setup-complete gate · DD-74 live free-sample toggle · DD-85+ real dashboard on `orders`/`event_inventory` · cleanup of the `redeem_invite_code` dead `set status='expired'` write (noted in DD-33–38).
 
 ## Repo migration — pos-for-sell → standalone `mochipos` ✅ COMPLETE (2026-05-25)
 
@@ -351,6 +346,10 @@ Pick one provider for analytics + error tracking; defer until Phase 8.
 ## Done
 
 (Move completed batches here with the merging commit SHA.)
+
+### DD-55–66 — Real POS sale (live catalog → create_order → atomicity) ⭐ arc destination
+- **Merged:** 2026-05-25 · `ba53cbc` (PR #9)
+- **Result:** `/app/pos` (configured) loads the active event (latest `planned`/`running`) + its allocated active products (`current_qty` from `event_inventory`) and sells from real data (DD-55–64). "Confirm sale" → `submitOrder` Server Action → the **`create_order`** RPC (DD-65): the cashier sends only intent (lines/payment/splits/customer), `workspace_id` is resolved server-side (never trusted from the client), and the RPC owns prices/stock/totals, writing `orders`/`order_items`/`payment_records`/`send_later_orders`/`audit_logs` and decrementing `event_inventory` atomically (`FOR UPDATE` + insufficient-stock guard = DD-66; Wave 41-hardened). Pure `buildCreateOrderPayload` (+4) + end-to-end pglite coverage through the builder (decrement/`sold_qty`, oversell rollback, exhaust-then-refuse; +3). `POSMode` context routes demo vs. live; demo path untouched; success page degrades gracefully for a real order id. Deferred: DD-67 real receipt, DD-74 live samples. pglite can't express true two-connection concurrency — the `FOR UPDATE` mechanism is in place; the no-oversell guarantee is pinned sequentially. Suite 469 → 476. CI green.
 
 ### Wave 43 — Events + event_inventory foundation
 - **Merged:** 2026-05-25 · `70d8e15` (PR #8)
