@@ -46,13 +46,17 @@ begin
     on conflict (workspace_id, sku) do nothing;
 
   -- demo event spanning today + 3 days
-  insert into public.events(workspace_id, name, venue, start_date, end_date, status)
-    values (v_ws_id, 'Pilot Demo Expo', 'Localhost', current_date, current_date + 3, 'planned')
-    on conflict do nothing
-    returning id into v_event_id;
+  select id into v_event_id
+  from public.events
+  where workspace_id = v_ws_id
+    and name = 'Pilot Demo Expo'
+  order by created_at desc
+  limit 1;
 
   if v_event_id is null then
-    select id into v_event_id from public.events where workspace_id = v_ws_id order by created_at desc limit 1;
+    insert into public.events(workspace_id, name, venue, start_date, end_date, status)
+      values (v_ws_id, 'Pilot Demo Expo', 'Localhost', current_date, current_date + 3, 'planned')
+      returning id into v_event_id;
   end if;
 
   -- starting inventory at the demo event
