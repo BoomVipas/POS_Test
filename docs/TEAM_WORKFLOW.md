@@ -1,10 +1,10 @@
 # Team workflow — MochiPOS
 
-How two developers (+ Claude) work on this repo together without stepping on each
-other or the live pilot data. Set up 2026-05-25 when the project went from solo to
-a two-person team.
+How the two **co-founders** (+ Claude) work on this repo together without stepping
+on each other or the live pilot data. Set up 2026-05-25 when the project went from
+solo to a two-co-founder team.
 
-**Chosen setup:** two co-developers · **one shared Supabase project** · PRs + CI,
+**Chosen setup:** two co-founders · **one shared Supabase project** · PRs + CI,
 **self-merge allowed** (no mandatory review). This doc makes that safe.
 
 **Live board → [`../BOARD.md`](../BOARD.md)** — who's on what right now (tasks live
@@ -13,16 +13,20 @@ history; `docs/BATCH_PLAN.md` is the long-term plan; `docs/STATUS.md` is the sna
 
 ---
 
-## Roles & lanes (read first)
+## The team & how we split focus (read first)
 
-Three contributors, with lanes chosen so we rarely edit the same files (the main
-cause of merge conflicts):
+Two **co-founders** — equal partners — plus Claude (AI). We lean into different
+**focuses** (not ranks) and pick **lanes** (the `area:` label) so we rarely edit the
+same files; the big calls are shared.
 
-| Who | Role | Primary lane (`area:` label) |
+| Who | Focus (complementary — *not* a hierarchy) | Default lane (`area:`) |
 |---|---|---|
-| **Founder** (PM) | Product direction · scope · priorities · UI / UX / flow / brand decisions · real-event field observation · "where are we heading." | `area: ui` — observes + decides; implementation follows the PM's direction. |
-| **Claude** | Implements features, fixes bugs, explores / improves; the PM's assistant; **integrator** — keeps `main` green, merges branches, resolves conflicts (see *Integration & conflict handling*). | `area: backend` — RPCs, data, server actions, schema, wiring. |
-| **Problemiesd** | Reads + fixes code; real-human testing / QA. | `area: qa` — testing, bug reports + fixes. |
+| **visanchan** (co-founder) | Product, direction, scope, UX & flow, brand, real-event field testing — the *what & why*. | `area: ui` (+ product calls) |
+| **Problemiesd** (co-founder) | Engineering — reads, writes + fixes code — plus real-human testing — the *how, and does it hold up*. | `area: backend` / `area: qa` |
+| **Claude** (AI) | Implements, fixes, explores improvements, and **integrates** everyone's branches (keeps `main` green — see *Integration & conflict handling*). Serves both co-founders. | `area: backend` |
+
+Lanes are **soft defaults** to avoid collisions — either co-founder can work
+anywhere; the label just says "who's likely in these files right now."
 
 **Conflict-prevention rules**
 - One person per branch/feature. Keep PRs small; merge often.
@@ -81,8 +85,8 @@ safety net, not a reason to batch up big "merge it all at the end" merges.
   to confirm their part survived.
 - **Semantic / incompatible** — both sides changed the *same behaviour* in *different
   ways*. That's a **product decision, not a merge** → Claude surfaces the clash + the
-  trade-off and the **PM decides** (the "never auto-resolve conflicts heuristically"
-  rule).
+  trade-off and **the co-founders decide** (product call led by visanchan; the
+  "never auto-resolve conflicts heuristically" rule).
 
 **A merge is only "done" when all three agree:** Claude's resolution **+** the author's
 quick look (especially code Claude didn't write) **+** **green CI**.
@@ -94,11 +98,11 @@ quick look (especially code Claude didn't write) **+** **green CI**.
 
 | | GitHub repo | Supabase **data** (rows, auth users) | Supabase **settings & SQL** (schema, RLS, Auth config, Storage, Redirect URLs) | Vercel |
 |---|---|---|---|---|
-| **Founder** (you) | ✅ collaborator | ✅ via dashboard + keys | ✅ dashboard / SQL editor | ✅ **owner — only you** |
-| **Friend** (co-dev) | ✅ collaborator | ✅ via dashboard + keys (Supabase team) | ✅ dashboard / SQL editor (Supabase team) | ❌ no access (gets PR preview URLs via GitHub) |
+| **visanchan** (co-founder) | ✅ collaborator | ✅ via dashboard + keys | ✅ dashboard / SQL editor | ✅ holds access *(for now — can add Problemiesd anytime)* |
+| **Problemiesd** (co-founder) | ✅ collaborator | ✅ via dashboard + keys (Supabase team) | ✅ dashboard / SQL editor (Supabase team) | ⏳ not yet (gets PR preview URLs via GitHub) |
 | **Claude** (AI) | ✅ branches + PRs | ✅ read/write via the service-role key in `.env.local` (used carefully; diagnostics read-only) | ❌ can't run DDL or change settings — **writes the `.sql`, a human applies it** | ❌ none (only sees PR check status relayed by GitHub) |
 
-**Implication:** anything that is *Vercel config* (env vars, domains) is the **founder's** task. Anything that is *Supabase schema/settings* (running a migration, RLS, Auth Redirect URLs, Storage buckets) is a **human** task (either dev) — Claude prepares it, a human applies it.
+**Implication:** anything that is *Vercel config* (env vars, domains) goes through **visanchan** (he holds Vercel access for now — and can add Problemiesd anytime). Anything that is *Supabase schema/settings* (running a migration, RLS, Auth Redirect URLs, Storage buckets) is a **human** task (either dev) — Claude prepares it, a human applies it.
 
 ---
 
@@ -113,7 +117,7 @@ quick look (especially code Claude didn't write) **+** **green CI**.
 - **Pull `main` before you start**, and merge `main` into a long-running branch often, to avoid conflicts. Two people + Vercel-on-every-merge means `main` moves — stay synced.
 - **Never auto-resolve a merge conflict by guessing.** Surface it and resolve deliberately.
 
-> **GitHub setting to add (founder, 2 min):** Settings → Branches → add a rule for `main`: **Require status checks to pass before merging** → select the CI check. Leave "require approvals" **off** (you chose self-merge). This enforces "green CI before merge" without blocking either of you from merging your own PR.
+> **GitHub setting to add (visanchan, 2 min):** Settings → Branches → add a rule for `main`: **Require status checks to pass before merging** → select the CI check. Leave "require approvals" **off** (you chose self-merge). This enforces "green CI before merge" without blocking either of you from merging your own PR.
 
 ---
 
@@ -124,9 +128,9 @@ You both point at **one** Supabase project — local dev, Vercel preview, and Ve
 ### 3a. Isolate yourselves with workspaces, not databases
 The app is **multi-tenant with RLS** — every row is scoped to a `workspace_id`, and RLS blocks cross-workspace reads. Use that as your isolation boundary:
 
-- Each of you works in your **own dev workspace** (e.g. "Boom Dev", "Friend Dev"). Create one via `seed.sql` or the register flow.
+- Each co-founder works in their **own dev workspace** (e.g. "visanchan Dev", "Problemiesd Dev") — seed it with `scripts/seed-dev-workspace.mjs`.
 - **Real pilot sellers get their own workspaces.** Never test against a real pilot workspace's data.
-- Because of RLS, your dev workspace can't see your friend's, and neither can see the pilot's — so day-to-day building (products, events, sales) is already isolated **inside the one project**. This recovers most of what a separate staging project would give.
+- Because of RLS, one co-founder's dev workspace can't see the other's, and neither can see the pilot's — so day-to-day building (products, events, sales) is already isolated **inside the one project**. This recovers most of what a separate staging project would give.
 
 ### 3b. Schema changes go through migrations (never ad-hoc)
 `schema.sql` / `rls-policies.sql` / `database/functions/*` are the **source of truth in git**, but the live DB only changes when a human applies SQL. So:
@@ -143,7 +147,7 @@ The app is **multi-tenant with RLS** — every row is scoped to a `workspace_id`
 - `.env.local` is **git-ignored** — never commit it. Copy from `.env.example`.
 - **Get your own keys from the dashboard:** Supabase → Settings → API → copy `URL`, `anon`, `service_role` into your `.env.local`. (Your friend has Supabase team access, so they self-serve — no one emails keys around.)
 - The **`service_role` key bypasses RLS** — server-only, never `NEXT_PUBLIC_`, never imported by client code. Treat it like a password.
-- Resend keys (`RESEND_API_KEY`, `EMAIL_FROM`, `ADMIN_EMAIL`) aren't in Supabase — the founder shares those, or you develop without them (email steps degrade to best-effort).
+- Resend keys (`RESEND_API_KEY`, `EMAIL_FROM`, `ADMIN_EMAIL`) aren't in Supabase — visanchan shares those, or you develop without them (email steps degrade to best-effort).
 
 ---
 
@@ -153,7 +157,7 @@ The app is **multi-tenant with RLS** — every row is scoped to a `workspace_id`
 |---|---|---|---|
 | **Local dev** | each dev's machine (`npm run dev`) | shared Supabase (via `.env.local`) | both devs + Claude |
 | **PR preview** | Vercel auto-builds a URL per PR | shared Supabase (Vercel project env) | visible to both on the PR (friend sees the URL via GitHub even without Vercel) |
-| **Production** | `mochipos.vercel.app` (Vercel, branch `main`) | shared Supabase | founder owns Vercel; deploys on every merge to `main` |
+| **Production** | `mochipos.vercel.app` (Vercel, branch `main`) | shared Supabase | visanchan holds Vercel access; deploys on every merge to `main` |
 
 There is **no separate staging DB** (by choice). Workspaces (§3a) are the isolation boundary instead. If pilot data ever feels at risk, the upgrade path is a second free-tier Supabase project for staging — but not now.
 
