@@ -1,23 +1,79 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getDict } from "@/lib/i18n/server";
+import { createClient } from "@/lib/supabase/server";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { signOut } from "./app/actions";
+
+function isSupabaseConfigured(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  );
+}
+
+async function getSignedInState(): Promise<boolean> {
+  if (!isSupabaseConfigured()) return false;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return Boolean(user);
+}
 
 export default async function HomePage() {
   const { t } = await getDict();
+  const signedIn = await getSignedInState();
 
   return (
     <main className="flex-1">
-      <div className="mx-auto flex max-w-3xl items-center justify-between px-5 pt-4">
-        <Image
-          src="/mochi-wordmark.png"
-          alt="MochiPOS"
-          width={150}
-          height={34}
-          className="h-8 w-auto object-contain"
-          priority
-        />
-        <LanguageSwitcher />
+      <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3 px-5 pt-4">
+        <Link href="/" className="shrink-0">
+          <Image
+            src="/mochi-wordmark.png"
+            alt="MochiPOS"
+            width={150}
+            height={34}
+            className="h-8 w-auto object-contain"
+            priority
+          />
+        </Link>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <LanguageSwitcher />
+          {signedIn ? (
+            <>
+              <Link
+                href="/app"
+                className="inline-flex h-9 items-center rounded-[var(--radius-md)] border border-line bg-panel px-3.5 text-sm font-bold text-accent-strong transition-colors hover:bg-soft"
+              >
+                {t.landing.ctaOpenApp}
+              </Link>
+              <form action={signOut}>
+                <button
+                  type="submit"
+                  className="inline-flex h-9 items-center rounded-[var(--radius-md)] border border-line bg-panel px-3.5 text-sm font-bold text-muted transition-colors hover:text-text"
+                >
+                  {t.chrome.signOut}
+                </button>
+              </form>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="inline-flex h-9 items-center rounded-[var(--radius-md)] border border-line bg-panel px-3.5 text-sm font-bold text-accent-strong transition-colors hover:bg-soft"
+              >
+                {t.login.submit}
+              </Link>
+              <Link
+                href="/register"
+                className="btn-accent inline-flex h-9 items-center rounded-[var(--radius-md)] px-4 text-sm font-bold"
+              >
+                {t.landing.ctaRegister}
+              </Link>
+            </>
+          )}
+        </div>
       </div>
       <section className="mx-auto max-w-3xl px-5 py-12 sm:py-20">
         <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-muted">
