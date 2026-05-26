@@ -77,6 +77,8 @@ export type Dict = {
     orDivider: string;
     googleHint: string;
     errorEmailMismatch: string;
+    errorSlugTaken: string;
+    errorSlugInvalid: string;
     errorGoogleGeneric: string;
   };
   passwordReset: {
@@ -434,6 +436,10 @@ const en: Dict = {
     googleHint: "Sign in with the Google account for the email above.",
     errorEmailMismatch:
       "That Google account doesn't match your invite email. Use the invited email, or set a password instead.",
+    errorSlugTaken:
+      "That workspace address is already taken. Go back, choose a different one, and try again.",
+    errorSlugInvalid:
+      "Your workspace address is invalid. Use lowercase letters, numbers, and hyphens only.",
     errorGoogleGeneric: "Couldn't continue with Google. Please try again.",
   },
   passwordReset: {
@@ -799,6 +805,10 @@ const th: Dict = {
     googleHint: "เข้าสู่ระบบด้วยบัญชี Google ของอีเมลด้านบน",
     errorEmailMismatch:
       "อีเมลของบัญชี Google ไม่ตรงกับรหัสเชิญของคุณ กรุณาใช้อีเมลที่ได้รับเชิญ หรือตั้งรหัสผ่านแทน",
+    errorSlugTaken:
+      "ที่อยู่ Workspace นี้ถูกใช้งานแล้ว กรุณากลับไปเลือกที่อยู่ใหม่แล้วลองอีกครั้ง",
+    errorSlugInvalid:
+      "ที่อยู่ Workspace ไม่ถูกต้อง ใช้ได้เฉพาะตัวพิมพ์เล็ก ตัวเลข และขีดกลาง",
     errorGoogleGeneric: "ดำเนินการต่อด้วย Google ไม่สำเร็จ กรุณาลองอีกครั้ง",
   },
   passwordReset: {

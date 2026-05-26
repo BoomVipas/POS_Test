@@ -32,15 +32,18 @@ export default async function RegisterPage({
   const sp = await searchParams;
   const { t } = await getDict();
 
-  // A failed Google redeem bounces back here with a short `?error=` reason. The
-  // email-mismatch case gets its own message (most common + most confusing);
-  // everything else collapses to a generic retry.
+  // A failed Google redeem bounces back here with a short `?error=` reason.
+  // email-mismatch and slug errors get specific messages; everything else is generic.
   const registerError =
     sp.error === "email-mismatch"
       ? t.register.errorEmailMismatch
-      : sp.error
-        ? t.register.errorGoogleGeneric
-        : null;
+      : sp.error === "slug-taken"
+        ? t.register.errorSlugTaken
+        : sp.error === "slug"
+          ? t.register.errorSlugInvalid
+          : sp.error
+            ? t.register.errorGoogleGeneric
+            : null;
 
   return (
     <main className="flex-1">

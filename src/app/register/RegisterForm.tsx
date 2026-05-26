@@ -12,6 +12,7 @@ import {
 } from "./schema";
 import { validateInviteCode, completeRegistration } from "./actions";
 import { GoogleButton } from "@/components/auth/GoogleButton";
+import { isValidSlug } from "@/lib/slug";
 
 type Invite = {
   code: string;
@@ -171,16 +172,21 @@ function AccountStep({
         label={t.googleCta}
         genericError={t.errorGoogleGeneric}
         dividerLabel={t.orDivider}
-        resolvePath={() => ({
-          // Carry the invite + the *current* slug field through the OAuth
-          // round-trip; /auth/callback re-validates the invite, matches the
-          // Google email to it, and redeems with this slug.
-          path: `/auth/callback?invite=${encodeURIComponent(
-            invite.code,
-          )}&slug=${encodeURIComponent(
-            (getValues("slug") || "").trim().toLowerCase(),
-          )}`,
-        })}
+        resolvePath={() => {
+          // Validate slug client-side before launching OAuth — avoids a full
+          // Google round-trip only to bounce back with a slug error.
+          const slug = (getValues("slug") || "").trim().toLowerCase();
+          if (!isValidSlug(slug)) {
+            return { error: t.errorSlugInvalid };
+          }
+          // Carry the invite + slug through the OAuth round-trip; /auth/callback
+          // re-validates the invite, matches the Google email to it, and redeems.
+          return {
+            path: `/auth/callback?invite=${encodeURIComponent(
+              invite.code,
+            )}&slug=${encodeURIComponent(slug)}`,
+          };
+        }}
       />
       <p className="-mt-1 text-center text-xs text-muted">{t.googleHint}</p>
 
