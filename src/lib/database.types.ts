@@ -657,6 +657,14 @@ export type Database = {
         Args: { payload: Json };
         Returns: string;
       };
+      void_order: {
+        Args: { p_order_id: string; p_reason: string };
+        Returns: undefined;
+      };
+      correct_order: {
+        Args: { p_order_id: string; payload: Json };
+        Returns: undefined;
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;

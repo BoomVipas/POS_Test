@@ -55,3 +55,12 @@ export const SAMPLE_MANAGE_ROLES = [
 export function canManageSamples(role: string): boolean {
   return (SAMPLE_MANAGE_ROLES as readonly string[]).includes(role);
 }
+
+// Roles allowed to void/correct a recorded order — matches the void_order /
+// correct_order RPC role checks (owner, manager). A void removes a sale from the
+// totals, so it's a manager-level action, not a cashier one.
+export const ORDER_MANAGE_ROLES = ["owner", "manager"] as const;
+
+export function canManageOrders(role: string): boolean {
+  return (ORDER_MANAGE_ROLES as readonly string[]).includes(role);
+}

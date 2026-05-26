@@ -43,7 +43,7 @@ Rolling snapshot. The "What's live" section below is the original 2026-05-04 bas
 | `/app/dashboard` | demo | multi-period dashboard, 10+ tiles (Wave 29/34) |
 | `/app/events` | wired + demo | real `events` + `event_inventory` (create, allocate active products, start/close) when configured (Wave 43); demo wizard fallback |
 | `/app/customers` | demo | auto-derived from past sales with lifecycle stage (Wave 38) |
-| `/app/correction` | demo | bill-correction flow (`correct_order` analog) |
+| `/app/correction` | wired + demo | real `void_order` RPC (restore stock + cancel send-later + audit) when configured (DD-96); demo void/refund localStorage fallback. Partial-refund RPC → later batch |
 | `/app/audit-log` | demo | activity history (Wave 18) |
 | `/app/close-day` | wired + demo | live cash reconciliation over today's real `orders`/`payment_records` (expected vs counted vs discrepancy) when configured (Wave 44); demo localStorage fallback. Persisting the close record → DD-92 |
 | `/app/send-later` | wired + demo | real `send_later_orders` queue + status flow (pending→packed→shipped→completed / cancel) when configured (DD-75–81); demo localStorage fallback |
