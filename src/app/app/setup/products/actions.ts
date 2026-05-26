@@ -6,7 +6,7 @@ import { getActiveWorkspace, canWriteCatalog } from "@/lib/auth/workspace";
 import { parseProductInput, type ProductInput } from "@/lib/products/parse";
 
 export type ProductActionResult =
-  | { ok: true }
+  | { ok: true; id?: string }
   | { ok: false; error: string; fieldErrors?: Record<string, string> };
 
 const NO_WORKSPACE: ProductActionResult = {
@@ -83,7 +83,8 @@ export async function createProduct(
 
   revalidatePath("/app/setup/products");
   revalidatePath("/app/pos");
-  return { ok: true };
+  // Return the new id so the form can attach a picked image in one action (#1).
+  return { ok: true, id: created.id };
 }
 
 // DD-47 — edit everything except the SKU (immutable once created, so order_items

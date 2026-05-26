@@ -12,6 +12,7 @@ import { parseProductInput, type ProductInput } from "@/lib/products/parse";
 import type { ProductActionResult } from "./actions";
 import type { LiveProduct } from "./product-row";
 import { ProductImageField } from "./ProductImageField";
+import { setProductImage } from "./image-actions";
 
 const empty = (): ProductInput => ({
   sku: "",
@@ -57,6 +58,7 @@ export function ProductFormLive({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState<string | null>(null);
   const [dirty, setDirty] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [pending, startTransition] = useTransition();
   const { push } = useToast();
 
@@ -80,6 +82,23 @@ export function ProductFormLive({
     startTransition(async () => {
       const res = await onSubmit(v, initial?.id ?? null);
       if (res.ok) {
+        // One action: if a photo was picked, upload it to the product now (the
+        // new id on create, the existing id on edit).
+        const productId = initial?.id ?? res.id;
+        if (imageFile && productId) {
+          const fd = new FormData();
+          fd.set("file", imageFile);
+          const imgRes = await setProductImage(productId, fd);
+          if (!imgRes.ok) {
+            push({
+              kind: "info",
+              title: initial ? "Product updated" : "Product added",
+              message: `Saved — but the photo didn't upload: ${imgRes.error}`,
+            });
+            onClose();
+            return;
+          }
+        }
         push({
           kind: "success",
           title: initial ? "Product updated" : "Product added",
@@ -176,13 +195,13 @@ export function ProductFormLive({
           hint="Customer can buy this even when it's out of stock at the booth."
         />
 
-        {initial ? (
-          <ProductImageField productId={initial.id} initialPath={initial.image_path} />
-        ) : (
-          <p className="text-[11px] text-muted">
-            Save the product, then re-open it to add a photo.
-          </p>
-        )}
+        <ProductImageField
+          initialPath={initial?.image_path ?? null}
+          onPick={(f) => {
+            setImageFile(f);
+            setDirty(true);
+          }}
+        />
 
         {serverError && (
           <p
