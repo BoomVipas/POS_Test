@@ -15,7 +15,11 @@ function isConfigured(): boolean {
   );
 }
 
-export default async function RegisterPage() {
+export default async function RegisterPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
   // A signed-in user has no business on the redeem page — send them to the app.
   if (isConfigured()) {
     const supabase = await createClient();
@@ -25,7 +29,18 @@ export default async function RegisterPage() {
     if (user) redirect("/app");
   }
 
+  const sp = await searchParams;
   const { t } = await getDict();
+
+  // A failed Google redeem bounces back here with a short `?error=` reason. The
+  // email-mismatch case gets its own message (most common + most confusing);
+  // everything else collapses to a generic retry.
+  const registerError =
+    sp.error === "email-mismatch"
+      ? t.register.errorEmailMismatch
+      : sp.error
+        ? t.register.errorGoogleGeneric
+        : null;
 
   return (
     <main className="flex-1">
@@ -34,6 +49,15 @@ export default async function RegisterPage() {
           {t.register.title}
         </h1>
         <p className="mt-3 mb-6 text-text/85">{t.register.subtitle}</p>
+
+        {registerError ? (
+          <p
+            role="alert"
+            className="mb-4 rounded-[var(--radius-md)] border border-[var(--color-danger-soft-fg)] bg-[var(--color-danger-soft-bg)] px-4 py-3 text-sm text-[var(--color-danger-soft-fg)]"
+          >
+            {registerError}
+          </p>
+        ) : null}
 
         <RegisterForm t={t.register} />
 

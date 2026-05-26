@@ -11,6 +11,7 @@ import {
   type AccountFormValues,
 } from "./schema";
 import { validateInviteCode, completeRegistration } from "./actions";
+import { GoogleButton } from "@/components/auth/GoogleButton";
 
 type Invite = {
   code: string;
@@ -97,6 +98,7 @@ function AccountStep({
     register,
     handleSubmit,
     setError,
+    getValues,
     formState: { errors },
   } = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
@@ -164,6 +166,24 @@ function AccountStep({
 
       {serverError && <ErrorBanner>{serverError}</ErrorBanner>}
       <SubmitButton pending={pending} label={t.submit} pendingLabel={t.submitting} />
+
+      <GoogleButton
+        label={t.googleCta}
+        genericError={t.errorGoogleGeneric}
+        dividerLabel={t.orDivider}
+        resolvePath={() => ({
+          // Carry the invite + the *current* slug field through the OAuth
+          // round-trip; /auth/callback re-validates the invite, matches the
+          // Google email to it, and redeems with this slug.
+          path: `/auth/callback?invite=${encodeURIComponent(
+            invite.code,
+          )}&slug=${encodeURIComponent(
+            (getValues("slug") || "").trim().toLowerCase(),
+          )}`,
+        })}
+      />
+      <p className="-mt-1 text-center text-xs text-muted">{t.googleHint}</p>
+
       <button
         type="button"
         onClick={onBack}

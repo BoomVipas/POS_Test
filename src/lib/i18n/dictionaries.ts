@@ -45,6 +45,10 @@ export type Dict = {
     newHerePrefix: string;
     applyCta: string;
     backHome: string;
+    googleCta: string;
+    orDivider: string;
+    errorNeedsInvite: string;
+    errorGoogleGeneric: string;
   };
   register: {
     title: string;
@@ -69,6 +73,11 @@ export type Dict = {
     haveAccount: string;
     signInCta: string;
     backHome: string;
+    googleCta: string;
+    orDivider: string;
+    googleHint: string;
+    errorEmailMismatch: string;
+    errorGoogleGeneric: string;
   };
   passwordReset: {
     forgotTitle: string;
@@ -391,6 +400,11 @@ const en: Dict = {
     newHerePrefix: "New here?",
     applyCta: "Apply to join",
     backHome: "← Home",
+    googleCta: "Continue with Google",
+    orDivider: "or",
+    errorNeedsInvite:
+      "That Google account isn't set up yet. Redeem your invite code first.",
+    errorGoogleGeneric: "Google sign-in didn't complete. Please try again.",
   },
   register: {
     title: "Redeem your invite",
@@ -415,6 +429,12 @@ const en: Dict = {
     haveAccount: "Already have an account?",
     signInCta: "Sign in",
     backHome: "← Home",
+    googleCta: "Continue with Google",
+    orDivider: "or",
+    googleHint: "Sign in with the Google account for the email above.",
+    errorEmailMismatch:
+      "That Google account doesn't match your invite email. Use the invited email, or set a password instead.",
+    errorGoogleGeneric: "Couldn't continue with Google. Please try again.",
   },
   passwordReset: {
     forgotTitle: "Reset your password",
@@ -745,6 +765,11 @@ const th: Dict = {
     newHerePrefix: "เพิ่งเริ่มใช้งาน?",
     applyCta: "สมัครเข้าร่วม",
     backHome: "← หน้าหลัก",
+    googleCta: "ดำเนินการต่อด้วย Google",
+    orDivider: "หรือ",
+    errorNeedsInvite:
+      "บัญชี Google นี้ยังไม่ได้ตั้งค่า กรุณาใช้รหัสเชิญของคุณก่อน",
+    errorGoogleGeneric: "เข้าสู่ระบบด้วย Google ไม่สำเร็จ กรุณาลองอีกครั้ง",
   },
   register: {
     title: "ใช้รหัสเชิญของคุณ",
@@ -769,6 +794,12 @@ const th: Dict = {
     haveAccount: "มีบัญชีอยู่แล้ว?",
     signInCta: "เข้าสู่ระบบ",
     backHome: "← หน้าหลัก",
+    googleCta: "ดำเนินการต่อด้วย Google",
+    orDivider: "หรือ",
+    googleHint: "เข้าสู่ระบบด้วยบัญชี Google ของอีเมลด้านบน",
+    errorEmailMismatch:
+      "อีเมลของบัญชี Google ไม่ตรงกับรหัสเชิญของคุณ กรุณาใช้อีเมลที่ได้รับเชิญ หรือตั้งรหัสผ่านแทน",
+    errorGoogleGeneric: "ดำเนินการต่อด้วย Google ไม่สำเร็จ กรุณาลองอีกครั้ง",
   },
   passwordReset: {
     forgotTitle: "รีเซ็ตรหัสผ่าน",
