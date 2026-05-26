@@ -31,6 +31,8 @@ export type BuildPayloadInput = {
   splits: OrderSplit[];
   discountSatang: number;
   customer: OrderCustomer;
+  /** Idempotency key for this confirm attempt (stable across retries). */
+  clientRequestId?: string;
 };
 
 export type CreateOrderPayload = {
@@ -49,6 +51,7 @@ export type CreateOrderPayload = {
   customer_email?: string;
   shipping_address?: string;
   payments?: Array<{ method: string; amount_satang: number }>;
+  client_request_id?: string;
 };
 
 export function buildCreateOrderPayload(
@@ -85,6 +88,10 @@ export function buildCreateOrderPayload(
       method: s.method,
       amount_satang: s.amountSatang,
     }));
+  }
+
+  if (input.clientRequestId) {
+    payload.client_request_id = input.clientRequestId;
   }
 
   return payload;

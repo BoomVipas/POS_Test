@@ -17,6 +17,7 @@ export type SubmitOrderInput = {
   splits: OrderSplit[];
   discountSatang: number;
   customer: OrderCustomer;
+  clientRequestId?: string;
 };
 
 export type SubmitOrderResult =
@@ -75,6 +76,7 @@ export async function submitOrder(
     splits: input.splits,
     discountSatang: input.discountSatang,
     customer: input.customer,
+    clientRequestId: input.clientRequestId,
   });
 
   const supabase = await createClient();

@@ -296,6 +296,7 @@ export type Database = {
           voided_at: string | null;
           voided_by_user_id: string | null;
           void_reason: string | null;
+          client_request_id: string | null;
         };
         Insert: {
           id?: string;
@@ -319,6 +320,7 @@ export type Database = {
           voided_at?: string | null;
           voided_by_user_id?: string | null;
           void_reason?: string | null;
+          client_request_id?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["orders"]["Insert"]>;
         Relationships: [];

@@ -31,6 +31,8 @@ declare
   v_event_id       uuid := (payload->>'event_id')::uuid;
   v_payment_method text := payload->>'payment_method';
   v_discount       bigint := coalesce((payload->>'discount_satang')::bigint, 0);
+  v_client_request_id uuid := nullif(payload->>'client_request_id', '')::uuid;
+  v_existing_order_id uuid;
   v_user_id        uuid := auth.uid();
   v_order_id       uuid := gen_random_uuid();
   v_seq            int;
@@ -53,6 +55,20 @@ begin
   if not public.is_workspace_member(v_workspace_id, array['owner','manager','cashier']) then
     raise exception 'create_order: forbidden (workspace=%)', v_workspace_id
       using errcode = '42501';
+  end if;
+
+  -- Idempotency: if this client request already recorded an order (e.g. a retry
+  -- after a lost response on a flaky booth connection), return the existing one
+  -- instead of creating a duplicate. The unique index on
+  -- (workspace_id, client_request_id) is the backstop against a concurrent race.
+  if v_client_request_id is not null then
+    select id into v_existing_order_id
+      from public.orders
+      where workspace_id = v_workspace_id
+        and client_request_id = v_client_request_id;
+    if v_existing_order_id is not null then
+      return v_existing_order_id;
+    end if;
   end if;
 
   -- Serialize per-event order creation by locking the event row.
@@ -80,7 +96,7 @@ begin
     customer_name, customer_phone, customer_email,
     order_type, payment_method, payment_status,
     subtotal_satang, discount_satang, shipping_fee_satang, total_satang,
-    status, note
+    status, note, client_request_id
   ) values (
     v_order_id, v_workspace_id, v_event_id, v_order_number, v_user_id,
     nullif(payload->>'customer_name', ''),
@@ -96,7 +112,7 @@ begin
     'paid',
     0, v_discount, 0, 0,
     'completed',
-    nullif(payload->>'note', '')
+    nullif(payload->>'note', ''), v_client_request_id
   );
 
   for v_item in select * from jsonb_array_elements(payload->'items')

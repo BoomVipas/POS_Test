@@ -77,4 +77,13 @@ describe("buildCreateOrderPayload", () => {
     expect(p.customer_email).toBeUndefined();
     expect(p.discount_satang).toBe(0);
   });
+
+  it("forwards client_request_id only when provided (idempotency key)", () => {
+    expect(buildCreateOrderPayload(base).client_request_id).toBeUndefined();
+    const withKey = buildCreateOrderPayload({
+      ...base,
+      clientRequestId: "req-abc",
+    });
+    expect(withKey.client_request_id).toBe("req-abc");
+  });
 });

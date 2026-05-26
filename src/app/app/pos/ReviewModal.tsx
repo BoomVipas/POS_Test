@@ -49,6 +49,10 @@ export function ReviewModal({
 
   const [confirmed, setConfirmed] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Idempotency key for this confirm session — stable across retries so a
+  // resubmit after a lost response can't create a duplicate sale. A fresh key is
+  // minted when the modal remounts (a new review of a fresh/edited cart).
+  const [requestId] = useState(() => crypto.randomUUID());
   const productIndex = new Map(products.map((p) => [p.id, p]));
   const hasSendLater = cart.lines.some((l) => l.fulfillment === "send_later");
   const hasTakeNow = cart.lines.some((l) => l.fulfillment === "take_now");
@@ -171,6 +175,7 @@ export function ReviewModal({
           email: cart.customer.email,
           address: cart.customer.address,
         },
+        clientRequestId: requestId,
       });
     } catch (e) {
       console.error("[pos] submitOrder threw (transport):", e);

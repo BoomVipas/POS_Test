@@ -208,10 +208,17 @@ create table if not exists public.orders (
   voided_at           timestamptz,
   voided_by_user_id   uuid references auth.users(id),
   void_reason         text,
+  -- Idempotency key (client-generated per confirm attempt). A retry after a
+  -- lost/timed-out create_order response replays with the same id so the sale is
+  -- recorded once. NULL for orders created before this column / without a key.
+  client_request_id   uuid,
   unique (event_id, order_number)
 );
 create index if not exists orders_workspace_event_idx on public.orders (workspace_id, event_id, created_at desc);
 create index if not exists orders_status_idx on public.orders (status);
+create unique index if not exists orders_client_request_idx
+  on public.orders (workspace_id, client_request_id)
+  where client_request_id is not null;
 
 -- =================================================================
 -- 10. order_items
