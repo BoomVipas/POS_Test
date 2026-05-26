@@ -63,12 +63,37 @@ export default async function PosSuccessPage({
             .eq("workspace_id", ws.workspaceId),
         ]);
 
+        const { data: tokens } = await supabase
+          .from("customer_registration_tokens")
+          .select("token, claimed_at, expires_at, created_at")
+          .eq("order_id", orderId)
+          .eq("workspace_id", ws.workspaceId)
+          .order("created_at", { ascending: false })
+          .limit(5);
+
+        const activeToken =
+          tokens?.find((t) => !t.claimed_at) ?? tokens?.[0] ?? null;
+
         const view = toReceiptView(
           order as OrderRow,
           (items ?? []) as OrderItemRow[],
           (payments ?? []) as PaymentRow[],
         );
-        return <RealReceipt view={view} />;
+        return (
+          <RealReceipt
+            view={view}
+            orderId={orderId}
+            registrationToken={
+              activeToken
+                ? {
+                    token: activeToken.token,
+                    claimedAt: activeToken.claimed_at,
+                    expiresAt: activeToken.expires_at,
+                  }
+                : null
+            }
+          />
+        );
       }
     }
   }

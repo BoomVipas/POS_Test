@@ -10,6 +10,7 @@ import type {
   DemoPortalContact,
   DemoPortalPet,
 } from "@/lib/demo/customer-tokens";
+import type { ClaimRegistrationResult } from "./actions";
 
 const SPECIES = [
   { v: "cat", label: "Cat", emoji: "🐱" },
@@ -50,7 +51,16 @@ function PortalTopbar() {
   );
 }
 
-export function RegisterClient({ token }: { token: string }) {
+export function RegisterClient({
+  token,
+  claimAction,
+}: {
+  token: string;
+  claimAction?: (
+    token: string,
+    values: RegisterFormValues,
+  ) => Promise<ClaimRegistrationResult>;
+}) {
   const { ready, validate, claim } = useDemoCustomerTokens();
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -78,7 +88,9 @@ export function RegisterClient({ token }: { token: string }) {
     return validate(token);
   }, [ready, token, validate]);
 
-  if (!ready) {
+  const realMode = Boolean(claimAction);
+
+  if (!realMode && !ready) {
     return (
       <Shell>
         <PortalTopbar />
@@ -89,7 +101,7 @@ export function RegisterClient({ token }: { token: string }) {
     );
   }
 
-  if (validation && !validation.ok) {
+  if (!realMode && validation && !validation.ok) {
     const message =
       validation.reason === "token-not-found"
         ? "We can't find this registration link. Ask the booth staff for a new one."
@@ -158,7 +170,7 @@ export function RegisterClient({ token }: { token: string }) {
     );
   }
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitError(null);
     const parsed = RegisterFormSchema.safeParse(values);
@@ -167,6 +179,22 @@ export function RegisterClient({ token }: { token: string }) {
       return;
     }
     const v = parsed.data;
+
+    if (claimAction) {
+      setSubmitting(true);
+      try {
+        const result = await claimAction(token, v);
+        if (result.ok) {
+          setSubmitted(true);
+        } else {
+          setSubmitError(result.error);
+        }
+      } finally {
+        setSubmitting(false);
+      }
+      return;
+    }
+
     const contacts: DemoPortalContact[] = [];
     if (v.phone)
       contacts.push({ channel: "phone", value: v.phone, isPrimary: true });

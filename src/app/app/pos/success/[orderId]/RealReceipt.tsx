@@ -4,12 +4,24 @@ import Link from "next/link";
 import { formatTHB } from "@/lib/money/format";
 import { formatDateTimeTH } from "@/lib/date";
 import type { ReceiptView } from "@/lib/pos/receipt";
+import {
+  RealRegistrationLinkBlock,
+  type ReceiptRegistrationToken,
+} from "./RealRegistrationLinkBlock";
 
 // DD-67 — real receipt for a Supabase order. Visual parity with the demo
 // SuccessClient, rendered from the fetched order. (PromptPay QR + the customer
 // registration QR come with workspace settings / Wave 40d — M3 — so they're not
 // here yet.)
-export function RealReceipt({ view }: { view: ReceiptView }) {
+export function RealReceipt({
+  view,
+  orderId,
+  registrationToken,
+}: {
+  view: ReceiptView;
+  orderId: string;
+  registrationToken: ReceiptRegistrationToken | null;
+}) {
   return (
     <main className="mx-auto max-w-xl px-5 py-10">
       <div className="panel p-6">
@@ -104,6 +116,11 @@ export function RealReceipt({ view }: { view: ReceiptView }) {
             Dashboard
           </Link>
         </div>
+
+        <RealRegistrationLinkBlock
+          orderId={orderId}
+          initialToken={registrationToken}
+        />
       </div>
     </main>
   );
