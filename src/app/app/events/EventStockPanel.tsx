@@ -98,9 +98,10 @@ export function EventStockPanel({
                 type="number"
                 inputMode="numeric"
                 value={deltas[r.productId] ?? ""}
-                onChange={(e) =>
-                  setDeltas((d) => ({ ...d, [r.productId]: e.currentTarget.value }))
-                }
+                onChange={(e) => {
+                  const value = e.currentTarget.value;
+                  setDeltas((d) => ({ ...d, [r.productId]: value }));
+                }}
                 placeholder="±"
                 aria-label={`Adjust ${r.name} stock`}
                 className="num w-16 rounded-[var(--radius-md)] border border-line bg-panel px-2 py-1 text-sm"

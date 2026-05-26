@@ -181,12 +181,13 @@ export function SendLaterQueueLive({
                       type="text"
                       placeholder="tracking #"
                       value={trackingDraft[o.id] ?? ""}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        const value = e.currentTarget.value;
                         setTrackingDraft((s) => ({
                           ...s,
-                          [o.id]: e.currentTarget.value,
-                        }))
-                      }
+                          [o.id]: value,
+                        }));
+                      }}
                       className="rounded-[var(--radius-md)] border border-line bg-white px-3 py-1.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25"
                     />
                   )}

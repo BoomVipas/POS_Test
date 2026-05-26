@@ -117,7 +117,10 @@ export function EventsManagerLive({
               <TextInput
                 label="Event name"
                 value={form.name}
-                onChange={(e) => setForm((s) => ({ ...s, name: e.currentTarget.value }))}
+                onChange={(e) => {
+                  const value = e.currentTarget.value;
+                  setForm((s) => ({ ...s, name: value }));
+                }}
                 placeholder="Pet Expo Thailand"
                 error={errors.name}
                 maxLength={160}
@@ -126,7 +129,10 @@ export function EventsManagerLive({
               <TextInput
                 label="Venue (optional)"
                 value={form.venue}
-                onChange={(e) => setForm((s) => ({ ...s, venue: e.currentTarget.value }))}
+                onChange={(e) => {
+                  const value = e.currentTarget.value;
+                  setForm((s) => ({ ...s, venue: value }));
+                }}
                 placeholder="IMPACT, Hall 5–8"
                 error={errors.venue}
                 maxLength={160}
@@ -136,18 +142,20 @@ export function EventsManagerLive({
                   label="Start date"
                   type="date"
                   value={form.startDate}
-                  onChange={(e) =>
-                    setForm((s) => ({ ...s, startDate: e.currentTarget.value }))
-                  }
+                  onChange={(e) => {
+                    const value = e.currentTarget.value;
+                    setForm((s) => ({ ...s, startDate: value }));
+                  }}
                   error={errors.startDate}
                 />
                 <TextInput
                   label="End date"
                   type="date"
                   value={form.endDate}
-                  onChange={(e) =>
-                    setForm((s) => ({ ...s, endDate: e.currentTarget.value }))
-                  }
+                  onChange={(e) => {
+                    const value = e.currentTarget.value;
+                    setForm((s) => ({ ...s, endDate: value }));
+                  }}
                   error={errors.endDate}
                 />
               </div>
