@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Mochi POS · Responsive</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="stylesheet" href="colors_and_type.css"/>
+<link rel="stylesheet" href="responsive.css"/>
+</head>
+<body>
+
+<!-- Shared sprite — base mascot + icons -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="g-mochi" cx="38%" cy="32%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="55%" stop-color="#f1edfb"/>
+      <stop offset="100%" stop-color="#d3c8f6"/>
+    </radialGradient>
+    <symbol id="mochi" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="23" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+      <ellipse cx="41" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+      <circle cx="23.7" cy="29.5" r=".9" fill="#fff"/>
+      <circle cx="41.7" cy="29.5" r=".9" fill="#fff"/>
+      <path d="M27 39 Q32 43 37 39" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="mochi-sparkle" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <path d="M23 27 L24.3 30.4 L27.8 31 L24.3 31.6 L23 35 L21.7 31.6 L18.2 31 L21.7 30.4 Z" fill="#7a6ad6"/>
+      <path d="M41 27 L42.3 30.4 L45.8 31 L42.3 31.6 L41 35 L39.7 31.6 L36.2 31 L39.7 30.4 Z" fill="#7a6ad6"/>
+      <path d="M27 40 Q32 44 37 40" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="paw" viewBox="0 0 40 40">
+      <ellipse cx="20" cy="26" rx="9" ry="7.5" fill="currentColor"/>
+      <ellipse cx="9"  cy="14" rx="3.4" ry="4.4" fill="currentColor"/>
+      <ellipse cx="31" cy="14" rx="3.4" ry="4.4" fill="currentColor"/>
+      <ellipse cx="15" cy="6"  rx="2.8" ry="3.6" fill="currentColor"/>
+      <ellipse cx="25" cy="6"  rx="2.8" ry="3.6" fill="currentColor"/>
+    </symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2h-4v-7H9v7H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-orders" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M2 10h20" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M2 22c0-4 3-7 7-7s7 3 7 7" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-arr-right" viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  </defs>
+</svg>
+
+<div class="page">
+
+  <!-- ── HERO ────────────────────────────────────────────── -->
+  <header class="hero">
+    <div>
+      <span class="eyebrow">Mochi POS · responsive</span>
+      <h1>One product.<br/>Three <span class="pop">canvases</span>.</h1>
+      <p>The same surface, refit for the device a seller is actually holding. Phone for runners on the floor, tablet for booth cashiers, desktop for back-office and reporting. Same components, different choreography.</p>
+    </div>
+    <div class="meta">
+      <span class="lbl">Sizes</span>
+      <span class="num">3</span>
+      <span class="lbl">Phone · Tablet · Desktop</span>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════════════════════════════
+       BREAKPOINTS
+  ════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">Breakpoint tokens</span>
+        <h2>The four sizes Mochi supports.</h2>
+        <p class="why">Phones for runners (counting stock, scanning barcodes). Tablets for the booth (the workhorse cashier). Desktop for setup &amp; reports. <b>TV/kiosk</b> for the customer-facing Pet Wall.</p>
+      </div>
+      <div class="res">
+        <span>min-width</span>
+        <span>set in colors_and_type.css</span>
+      </div>
+    </div>
+
+    <div class="tokens">
+      <div class="token-card">
+        <div class="l">Phone</div>
+        <div class="v">≤ 480 <span class="small">px</span></div>
+        <div class="ds">Single column. Bottom-tab nav. Sale flow is full-screen. <code>--ph</code></div>
+      </div>
+      <div class="token-card">
+        <div class="l">Tablet</div>
+        <div class="v">481–1024 <span class="small">px</span></div>
+        <div class="ds">Icon-rail nav + bottom cashier dock. The booth workhorse. <code>--tab</code></div>
+      </div>
+      <div class="token-card">
+        <div class="l">Desktop</div>
+        <div class="v">1025–1599 <span class="small">px</span></div>
+        <div class="ds">Full sidebar + stage + persistent cashier rail. Default. <code>--desk</code></div>
+      </div>
+      <div class="token-card">
+        <div class="l">Kiosk · TV</div>
+        <div class="v">≥ 1600 <span class="small">px</span></div>
+        <div class="ds">Pet Wall fullscreen mode. No chrome. Auto-scrolls. <code>--kiosk</code></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       POS MAIN — three sizes side by side
+  ════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">POS main · adapted</span>
+        <h2>The same surface, three ways.</h2>
+        <p class="why">The cashier flow doesn't get cut down — it gets <b>rechoreographed</b>. Stage gauge becomes a strip on phone; sidebar collapses to icons on tablet; everything's persistent on desktop. The Mochi co-host follows you everywhere.</p>
+      </div>
+      <div class="res">
+        <span>phone · 390×844</span>
+        <span>tablet · 768×1024</span>
+        <span>desktop · 1280×800</span>
+      </div>
+    </div>
+
+    <div class="shelf">
+
+      <!-- ── PHONE ── -->
+      <div class="dev">
+        <div class="iphone">
+          <div class="screen">
+            <div class="notch"></div>
+            <div class="sbar">
+              <span>9:41</span>
+              <span style="display:flex;gap:3px;align-items:center">
+                <svg width="13" height="9" viewBox="0 0 16 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="currentColor"/><rect x="4" y="6" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="3" width="3" height="9" rx="1" fill="currentColor"/><rect x="12" y="0" width="3" height="12" rx="1" fill="currentColor"/></svg>
+                <svg width="13" height="9" viewBox="0 0 16 12"><path d="M1.5 4.5C3.5 2.5 5.5 1.5 8 1.5s4.5 1 6.5 3M3.5 7c1.3-1.3 2.7-2 4.5-2s3.2.7 4.5 2M6 9.3c.6-.6 1.2-.8 2-.8s1.4.2 2 .8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                <svg width="20" height="10" viewBox="0 0 28 14"><rect x="1" y="2" width="22" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2.5" y="3.5" width="16" height="7" rx="1.8" fill="currentColor"/></svg>
+              </span>
+            </div>
+            <div class="pos-phone">
+
+              <div class="pp-top">
+                <div class="mk">M</div>
+                <div class="info">DAY 3 · 60%<small>theMeowseum · 5h left</small></div>
+                <div class="takings"><span class="cur">฿</span>24.8k</div>
+              </div>
+
+              <div class="pp-stage-mini">
+                <div class="ring">
+                  <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(45,41,96,.08)" stroke-width="5" stroke-dasharray="123 200" stroke-linecap="round"/><circle cx="32" cy="32" r="26" fill="none" stroke="#7a6ad6" stroke-width="5" stroke-dasharray="76 200" stroke-linecap="round"/></svg>
+                  <div class="ctr">62%</div>
+                </div>
+                <div class="meta">
+                  <div class="l">Today's takings</div>
+                  <div class="v"><span class="cur">฿</span>24,820</div>
+                  <div class="ch">▲ ฿3,420 vs Day 2</div>
+                </div>
+              </div>
+
+              <div class="pp-wall">
+                <div class="h">
+                  <span class="ttl">The wall · 4 items in cart</span>
+                  <span class="tabs"><span class="on">Hot</span><span>All</span></span>
+                </div>
+                <div class="row">
+                  <div class="it"><div class="pic"><svg viewBox="0 0 64 64"><use href="#mochi"/></svg></div><div><div class="nm">Plushie</div><div class="p"><span class="cur">฿</span>420</div></div></div>
+                  <div class="it"><div class="pic" style="background:var(--cream)"><svg viewBox="0 0 40 40" style="color:#a8761c"><use href="#paw"/></svg></div><div><div class="nm">Stickers</div><div class="p"><span class="cur">฿</span>120</div></div></div>
+                </div>
+                <div class="row">
+                  <div class="it"><div class="pic" style="background:var(--lavender-300)"><svg viewBox="0 0 64 64"><use href="#mochi-sparkle"/></svg></div><div><div class="nm">Hoodie M</div><div class="p"><span class="cur">฿</span>1,280</div></div></div>
+                  <div class="it"><div class="pic" style="background:var(--pink-blush)"><span style="font-size:14px">🐱</span></div><div><div class="nm">Tote</div><div class="p"><span class="cur">฿</span>300</div></div></div>
+                </div>
+                <div class="row">
+                  <div class="it"><div class="pic" style="background:var(--lavender-200)"><span style="font-size:14px">🎀</span></div><div><div class="nm">Bow</div><div class="p"><span class="cur">฿</span>80</div></div></div>
+                  <div class="it"><div class="pic" style="background:var(--cream-deep)"><span style="font-size:14px">📓</span></div><div><div class="nm">Diary</div><div class="p"><span class="cur">฿</span>240</div></div></div>
+                </div>
+              </div>
+
+              <div class="pp-mochi-chip">
+                <div class="av"><svg viewBox="0 0 64 64"><use href="#mochi-sparkle"/></svg></div>
+                <div class="msg">Lunch rush in <b>38 min</b> — pull hoodies forward</div>
+                <div class="x">×</div>
+              </div>
+
+              <div class="pp-tabs">
+                <div class="t on" style="position:relative">
+                  <svg viewBox="0 0 24 24"><use href="#i-home"/></svg>
+                  Stage
+                </div>
+                <div class="t">
+                  <svg viewBox="0 0 24 24"><use href="#i-orders"/></svg>
+                  Orders
+                </div>
+                <div class="t cashier">
+                  <div class="fab"><svg viewBox="0 0 24 24"><use href="#i-plus"/></svg></div>
+                  Sale
+                </div>
+                <div class="t">
+                  <svg viewBox="0 0 24 24"><use href="#i-users"/></svg>
+                  Pets
+                </div>
+                <div class="t">
+                  <svg viewBox="0 0 24 24"><use href="#i-bell"/></svg>
+                  More
+                </div>
+              </div>
+            </div>
+            <div class="home"></div>
+          </div>
+        </div>
+        <div class="lbl"><b>iPhone · runner</b><span class="px">390 × 844</span></div>
+      </div>
+
+      <!-- ── TABLET ── -->
+      <div class="dev">
+        <div class="ipad">
+          <div class="screen">
+            <div class="sbar">
+              <span>14:24 · Tue 26 May</span>
+              <span>theMeowseum · M-22</span>
+            </div>
+            <div class="pos-tab">
+              <div class="pt-rail">
+                <div class="mk">M</div>
+                <div class="it on">▤</div>
+                <div class="it">▦</div>
+                <div class="it dot">♥</div>
+                <div class="it">▢</div>
+                <div class="it">⚙</div>
+              </div>
+              <div class="pt-main">
+                <div class="pt-top">
+                  <div class="day-pill"><span class="n">3</span>DAY</div>
+                  <div class="ev">theMeowseum</div>
+                  <div class="bar"><i></i></div>
+                  <div class="live"><span class="led"></span><span class="cur">฿</span>24,820</div>
+                </div>
+                <div class="pt-stage">
+                  <div class="gauge-mini">
+                    <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(45,41,96,.08)" stroke-width="5" stroke-dasharray="123 200" stroke-linecap="round"/><circle cx="32" cy="32" r="26" fill="none" stroke="#7a6ad6" stroke-width="5" stroke-dasharray="76 200" stroke-linecap="round"/></svg>
+                    <div class="ctr">62%</div>
+                  </div>
+                  <div class="stats">
+                    <div class="it"><div class="l">Orders</div><div class="v">132</div></div>
+                    <div class="it"><div class="l">Avg</div><div class="v"><span class="cur">฿</span>188</div></div>
+                    <div class="it"><div class="l">Pets</div><div class="v">18 🐾</div></div>
+                  </div>
+                </div>
+                <div class="pt-wall">
+                  <div class="it feat"><div class="pic"><svg viewBox="0 0 64 64"><use href="#mochi"/></svg></div><div class="nm">Tonkatsu Plushie</div><div class="p"><span class="cur">฿</span>420</div></div>
+                  <div class="it"><div class="pic" style="background:var(--cream)"><svg viewBox="0 0 40 40" style="color:#a8761c"><use href="#paw"/></svg></div><div class="nm">Stickers</div><div class="p"><span class="cur">฿</span>120</div></div>
+                  <div class="it"><div class="pic" style="background:var(--lavender-300)"><svg viewBox="0 0 64 64"><use href="#mochi-sparkle"/></svg></div><div class="nm">Hoodie</div><div class="p"><span class="cur">฿</span>1.2k</div></div>
+                  <div class="it"><div class="pic"><span style="font-size:14px">✨</span></div><div class="nm">Keychain</div><div class="p"><span class="cur">฿</span>180</div></div>
+                  <div class="it"><div class="pic" style="background:var(--pink-blush)"><span style="font-size:14px">🐱</span></div><div class="nm">Tote</div><div class="p"><span class="cur">฿</span>300</div></div>
+                  <div class="it"><div class="pic" style="background:var(--lavender-200)"><span style="font-size:14px">🎀</span></div><div class="nm">Bow</div><div class="p"><span class="cur">฿</span>80</div></div>
+                  <div class="it"><div class="pic" style="background:var(--cream-deep)"><span style="font-size:14px">📓</span></div><div class="nm">Diary</div><div class="p"><span class="cur">฿</span>240</div></div>
+                </div>
+                <div class="pt-dock">
+                  <div class="cart">
+                    <span class="ct">3</span>
+                    <span class="lbl">CART</span>
+                  </div>
+                  <div class="total"><span class="cur">฿</span>2,397</div>
+                  <div class="charge">Charge <svg viewBox="0 0 24 24" width="9" height="9" style="color:var(--indigo)"><use href="#i-arr-right"/></svg></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="lbl"><b>iPad · booth cashier</b><span class="px">768 × 1024 portrait</span></div>
+      </div>
+
+      <!-- ── DESKTOP ── -->
+      <div class="dev">
+        <div class="desktop">
+          <div class="titlebar">
+            <span class="light r"></span>
+            <span class="light y"></span>
+            <span class="light g"></span>
+            <span class="url">mochi.pos · day 3 · theMeowseum</span>
+          </div>
+          <div class="body">
+            <div class="pos-desk">
+              <div class="pd-rail">
+                <div class="mk">M</div>
+                <div class="it on"></div>
+                <div class="it"></div>
+                <div class="it"></div>
+                <div class="it"></div>
+                <div class="it"></div>
+                <div class="it"></div>
+              </div>
+              <div class="pd-stage">
+                <div class="top">
+                  <span class="day">3 / 5</span>
+                  <span class="ev">theMeowseum</span>
+                  <div class="bar"><i></i></div>
+                  <span style="font-family:var(--font-display);font-weight:900;color:var(--indigo);font-size:7px"><span style="color:var(--lavender-700)">฿</span>24,820</span>
+                </div>
+                <div class="hero">
+                  <div class="gauge-mini">
+                    <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(45,41,96,.08)" stroke-width="5" stroke-dasharray="123 200" stroke-linecap="round"/><circle cx="32" cy="32" r="26" fill="none" stroke="#7a6ad6" stroke-width="5" stroke-dasharray="76 200" stroke-linecap="round"/></svg>
+                    <div class="ctr">62%</div>
+                  </div>
+                  <div class="stats">
+                    <div class="it"><div class="l">Orders</div><div class="v">132</div></div>
+                    <div class="it"><div class="l">Avg</div><div class="v"><span class="cur">฿</span>188</div></div>
+                    <div class="it"><div class="l">Pets</div><div class="v">18</div></div>
+                  </div>
+                </div>
+                <div class="rhythm">
+                  <i style="height:20%"></i><i style="height:30%"></i><i style="height:45%"></i><i style="height:55%"></i><i style="height:68%"></i><i style="height:80%"></i><i class="now" style="height:92%"></i><i class="future" style="height:50%"></i><i class="future" style="height:65%"></i><i class="future" style="height:40%"></i>
+                </div>
+                <div class="split">
+                  <div class="ticker">
+                    <div class="ttl">LIVE</div>
+                    <div class="ord"><div class="av">🐰</div><div class="nm">Kanya</div><div class="am">฿620</div></div>
+                    <div class="ord"><div class="av">🐱</div><div class="nm">Nina</div><div class="am">฿180</div></div>
+                    <div class="ord"><div class="av">🐢</div><div class="nm">Prim</div><div class="am">฿1,840</div></div>
+                  </div>
+                  <div class="wall">
+                    <div class="it feat"><div class="pic"><svg viewBox="0 0 64 64"><use href="#mochi"/></svg></div><div class="nm">Plushie</div><div class="p"><span class="cur">฿</span>420</div></div>
+                    <div class="it"><div class="pic" style="background:var(--cream)"><svg viewBox="0 0 40 40" style="color:#a8761c"><use href="#paw"/></svg></div><div class="nm">Stickers</div><div class="p"><span class="cur">฿</span>120</div></div>
+                    <div class="it"><div class="pic" style="background:var(--lavender-300)"><svg viewBox="0 0 64 64"><use href="#mochi-sparkle"/></svg></div></div>
+                    <div class="it"><div class="pic"></div></div>
+                    <div class="it"><div class="pic" style="background:var(--pink-blush)"></div></div>
+                    <div class="it"><div class="pic" style="background:var(--lavender-200)"></div></div>
+                    <div class="it"><div class="pic" style="background:var(--cream-deep)"></div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="pd-cashier">
+                <div class="peek">
+                  <div class="nm">Visan C.</div>
+                  <div class="pets"><span>🐱</span><span>🐶</span></div>
+                </div>
+                <div class="cart">
+                  <div class="ln"><span class="nm">Plushie ×2</span><span class="am">฿840</span></div>
+                  <div class="ln"><span class="nm">Stickers</span><span class="am">฿120</span></div>
+                  <div class="ln"><span class="nm">Hoodie M</span><span class="am">฿1,280</span></div>
+                </div>
+                <div class="charge">
+                  <span>
+                    <div class="lbl">Charge</div>
+                    <div class="amt"><span class="cur">฿</span>2,397</div>
+                  </span>
+                  <svg viewBox="0 0 24 24" width="10" height="10"><use href="#i-arr-right"/></svg>
+                </div>
+              </div>
+              <div class="pd-mochi">
+                <div class="av"><svg viewBox="0 0 64 64"><use href="#mochi-sparkle"/></svg></div>
+                <div class="bubble">Lunch rush in <b>38m</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="lbl"><b>Desktop · back-office</b><span class="px">1280 × 800</span></div>
+      </div>
+    </div>
+
+    <div class="caption">
+      <span class="lbl">what adapts</span>
+      <p class="txt">The stage gauge survives every size — it's the anchor. <b>Phone</b> folds the day-rhythm + cart + co-host into a bottom-tabbed stack; new sale opens as a fullscreen sheet from the FAB. <b>Tablet</b> keeps the wall front-and-center with a 36px icon rail on the left and a 1-row cashier dock pinned to the bottom — perfect for thumb reach. <b>Desktop</b> spreads everything visible at once: rail, stage, ticker, wall, cashier, and the Mochi co-host bubble.</p>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       ADAPTATION TABLE
+  ════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">Adaptation matrix</span>
+        <h2>What changes, why.</h2>
+        <p class="why">Every component in the kit has a phone, tablet, and desktop choreography. This is the canonical reference — keep it open while building.</p>
+      </div>
+    </div>
+
+    <div class="adapt-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>Phone · ≤480</th>
+            <th>Tablet · 481–1024</th>
+            <th>Desktop · ≥1025</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Navigation</td>
+            <td><span class="pill">bottom-tab × 5</span> with FAB for Sale</td>
+            <td><span class="pill">36px icon rail</span> · labels on hover</td>
+            <td><span class="pill">240px sidebar</span> · always-visible labels + counts</td>
+          </tr>
+          <tr>
+            <td>Stage gauge</td>
+            <td>56px ring inline with stats</td>
+            <td>48px ring + 3-col stats</td>
+            <td>200px ring + greeting + 3-col stat tiles</td>
+          </tr>
+          <tr>
+            <td>Day rhythm</td>
+            <td>Hidden by default · tap stage to expand</td>
+            <td>Visible · 20 half-hour bars</td>
+            <td>Visible · 20 bars + hourly rate sidebar</td>
+          </tr>
+          <tr>
+            <td>Live ticker</td>
+            <td>Most-recent only · swipe up for full list</td>
+            <td>Inline on stage right · 3 visible</td>
+            <td>Dedicated card · 5 visible · auto-animates new</td>
+          </tr>
+          <tr>
+            <td>Product wall</td>
+            <td>2-col scroll · featured first</td>
+            <td>4-col · featured spans 2 rows</td>
+            <td>4-col + sticker hook row below</td>
+          </tr>
+          <tr>
+            <td>Cashier rail</td>
+            <td>Hidden · slides up from FAB tap</td>
+            <td><span class="pill">bottom dock</span> · cart count + total + Charge</td>
+            <td><span class="pill">380px right rail</span> · Pet Memory + cart + Charge + quick</td>
+          </tr>
+          <tr>
+            <td>Pet Memory peek</td>
+            <td>Top of cashier sheet</td>
+            <td>Slide-down banner above dock when scanned</td>
+            <td>Top of right rail · always visible</td>
+          </tr>
+          <tr>
+            <td>Mochi co-host</td>
+            <td>Bottom chip above tabs · dismissible</td>
+            <td>Bottom-left bubble · hide on cart open</td>
+            <td>Bottom-left persistent bubble with actions</td>
+          </tr>
+          <tr>
+            <td>Charge success</td>
+            <td>Full-screen sheet · 2s</td>
+            <td>Full-screen takeover · 2s</td>
+            <td>Full-screen takeover · 2s · then return to rail</td>
+          </tr>
+          <tr>
+            <td>Pet Wall</td>
+            <td>Not shown · use desktop or kiosk</td>
+            <td>6-col grid · 18 visible</td>
+            <td>6-col · 18 visible · kiosk mode at ≥ 1600</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>Pair with <a href="Mochi POS Main.html">POS Main</a>, <a href="Mochi Signature Moments.html">Signature Moments</a>, <a href="Mochi Outstanding.html">Outstanding · vol 2</a>.</span>
+    <span>Mochi POS · responsive · v1</span>
+  </footer>
+</div>
+
+</body>
+</html>

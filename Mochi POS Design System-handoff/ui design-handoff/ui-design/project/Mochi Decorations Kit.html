@@ -1,0 +1,1177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Mochi Decorations Kit</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="stylesheet" href="colors_and_type.css"/>
+<style>
+  /* ── Page chrome ─────────────────────────────────────────────────── */
+  body{
+    background: var(--grad-page);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  .page{
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 64px 32px 120px;
+  }
+
+  /* Hero */
+  .hero{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 56px;
+  }
+  .hero .eyebrow{ color: var(--lavender-700); margin-bottom: 14px; display: block; }
+  .hero h1{ font-size: 52px; line-height: 1.02; letter-spacing: -.03em; }
+  .hero h1 .pop{ color: var(--lavender-700); }
+  .hero p{
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 560px;
+    margin-top: 14px;
+    line-height: 1.55;
+  }
+  .hero-mark{
+    width: 160px;
+    aspect-ratio: 1;
+    background: var(--grad-cream);
+    border-radius: 36px;
+    display: grid;
+    place-items: center;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--line);
+    overflow: hidden;
+    position: relative;
+  }
+  .hero-mark img{ width: 76%; height: 76%; object-fit: contain; filter: drop-shadow(0 8px 16px rgba(45,41,96,.18)); }
+
+  /* Section header */
+  section{ margin-bottom: 72px; }
+  .sec-head{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+  .sec-head h2{ font-size: 28px; }
+  .sec-head .count{
+    font-size: 12px; font-weight: 800; letter-spacing: .12em; color: var(--muted-soft);
+    text-transform: uppercase;
+  }
+  .sec-desc{
+    color: var(--muted);
+    max-width: 640px;
+    margin: -8px 0 28px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  /* Card grid */
+  .grid{
+    display: grid;
+    gap: 16px;
+  }
+  .g-moods   { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .g-logos   { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .g-motifs  { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .g-context { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+
+  /* Tile */
+  .tile{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 18px 14px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    box-shadow: var(--shadow-rest);
+    transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .tile:hover{
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+    border-color: var(--lavender-300);
+  }
+  .tile.wide{ flex-direction: row; justify-content: space-between; padding: 18px 22px; min-height: 92px; gap: 16px; }
+  .tile.wide .stage{ flex: 1 1 auto; min-width: 0; }
+  .tile.wide .label{ flex-shrink: 0; white-space: nowrap; align-self: flex-end; }
+  .tile.tall{ min-height: 200px; justify-content: space-between; }
+  .tile .stage{
+    display: grid;
+    place-items: center;
+    width: 100%;
+    flex: 1;
+    min-height: 88px;
+    border-radius: 14px;
+    background: var(--bg);
+    padding: 14px;
+  }
+  .tile .stage.cream{ background: var(--grad-cream); }
+  .tile .stage.indigo{ background: var(--grad-primary); }
+  .tile .stage.lavender{ background: var(--lavender-100); }
+  .tile .label{
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: .01em;
+    text-align: center;
+  }
+  .tile .copy-hint{
+    position: absolute;
+    top: 10px; right: 10px;
+    font-size: 10px; font-weight: 800; letter-spacing: .08em;
+    color: var(--muted-soft);
+    text-transform: uppercase;
+    opacity: 0; transition: opacity .15s ease;
+  }
+  .tile:hover .copy-hint{ opacity: 1; }
+  .tile.copied{ border-color: var(--success); }
+  .tile.copied .copy-hint{ color: var(--success); opacity: 1; }
+
+  /* Toast */
+  .toast{
+    position: fixed;
+    bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--indigo); color: var(--on-indigo);
+    padding: 12px 18px 12px 14px;
+    border-radius: 999px;
+    font-weight: 700; font-size: 13px;
+    box-shadow: var(--shadow-pop);
+    display: flex; align-items: center; gap: 10px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .2s ease, transform .25s cubic-bezier(.2,.9,.3,1.4);
+    z-index: 50;
+  }
+  .toast.show{ opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast svg{ width: 18px; height: 18px; }
+
+  /* Section colors */
+  .badge{
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--lavender-100); color: var(--indigo-600);
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  }
+  .badge .dot{ width: 6px; height: 6px; border-radius: 999px; background: var(--lavender-700); }
+
+  /* In-context demo widgets */
+  .demo-card{
+    background: var(--panel);
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    padding: 22px;
+    box-shadow: var(--shadow-rest);
+    position: relative;
+    overflow: hidden;
+  }
+  .demo-card .ttl{ font-weight: 800; font-size: 15px; }
+  .demo-card .sub{ color: var(--muted); font-size: 13px; line-height: 1.5; margin-top: 4px; }
+  .demo-empty{ text-align: center; padding: 32px 18px 26px; }
+  .demo-empty .ttl{ margin-top: 14px; font-size: 16px; }
+  .demo-empty .btn{
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 14px;
+    padding: 8px 16px;
+    background: var(--grad-primary);
+    color: white;
+    font-weight: 700; font-size: 13px;
+    border-radius: 999px;
+    box-shadow: var(--shadow-rest);
+  }
+  .demo-toast{
+    display: flex; align-items: center; gap: 12px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 10px 16px 10px 8px;
+    box-shadow: var(--shadow-card);
+    width: max-content;
+  }
+  .demo-toast .ok{
+    width: 36px; height: 36px; border-radius: 999px;
+    background: var(--success-bg); display: grid; place-items: center;
+  }
+  .demo-toast .ok svg{ width: 18px; height: 18px; color: var(--success); }
+  .demo-toast .msg{ font-weight: 700; font-size: 13px; }
+  .demo-toast .sub2{ font-size: 11px; color: var(--muted); }
+  .demo-peek{
+    position: relative;
+    padding-top: 56px;
+  }
+  .demo-peek .peek-anchor{
+    position: absolute; top: -28px; right: 26px; width: 76px; height: 76px;
+  }
+  .demo-watermark{
+    position: relative;
+    overflow: hidden;
+    padding: 26px;
+  }
+  .demo-watermark .wm-paws{
+    position: absolute; right: -10px; bottom: -10px; width: 140px; opacity: .08;
+    pointer-events: none;
+  }
+  .demo-header{
+    background: var(--indigo); color: white;
+    border-radius: 20px;
+    padding: 22px 24px;
+    overflow: hidden;
+    position: relative;
+  }
+  .demo-header .wm-corner{
+    position: absolute; top: -16px; right: -10px; width: 96px; opacity: .9;
+  }
+  .demo-header .ttl{ color: white; font-weight: 800; font-size: 18px; }
+  .demo-header .sub{ color: var(--lavender-300); font-size: 12px; margin-top: 4px; }
+  .demo-avatars{ display: flex; align-items: center; gap: -6px; }
+  .avatar{
+    width: 36px; height: 36px; border-radius: 999px; border: 2px solid white;
+    background: var(--lavender-100);
+    display: grid; place-items: center;
+    box-shadow: var(--shadow-rest);
+    margin-left: -8px;
+  }
+  .avatar:first-child{ margin-left: 0; }
+  .avatar svg{ width: 32px; height: 32px; }
+  .avatar.ind{ background: var(--indigo); }
+  .avatar.lav{ background: var(--lavender); }
+  .avatar.crm{ background: var(--cream-deep); }
+  .demo-loading{
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 22px;
+  }
+  .bounce{
+    animation: bounce 1.1s cubic-bezier(.5,0,.3,1) infinite;
+    transform-origin: 50% 100%;
+  }
+  @keyframes bounce{
+    0%,100%{ transform: translateY(0) scaleY(1) scaleX(1); }
+    20%{ transform: translateY(-10px) scaleY(1.05) scaleX(.95); }
+    50%{ transform: translateY(0) scaleY(.9) scaleX(1.1); }
+    70%{ transform: translateY(-3px) scaleY(1.02) scaleX(.98); }
+  }
+  .blink-eyes{ animation: blink 4s steps(1, end) infinite; transform-origin: center; }
+  @keyframes blink{
+    0%, 92%, 96%, 100%{ transform: scaleY(1); }
+    94%{ transform: scaleY(.05); }
+  }
+  .wiggle{ animation: wiggle 2.4s ease-in-out infinite; transform-origin: 50% 60%; }
+  @keyframes wiggle{
+    0%, 100%{ transform: rotate(-3deg); }
+    50%{ transform: rotate(3deg); }
+  }
+
+  /* Footer note */
+  .foot{
+    margin-top: 80px; padding-top: 24px;
+    border-top: 1px solid var(--line);
+    color: var(--muted-soft);
+    font-size: 12px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ── HERO ───────────────────────────────────────────────────────── -->
+  <header class="hero">
+    <div>
+      <span class="eyebrow">Mochi POS · brand kit</span>
+      <h1>Decorations <span class="pop">&amp;</span> mascot bits</h1>
+      <p>A library of small mascot moods, logo lockups, and decorative motifs you can drop into any Mochi POS surface. Click any tile to copy its SVG to your clipboard.</p>
+    </div>
+    <div class="hero-mark" aria-hidden="true">
+      <img src="assets/mochi-logo.png" alt="Mochi POS logo" />
+    </div>
+  </header>
+
+  <!-- ── 1. MOOD FACES ──────────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="badge"><span class="dot"></span>Mascot · moods</span>
+        <h2 style="margin-top:10px">Mochi faces</h2>
+      </div>
+      <span class="count">12 expressions</span>
+    </div>
+    <p class="sec-desc">Use these as a small avatar (24–48px) near states, toasts, empty views, or as a friendly anchor in customer-facing copy. All ride on the same circular base so swapping moods is seamless.</p>
+
+    <div class="grid g-moods">
+      <!-- 1. Happy default -->
+      <div class="tile" data-svg="happy">
+        <div class="stage">
+          <svg viewBox="0 0 64 64" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="mb-h" cx="38%" cy="32%" r="70%">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="55%" stop-color="#f1edfb"/>
+                <stop offset="100%" stop-color="#d3c8f6"/>
+              </radialGradient>
+            </defs>
+            <circle cx="32" cy="32" r="26" fill="url(#mb-h)" stroke="#2d2960" stroke-width="2"/>
+            <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#ffffff" opacity=".7"/>
+            <ellipse cx="18" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <ellipse cx="46" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <ellipse cx="23" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+            <ellipse cx="41" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+            <circle cx="23.7" cy="29.5" r=".9" fill="#fff"/>
+            <circle cx="41.7" cy="29.5" r=".9" fill="#fff"/>
+            <path d="M27 39 Q32 43 37 39" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="label">happy</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- 2. Wink -->
+      <div class="tile" data-svg="wink">
+        <div class="stage">
+          <svg viewBox="0 0 64 64" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="mb-w" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient></defs>
+            <circle cx="32" cy="32" r="26" fill="url(#mb-w)" stroke="#2d2960" stroke-width="2"/>
+            <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#ffffff" opacity=".7"/>
+            <ellipse cx="18" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <ellipse cx="46" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <ellipse cx="23" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+            <circle cx="23.7" cy="29.5" r=".9" fill="#fff"/>
+            <path d="M37 31 Q41 28 45 31" stroke="#1c1838" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            <path d="M26 39 Q31 44 38 39" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="label">wink</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- 3. Sparkle eyes (delight) -->
+      <div class="tile" data-svg="sparkle-eyes">
+        <div class="stage">
+          <svg viewBox="0 0 64 64" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="mb-s" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient></defs>
+            <circle cx="32" cy="32" r="26" fill="url(#mb-s)" stroke="#2d2960" stroke-width="2"/>
+            <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#ffffff" opacity=".7"/>
+            <ellipse cx="18" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <ellipse cx="46" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <!-- star eyes -->
+            <path d="M23 27 L24.3 30.4 L27.8 31 L24.3 31.6 L23 35 L21.7 31.6 L18.2 31 L21.7 30.4 Z" fill="#7a6ad6"/>
+            <path d="M41 27 L42.3 30.4 L45.8 31 L42.3 31.6 L41 35 L39.7 31.6 L36.2 31 L39.7 30.4 Z" fill="#7a6ad6"/>
+            <path d="M27 40 Q32 44 37 40" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="label">sparkle eyes</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- 4. Heart eyes -->
+      <div class="tile" data-svg="heart-eyes">
+        <div class="stage">
+          <svg viewBox="0 0 64 64" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="mb-he" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient></defs>
+            <circle cx="32" cy="32" r="26" fill="url(#mb-he)" stroke="#2d2960" stroke-width="2"/>
+            <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#ffffff" opacity=".7"/>
+            <ellipse cx="18" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <ellipse cx="46" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <path d="M23 33 C20 30, 19 27, 21 26 C22.5 25, 23 26.2, 23 27.2 C23 26.2, 23.5 25, 25 26 C27 27, 26 30, 23 33 Z" fill="#e85b75"/>
+            <path d="M41 33 C38 30, 37 27, 39 26 C40.5 25, 41 26.2, 41 27.2 C41 26.2, 41.5 25, 43 26 C45 27, 44 30, 41 33 Z" fill="#e85b75"/>
+            <path d="M27 40 Q32 44 37 40" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="label">heart eyes</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- 5. Sleepy / snoozing -->
+      <div class="tile" data-svg="sleepy">
+        <div class="stage">
+          <svg viewBox="0 0 64 64" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="mb-sl" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient></defs>
+            <circle cx="32" cy="32" r="26" fill="url(#mb-sl)" stroke="#2d2960" stroke-width="2"/>
+            <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#ffffff" opacity=".7"/>
+            <ellipse cx="18" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <ellipse cx="46" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <path d="M19 31 Q23 28 27 31" stroke="#1c1838" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            <path d="M37 31 Q41 28 45 31" stroke="#1c1838" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            <path d="M30 41 Q32 39 34 41" stroke="#1c1838" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+            <text x="49" y="18" font-family="Nunito,sans-serif" font-weight="900" font-size="9" fill="#7a6ad6">z</text>
+            <text x="54" y="13" font-family="Nunito,sans-serif" font-weight="900" font-size="7" fill="#b8a9f0">z</text>
+          </svg>
+        </div>
+        <div class="label">snoozing</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- 6. Sad / empty -->
+      <div class="tile" data-svg="sad">
+        <div class="stage">
+          <svg viewBox="0 0 64 64" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="mb-sa" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient></defs>
+            <circle cx="32" cy="32" r="26" fill="url(#mb-sa)" stroke="#2d2960" stroke-width="2"/>
+            <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#ffffff" opacity=".7"/>
+            <ellipse cx="18" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <ellipse cx="46" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <ellipse cx="23" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+            <ellipse cx="41" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+            <circle cx="23.7" cy="29.5" r=".9" fill="#fff"/>
+            <circle cx="41.7" cy="29.5" r=".9" fill="#fff"/>
+            <path d="M27 42 Q32 38 37 42" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="label">sad</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- 7. Surprised / loading-question -->
+      <div class="tile" data-svg="surprised">
+        <div class="stage">
+          <svg viewBox="0 0 64 64" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="mb-su" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient></defs>
+            <circle cx="32" cy="32" r="26" fill="url(#mb-su)" stroke="#2d2960" stroke-width="2"/>
+            <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#ffffff" opacity=".7"/>
+            <ellipse cx="18" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <ellipse cx="46" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <circle cx="23" cy="31" r="3.2" fill="#1c1838"/>
+            <circle cx="41" cy="31" r="3.2" fill="#1c1838"/>
+            <circle cx="24" cy="29.8" r="1.1" fill="#fff"/>
+            <circle cx="42" cy="29.8" r="1.1" fill="#fff"/>
+            <ellipse cx="32" cy="41" rx="2.4" ry="2.8" fill="#1c1838"/>
+          </svg>
+        </div>
+        <div class="label">surprised</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- 8. Closed-eyes content -->
+      <div class="tile" data-svg="content">
+        <div class="stage">
+          <svg viewBox="0 0 64 64" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="mb-c" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient></defs>
+            <circle cx="32" cy="32" r="26" fill="url(#mb-c)" stroke="#2d2960" stroke-width="2"/>
+            <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#ffffff" opacity=".7"/>
+            <ellipse cx="18" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <ellipse cx="46" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <path d="M19 32 Q23 35 27 32" stroke="#1c1838" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            <path d="M37 32 Q41 35 45 32" stroke="#1c1838" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            <path d="M28 40 Q32 44 36 40" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="label">content</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- 9. Money eyes -->
+      <div class="tile" data-svg="money-eyes">
+        <div class="stage">
+          <svg viewBox="0 0 64 64" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="mb-m" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient></defs>
+            <circle cx="32" cy="32" r="26" fill="url(#mb-m)" stroke="#2d2960" stroke-width="2"/>
+            <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#ffffff" opacity=".7"/>
+            <ellipse cx="18" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <ellipse cx="46" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <text x="19" y="35" font-family="Nunito,sans-serif" font-weight="900" font-size="11" fill="#1f7a4d">฿</text>
+            <text x="37" y="35" font-family="Nunito,sans-serif" font-weight="900" font-size="11" fill="#1f7a4d">฿</text>
+            <path d="M27 41 Q32 45 37 41" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="label">money eyes</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- 10. Peek (top half) -->
+      <div class="tile" data-svg="peek">
+        <div class="stage">
+          <svg viewBox="0 0 80 44" width="88" height="48" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="mb-p" cx="38%" cy="48%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient>
+              <clipPath id="cl-p"><rect x="0" y="0" width="80" height="40"/></clipPath>
+            </defs>
+            <g clip-path="url(#cl-p)">
+              <circle cx="40" cy="44" r="24" fill="url(#mb-p)" stroke="#2d2960" stroke-width="2"/>
+              <ellipse cx="33" cy="32" rx="6" ry="3" fill="#ffffff" opacity=".7"/>
+              <ellipse cx="28" cy="44" rx="3.4" ry="2" fill="#f7c8d2"/>
+              <ellipse cx="52" cy="44" rx="3.4" ry="2" fill="#f7c8d2"/>
+              <ellipse cx="33" cy="38" rx="2.4" ry="3" fill="#1c1838"/>
+              <ellipse cx="47" cy="38" rx="2.4" ry="3" fill="#1c1838"/>
+              <circle cx="33.6" cy="36.8" r=".8" fill="#fff"/>
+              <circle cx="47.6" cy="36.8" r=".8" fill="#fff"/>
+            </g>
+            <!-- little arms grabbing the edge -->
+            <ellipse cx="22" cy="40" rx="5" ry="3" fill="#ffffff" stroke="#2d2960" stroke-width="1.6"/>
+            <ellipse cx="58" cy="40" rx="5" ry="3" fill="#ffffff" stroke="#2d2960" stroke-width="1.6"/>
+            <!-- ground line -->
+            <line x1="0" y1="40" x2="80" y2="40" stroke="#2d2960" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="label">peek-over</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- 11. Waving -->
+      <div class="tile" data-svg="wave">
+        <div class="stage">
+          <svg viewBox="0 0 80 64" width="72" height="58" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="mb-wv" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient></defs>
+            <!-- waving arm behind -->
+            <path d="M52 32 Q66 22 70 12" stroke="#2d2960" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <ellipse cx="71" cy="11" rx="5" ry="4" fill="#ffffff" stroke="#2d2960" stroke-width="1.6"/>
+            <circle cx="32" cy="32" r="24" fill="url(#mb-wv)" stroke="#2d2960" stroke-width="2"/>
+            <ellipse cx="24" cy="22" rx="6" ry="3" fill="#ffffff" opacity=".7"/>
+            <ellipse cx="20" cy="38" rx="3.6" ry="2.2" fill="#f7c8d2"/>
+            <ellipse cx="44" cy="38" rx="3.6" ry="2.2" fill="#f7c8d2"/>
+            <ellipse cx="23" cy="31" rx="2.4" ry="3.2" fill="#1c1838"/>
+            <ellipse cx="39" cy="31" rx="2.4" ry="3.2" fill="#1c1838"/>
+            <circle cx="23.7" cy="29.6" r=".8" fill="#fff"/>
+            <circle cx="39.7" cy="29.6" r=".8" fill="#fff"/>
+            <path d="M26 40 Q31 44 36 40" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="label">waving</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- 12. Thinking -->
+      <div class="tile" data-svg="thinking">
+        <div class="stage">
+          <svg viewBox="0 0 72 64" width="72" height="58" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="mb-th" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient></defs>
+            <circle cx="32" cy="32" r="24" fill="url(#mb-th)" stroke="#2d2960" stroke-width="2"/>
+            <ellipse cx="24" cy="22" rx="6" ry="3" fill="#ffffff" opacity=".7"/>
+            <ellipse cx="20" cy="38" rx="3.6" ry="2.2" fill="#f7c8d2"/>
+            <ellipse cx="44" cy="38" rx="3.6" ry="2.2" fill="#f7c8d2"/>
+            <!-- one eye looking up -->
+            <ellipse cx="23" cy="29" rx="2.4" ry="3.2" fill="#1c1838"/>
+            <ellipse cx="39" cy="29" rx="2.4" ry="3.2" fill="#1c1838"/>
+            <circle cx="23.5" cy="27.6" r=".8" fill="#fff"/>
+            <circle cx="39.5" cy="27.6" r=".8" fill="#fff"/>
+            <!-- pursed mouth -->
+            <path d="M28 40 Q31 39 34 40" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            <!-- thought bubbles -->
+            <circle cx="56" cy="20" r="3.5" fill="#efeafd" stroke="#7a6ad6" stroke-width="1.4"/>
+            <circle cx="63" cy="12" r="2.2" fill="#efeafd" stroke="#7a6ad6" stroke-width="1.2"/>
+            <circle cx="67" cy="6"  r="1.4" fill="#efeafd" stroke="#7a6ad6" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="label">thinking</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 2. LOGO & LOCKUPS ──────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="badge"><span class="dot"></span>Logo · lockups</span>
+        <h2 style="margin-top:10px">Logos &amp; marks</h2>
+      </div>
+      <span class="count">8 lockups</span>
+    </div>
+    <p class="sec-desc">Pick a lockup by surface: full lockup for marketing &amp; auth screens, mark-only for the top-left nav, "M" tile for favicons / app icons, wordmark for footers &amp; emails.</p>
+
+    <div class="grid g-logos">
+
+      <!-- Full PNG lockup -->
+      <div class="tile wide" data-img="assets/mochi-logo.png">
+        <div class="stage" style="background:var(--panel);min-height:80px;flex:1;">
+          <img src="assets/mochi-logo.png" alt="Mochi POS full lockup" style="max-height:64px;max-width:100%"/>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          <div class="label">full lockup · png</div>
+          <code style="font-size:10px;color:var(--muted-soft)">mochi-logo.png</code>
+        </div>
+        <span class="copy-hint">click → copy path</span>
+      </div>
+
+      <!-- Wordmark only (SVG text) -->
+      <div class="tile wide" data-svg="wordmark">
+        <div class="stage" style="min-height:60px;flex:1;background:var(--panel)">
+          <svg viewBox="0 0 200 50" width="180" height="44" xmlns="http://www.w3.org/2000/svg">
+            <text x="0" y="38" font-family="Nunito,sans-serif" font-weight="900" font-size="40" letter-spacing="-2" fill="#2d2960">Mochi</text>
+            <text x="115" y="38" font-family="Nunito,sans-serif" font-weight="900" font-size="40" letter-spacing="-2" fill="#b8a9f0">POS</text>
+          </svg>
+        </div>
+        <div class="label" style="align-self:flex-end">wordmark</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- Inline horizontal lockup: face + wordmark -->
+      <div class="tile wide" data-svg="inline-lockup">
+        <div class="stage" style="min-height:60px;flex:1;background:var(--panel)">
+          <svg viewBox="0 0 240 56" width="220" height="48" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="il-1" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient></defs>
+            <circle cx="28" cy="28" r="22" fill="url(#il-1)" stroke="#2d2960" stroke-width="2"/>
+            <ellipse cx="21" cy="19" rx="5" ry="2.6" fill="#fff" opacity=".7"/>
+            <ellipse cx="17" cy="33" rx="3" ry="1.8" fill="#f7c8d2"/>
+            <ellipse cx="39" cy="33" rx="3" ry="1.8" fill="#f7c8d2"/>
+            <ellipse cx="21" cy="27" rx="2.2" ry="2.8" fill="#1c1838"/>
+            <ellipse cx="35" cy="27" rx="2.2" ry="2.8" fill="#1c1838"/>
+            <circle cx="21.5" cy="25.8" r=".7" fill="#fff"/>
+            <circle cx="35.5" cy="25.8" r=".7" fill="#fff"/>
+            <path d="M24 34 Q28 37 32 34" stroke="#1c1838" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+            <text x="60" y="38" font-family="Nunito,sans-serif" font-weight="900" font-size="28" letter-spacing="-1.4" fill="#2d2960">Mochi</text>
+            <text x="140" y="38" font-family="Nunito,sans-serif" font-weight="900" font-size="28" letter-spacing="-1.4" fill="#b8a9f0">POS</text>
+          </svg>
+        </div>
+        <div class="label" style="align-self:flex-end">inline lockup</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- "M" favicon tile -->
+      <div class="tile" data-svg="m-tile">
+        <div class="stage indigo">
+          <svg viewBox="0 0 64 64" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="60" height="60" rx="16" fill="#2d2960"/>
+            <text x="32" y="46" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="42" letter-spacing="-2" fill="#b8a9f0">M</text>
+          </svg>
+        </div>
+        <div class="label">"M" tile · app icon</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- "M" face tile -->
+      <div class="tile" data-svg="m-face-tile">
+        <div class="stage cream">
+          <svg viewBox="0 0 64 64" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="60" height="60" rx="16" fill="#f4eedf" stroke="#e9dec3" stroke-width="1"/>
+            <defs><radialGradient id="ft-1" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient></defs>
+            <circle cx="32" cy="34" r="22" fill="url(#ft-1)" stroke="#2d2960" stroke-width="2"/>
+            <ellipse cx="24" cy="24" rx="6" ry="3" fill="#fff" opacity=".7"/>
+            <ellipse cx="20" cy="39" rx="3" ry="1.8" fill="#f7c8d2"/>
+            <ellipse cx="44" cy="39" rx="3" ry="1.8" fill="#f7c8d2"/>
+            <ellipse cx="24" cy="33" rx="2.2" ry="2.8" fill="#1c1838"/>
+            <ellipse cx="40" cy="33" rx="2.2" ry="2.8" fill="#1c1838"/>
+            <circle cx="24.5" cy="31.8" r=".7" fill="#fff"/>
+            <circle cx="40.5" cy="31.8" r=".7" fill="#fff"/>
+            <path d="M28 40 Q32 43 36 40" stroke="#1c1838" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="label">face tile · cream</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- Mono dark wordmark -->
+      <div class="tile wide" data-svg="mono-dark">
+        <div class="stage" style="background:var(--indigo);min-height:60px;flex:1;">
+          <svg viewBox="0 0 200 50" width="180" height="44" xmlns="http://www.w3.org/2000/svg">
+            <text x="0" y="38" font-family="Nunito,sans-serif" font-weight="900" font-size="40" letter-spacing="-2" fill="#ffffff">Mochi</text>
+            <text x="115" y="38" font-family="Nunito,sans-serif" font-weight="900" font-size="40" letter-spacing="-2" fill="#d3c8f6">POS</text>
+          </svg>
+        </div>
+        <div class="label" style="align-self:flex-end">mono · on indigo</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- Mono single-color (knockout) -->
+      <div class="tile wide" data-svg="mono-flat">
+        <div class="stage" style="background:#f4eedf;min-height:60px;flex:1;">
+          <svg viewBox="0 0 200 50" width="180" height="44" xmlns="http://www.w3.org/2000/svg">
+            <text x="0" y="38" font-family="Nunito,sans-serif" font-weight="900" font-size="40" letter-spacing="-2" fill="#2d2960">MochiPOS</text>
+          </svg>
+        </div>
+        <div class="label" style="align-self:flex-end">mono · single-color</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- Stacked badge -->
+      <div class="tile" data-svg="stacked-badge">
+        <div class="stage" style="background:var(--lavender-100)">
+          <svg viewBox="0 0 100 100" width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="sb-1" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient></defs>
+            <circle cx="50" cy="36" r="22" fill="url(#sb-1)" stroke="#2d2960" stroke-width="2"/>
+            <ellipse cx="42" cy="26" rx="6" ry="3" fill="#fff" opacity=".7"/>
+            <ellipse cx="38" cy="41" rx="3" ry="1.8" fill="#f7c8d2"/>
+            <ellipse cx="62" cy="41" rx="3" ry="1.8" fill="#f7c8d2"/>
+            <ellipse cx="42" cy="35" rx="2.2" ry="2.8" fill="#1c1838"/>
+            <ellipse cx="58" cy="35" rx="2.2" ry="2.8" fill="#1c1838"/>
+            <circle cx="42.5" cy="33.8" r=".7" fill="#fff"/>
+            <circle cx="58.5" cy="33.8" r=".7" fill="#fff"/>
+            <path d="M46 42 Q50 45 54 42" stroke="#1c1838" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+            <text x="50" y="84" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="14" letter-spacing="-.5" fill="#2d2960">Mochi<tspan fill="#7a6ad6">POS</tspan></text>
+          </svg>
+        </div>
+        <div class="label">stacked badge</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── 3. DECORATIVE MOTIFS ───────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="badge"><span class="dot"></span>Motifs · pattern bits</span>
+        <h2 style="margin-top:10px">Decorative bits</h2>
+      </div>
+      <span class="count">14 motifs</span>
+    </div>
+    <p class="sec-desc">Tiny vectors for backgrounds, separators, watermarks &amp; emphasis. Lean lavender on indigo for a quiet brand presence; pink or cream for warmer accents.</p>
+
+    <div class="grid g-motifs">
+
+      <!-- Paw print -->
+      <div class="tile" data-svg="paw">
+        <div class="stage">
+          <svg viewBox="0 0 40 40" width="44" height="44" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="20" cy="26" rx="9" ry="7.5" fill="#2d2960"/>
+            <ellipse cx="9"  cy="14" rx="3.4" ry="4.4" fill="#2d2960"/>
+            <ellipse cx="31" cy="14" rx="3.4" ry="4.4" fill="#2d2960"/>
+            <ellipse cx="15" cy="6"  rx="2.8" ry="3.6" fill="#2d2960"/>
+            <ellipse cx="25" cy="6"  rx="2.8" ry="3.6" fill="#2d2960"/>
+          </svg>
+        </div>
+        <div class="label">paw print</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- Paw light variant -->
+      <div class="tile" data-svg="paw-soft">
+        <div class="stage">
+          <svg viewBox="0 0 40 40" width="44" height="44" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="20" cy="26" rx="9" ry="7.5" fill="#b8a9f0"/>
+            <ellipse cx="9"  cy="14" rx="3.4" ry="4.4" fill="#b8a9f0"/>
+            <ellipse cx="31" cy="14" rx="3.4" ry="4.4" fill="#b8a9f0"/>
+            <ellipse cx="15" cy="6"  rx="2.8" ry="3.6" fill="#b8a9f0"/>
+            <ellipse cx="25" cy="6"  rx="2.8" ry="3.6" fill="#b8a9f0"/>
+          </svg>
+        </div>
+        <div class="label">paw · lavender</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- 4-point sparkle -->
+      <div class="tile" data-svg="sparkle">
+        <div class="stage">
+          <svg viewBox="0 0 32 32" width="42" height="42" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 2 C17 10, 22 15, 30 16 C22 17, 17 22, 16 30 C15 22, 10 17, 2 16 C10 15, 15 10, 16 2 Z" fill="#7a6ad6"/>
+          </svg>
+        </div>
+        <div class="label">sparkle</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- Sparkle cluster -->
+      <div class="tile" data-svg="sparkle-cluster">
+        <div class="stage">
+          <svg viewBox="0 0 64 64" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 6 C33 14, 38 19, 46 20 C38 21, 33 26, 32 34 C31 26, 26 21, 18 20 C26 19, 31 14, 32 6 Z" fill="#7a6ad6"/>
+            <path d="M14 38 C14.6 42, 18 45, 22 45.6 C18 46.2, 14.6 49, 14 53 C13.4 49, 10 46.2, 6 45.6 C10 45, 13.4 42, 14 38 Z" fill="#b8a9f0"/>
+            <path d="M50 42 C50.5 45, 53 47.5, 56 48 C53 48.5, 50.5 51, 50 54 C49.5 51, 47 48.5, 44 48 C47 47.5, 49.5 45, 50 42 Z" fill="#d3c8f6"/>
+          </svg>
+        </div>
+        <div class="label">sparkle cluster</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- Heart -->
+      <div class="tile" data-svg="heart">
+        <div class="stage">
+          <svg viewBox="0 0 32 32" width="42" height="42" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 28 C8 22, 2 17, 2 10 C2 5, 6 3, 9 3 C12 3, 15 5, 16 8 C17 5, 20 3, 23 3 C26 3, 30 5, 30 10 C30 17, 24 22, 16 28 Z" fill="#f7c8d2" stroke="#e85b75" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <div class="label">heart · blush</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- Receipt scrap -->
+      <div class="tile" data-svg="receipt-scrap">
+        <div class="stage cream">
+          <svg viewBox="0 0 56 64" width="50" height="58" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 2 H52 V52 L48 56 L44 52 L40 56 L36 52 L32 56 L28 52 L24 56 L20 52 L16 56 L12 52 L8 56 L4 52 Z" fill="#ffffff" stroke="#2d2960" stroke-width="1.6"/>
+            <line x1="10" y1="14" x2="46" y2="14" stroke="#b8a9f0" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="10" y1="22" x2="36" y2="22" stroke="#d3c8f6" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="10" y1="30" x2="42" y2="30" stroke="#d3c8f6" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="10" y1="38" x2="30" y2="38" stroke="#d3c8f6" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="label">receipt scrap</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- Coin/baht -->
+      <div class="tile" data-svg="baht-coin">
+        <div class="stage">
+          <svg viewBox="0 0 40 40" width="44" height="44" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="17" fill="#f4eedf" stroke="#a8761c" stroke-width="2"/>
+            <circle cx="20" cy="20" r="13" fill="none" stroke="#a8761c" stroke-width="1" stroke-dasharray="2 2"/>
+            <text x="20" y="27" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="18" fill="#a8761c">฿</text>
+          </svg>
+        </div>
+        <div class="label">baht coin</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- Wavy underline -->
+      <div class="tile" data-svg="wavy">
+        <div class="stage">
+          <svg viewBox="0 0 80 16" width="100" height="20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 10 Q10 2 18 10 T34 10 T50 10 T66 10 T78 10" stroke="#7a6ad6" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="label">wavy underline</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- Dotted scatter -->
+      <div class="tile" data-svg="confetti">
+        <div class="stage">
+          <svg viewBox="0 0 64 64" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="10" cy="14" r="3" fill="#b8a9f0"/>
+            <circle cx="28" cy="8" r="2" fill="#2d2960"/>
+            <circle cx="48" cy="16" r="3.5" fill="#f7c8d2"/>
+            <circle cx="58" cy="32" r="2" fill="#7a6ad6"/>
+            <rect x="6" y="38" width="6" height="2" rx="1" fill="#2d2960" transform="rotate(-20 9 39)"/>
+            <rect x="24" y="44" width="7" height="2.4" rx="1" fill="#b8a9f0" transform="rotate(30 27 45)"/>
+            <rect x="44" y="46" width="6" height="2" rx="1" fill="#f7c8d2" transform="rotate(-15 47 47)"/>
+            <circle cx="36" cy="56" r="2.5" fill="#d3c8f6"/>
+            <circle cx="14" cy="56" r="2" fill="#7a6ad6"/>
+          </svg>
+        </div>
+        <div class="label">confetti scatter</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- Blob shape -->
+      <div class="tile" data-svg="blob">
+        <div class="stage">
+          <svg viewBox="0 0 80 80" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+            <path d="M40 6 C58 4, 76 18, 74 38 C72 58, 56 76, 36 72 C16 68, 4 50, 10 32 C16 14, 22 8, 40 6 Z" fill="#e2dafa"/>
+          </svg>
+        </div>
+        <div class="label">blob · lavender</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- Quote bubble -->
+      <div class="tile" data-svg="bubble">
+        <div class="stage">
+          <svg viewBox="0 0 80 64" width="64" height="50" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 8 H68 A8 8 0 0 1 76 16 V40 A8 8 0 0 1 68 48 H30 L20 58 L22 48 H12 A8 8 0 0 1 4 40 V16 A8 8 0 0 1 12 8 Z" fill="#ffffff" stroke="#2d2960" stroke-width="2"/>
+            <circle cx="28" cy="28" r="2.5" fill="#2d2960"/>
+            <circle cx="40" cy="28" r="2.5" fill="#2d2960"/>
+            <circle cx="52" cy="28" r="2.5" fill="#2d2960"/>
+          </svg>
+        </div>
+        <div class="label">chat bubble</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- Tag/notch shape -->
+      <div class="tile" data-svg="price-tag">
+        <div class="stage">
+          <svg viewBox="0 0 80 40" width="68" height="38" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 4 H72 A4 4 0 0 1 76 8 V32 A4 4 0 0 1 72 36 H12 L2 20 Z" fill="#f4eedf" stroke="#a8761c" stroke-width="1.5"/>
+            <circle cx="14" cy="20" r="2" fill="#a8761c"/>
+            <text x="44" y="25" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="800" font-size="13" fill="#a8761c">฿120</text>
+          </svg>
+        </div>
+        <div class="label">price tag</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- Pet-type chip (cat) -->
+      <div class="tile" data-svg="chip-cat">
+        <div class="stage">
+          <svg viewBox="0 0 80 32" width="72" height="32" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="76" height="28" rx="14" fill="#efeafd" stroke="#d3c8f6" stroke-width="1"/>
+            <text x="14" y="22" font-size="14">🐱</text>
+            <text x="32" y="22" font-family="Nunito,sans-serif" font-weight="800" font-size="13" fill="#2d2960">Cat</text>
+          </svg>
+        </div>
+        <div class="label">pet chip · cat</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+      <!-- Divider dots -->
+      <div class="tile" data-svg="divider-dots">
+        <div class="stage">
+          <svg viewBox="0 0 96 16" width="100" height="20" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="8" r="2" fill="#d3c8f6"/>
+            <circle cx="36" cy="8" r="2.4" fill="#b8a9f0"/>
+            <circle cx="48" cy="8" r="3.6" fill="#7a6ad6"/>
+            <circle cx="60" cy="8" r="2.4" fill="#b8a9f0"/>
+            <circle cx="76" cy="8" r="2" fill="#d3c8f6"/>
+          </svg>
+        </div>
+        <div class="label">section divider</div>
+        <span class="copy-hint">click → copy</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── 4. IN-CONTEXT EXAMPLES ─────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="badge"><span class="dot"></span>Usage · in context</span>
+        <h2 style="margin-top:10px">In the wild</h2>
+      </div>
+      <span class="count">8 patterns</span>
+    </div>
+    <p class="sec-desc">How these decorations slot into real surfaces. Hover to see the animations Mochi can do; use them sparingly — chrome stays calm so the mascot lands when it appears.</p>
+
+    <div class="grid g-context">
+
+      <!-- Empty state -->
+      <div class="demo-card demo-empty">
+        <svg viewBox="0 0 64 64" width="64" height="64" xmlns="http://www.w3.org/2000/svg" class="blink-eyes">
+          <defs><radialGradient id="ex-1" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient></defs>
+          <circle cx="32" cy="32" r="26" fill="url(#ex-1)" stroke="#2d2960" stroke-width="2"/>
+          <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#ffffff" opacity=".7"/>
+          <ellipse cx="18" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+          <ellipse cx="46" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+          <path d="M19 31 Q23 28 27 31" stroke="#1c1838" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M37 31 Q41 28 45 31" stroke="#1c1838" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M30 41 Q32 39 34 41" stroke="#1c1838" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="ttl">Nothing on the queue</div>
+        <div class="sub">When Day 4 wraps, Send Later orders will land here.</div>
+        <div class="btn">View today's takings</div>
+      </div>
+
+      <!-- Header with peek -->
+      <div class="demo-card demo-peek">
+        <svg viewBox="0 0 80 44" width="76" height="42" class="peek-anchor wiggle" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="ex-p" cx="38%" cy="48%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient>
+            <clipPath id="ex-cp"><rect x="0" y="0" width="80" height="40"/></clipPath>
+          </defs>
+          <g clip-path="url(#ex-cp)">
+            <circle cx="40" cy="44" r="24" fill="url(#ex-p)" stroke="#2d2960" stroke-width="2"/>
+            <ellipse cx="33" cy="32" rx="6" ry="3" fill="#ffffff" opacity=".7"/>
+            <ellipse cx="28" cy="44" rx="3.4" ry="2" fill="#f7c8d2"/>
+            <ellipse cx="52" cy="44" rx="3.4" ry="2" fill="#f7c8d2"/>
+            <ellipse cx="33" cy="38" rx="2.4" ry="3" fill="#1c1838"/>
+            <ellipse cx="47" cy="38" rx="2.4" ry="3" fill="#1c1838"/>
+            <circle cx="33.6" cy="36.8" r=".8" fill="#fff"/>
+            <circle cx="47.6" cy="36.8" r=".8" fill="#fff"/>
+          </g>
+          <ellipse cx="22" cy="40" rx="5" ry="3" fill="#ffffff" stroke="#2d2960" stroke-width="1.6"/>
+          <ellipse cx="58" cy="40" rx="5" ry="3" fill="#ffffff" stroke="#2d2960" stroke-width="1.6"/>
+          <line x1="0" y1="40" x2="80" y2="40" stroke="#2d2960" stroke-width="2"/>
+        </svg>
+        <div class="ttl">First sale of the day!</div>
+        <div class="sub">฿420 just landed from booth #3. Tap to see who.</div>
+      </div>
+
+      <!-- Success toast -->
+      <div class="demo-card">
+        <div class="ttl">Success toast</div>
+        <div class="sub" style="margin-bottom:14px">Order saved, pet linked.</div>
+        <div class="demo-toast">
+          <div class="ok">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="msg">Mochi remembered Lulu</div>
+            <div class="sub2">Tap to add another pet</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div class="demo-card">
+        <div class="ttl">Loading state</div>
+        <div class="sub">Bouncing mascot — perfect for &lt; 2s waits.</div>
+        <div class="demo-loading">
+          <svg viewBox="0 0 64 64" width="56" height="56" xmlns="http://www.w3.org/2000/svg" class="bounce">
+            <defs><radialGradient id="ex-b" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient></defs>
+            <circle cx="32" cy="32" r="26" fill="url(#ex-b)" stroke="#2d2960" stroke-width="2"/>
+            <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#ffffff" opacity=".7"/>
+            <ellipse cx="18" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <ellipse cx="46" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <ellipse cx="23" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+            <ellipse cx="41" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+            <circle cx="23.7" cy="29.5" r=".9" fill="#fff"/>
+            <circle cx="41.7" cy="29.5" r=".9" fill="#fff"/>
+            <path d="M27 39 Q32 43 37 39" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          </svg>
+          <div>
+            <div style="font-weight:800;font-size:14px">Crunching today's takings…</div>
+            <div style="color:var(--muted);font-size:12px;margin-top:2px">Almost there.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paw watermark -->
+      <div class="demo-card demo-watermark">
+        <div class="ttl">Section card · with watermark</div>
+        <div class="sub" style="margin-top:6px">Faded paws sit behind copy — adds character without competing.</div>
+        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+          <span class="pill lav">12 customers</span>
+          <span class="pill ok">8 returning</span>
+        </div>
+        <svg class="wm-paws" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <g fill="#2d2960">
+            <g transform="translate(20 40)"><ellipse cx="20" cy="26" rx="9" ry="7.5"/><ellipse cx="9" cy="14" rx="3.4" ry="4.4"/><ellipse cx="31" cy="14" rx="3.4" ry="4.4"/><ellipse cx="15" cy="6" rx="2.8" ry="3.6"/><ellipse cx="25" cy="6" rx="2.8" ry="3.6"/></g>
+            <g transform="translate(90 110) rotate(20)"><ellipse cx="20" cy="26" rx="9" ry="7.5"/><ellipse cx="9" cy="14" rx="3.4" ry="4.4"/><ellipse cx="31" cy="14" rx="3.4" ry="4.4"/><ellipse cx="15" cy="6" rx="2.8" ry="3.6"/><ellipse cx="25" cy="6" rx="2.8" ry="3.6"/></g>
+            <g transform="translate(140 30) rotate(-15)"><ellipse cx="20" cy="26" rx="9" ry="7.5"/><ellipse cx="9" cy="14" rx="3.4" ry="4.4"/><ellipse cx="31" cy="14" rx="3.4" ry="4.4"/><ellipse cx="15" cy="6" rx="2.8" ry="3.6"/><ellipse cx="25" cy="6" rx="2.8" ry="3.6"/></g>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Indigo page header -->
+      <div class="demo-header">
+        <div class="ttl">Welcome back, Visan</div>
+        <div class="sub">Day 3 of theMeowseum · Pet Expo</div>
+        <svg viewBox="0 0 96 96" class="wm-corner" xmlns="http://www.w3.org/2000/svg">
+          <defs><radialGradient id="hd-1" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#efeafd"/><stop offset="100%" stop-color="#b8a9f0"/></radialGradient></defs>
+          <circle cx="48" cy="48" r="38" fill="url(#hd-1)" stroke="#1c1838" stroke-width="2"/>
+          <ellipse cx="36" cy="30" rx="10" ry="5" fill="#ffffff" opacity=".7"/>
+          <ellipse cx="28" cy="56" rx="6" ry="3.6" fill="#f7c8d2"/>
+          <ellipse cx="68" cy="56" rx="6" ry="3.6" fill="#f7c8d2"/>
+          <ellipse cx="36" cy="46" rx="3.4" ry="4.4" fill="#1c1838"/>
+          <ellipse cx="60" cy="46" rx="3.4" ry="4.4" fill="#1c1838"/>
+          <circle cx="37" cy="44" r="1.2" fill="#fff"/>
+          <circle cx="61" cy="44" r="1.2" fill="#fff"/>
+          <path d="M40 58 Q48 64 56 58" stroke="#1c1838" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- Avatar stack -->
+      <div class="demo-card">
+        <div class="ttl">Avatar stack</div>
+        <div class="sub" style="margin-bottom:14px">Mascot moods as user/pet avatars.</div>
+        <div class="demo-avatars">
+          <div class="avatar lav">
+            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="13" fill="#fff" stroke="#2d2960" stroke-width="1.4"/><ellipse cx="11.5" cy="15" rx="1.4" ry="1.8" fill="#1c1838"/><ellipse cx="20.5" cy="15" rx="1.4" ry="1.8" fill="#1c1838"/><path d="M13 19 Q16 21 19 19" stroke="#1c1838" stroke-width="1.1" fill="none" stroke-linecap="round"/><ellipse cx="9" cy="19" rx="1.6" ry="1" fill="#f7c8d2"/><ellipse cx="23" cy="19" rx="1.6" ry="1" fill="#f7c8d2"/></svg>
+          </div>
+          <div class="avatar crm">
+            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="13" fill="#fff" stroke="#2d2960" stroke-width="1.4"/><path d="M10 14 Q12 12 14 14" stroke="#1c1838" stroke-width="1.4" fill="none" stroke-linecap="round"/><path d="M18 14 Q20 12 22 14" stroke="#1c1838" stroke-width="1.4" fill="none" stroke-linecap="round"/><path d="M13 19 Q16 22 19 19" stroke="#1c1838" stroke-width="1.1" fill="none" stroke-linecap="round"/></svg>
+          </div>
+          <div class="avatar ind">
+            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="13" fill="#fff" stroke="#2d2960" stroke-width="1.4"/><path d="M11.5 13 L12 15 L14 15.2 L12 15.4 L11.5 17 L11 15.4 L9 15.2 L11 15 Z" fill="#7a6ad6"/><path d="M20.5 13 L21 15 L23 15.2 L21 15.4 L20.5 17 L20 15.4 L18 15.2 L20 15 Z" fill="#7a6ad6"/><path d="M13 19 Q16 21 19 19" stroke="#1c1838" stroke-width="1.1" fill="none" stroke-linecap="round"/></svg>
+          </div>
+          <div class="avatar" style="background:var(--pink-blush)">
+            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="13" fill="#fff" stroke="#2d2960" stroke-width="1.4"/><ellipse cx="11.5" cy="15" rx="1.4" ry="1.8" fill="#1c1838"/><ellipse cx="20.5" cy="15" rx="1.4" ry="1.8" fill="#1c1838"/><circle cx="16" cy="20" r="1.4" fill="#1c1838"/></svg>
+          </div>
+          <div class="avatar" style="background:var(--bg-soft);color:var(--muted);font-weight:800;font-size:12px;">+4</div>
+        </div>
+      </div>
+
+      <!-- Inline mascot in copy -->
+      <div class="demo-card">
+        <div class="ttl">Inline with copy</div>
+        <div style="display:flex;align-items:flex-start;gap:10px;margin-top:10px">
+          <svg viewBox="0 0 64 64" width="36" height="36" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;margin-top:2px">
+            <defs><radialGradient id="il-c" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f1edfb"/><stop offset="100%" stop-color="#d3c8f6"/></radialGradient></defs>
+            <circle cx="32" cy="32" r="26" fill="url(#il-c)" stroke="#2d2960" stroke-width="2"/>
+            <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#ffffff" opacity=".7"/>
+            <ellipse cx="18" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <ellipse cx="46" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+            <ellipse cx="23" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+            <ellipse cx="41" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+            <circle cx="23.7" cy="29.5" r=".9" fill="#fff"/>
+            <circle cx="41.7" cy="29.5" r=".9" fill="#fff"/>
+            <path d="M27 39 Q32 43 37 39" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          </svg>
+          <div>
+            <div style="font-weight:800;font-size:14px">So next time you visit theMeowseum…</div>
+            <div style="color:var(--muted);font-size:13px;line-height:1.55;margin-top:4px">…we'll know what <strong style="color:var(--indigo)">Mochi</strong> loves. Takes 30 seconds.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Receipt 🐾 accent (cream card) -->
+      <div class="demo-card" style="background:var(--grad-cream);border-color:var(--cream-deep)">
+        <div class="ttl" style="color:var(--indigo)">Receipt accent</div>
+        <div class="sub" style="margin-top:6px">Cream paw watermark on order slips ties booth POS to SaaS.</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:14px;">
+          <svg viewBox="0 0 40 40" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="20" cy="26" rx="9" ry="7.5" fill="#a8761c" opacity=".5"/>
+            <ellipse cx="9"  cy="14" rx="3.4" ry="4.4" fill="#a8761c" opacity=".5"/>
+            <ellipse cx="31" cy="14" rx="3.4" ry="4.4" fill="#a8761c" opacity=".5"/>
+            <ellipse cx="15" cy="6"  rx="2.8" ry="3.6" fill="#a8761c" opacity=".5"/>
+            <ellipse cx="25" cy="6"  rx="2.8" ry="3.6" fill="#a8761c" opacity=".5"/>
+          </svg>
+          <div>
+            <div class="num" style="font-weight:900;font-size:18px;color:var(--indigo)">฿420</div>
+            <div style="font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-weight:800">order #M-0034</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>Click any tile to copy its SVG. Drop straight into JSX, HTML, or another design tool.</span>
+    <span>Mochi POS · brand kit · v1</span>
+  </footer>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Copied SVG to clipboard</span>
+</div>
+
+<script>
+  const toast = document.getElementById('toast');
+  const toastMsg = document.getElementById('toast-msg');
+  let toastTimer;
+
+  function showToast(msg){
+    toastMsg.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>toast.classList.remove('show'), 1800);
+  }
+
+  function flashCopied(el){
+    el.classList.add('copied');
+    setTimeout(()=>el.classList.remove('copied'), 1200);
+  }
+
+  document.querySelectorAll('.tile').forEach(tile=>{
+    tile.addEventListener('click', async ()=>{
+      let text = '';
+      let label = 'Copied SVG';
+      if(tile.dataset.img){
+        text = tile.dataset.img;
+        label = 'Copied image path';
+      } else {
+        // Grab inline SVG markup
+        const svg = tile.querySelector('svg');
+        if(!svg){ return; }
+        const clone = svg.cloneNode(true);
+        // Ensure xmlns is present
+        if(!clone.getAttribute('xmlns')) clone.setAttribute('xmlns','http://www.w3.org/2000/svg');
+        text = clone.outerHTML
+          // remove animation classes for portability
+          .replace(/\s*class="[^"]*"/g, '');
+      }
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast(label);
+        flashCopied(tile);
+      } catch(e){
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); showToast(label); flashCopied(tile); } catch(_){}
+        document.body.removeChild(ta);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

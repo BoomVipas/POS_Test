@@ -1,0 +1,928 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Mochi POS · Color reference</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="stylesheet" href="colors_and_type.css"/>
+<style>
+  body{ background: var(--bg); }
+  .page{ max-width: 1240px; margin: 0 auto; padding: 64px 32px 120px; }
+
+  /* Hero */
+  .hero{
+    display: grid; grid-template-columns: 1fr auto; gap: 40px;
+    align-items: flex-end; padding-bottom: 36px; margin-bottom: 64px;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero .eyebrow{ color: var(--lavender-700); margin-bottom: 14px; display: block; font-size: 12px; letter-spacing: .14em; }
+  .hero h1{
+    font-size: 88px; line-height: .9; letter-spacing: -.04em; font-weight: 900;
+    color: var(--text);
+  }
+  .hero h1 .pop{ color: var(--lavender-700); }
+  .hero p{ color: var(--muted); font-size: 16px; max-width: 540px; margin-top: 22px; line-height: 1.55; }
+  .hero-strip{
+    display: flex; gap: 0; border-radius: 24px; overflow: hidden;
+    box-shadow: var(--shadow-card);
+    width: 320px;
+  }
+  .hero-strip > div{ flex: 1; aspect-ratio: 1; }
+
+  /* Section */
+  section{ margin-bottom: 96px; }
+  .sec-head{ display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 36px; }
+  .sec-head .lbl{ font-size: 11px; font-weight: 800; letter-spacing: .14em; color: var(--lavender-700); text-transform: uppercase; }
+  .sec-head h2{ font-size: 36px; letter-spacing: -.025em; margin-top: 10px; }
+  .sec-head p{ color: var(--muted); font-size: 14px; max-width: 460px; margin-top: 10px; line-height: 1.6; }
+  .sec-head .count{ font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; color: var(--muted-soft); font-weight: 800; text-transform: uppercase; }
+
+  /* ── 1. Pantone-style swatch cards ──────────────────────────── */
+  .swatch-grid{
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 1000px){ .swatch-grid{ grid-template-columns: repeat(2, 1fr); } }
+
+  .swatch{
+    background: var(--panel);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow-rest);
+    border: 1px solid var(--line);
+    display: flex; flex-direction: column;
+    transition: transform .18s ease, box-shadow .18s ease;
+    cursor: pointer;
+    position: relative;
+  }
+  .swatch:hover{ transform: translateY(-3px); box-shadow: var(--shadow-card); }
+  .swatch .chip{
+    aspect-ratio: 4/5;
+    position: relative;
+    padding: 22px 22px 18px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .swatch .chip .name{
+    font-family: var(--font-display); font-weight: 900;
+    font-size: 22px; letter-spacing: -.02em; line-height: 1.05;
+  }
+  .swatch .chip .role{
+    font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+    opacity: .7;
+  }
+  .swatch .chip .pantone{
+    font-family: var(--font-mono); font-weight: 800; font-size: 11px; letter-spacing: .04em;
+    opacity: .8;
+  }
+  /* Pantone-card stripe at bottom */
+  .swatch .chip::after{
+    content: ""; position: absolute; left: 22px; right: 22px; bottom: 18px;
+    height: 2px;
+    background: currentColor;
+    opacity: .25;
+    margin-bottom: 36px;
+  }
+  /* Color-card meta — hex/rgb/cmyk */
+  .swatch .meta{
+    padding: 16px 22px 18px;
+    background: var(--panel);
+    display: flex; flex-direction: column; gap: 4px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--text-2);
+    font-weight: 700;
+  }
+  .swatch .meta .row{ display: grid; grid-template-columns: 44px 1fr; gap: 8px; }
+  .swatch .meta .k{ color: var(--muted-soft); letter-spacing: .08em; text-transform: uppercase; font-size: 9px; align-self: center; }
+  .swatch .meta .v{ color: var(--text); }
+  .swatch .copy{
+    position: absolute; top: 14px; right: 14px;
+    background: rgba(255,255,255,.15); backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+    opacity: 0; transition: opacity .15s ease;
+    color: white;
+  }
+  .swatch:hover .copy{ opacity: 1; }
+  .swatch.copied .copy{ opacity: 1; background: var(--success); border-color: transparent; }
+
+  /* For light chips, copy chip needs dark text */
+  .swatch.light .copy{ color: var(--text); background: rgba(28,24,56,.06); border-color: rgba(28,24,56,.1); }
+
+  /* ── 2. Palette gradient strip ─────────────────────────────── */
+  .gradient-row{
+    display: flex; flex-direction: column; gap: 28px;
+  }
+  .gradient-card{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 24px 26px;
+    box-shadow: var(--shadow-rest);
+  }
+  .gradient-card .meta{
+    display: flex; justify-content: space-between; align-items: flex-end; gap: 12px;
+    margin-bottom: 16px;
+  }
+  .gradient-card .meta h3{ font-size: 18px; }
+  .gradient-card .meta .sub{ color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .gradient-card .meta .code{ font-family: var(--font-mono); font-size: 11px; color: var(--muted-soft); font-weight: 800; letter-spacing: .04em; }
+  .gradient-bar{
+    height: 96px; border-radius: 16px;
+    position: relative;
+  }
+  .gradient-stops{
+    display: flex; justify-content: space-between;
+    margin-top: 12px;
+    font-family: var(--font-mono); font-size: 10px; color: var(--muted-soft); font-weight: 800; letter-spacing: .04em;
+  }
+  .gradient-stops .stop{ display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .gradient-stops .stop .dot{ width: 12px; height: 12px; border-radius: 999px; border: 2px solid white; box-shadow: 0 1px 4px rgba(0,0,0,.15); }
+
+  /* ── 3. Pairings ──────────────────────────────────────────── */
+  .pair-grid{
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  }
+  @media (max-width: 1000px){ .pair-grid{ grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 700px){ .pair-grid{ grid-template-columns: 1fr; } }
+  .pair{
+    border-radius: 18px;
+    aspect-ratio: 4/3;
+    padding: 22px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-rest);
+  }
+  .pair .nm{
+    font-family: var(--font-display); font-weight: 900; font-size: 22px; letter-spacing: -.02em;
+    line-height: 1.05;
+  }
+  .pair .role{ font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; opacity: .65; }
+  .pair .codes{ display: flex; gap: 8px; flex-wrap: wrap; }
+  .pair .codes span{
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800; letter-spacing: .04em;
+    padding: 3px 8px; border-radius: 999px;
+    background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.2);
+    backdrop-filter: blur(4px);
+  }
+  .pair.light .codes span{ background: rgba(28,24,56,.06); border-color: rgba(28,24,56,.08); }
+  .pair .mark{
+    position: absolute;
+    width: 64px; height: 64px;
+    bottom: 18px; right: 18px;
+    opacity: .85;
+  }
+  .pair .demo{
+    display: flex; gap: 8px; align-items: center;
+  }
+  .pair .demo .pill-d{
+    display: inline-flex; padding: 6px 12px; border-radius: 999px;
+    font-weight: 800; font-size: 11px;
+    background: rgba(255,255,255,.2); backdrop-filter: blur(4px);
+  }
+  .pair.light .demo .pill-d{ background: rgba(28,24,56,.06); }
+
+  /* ── 4. Usage rules ───────────────────────────────────────── */
+  .rules{
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+  }
+  @media (max-width: 800px){ .rules{ grid-template-columns: 1fr; } }
+  .rule{
+    background: var(--panel);
+    border: 1px solid var(--line); border-radius: 20px;
+    padding: 22px;
+    box-shadow: var(--shadow-rest);
+  }
+  .rule.do  { border-color: rgba(31,122,77,.25); background: linear-gradient(180deg, #f7fcf9, #fff); }
+  .rule.dont{ border-color: rgba(184,54,45,.25); background: linear-gradient(180deg, #fdf9f8, #fff); }
+  .rule .head{ display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .rule .head .ic{
+    width: 28px; height: 28px; border-radius: 999px;
+    display: grid; place-items: center;
+    color: white; font-weight: 900; font-size: 14px;
+  }
+  .rule.do .ic{ background: var(--success); }
+  .rule.dont .ic{ background: var(--danger); }
+  .rule .head .ttl{ font-weight: 800; font-size: 13px; letter-spacing: .04em; }
+  .rule.do .head .ttl{ color: var(--success); }
+  .rule.dont .head .ttl{ color: var(--danger); }
+  .rule .demo{
+    aspect-ratio: 16/8;
+    border-radius: 14px;
+    padding: 18px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 14px;
+    position: relative; overflow: hidden;
+  }
+  .rule p{ color: var(--text-2); font-size: 13px; line-height: 1.5; }
+
+  /* ── 5. Accessibility ─────────────────────────────────────── */
+  .a11y{
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  }
+  @media (max-width: 900px){ .a11y{ grid-template-columns: repeat(2, 1fr); } }
+  .a11y-cell{
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: var(--shadow-rest);
+    border: 1px solid var(--line);
+  }
+  .a11y-cell .pair-lbl{ font-family: var(--font-mono); font-size: 10px; font-weight: 800; letter-spacing: .08em; opacity: .75; margin-bottom: 14px; }
+  .a11y-cell .sample{ font-family: var(--font-display); font-weight: 900; font-size: 28px; letter-spacing: -.02em; line-height: 1; }
+  .a11y-cell .sample-sm{ font-size: 13px; font-weight: 700; margin-top: 4px; opacity: .85; }
+  .a11y-cell .score{
+    margin-top: 18px; display: flex; gap: 8px; align-items: center;
+    font-size: 11px; font-weight: 800;
+  }
+  .a11y-cell .badge-aa{
+    background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.22);
+    padding: 3px 8px; border-radius: 999px;
+    font-family: var(--font-mono); letter-spacing: .04em;
+  }
+  .a11y-cell.light .badge-aa{ background: rgba(28,24,56,.06); border-color: rgba(28,24,56,.08); }
+  .a11y-cell .ratio{ font-family: var(--font-mono); }
+
+  /* Toast */
+  .toast{
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--indigo); color: white;
+    padding: 12px 22px; border-radius: 999px;
+    font-weight: 800; font-size: 13px;
+    box-shadow: var(--shadow-pop);
+    opacity: 0; pointer-events: none;
+    transition: opacity .2s, transform .25s cubic-bezier(.2,.9,.3,1.4);
+    z-index: 100;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .toast.show{ opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast svg{ width: 16px; height: 16px; }
+
+  /* Footer */
+  .foot{
+    margin-top: 80px; padding-top: 28px;
+    border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between; gap: 16px;
+    color: var(--muted-soft); font-size: 12px;
+  }
+  .foot a{ color: var(--lavender-700); font-weight: 800; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ── HERO ─────────────────────────────────────────────────── -->
+  <header class="hero">
+    <div>
+      <span class="eyebrow">Mochi POS · color reference</span>
+      <h1>The exact <span class="pop">hex codes</span><br/>that make Mochi<br/>look like Mochi.</h1>
+      <p>A working pantone-style reference for the brand palette. Click any chip to copy its HEX. Pantone numbers are approximations — for print, request a Pantone-matched spec sheet from the studio.</p>
+    </div>
+    <div class="hero-strip">
+      <div style="background:#2d2960"></div>
+      <div style="background:#7a6ad6"></div>
+      <div style="background:#b8a9f0"></div>
+      <div style="background:#f4eedf"></div>
+      <div style="background:#f7c8d2"></div>
+    </div>
+  </header>
+
+  <!-- ── 1. PRIMARY ───────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">01 · Primary palette</span>
+        <h2>The five brand voices</h2>
+        <p>Indigo carries the system. Lavender is the soft accent. Cream is the heritage tie-in. Blush stays small. Ink only for type.</p>
+      </div>
+      <span class="count">5 colors</span>
+    </div>
+
+    <div class="swatch-grid">
+      <!-- Indigo / primary -->
+      <div class="swatch" data-copy="#2d2960">
+        <div class="chip" style="background:#2d2960;color:#fff">
+          <span class="copy">click → copy</span>
+          <div>
+            <div class="role">Primary</div>
+            <div class="name">Mochi Indigo</div>
+          </div>
+          <div class="pantone">PMS 2755 C · approx</div>
+        </div>
+        <div class="meta">
+          <div class="row"><span class="k">hex</span><span class="v">#2d2960</span></div>
+          <div class="row"><span class="k">rgb</span><span class="v">45 · 41 · 96</span></div>
+          <div class="row"><span class="k">cmyk</span><span class="v">85 / 85 / 0 / 50</span></div>
+          <div class="row"><span class="k">use</span><span class="v">primary CTAs, headings, brand mark</span></div>
+        </div>
+      </div>
+
+      <!-- Lavender mid -->
+      <div class="swatch" data-copy="#7a6ad6">
+        <div class="chip" style="background:#7a6ad6;color:#fff">
+          <span class="copy">click → copy</span>
+          <div>
+            <div class="role">Accent</div>
+            <div class="name">Mid Lavender</div>
+          </div>
+          <div class="pantone">PMS 2715 C · approx</div>
+        </div>
+        <div class="meta">
+          <div class="row"><span class="k">hex</span><span class="v">#7a6ad6</span></div>
+          <div class="row"><span class="k">rgb</span><span class="v">122 · 106 · 214</span></div>
+          <div class="row"><span class="k">cmyk</span><span class="v">55 / 60 / 0 / 0</span></div>
+          <div class="row"><span class="k">use</span><span class="v">currency mark, sparkles, secondary lines</span></div>
+        </div>
+      </div>
+
+      <!-- Lavender light -->
+      <div class="swatch light" data-copy="#b8a9f0">
+        <div class="chip" style="background:#b8a9f0;color:#2d2960">
+          <span class="copy">click → copy</span>
+          <div>
+            <div class="role">Accent · soft</div>
+            <div class="name">Mochi Lavender</div>
+          </div>
+          <div class="pantone">PMS 2706 C · approx</div>
+        </div>
+        <div class="meta">
+          <div class="row"><span class="k">hex</span><span class="v">#b8a9f0</span></div>
+          <div class="row"><span class="k">rgb</span><span class="v">184 · 169 · 240</span></div>
+          <div class="row"><span class="k">cmyk</span><span class="v">25 / 30 / 0 / 0</span></div>
+          <div class="row"><span class="k">use</span><span class="v">accents, fills, mascot face base</span></div>
+        </div>
+      </div>
+
+      <!-- Cream -->
+      <div class="swatch light" data-copy="#f4eedf">
+        <div class="chip" style="background:#f4eedf;color:#5a4a1f">
+          <span class="copy">click → copy</span>
+          <div>
+            <div class="role">Heritage</div>
+            <div class="name">Booth Cream</div>
+          </div>
+          <div class="pantone">PMS 9182 C · approx</div>
+        </div>
+        <div class="meta">
+          <div class="row"><span class="k">hex</span><span class="v">#f4eedf</span></div>
+          <div class="row"><span class="k">rgb</span><span class="v">244 · 238 · 223</span></div>
+          <div class="row"><span class="k">cmyk</span><span class="v">2 / 4 / 12 / 0</span></div>
+          <div class="row"><span class="k">use</span><span class="v">receipts, reports, paw stamps</span></div>
+        </div>
+      </div>
+
+      <!-- Blush -->
+      <div class="swatch light" data-copy="#f7c8d2">
+        <div class="chip" style="background:#f7c8d2;color:#9a3445">
+          <span class="copy">click → copy</span>
+          <div>
+            <div class="role">Special · sparingly</div>
+            <div class="name">Pink Blush</div>
+          </div>
+          <div class="pantone">PMS 705 C · approx</div>
+        </div>
+        <div class="meta">
+          <div class="row"><span class="k">hex</span><span class="v">#f7c8d2</span></div>
+          <div class="row"><span class="k">rgb</span><span class="v">247 · 200 · 210</span></div>
+          <div class="row"><span class="k">cmyk</span><span class="v">0 / 25 / 8 / 0</span></div>
+          <div class="row"><span class="k">use</span><span class="v">mascot blush, hearts, celebration</span></div>
+        </div>
+      </div>
+
+      <!-- Ink -->
+      <div class="swatch" data-copy="#1c1838">
+        <div class="chip" style="background:#1c1838;color:#fff">
+          <span class="copy">click → copy</span>
+          <div>
+            <div class="role">Text</div>
+            <div class="name">Mochi Ink</div>
+          </div>
+          <div class="pantone">PMS 2767 C · approx</div>
+        </div>
+        <div class="meta">
+          <div class="row"><span class="k">hex</span><span class="v">#1c1838</span></div>
+          <div class="row"><span class="k">rgb</span><span class="v">28 · 24 · 56</span></div>
+          <div class="row"><span class="k">cmyk</span><span class="v">90 / 90 / 0 / 65</span></div>
+          <div class="row"><span class="k">use</span><span class="v">body text, mascot outlines</span></div>
+        </div>
+      </div>
+
+      <!-- Cream deep -->
+      <div class="swatch light" data-copy="#e9dec3">
+        <div class="chip" style="background:#e9dec3;color:#5a4a1f">
+          <span class="copy">click → copy</span>
+          <div>
+            <div class="role">Heritage · edge</div>
+            <div class="name">Cream Deep</div>
+          </div>
+          <div class="pantone">PMS 9183 C · approx</div>
+        </div>
+        <div class="meta">
+          <div class="row"><span class="k">hex</span><span class="v">#e9dec3</span></div>
+          <div class="row"><span class="k">rgb</span><span class="v">233 · 222 · 195</span></div>
+          <div class="row"><span class="k">cmyk</span><span class="v">5 / 8 / 22 / 0</span></div>
+          <div class="row"><span class="k">use</span><span class="v">cream surface borders, dashed lines</span></div>
+        </div>
+      </div>
+
+      <!-- Bg -->
+      <div class="swatch light" data-copy="#f7f5fb">
+        <div class="chip" style="background:#f7f5fb;color:#3a3461;border:1px solid var(--line)">
+          <span class="copy">click → copy</span>
+          <div>
+            <div class="role">Surface</div>
+            <div class="name">Page</div>
+          </div>
+          <div class="pantone">— · neutral</div>
+        </div>
+        <div class="meta">
+          <div class="row"><span class="k">hex</span><span class="v">#f7f5fb</span></div>
+          <div class="row"><span class="k">rgb</span><span class="v">247 · 245 · 251</span></div>
+          <div class="row"><span class="k">cmyk</span><span class="v">2 / 2 / 0 / 0</span></div>
+          <div class="row"><span class="k">use</span><span class="v">page background, soft sections</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 2. SEMANTIC ──────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">02 · Semantic</span>
+        <h2>Statuses that match</h2>
+        <p>Functional colors tuned to live alongside the indigo/lavender system — desaturated enough not to fight the brand, saturated enough to read at a glance.</p>
+      </div>
+      <span class="count">4 pairs</span>
+    </div>
+
+    <div class="swatch-grid">
+      <div class="swatch" data-copy="#1f7a4d">
+        <div class="chip" style="background:#1f7a4d;color:#fff">
+          <span class="copy">click → copy</span>
+          <div>
+            <div class="role">Success</div>
+            <div class="name">Paid Green</div>
+          </div>
+          <div class="pantone">PMS 7484 C · approx</div>
+        </div>
+        <div class="meta">
+          <div class="row"><span class="k">hex</span><span class="v">#1f7a4d</span></div>
+          <div class="row"><span class="k">rgb</span><span class="v">31 · 122 · 77</span></div>
+          <div class="row"><span class="k">tint</span><span class="v">#d8efe2 · success-bg</span></div>
+          <div class="row"><span class="k">use</span><span class="v">paid, confirmed, success toasts</span></div>
+        </div>
+      </div>
+
+      <div class="swatch" data-copy="#a8761c">
+        <div class="chip" style="background:#a8761c;color:#fff">
+          <span class="copy">click → copy</span>
+          <div>
+            <div class="role">Warning</div>
+            <div class="name">Honey Amber</div>
+          </div>
+          <div class="pantone">PMS 1395 C · approx</div>
+        </div>
+        <div class="meta">
+          <div class="row"><span class="k">hex</span><span class="v">#a8761c</span></div>
+          <div class="row"><span class="k">rgb</span><span class="v">168 · 118 · 28</span></div>
+          <div class="row"><span class="k">tint</span><span class="v">#fcecc8 · warn-bg</span></div>
+          <div class="row"><span class="k">use</span><span class="v">low stock, send later, attention</span></div>
+        </div>
+      </div>
+
+      <div class="swatch" data-copy="#b8362d">
+        <div class="chip" style="background:#b8362d;color:#fff">
+          <span class="copy">click → copy</span>
+          <div>
+            <div class="role">Danger</div>
+            <div class="name">Refund Red</div>
+          </div>
+          <div class="pantone">PMS 7621 C · approx</div>
+        </div>
+        <div class="meta">
+          <div class="row"><span class="k">hex</span><span class="v">#b8362d</span></div>
+          <div class="row"><span class="k">rgb</span><span class="v">184 · 54 · 45</span></div>
+          <div class="row"><span class="k">tint</span><span class="v">#fbdcd8 · danger-bg</span></div>
+          <div class="row"><span class="k">use</span><span class="v">refunds, voids, destructive</span></div>
+        </div>
+      </div>
+
+      <div class="swatch" data-copy="#3a4ab8">
+        <div class="chip" style="background:#3a4ab8;color:#fff">
+          <span class="copy">click → copy</span>
+          <div>
+            <div class="role">Info</div>
+            <div class="name">Wave Blue</div>
+          </div>
+          <div class="pantone">PMS 7686 C · approx</div>
+        </div>
+        <div class="meta">
+          <div class="row"><span class="k">hex</span><span class="v">#3a4ab8</span></div>
+          <div class="row"><span class="k">rgb</span><span class="v">58 · 74 · 184</span></div>
+          <div class="row"><span class="k">tint</span><span class="v">#dde2f8 · info-bg</span></div>
+          <div class="row"><span class="k">use</span><span class="v">info banners, neutral status</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 3. GRADIENTS ─────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">03 · Gradients</span>
+        <h2>Brand gradients</h2>
+        <p>Used sparingly — on the Charge button, the day banner, the welcome hero. Never on body backgrounds.</p>
+      </div>
+      <span class="count">4 gradients</span>
+    </div>
+
+    <div class="gradient-row">
+      <div class="gradient-card">
+        <div class="meta">
+          <div>
+            <h3>Primary · CTA &amp; brand hero</h3>
+            <div class="sub">The "charge" button, day banner, welcome card. The most-recognized brand surface after the mascot.</div>
+          </div>
+          <div class="code">linear-gradient(180deg, #3d3686 → #2a2557)</div>
+        </div>
+        <div class="gradient-bar" style="background: linear-gradient(180deg,#3d3686 0%, #2a2557 100%)"></div>
+        <div class="gradient-stops">
+          <div class="stop"><span class="dot" style="background:#3d3686"></span>#3d3686 · 0%</div>
+          <div class="stop"><span class="dot" style="background:#2a2557"></span>#2a2557 · 100%</div>
+        </div>
+      </div>
+
+      <div class="gradient-card">
+        <div class="meta">
+          <div>
+            <h3>Accent · sparkle &amp; chip</h3>
+            <div class="sub">Day-3 chip, sparkle motifs, accent highlights. Diagonal angle is part of the energy.</div>
+          </div>
+          <div class="code">linear-gradient(135deg, #b8a9f0 → #7a6ad6)</div>
+        </div>
+        <div class="gradient-bar" style="background: linear-gradient(135deg,#b8a9f0 0%, #7a6ad6 100%)"></div>
+        <div class="gradient-stops">
+          <div class="stop"><span class="dot" style="background:#b8a9f0"></span>#b8a9f0 · 0%</div>
+          <div class="stop"><span class="dot" style="background:#7a6ad6"></span>#7a6ad6 · 100%</div>
+        </div>
+      </div>
+
+      <div class="gradient-card">
+        <div class="meta">
+          <div>
+            <h3>Page · soft tonal wash</h3>
+            <div class="sub">The default app background. So gentle you barely notice it — but it's there.</div>
+          </div>
+          <div class="code">linear-gradient(180deg, #fbfaff → #f3eef9)</div>
+        </div>
+        <div class="gradient-bar" style="background: linear-gradient(180deg,#fbfaff 0%, #f3eef9 100%); border:1px solid var(--line)"></div>
+        <div class="gradient-stops">
+          <div class="stop"><span class="dot" style="background:#fbfaff;border-color:#e5dff0"></span>#fbfaff · 0%</div>
+          <div class="stop"><span class="dot" style="background:#f3eef9"></span>#f3eef9 · 100%</div>
+        </div>
+      </div>
+
+      <div class="gradient-card">
+        <div class="meta">
+          <div>
+            <h3>Cream · receipts &amp; heritage</h3>
+            <div class="sub">For the printed surfaces: receipts, end-of-day report, email code box. Carries the Meowseum lineage forward.</div>
+          </div>
+          <div class="code">linear-gradient(180deg, #fdf9ee → #f4eedf)</div>
+        </div>
+        <div class="gradient-bar" style="background: linear-gradient(180deg,#fdf9ee 0%, #f4eedf 100%); border:1px solid var(--cream-deep)"></div>
+        <div class="gradient-stops">
+          <div class="stop"><span class="dot" style="background:#fdf9ee;border-color:#e9dec3"></span>#fdf9ee · 0%</div>
+          <div class="stop"><span class="dot" style="background:#f4eedf"></span>#f4eedf · 100%</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 4. PAIRINGS ──────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">04 · Pairings</span>
+        <h2>Combinations that sing</h2>
+        <p>Approved color pairings for full surfaces — modals, banners, cards. These read as "Mochi" without needing the mascot.</p>
+      </div>
+      <span class="count">6 combos</span>
+    </div>
+
+    <div class="pair-grid">
+      <!-- Pair 1: Indigo + Lavender -->
+      <div class="pair" style="background:#2d2960;color:#fff">
+        <div>
+          <div class="role" style="color:#d3c8f6">Hero / day banner</div>
+          <div class="nm">Indigo<br/>+ Lavender</div>
+        </div>
+        <div class="codes">
+          <span style="color:#fff">#2d2960</span>
+          <span style="color:#b8a9f0">#b8a9f0</span>
+        </div>
+        <div class="demo">
+          <span class="pill-d" style="color:#b8a9f0">฿24,820</span>
+          <span class="pill-d" style="background:#b8a9f0;color:#2d2960;border:none">Live</span>
+        </div>
+      </div>
+
+      <!-- Pair 2: Cream + Indigo (heritage) -->
+      <div class="pair light" style="background:linear-gradient(180deg,#fdf9ee,#f4eedf);color:#2d2960">
+        <div>
+          <div class="role" style="color:#a8761c">Receipts &amp; reports</div>
+          <div class="nm">Cream<br/>+ Indigo</div>
+        </div>
+        <div class="codes">
+          <span style="color:#5a4a1f">#f4eedf</span>
+          <span style="color:#5a4a1f">#2d2960</span>
+        </div>
+        <div class="demo">
+          <span class="pill-d" style="color:#2d2960">DAY 3</span>
+          <span class="pill-d" style="background:#2d2960;color:#fdf9ee;border:none">PAID</span>
+        </div>
+      </div>
+
+      <!-- Pair 3: Lavender + Cream -->
+      <div class="pair light" style="background:#efeafd;color:#2d2960">
+        <div>
+          <div class="role" style="color:#7a6ad6">Tip cards · soft moments</div>
+          <div class="nm">Soft Lavender<br/>+ Cream</div>
+        </div>
+        <div class="codes">
+          <span style="color:#2d2960">#efeafd</span>
+          <span style="color:#2d2960">#f4eedf</span>
+        </div>
+        <div class="demo">
+          <span class="pill-d" style="background:#f4eedf;color:#5a4a1f;border:none">Tip</span>
+          <span class="pill-d" style="color:#7a6ad6">Mochi says…</span>
+        </div>
+      </div>
+
+      <!-- Pair 4: Blush + Indigo -->
+      <div class="pair light" style="background:#f7c8d2;color:#2d2960">
+        <div>
+          <div class="role" style="color:#9a3445">First sale · celebration</div>
+          <div class="nm">Blush<br/>+ Indigo</div>
+        </div>
+        <div class="codes">
+          <span style="color:#9a3445">#f7c8d2</span>
+          <span style="color:#9a3445">#2d2960</span>
+        </div>
+        <div class="demo">
+          <span class="pill-d" style="background:#2d2960;color:#fff;border:none">฿420</span>
+          <span class="pill-d" style="color:#9a3445">first sale!</span>
+        </div>
+      </div>
+
+      <!-- Pair 5: Mid Lavender + Cream -->
+      <div class="pair" style="background:linear-gradient(135deg,#b8a9f0,#7a6ad6);color:#fff">
+        <div>
+          <div class="role" style="color:#efeafd">Accent button · sparkle</div>
+          <div class="nm">Lavender<br/>+ White</div>
+        </div>
+        <div class="codes">
+          <span>#b8a9f0</span>
+          <span>#7a6ad6</span>
+        </div>
+        <div class="demo">
+          <span class="pill-d" style="background:#fff;color:#7a6ad6;border:none">+ New</span>
+          <span class="pill-d">Save</span>
+        </div>
+      </div>
+
+      <!-- Pair 6: Ink + Cream Deep -->
+      <div class="pair light" style="background:#1c1838;color:#f4eedf">
+        <div>
+          <div class="role" style="color:#b8a9f0">Mascot ink · type strong</div>
+          <div class="nm">Ink<br/>+ Cream Deep</div>
+        </div>
+        <div class="codes">
+          <span style="background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.2)">#1c1838</span>
+          <span style="background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.2)">#e9dec3</span>
+        </div>
+        <div class="demo">
+          <span class="pill-d" style="background:rgba(255,255,255,.15);color:#f4eedf">— signed</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 5. DO / DON'T ───────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">05 · Usage rules</span>
+        <h2>Do &amp; don't</h2>
+        <p>Six rules that keep Mochi looking like Mochi when other people pick up the file.</p>
+      </div>
+    </div>
+
+    <div class="rules">
+      <div class="rule do">
+        <div class="head"><div class="ic">✓</div><div class="ttl">DO · Indigo for primary actions</div></div>
+        <div class="demo" style="background:#f7f5fb">
+          <button style="background:linear-gradient(180deg,#3d3686,#2a2557);color:#fff;padding:12px 24px;border-radius:999px;font-weight:800;border:none;font-family:inherit;font-size:13px;box-shadow:0 4px 12px rgba(45,41,96,.25)">Charge ฿420</button>
+        </div>
+        <p>The indigo gradient is the one big thing on a screen — primary CTA, day banner, the brand mark. One per surface.</p>
+      </div>
+
+      <div class="rule dont">
+        <div class="head"><div class="ic">✕</div><div class="ttl">DON'T · Stack two primaries</div></div>
+        <div class="demo" style="background:#f7f5fb;gap:8px">
+          <button style="background:linear-gradient(180deg,#3d3686,#2a2557);color:#fff;padding:12px 22px;border-radius:999px;font-weight:800;border:none;font-family:inherit;font-size:13px">Charge ฿420</button>
+          <button style="background:linear-gradient(180deg,#3d3686,#2a2557);color:#fff;padding:12px 22px;border-radius:999px;font-weight:800;border:none;font-family:inherit;font-size:13px;opacity:.55">Save customer</button>
+        </div>
+        <p>Two indigo buttons next to each other compete. The second one should be lavender accent or ghost — let the primary lead.</p>
+      </div>
+
+      <div class="rule do">
+        <div class="head"><div class="ic">✓</div><div class="ttl">DO · Cream for receipts &amp; print</div></div>
+        <div class="demo" style="background:linear-gradient(180deg,#fdf9ee,#f4eedf);border:1px solid #e9dec3">
+          <div style="font-family:'JetBrains Mono',monospace;color:#2d2960;font-weight:800;font-size:13px">
+            <div style="text-align:center">Mochi<span style="color:#7a6ad6">POS</span></div>
+            <div style="border-top:1px dashed #c8b988;margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;gap:18px"><span>Plushie ×2</span><span>฿840</span></div>
+          </div>
+        </div>
+        <p>Cream is the heritage tie-in to Meowseum booth POS. Reserve it for printable surfaces only — receipts, reports, email code boxes.</p>
+      </div>
+
+      <div class="rule dont">
+        <div class="head"><div class="ic">✕</div><div class="ttl">DON'T · Cream in the SaaS chrome</div></div>
+        <div class="demo" style="background:#f4eedf">
+          <div style="background:#fdf9ee;padding:14px 18px;border-radius:14px;border:1px solid #e9dec3;display:flex;gap:12px;align-items:center">
+            <div style="width:32px;height:32px;border-radius:8px;background:#2d2960"></div>
+            <span style="font-weight:800;font-size:13px;color:#2d2960">Dashboard</span>
+          </div>
+        </div>
+        <p>Cream looks like a coffee shop blog when used as SaaS chrome. Keep the dashboard on lavender-tinted whites; cream only for "this is paper" surfaces.</p>
+      </div>
+
+      <div class="rule do">
+        <div class="head"><div class="ic">✓</div><div class="ttl">DO · Blush sparingly</div></div>
+        <div class="demo" style="background:#f7f5fb">
+          <div style="display:flex;gap:8px;align-items:center">
+            <div style="width:48px;height:48px;border-radius:999px;background:#efeafd;display:grid;place-items:center;color:#e85b75;font-size:22px">♥</div>
+            <span style="font-weight:800;font-size:13px;color:#2d2960">First sale!</span>
+          </div>
+        </div>
+        <p>Blush only on the mascot's cheeks, hearts, and celebration moments. If it shows up on regular UI, it stops feeling special.</p>
+      </div>
+
+      <div class="rule dont">
+        <div class="head"><div class="ic">✕</div><div class="ttl">DON'T · Invent off-palette colors</div></div>
+        <div class="demo" style="background:#f7f5fb;gap:6px">
+          <div style="width:32px;height:32px;border-radius:999px;background:#22c55e"></div>
+          <div style="width:32px;height:32px;border-radius:999px;background:#06b6d4"></div>
+          <div style="width:32px;height:32px;border-radius:999px;background:#a855f7"></div>
+          <div style="width:32px;height:32px;border-radius:999px;background:#f59e0b"></div>
+        </div>
+        <p>Tailwind-bright greens, cyans, magentas, oranges don't belong in Mochi. If you need a new hue, derive it from oklch() between two existing tokens.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 6. ACCESSIBILITY ─────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">06 · Accessibility</span>
+        <h2>Contrast at a glance</h2>
+        <p>WCAG AA contrast ratios for the most-used text/background pairs. Aim for AA on body, AAA on small text.</p>
+      </div>
+      <span class="count">8 pairs</span>
+    </div>
+
+    <div class="a11y">
+      <!-- Indigo / White -->
+      <div class="a11y-cell" style="background:#2d2960;color:#fff">
+        <div class="pair-lbl">#fff on #2d2960</div>
+        <div class="sample">฿24,820</div>
+        <div class="sample-sm">Today's takings</div>
+        <div class="score">
+          <span class="badge-aa">AAA</span>
+          <span class="ratio" style="opacity:.85">13.78 : 1</span>
+        </div>
+      </div>
+
+      <!-- Indigo on white -->
+      <div class="a11y-cell light" style="background:#fff;color:#2d2960">
+        <div class="pair-lbl" style="color:var(--muted-soft)">#2d2960 on #fff</div>
+        <div class="sample">฿24,820</div>
+        <div class="sample-sm" style="color:#3a3461">Today's takings</div>
+        <div class="score">
+          <span class="badge-aa" style="color:var(--text)">AAA</span>
+          <span class="ratio" style="color:var(--muted)">13.78 : 1</span>
+        </div>
+      </div>
+
+      <!-- Lavender 700 on white -->
+      <div class="a11y-cell light" style="background:#fff;color:#7a6ad6">
+        <div class="pair-lbl" style="color:var(--muted-soft)">#7a6ad6 on #fff</div>
+        <div class="sample">฿24,820</div>
+        <div class="sample-sm" style="color:#7a6ad6">Currency mark</div>
+        <div class="score">
+          <span class="badge-aa" style="color:var(--text)">AA · large</span>
+          <span class="ratio" style="color:var(--muted)">4.52 : 1</span>
+        </div>
+      </div>
+
+      <!-- Lavender 100 / Indigo -->
+      <div class="a11y-cell light" style="background:#efeafd;color:#2d2960">
+        <div class="pair-lbl" style="color:#6b6489">#2d2960 on #efeafd</div>
+        <div class="sample">Tip from Mochi</div>
+        <div class="sample-sm" style="color:#3a3461">Mascot bubble bg</div>
+        <div class="score">
+          <span class="badge-aa" style="color:var(--text)">AAA</span>
+          <span class="ratio" style="color:var(--muted)">12.18 : 1</span>
+        </div>
+      </div>
+
+      <!-- Success bg + success -->
+      <div class="a11y-cell light" style="background:#d8efe2;color:#1f7a4d">
+        <div class="pair-lbl" style="color:#1f7a4d;opacity:.75">#1f7a4d on #d8efe2</div>
+        <div class="sample">Paid</div>
+        <div class="sample-sm" style="color:#1f7a4d">success pill</div>
+        <div class="score">
+          <span class="badge-aa" style="color:#1f7a4d">AA</span>
+          <span class="ratio" style="color:#1f7a4d">5.21 : 1</span>
+        </div>
+      </div>
+
+      <!-- Warn bg + warn -->
+      <div class="a11y-cell light" style="background:#fcecc8;color:#a8761c">
+        <div class="pair-lbl" style="color:#a8761c;opacity:.75">#a8761c on #fcecc8</div>
+        <div class="sample">Low stock</div>
+        <div class="sample-sm" style="color:#a8761c">warning pill</div>
+        <div class="score">
+          <span class="badge-aa" style="color:#a8761c">AA · large</span>
+          <span class="ratio" style="color:#a8761c">4.18 : 1</span>
+        </div>
+      </div>
+
+      <!-- Danger -->
+      <div class="a11y-cell light" style="background:#fbdcd8;color:#b8362d">
+        <div class="pair-lbl" style="color:#b8362d;opacity:.75">#b8362d on #fbdcd8</div>
+        <div class="sample">Refunded</div>
+        <div class="sample-sm" style="color:#b8362d">danger pill</div>
+        <div class="score">
+          <span class="badge-aa" style="color:#b8362d">AA</span>
+          <span class="ratio" style="color:#b8362d">5.46 : 1</span>
+        </div>
+      </div>
+
+      <!-- Cream + Indigo -->
+      <div class="a11y-cell light" style="background:#f4eedf;color:#2d2960">
+        <div class="pair-lbl" style="color:#6b6489">#2d2960 on #f4eedf</div>
+        <div class="sample">฿2,397</div>
+        <div class="sample-sm" style="color:#3a3461">Receipt total</div>
+        <div class="score">
+          <span class="badge-aa" style="color:var(--text)">AAA</span>
+          <span class="ratio" style="color:var(--muted)">12.96 : 1</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>Click any color chip to copy its HEX. Pantone numbers are visual approximations only.</span>
+    <span>Mochi POS · color reference · v1</span>
+  </footer>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Copied #2d2960</span>
+</div>
+
+<script>
+  const toast = document.getElementById('toast');
+  const toastMsg = document.getElementById('toast-msg');
+  let toastTimer;
+  function showToast(msg){
+    toastMsg.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>toast.classList.remove('show'), 1500);
+  }
+  document.querySelectorAll('.swatch').forEach(sw=>{
+    sw.addEventListener('click', async ()=>{
+      const code = sw.dataset.copy;
+      if(!code) return;
+      try {
+        await navigator.clipboard.writeText(code);
+        sw.classList.add('copied');
+        showToast('Copied ' + code);
+        setTimeout(()=>sw.classList.remove('copied'), 1200);
+      } catch(e){}
+    });
+  });
+</script>
+
+</body>
+</html>

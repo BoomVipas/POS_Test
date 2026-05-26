@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Mochi POS · Outstanding</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="stylesheet" href="colors_and_type.css"/>
+<link rel="stylesheet" href="outstanding.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- SVG sprite — base symbols + seasonal Mochi variants -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="g-mochi" cx="38%" cy="32%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="55%" stop-color="#f1edfb"/>
+      <stop offset="100%" stop-color="#d3c8f6"/>
+    </radialGradient>
+
+    <!-- BASE MOCHI -->
+    <symbol id="mochi" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="23" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+      <ellipse cx="41" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+      <circle cx="23.7" cy="29.5" r=".9" fill="#fff"/>
+      <circle cx="41.7" cy="29.5" r=".9" fill="#fff"/>
+      <path d="M27 39 Q32 43 37 39" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <symbol id="mochi-sparkle" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <path d="M23 27 L24.3 30.4 L27.8 31 L24.3 31.6 L23 35 L21.7 31.6 L18.2 31 L21.7 30.4 Z" fill="#7a6ad6"/>
+      <path d="M41 27 L42.3 30.4 L45.8 31 L42.3 31.6 L41 35 L39.7 31.6 L36.2 31 L39.7 30.4 Z" fill="#7a6ad6"/>
+      <path d="M27 40 Q32 44 37 40" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <symbol id="mochi-heart" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <path d="M23 33 C20 30, 19 27, 21 26 C22.5 25, 23 26.2, 23 27.2 C23 26.2, 23.5 25, 25 26 C27 27, 26 30, 23 33 Z" fill="#e85b75"/>
+      <path d="M41 33 C38 30, 37 27, 39 26 C40.5 25, 41 26.2, 41 27.2 C41 26.2, 41.5 25, 43 26 C45 27, 44 30, 41 33 Z" fill="#e85b75"/>
+      <path d="M27 40 Q32 44 37 40" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- SEASONAL MOCHI VARIANTS — overlay on top of the base face -->
+    <!-- Songkran · jasmine flower crown -->
+    <symbol id="mochi-songkran" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="23" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+      <ellipse cx="41" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+      <circle cx="23.7" cy="29.5" r=".9" fill="#fff"/>
+      <circle cx="41.7" cy="29.5" r=".9" fill="#fff"/>
+      <path d="M27 39 Q32 43 37 39" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <!-- jasmine crown -->
+      <g>
+        <circle cx="14" cy="14" r="4" fill="#fff" stroke="#e9c87a" stroke-width=".8"/><circle cx="14" cy="14" r="1.6" fill="#f5b733"/>
+        <circle cx="22" cy="9"  r="3.4" fill="#fff" stroke="#e9c87a" stroke-width=".8"/><circle cx="22" cy="9" r="1.3" fill="#f5b733"/>
+        <circle cx="31" cy="6"  r="4"   fill="#fff" stroke="#e9c87a" stroke-width=".8"/><circle cx="31" cy="6" r="1.5" fill="#f5b733"/>
+        <circle cx="40" cy="8"  r="3"   fill="#fff" stroke="#e9c87a" stroke-width=".8"/><circle cx="40" cy="8" r="1.2" fill="#f5b733"/>
+        <circle cx="48" cy="13" r="3.5" fill="#fff" stroke="#e9c87a" stroke-width=".8"/><circle cx="48" cy="13" r="1.4" fill="#f5b733"/>
+      </g>
+      <!-- water splash -->
+      <path d="M52 22 Q54 24 53 27" stroke="#3a4ab8" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+      <circle cx="55" cy="26" r="1.2" fill="#3a4ab8"/>
+    </symbol>
+
+    <!-- Loy Krathong · banana-leaf krathong on head -->
+    <symbol id="mochi-loy" viewBox="0 0 64 64">
+      <circle cx="32" cy="34" r="24" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="24" cy="24" rx="6" ry="3" fill="#fff" opacity=".7"/>
+      <ellipse cx="20" cy="40" rx="3.6" ry="2.2" fill="#f7c8d2"/>
+      <ellipse cx="44" cy="40" rx="3.6" ry="2.2" fill="#f7c8d2"/>
+      <ellipse cx="24" cy="33" rx="2.4" ry="3.2" fill="#1c1838"/>
+      <ellipse cx="40" cy="33" rx="2.4" ry="3.2" fill="#1c1838"/>
+      <circle cx="24.7" cy="31.6" r=".8" fill="#fff"/>
+      <circle cx="40.7" cy="31.6" r=".8" fill="#fff"/>
+      <path d="M28 41 Q32 44 36 41" stroke="#1c1838" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      <!-- krathong base — banana leaf -->
+      <ellipse cx="32" cy="10" rx="22" ry="6" fill="#3a6d3e" stroke="#1f3d24" stroke-width="1"/>
+      <ellipse cx="32" cy="10" rx="18" ry="4" fill="#4d8552"/>
+      <!-- candle + flowers -->
+      <rect x="30" y="3" width="4" height="6" rx="1" fill="#f5e8a8"/>
+      <ellipse cx="32" cy="2" rx="1.5" ry="2.4" fill="#f5b733"/>
+      <ellipse cx="32" cy="2" rx=".8" ry="1.4" fill="#fff" opacity=".7"/>
+      <circle cx="22" cy="9" r="2" fill="#f7c8d2"/>
+      <circle cx="42" cy="9" r="2" fill="#f7c8d2"/>
+      <circle cx="16" cy="11" r="1.4" fill="#f5b733"/>
+      <circle cx="48" cy="11" r="1.4" fill="#f5b733"/>
+    </symbol>
+
+    <!-- Lunar New Year · red ribbon + gold coin -->
+    <symbol id="mochi-lny" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="23" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+      <ellipse cx="41" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+      <circle cx="23.7" cy="29.5" r=".9" fill="#fff"/>
+      <circle cx="41.7" cy="29.5" r=".9" fill="#fff"/>
+      <path d="M27 39 Q32 43 37 39" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <!-- red ribbon around forehead -->
+      <path d="M6 17 Q32 11 58 17 L58 22 Q32 16 6 22 Z" fill="#c0303a" stroke="#8a1a25" stroke-width=".8"/>
+      <!-- knot tails -->
+      <path d="M50 18 L60 14 L58 19 Z" fill="#c0303a" stroke="#8a1a25" stroke-width=".6"/>
+      <path d="M50 21 L62 22 L57 24 Z" fill="#c0303a" stroke="#8a1a25" stroke-width=".6"/>
+      <!-- gold accents -->
+      <circle cx="20" cy="19" r="1.4" fill="#f5b733"/>
+      <circle cx="32" cy="17" r="1.4" fill="#f5b733"/>
+      <circle cx="44" cy="19" r="1.4" fill="#f5b733"/>
+    </symbol>
+
+    <!-- Christmas · santa hat -->
+    <symbol id="mochi-xmas" viewBox="0 0 64 64">
+      <circle cx="32" cy="34" r="24" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="24" cy="24" rx="6" ry="3" fill="#fff" opacity=".7"/>
+      <ellipse cx="20" cy="40" rx="3.6" ry="2.2" fill="#f7c8d2"/>
+      <ellipse cx="44" cy="40" rx="3.6" ry="2.2" fill="#f7c8d2"/>
+      <ellipse cx="24" cy="33" rx="2.4" ry="3.2" fill="#1c1838"/>
+      <ellipse cx="40" cy="33" rx="2.4" ry="3.2" fill="#1c1838"/>
+      <circle cx="24.7" cy="31.6" r=".8" fill="#fff"/>
+      <circle cx="40.7" cy="31.6" r=".8" fill="#fff"/>
+      <path d="M28 41 Q32 44 36 41" stroke="#1c1838" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      <!-- santa hat -->
+      <path d="M14 18 L46 16 Q52 5 24 14 Z" fill="#c0303a" stroke="#8a1a25" stroke-width="1"/>
+      <path d="M14 18 Q30 16 46 16 L46 20 Q30 19 14 21 Z" fill="#fff" stroke="#d4d4d8" stroke-width=".6"/>
+      <circle cx="50" cy="8" r="4" fill="#fff" stroke="#d4d4d8" stroke-width=".6"/>
+    </symbol>
+
+    <!-- Pride · rainbow scarf-collar -->
+    <symbol id="mochi-pride" viewBox="0 0 64 64">
+      <circle cx="32" cy="30" r="24" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="24" cy="20" rx="6" ry="3" fill="#fff" opacity=".7"/>
+      <ellipse cx="20" cy="36" rx="3.6" ry="2.2" fill="#f7c8d2"/>
+      <ellipse cx="44" cy="36" rx="3.6" ry="2.2" fill="#f7c8d2"/>
+      <ellipse cx="24" cy="29" rx="2.4" ry="3.2" fill="#1c1838"/>
+      <ellipse cx="40" cy="29" rx="2.4" ry="3.2" fill="#1c1838"/>
+      <circle cx="24.7" cy="27.6" r=".8" fill="#fff"/>
+      <circle cx="40.7" cy="27.6" r=".8" fill="#fff"/>
+      <path d="M28 37 Q32 40 36 37" stroke="#1c1838" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      <!-- rainbow scarf-collar -->
+      <path d="M10 52 Q32 48 54 52 L54 54 Q32 50 10 54 Z" fill="#c0303a" stroke="#8a1a25" stroke-width=".4"/>
+      <path d="M10 54 Q32 50 54 54 L54 56 Q32 52 10 56 Z" fill="#e88a2a" stroke="none"/>
+      <path d="M10 56 Q32 52 54 56 L54 58 Q32 54 10 58 Z" fill="#f5b733" stroke="none"/>
+      <path d="M10 58 Q32 54 54 58 L54 60 Q32 56 10 60 Z" fill="#3a8e4a" stroke="none"/>
+      <path d="M10 60 Q32 56 54 60 L54 62 Q32 58 10 62 Z" fill="#3a6db8" stroke="none"/>
+      <path d="M10 62 Q32 58 54 62 L54 64 Q32 60 10 64 Z" fill="#7a4db8" stroke="none"/>
+    </symbol>
+
+    <!-- Paw -->
+    <symbol id="paw" viewBox="0 0 40 40">
+      <ellipse cx="20" cy="26" rx="9" ry="7.5" fill="currentColor"/>
+      <ellipse cx="9"  cy="14" rx="3.4" ry="4.4" fill="currentColor"/>
+      <ellipse cx="31" cy="14" rx="3.4" ry="4.4" fill="currentColor"/>
+      <ellipse cx="15" cy="6"  rx="2.8" ry="3.6" fill="currentColor"/>
+      <ellipse cx="25" cy="6"  rx="2.8" ry="3.6" fill="currentColor"/>
+    </symbol>
+
+    <symbol id="sparkle" viewBox="0 0 32 32">
+      <path d="M16 2 C17 10, 22 15, 30 16 C22 17, 17 22, 16 30 C15 22, 10 17, 2 16 C10 15, 15 10, 16 2 Z" fill="currentColor"/>
+    </symbol>
+
+    <!-- Tiny QR (decorative) -->
+    <symbol id="qr-mini" viewBox="0 0 40 40">
+      <rect width="40" height="40" fill="white"/>
+      <g fill="#2d2960">
+        <rect x="3" y="3" width="10" height="10" rx="1.6"/><rect x="5" y="5" width="6" height="6" fill="white"/><rect x="7" y="7" width="2" height="2"/>
+        <rect x="27" y="3" width="10" height="10" rx="1.6"/><rect x="29" y="5" width="6" height="6" fill="white"/><rect x="31" y="7" width="2" height="2"/>
+        <rect x="3" y="27" width="10" height="10" rx="1.6"/><rect x="5" y="29" width="6" height="6" fill="white"/><rect x="7" y="31" width="2" height="2"/>
+        <rect x="16" y="5" width="2" height="2"/><rect x="20" y="3" width="2" height="2"/><rect x="18" y="10" width="2" height="2"/>
+        <rect x="22" y="13" width="2" height="2"/><rect x="16" y="16" width="2" height="2"/><rect x="20" y="18" width="2" height="2"/>
+        <rect x="3" y="18" width="2" height="2"/><rect x="6" y="20" width="2" height="2"/><rect x="10" y="18" width="2" height="2"/>
+        <rect x="26" y="20" width="2" height="2"/><rect x="30" y="18" width="2" height="2"/><rect x="34" y="22" width="2" height="2"/>
+        <rect x="20" y="26" width="2" height="2"/><rect x="24" y="27" width="2" height="2"/>
+        <rect x="28" y="30" width="2" height="2"/><rect x="32" y="33" width="2" height="2"/><rect x="36" y="36" width="2" height="2"/>
+        <rect x="20" y="32" width="2" height="2"/><rect x="24" y="34" width="2" height="2"/>
+        <rect x="18" y="38" width="2" height="2"/><rect x="28" y="38" width="2" height="2"/>
+      </g>
+      <rect x="17" y="17" width="6" height="6" fill="white"/>
+      <circle cx="20" cy="20" r="2.4" fill="#b8a9f0"/>
+    </symbol>
+
+    <!-- Icons -->
+    <symbol id="i-share" viewBox="0 0 24 24"><circle cx="6" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="6" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="18" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m8.5 10.5 7-3M8.5 13.5l7 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-arr-right" viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+    <symbol id="i-print" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M1 4v6h6M3.51 15a9 9 0 1 0 2.13-9.36L1 10M12 7v5l4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  </defs>
+</svg>
+
+
+<div class="page">
+
+  <!-- ── HERO ─────────────────────────────────────────────────── -->
+  <header class="hero">
+    <div>
+      <span class="eyebrow">Mochi POS · outstanding · vol 2</span>
+      <h1>Beyond <span class="strike">software</span><br/>into a <span class="pop">brand world</span>.</h1>
+      <p>Six more moves that take Mochi past "well-designed app" into territory other POS brands don't reach — physical artifacts, shareable URLs, seasonal life, spatial intelligence, and an annual story.</p>
+    </div>
+    <div class="marks">
+      <span class="lbl">In this volume</span>
+      <span class="num">06</span>
+      <div class="six">
+        <div style="background:var(--cream-deep)">P</div>
+        <div style="background:var(--lavender-700)">/</div>
+        <div style="background:#c0303a">❤︎</div>
+        <div style="background:#a8761c">▦</div>
+        <div style="background:var(--indigo)">'26</div>
+        <div style="background:var(--lavender)">▤</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════════════════════════════════
+       7 · PET POLAROID
+  ════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">07 · Pet polaroid · the shareable artifact</span>
+        <h2>Tangible memory.</h2>
+        <p class="why">When a pet registers, Mochi mints a polaroid-style card — handwritten name, paw stamp, mini QR. <b>Printed at the booth for ฿20</b>, or grabbed as a PNG for Instagram. The artifact does what no spreadsheet can — it leaves with the customer.</p>
+      </div>
+      <div class="stat">
+        <span class="num">+฿80</span>
+        <span>booth revenue / day</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <span class="tag">polaroid · printable or shareable</span>
+      <div class="polaroid-stage">
+        <svg class="deco p1" viewBox="0 0 40 40"><use href="#paw"/></svg>
+        <svg class="deco s1" viewBox="0 0 32 32"><use href="#sparkle"/></svg>
+        <svg class="deco s2" viewBox="0 0 32 32"><use href="#sparkle"/></svg>
+        <svg class="deco p2" viewBox="0 0 40 40"><use href="#paw"/></svg>
+
+        <!-- Polaroid 1 -->
+        <div class="polaroid rot-1">
+          <div class="photo">
+            <svg viewBox="0 0 64 64"><use href="#mochi-heart"/></svg>
+            <div class="stamp"><svg viewBox="0 0 40 40"><use href="#paw"/></svg></div>
+          </div>
+          <div class="caption-area">
+            <div>
+              <div class="name">Mochi<span class="pet">🐱</span></div>
+              <div class="meta">
+                <div class="row"><span class="k">Likes</span><span class="v">tonkatsu plushies</span></div>
+                <div class="row"><span class="k">Owner</span><span class="v">Visan C.</span></div>
+                <div class="row"><span class="k">Met</span><span class="v">Day 3 · theMeowseum</span></div>
+              </div>
+            </div>
+            <div class="qr-mini"><svg viewBox="0 0 40 40"><use href="#qr-mini"/></svg></div>
+          </div>
+          <div class="url">mochi.pos / p / mochi-c</div>
+        </div>
+
+        <!-- Polaroid 2 — featured center -->
+        <div class="polaroid rot-2">
+          <div class="photo v2">
+            <svg viewBox="0 0 64 64"><use href="#mochi-sparkle"/></svg>
+            <div class="stamp"><svg viewBox="0 0 40 40"><use href="#paw"/></svg></div>
+          </div>
+          <div class="caption-area">
+            <div>
+              <div class="name">Lulu<span class="pet">🐶</span></div>
+              <div class="meta">
+                <div class="row"><span class="k">Loves</span><span class="v">hoodie size S</span></div>
+                <div class="row"><span class="k">Owner</span><span class="v">Pim S.</span></div>
+                <div class="row"><span class="k">Met</span><span class="v">Day 3 · theMeowseum</span></div>
+              </div>
+            </div>
+            <div class="qr-mini"><svg viewBox="0 0 40 40"><use href="#qr-mini"/></svg></div>
+          </div>
+          <div class="url">mochi.pos / p / lulu-s</div>
+        </div>
+
+        <!-- Polaroid 3 -->
+        <div class="polaroid rot-3">
+          <div class="photo v3">
+            <svg viewBox="0 0 64 64"><use href="#mochi"/></svg>
+            <div class="stamp"><svg viewBox="0 0 40 40"><use href="#paw"/></svg></div>
+          </div>
+          <div class="caption-area">
+            <div>
+              <div class="name">Toast<span class="pet">🐹</span></div>
+              <div class="meta">
+                <div class="row"><span class="k">Birthday</span><span class="v" style="color:var(--lavender-700);font-weight:900">today 🎂</span></div>
+                <div class="row"><span class="k">Owner</span><span class="v">Tee P.</span></div>
+                <div class="row"><span class="k">Met</span><span class="v">Day 3 · theMeowseum</span></div>
+              </div>
+            </div>
+            <div class="qr-mini"><svg viewBox="0 0 40 40"><use href="#qr-mini"/></svg></div>
+          </div>
+          <div class="url">mochi.pos / p / toast-p</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="caption">
+      <span class="lbl">why it matters</span>
+      <p class="txt">A polaroid is <b>physical proof that the booth cared</b>. The customer leaves with something to put on the fridge. Friends ask about it. They scan the mini-QR and land on the pet's profile page (next section). The polaroid is the shareable wedge that turns one customer into three. Optional ฿20 print at the booth — most owners pay it.</p>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════
+       8 · PUBLIC PET PROFILE PAGE
+  ════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">08 · Public pet profile · /p/mochi</span>
+        <h2>Every pet gets a URL.</h2>
+        <p class="why">A shareable page per registered pet at <code style="font-size:12px">mochi.pos/p/{name}</code>. Portrait, favorites, visits, family pets — everything Mochi remembers. <b>The customer's bragging surface, the brand's organic growth engine.</b></p>
+      </div>
+      <div class="stat">
+        <span class="num">3.2×</span>
+        <span>per-customer reach</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <span class="tag">profile · mobile page</span>
+      <div class="profile-stage">
+
+        <!-- Phone -->
+        <div class="profile-phone">
+          <div class="screen">
+            <div class="notch"></div>
+            <div class="pro-content">
+              <div class="profile-banner">
+                <div class="portrait"><svg viewBox="0 0 64 64" width="80" height="80"><use href="#mochi-heart"/></svg></div>
+                <div class="nm">Mochi 🐱</div>
+                <div class="breed">Scottish Fold · 4 years · with Visan C.</div>
+                <div class="pet-chips">
+                  <span>VIP · 12 visits</span>
+                  <span>since Mar '26</span>
+                </div>
+              </div>
+              <div class="profile-section faves">
+                <div class="ttl">♥ Mochi loves</div>
+                <div class="row">
+                  <div class="it"><div class="pic">🧸</div><div class="lbl">Tonkatsu Plushie</div></div>
+                  <div class="it"><div class="pic">🐾</div><div class="lbl">Paw Stickers</div></div>
+                  <div class="it"><div class="pic">🎀</div><div class="lbl">Velvet Bow</div></div>
+                  <div class="it"><div class="pic">📓</div><div class="lbl">Pet Diary</div></div>
+                </div>
+              </div>
+              <div class="profile-section visits">
+                <div class="ttl">📅 Mochi visited</div>
+                <div class="ln"><div class="dot">🐾</div><div><div class="nm">theMeowseum · Day 3</div><div class="when">today · 14:24</div></div><div class="amt">฿2,397</div></div>
+                <div class="ln"><div class="dot">🐾</div><div><div class="nm">theMeowseum · Day 2</div><div class="when">yesterday · 11:08</div></div><div class="amt">฿360</div></div>
+                <div class="ln"><div class="dot">🐾</div><div><div class="nm">Chatuchak Pop-up</div><div class="when">Mar 14</div></div><div class="amt">฿1,280</div></div>
+              </div>
+              <div class="profile-cta">
+                ♥ Send a treat for Mochi
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right-side context -->
+        <div class="profile-context">
+          <div class="url">
+            <span class="lock">🔒</span>
+            mochi.pos<b>/p/mochi-c</b>
+          </div>
+          <h3>Mochi gets a <span class="pop">URL.</span><br/>Lulu does too.</h3>
+          <p>Every registered pet becomes a public page — the owner can edit it, share it, link it on Instagram. <strong>Mochi remembers; the page proves it.</strong></p>
+
+          <div class="features">
+            <div class="feat">
+              <div class="ic"><svg viewBox="0 0 24 24" width="16" height="16"><use href="#i-heart"/></svg></div>
+              <div class="ttl-i">Favorites carousel</div>
+              <div class="sub">Items they've loved across all visits.</div>
+            </div>
+            <div class="feat">
+              <div class="ic"><svg viewBox="0 0 24 24" width="16" height="16"><use href="#i-history"/></svg></div>
+              <div class="ttl-i">Visits timeline</div>
+              <div class="sub">Events attended, amounts spent.</div>
+            </div>
+            <div class="feat">
+              <div class="ic"><svg viewBox="0 0 24 24" width="16" height="16"><use href="#i-gift"/></svg></div>
+              <div class="ttl-i">Send a treat</div>
+              <div class="sub">Friends can gift items toward future visits.</div>
+            </div>
+            <div class="feat">
+              <div class="ic"><svg viewBox="0 0 24 24" width="16" height="16"><use href="#i-camera"/></svg></div>
+              <div class="ttl-i">Owner-uploaded photos</div>
+              <div class="sub">Optional — most owners do it within a week.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="caption">
+      <span class="lbl">why it matters</span>
+      <p class="txt">Most POS systems treat customers like rows in a table. Mochi treats <b>each pet like a person</b>. The public page is shareable on social, indexable by search, and discoverable by future friends. Owners brag, search ranks rise, the booth grows. Same data Mochi captured at the QR — just exposed beautifully.</p>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════
+       9 · SEASONAL MOCHI
+  ════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">09 · Seasonal mochi · calendar refresh</span>
+        <h2>The mascot lives a year.</h2>
+        <p class="why">Mochi doesn't just sit there — she dresses for the calendar. Songkran flower crown in April, krathong float in November, red ribbon for Lunar NY. Each variant unlocks for 7–14 days. <b>The app gets a fresh face six times a year, for free.</b></p>
+      </div>
+      <div class="stat">
+        <span class="num">6</span>
+        <span>variants / year</span>
+      </div>
+    </div>
+
+    <div class="seasonal-grid">
+
+      <div class="season-card s-default">
+        <svg class="mochi-svg" viewBox="0 0 64 64"><use href="#mochi"/></svg>
+        <div class="nm">Default Mochi</div>
+        <div class="dates">YEAR-ROUND</div>
+        <div class="note">The everyday face — used on the dashboard, brand mark, app icon.</div>
+      </div>
+
+      <div class="season-card s-lny">
+        <svg class="mochi-svg" viewBox="0 0 64 64"><use href="#mochi-lny"/></svg>
+        <div class="nm">Lunar NY Mochi</div>
+        <div class="dates">JAN–FEB · 10 days</div>
+        <div class="note">Red headband + gold coins. Indigo deepens to crimson on splash screens.</div>
+      </div>
+
+      <div class="season-card s-songkran">
+        <svg class="mochi-svg" viewBox="0 0 64 64"><use href="#mochi-songkran"/></svg>
+        <div class="nm">Songkran Mochi</div>
+        <div class="dates">APR 13–15 · 3 days</div>
+        <div class="note">Jasmine crown + water splash. Cream surfaces get a gold tint.</div>
+      </div>
+
+      <div class="season-card s-pride">
+        <svg class="mochi-svg" viewBox="0 0 64 64"><use href="#mochi-pride"/></svg>
+        <div class="nm">Pride Mochi</div>
+        <div class="dates">JUNE · whole month</div>
+        <div class="note">Rainbow scarf-collar. Sparkle motif tints rainbow on success states.</div>
+      </div>
+
+      <div class="season-card s-loy">
+        <svg class="mochi-svg" viewBox="0 0 64 64"><use href="#mochi-loy"/></svg>
+        <div class="nm">Loy Krathong Mochi</div>
+        <div class="dates">NOV · 1 day</div>
+        <div class="note">Banana-leaf krathong + candle. Background turns indigo, candles flicker.</div>
+      </div>
+
+      <div class="season-card s-xmas">
+        <svg class="mochi-svg" viewBox="0 0 64 64"><use href="#mochi-xmas"/></svg>
+        <div class="nm">Christmas Mochi</div>
+        <div class="dates">DEC · 10 days</div>
+        <div class="note">Santa hat. Snowfall layer behind the splash screen.</div>
+      </div>
+    </div>
+
+    <div class="caption">
+      <span class="lbl">why it matters</span>
+      <p class="txt">A static mascot ages. A <b>living mascot</b> becomes a ritual — sellers and customers check in to see what Mochi is wearing this week. The variants are small SVG overlays on the base face, so the system stays cheap to maintain. Mark variant unlocks in the marketing calendar; each one earns a social post.</p>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════
+       10 · BOOTH MAP
+  ════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">10 · Booth map · spatial intelligence</span>
+        <h2>Where the sales happened.</h2>
+        <p class="why">A top-down floor plan of the booth, with heat zones layered over actual product placements. <b>Where customers cluster, what they bought there, what sat in the dead zone.</b> No other POS tells you that the back-right table only moved ฿420 today because you put it behind the plushies.</p>
+      </div>
+      <div class="stat">
+        <span class="num">฿2,140</span>
+        <span>hot table · today</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <span class="tag">booth map · day 3</span>
+      <div class="bmap">
+        <div class="bmap-canvas">
+          <div class="booth-perim"></div>
+
+          <!-- Heat zones (behind tables) -->
+          <div class="bmap-heat h1"></div>
+          <div class="bmap-heat h2"></div>
+          <div class="bmap-heat h3"></div>
+
+          <!-- Tables -->
+          <div class="bmap-table t1">
+            STICKERS
+            <span class="lbl">฿1,420 · 24 sales</span>
+          </div>
+          <div class="bmap-table t2">
+            PLUSHIES ★
+            <span class="lbl">฿15,960 · 38 sales</span>
+          </div>
+          <div class="bmap-table t3">
+            APPAREL
+            <span class="lbl">฿4,820 · 16 sales</span>
+          </div>
+          <div class="bmap-table cashier">CASHIER</div>
+          <div class="bmap-table qr-stand">QR · TELL US</div>
+
+          <!-- Customer flow arrows -->
+          <svg class="bmap-flow" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arr-head" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0,0 L10,5 L0,10 z" fill="#7a6ad6"/>
+              </marker>
+            </defs>
+            <path d="M5 60 Q25 50 50 50" stroke="#7a6ad6" stroke-width=".4" fill="none" stroke-dasharray="1.5 1.5" marker-end="url(#arr-head)" opacity=".7"/>
+            <path d="M50 50 Q70 50 92 60" stroke="#7a6ad6" stroke-width=".4" fill="none" stroke-dasharray="1.5 1.5" marker-end="url(#arr-head)" opacity=".7"/>
+            <path d="M50 50 Q50 70 50 78" stroke="#2d2960" stroke-width=".5" fill="none" marker-end="url(#arr-head)" opacity=".5"/>
+          </svg>
+
+          <svg class="bmap-mini-mochi" viewBox="0 0 64 64"><use href="#mochi-sparkle"/></svg>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="bmap-legend">
+          <div>
+            <div class="ttl">Day 3 · spatial</div>
+            <div class="sub">theMeowseum · West Hall · booth M-22</div>
+          </div>
+          <div class="hot">
+            <div class="l">Top table</div>
+            <div class="v">PLUSHIES ★</div>
+            <div class="ch">▲ 38 sales · ฿15,960</div>
+          </div>
+          <div class="hot" style="border-color:rgba(168,118,28,.3);background:rgba(168,118,28,.1)">
+            <div class="l" style="color:#e9c87a">Cold zone</div>
+            <div class="v" style="color:white">STICKERS table</div>
+            <div class="ch" style="color:#e9c87a">▼ behind plushies — try rotating tomorrow</div>
+          </div>
+          <div class="key">
+            <div class="row"><span class="sw h1"></span> Hot · ฿2k+ /hr</div>
+            <div class="row"><span class="sw h2"></span> Warm · ฿500-2k</div>
+            <div class="row"><span class="sw h3"></span> QR registrations</div>
+          </div>
+          <div class="insight">
+            <b>Mochi spotted:</b> customers walking the loop counter-clockwise. The Pet Diary on the back wall got 0 sales — visible from only 14% of paths.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="caption">
+      <span class="lbl">why it matters</span>
+      <p class="txt">Spreadsheets tell you <i>what</i> sold. The Booth Map tells you <i>why it sold there</i>. Sellers can drag tables around in tomorrow's setup, simulate a new layout, and see Mochi's prediction for traffic flow. <b>Every other POS leaves the booth at the door</b> — Mochi walks in.</p>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════
+       11 · YEAR IN REVIEW
+  ════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">11 · Year in review · both sides</span>
+        <h2>One year. Two cards.</h2>
+        <p class="why">December each year, two cards drop: <b>Visan's 2026</b> (seller's recap, indigo) and <b>Mochi's 2026</b> (pet owner's recap, cream). Both shareable. Both end with a small ritual — say goodbye to the year, hello to the next.</p>
+      </div>
+      <div class="stat">
+        <span class="num">DEC 28</span>
+        <span>annual drop</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <span class="tag light">year in review · Dec 28</span>
+      <div class="year-stage">
+
+        <!-- Seller side -->
+        <div class="year-card seller">
+          <span class="year-eb">VISAN'S YEAR · seller recap</span>
+          <div class="year-big">2026.</div>
+          <div class="who">theMeowseum · 12 events · 3,420 sales</div>
+
+          <div class="year-stats">
+            <div class="it"><div class="l">Year takings</div><div class="v"><span class="cur">฿</span>847k</div><div class="small">▲ 38% vs '25</div></div>
+            <div class="it"><div class="l">Pets remembered</div><div class="v">1,247</div><div class="small">Mochi knows them all</div></div>
+            <div class="it"><div class="l">Best day</div><div class="v">Day 4</div><div class="small">theMeowseum · ฿42k</div></div>
+            <div class="it"><div class="l">Top seller</div><div class="v">Plushie</div><div class="small">412 sold this year</div></div>
+          </div>
+
+          <div class="year-quote">
+            <b>Mochi:</b> "You came back for every event, even the rainy Chatuchak. That's the year."
+          </div>
+
+          <div class="year-share">
+            <button class="go"><svg viewBox="0 0 24 24" width="14" height="14"><use href="#i-share"/></svg> Share my year</button>
+            <button class="ghost"><svg viewBox="0 0 24 24" width="14" height="14"><use href="#i-print"/></svg> Print booklet</button>
+          </div>
+
+          <svg class="corner-mascot" viewBox="0 0 64 64"><use href="#mochi-sparkle"/></svg>
+        </div>
+
+        <!-- Owner side -->
+        <div class="year-card owner">
+          <span class="year-eb">MOCHI'S YEAR · pet owner recap</span>
+          <div class="year-big">2026.</div>
+          <div class="who">Mochi 🐱 the Scottish Fold · 12 visits</div>
+
+          <div class="year-stats">
+            <div class="it"><div class="l">Events met</div><div class="v">12</div><div class="small">incl. 4 with Lulu</div></div>
+            <div class="it"><div class="l">Most loved</div><div class="v">Plushie</div><div class="small">"definitely" — Visan</div></div>
+            <div class="it"><div class="l">New pet friends</div><div class="v">47</div><div class="small">met on the wall</div></div>
+            <div class="it"><div class="l">Lifetime spent</div><div class="v"><span class="cur">฿</span>14.8k</div><div class="small">on Mochi alone</div></div>
+          </div>
+
+          <div class="year-quote">
+            <b>Mochi from Mochi:</b> "Thanks for the head scratches, the tonkatsu plushies, the time you let me try on the hoodie. Until 2027!"
+          </div>
+
+          <div class="year-share">
+            <button class="go"><svg viewBox="0 0 24 24" width="14" height="14"><use href="#i-share"/></svg> Share Mochi's year</button>
+            <button class="ghost">Save card</button>
+          </div>
+
+          <svg class="corner-mascot" viewBox="0 0 64 64"><use href="#mochi-heart"/></svg>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="caption">
+      <span class="lbl">why it matters</span>
+      <p class="txt">Spotify Wrapped works because it gives customers a <b>story they can post</b>. Mochi does it twice — once for the seller (who shares for marketing) and once for the owner (who shares for love). Both feed back into the booth: sellers feel proud, owners come back next year wanting another card. <b>The annual drop becomes a holiday</b>.</p>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════
+       12 · PRINT PACK
+  ════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">12 · Booth print pack · the physical kit</span>
+        <h2>The booth shows up in Mochi clothes.</h2>
+        <p class="why">A printable pack the seller can run before each event: price card, table tent, scan-me poster, name-tag stickers, countdown banner. <b>Everything tied to the SaaS by QR or order code</b> — so the physical booth feels like one continuous product.</p>
+      </div>
+      <div class="stat">
+        <span class="num">5</span>
+        <span>artifacts · auto-customized</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <span class="tag light">print pack · per event</span>
+      <div class="print-stage">
+
+        <!-- Price card -->
+        <div class="print-it pi-pricecard">
+          <span class="pi-tag">A6 · 105×148</span>
+          <div class="head">
+            <svg class="mk" viewBox="0 0 64 64"><use href="#mochi"/></svg>
+            <div class="nm">Mochi<span class="pos">POS</span></div>
+            <div class="ev">DAY 3 · MEOWSEUM</div>
+          </div>
+          <div class="items">
+            <div class="it">
+              <div><div class="nm">Tonkatsu Plushie</div><div class="ds">12 colors · MM-204</div></div>
+              <div class="p"><span class="cur">฿</span>420</div>
+            </div>
+            <div class="it">
+              <div><div class="nm">Mochi Hoodie</div><div class="ds">S / M / L</div></div>
+              <div class="p"><span class="cur">฿</span>1,280</div>
+            </div>
+            <div class="it">
+              <div><div class="nm">Paw Stickers · 8 ct</div><div class="ds">limited run</div></div>
+              <div class="p"><span class="cur">฿</span>120</div>
+            </div>
+            <div class="it">
+              <div><div class="nm">Velvet Bow · pair</div><div class="ds">cat-tested</div></div>
+              <div class="p"><span class="cur">฿</span>80</div>
+            </div>
+            <div class="it">
+              <div><div class="nm">Pet Diary · cream</div><div class="ds">80 pages</div></div>
+              <div class="p"><span class="cur">฿</span>240</div>
+            </div>
+          </div>
+          <div class="ft">SCAN AT TILL · M-22</div>
+        </div>
+
+        <!-- Table tent -->
+        <div class="print-it pi-tent">
+          <span class="pi-tag" style="background:#a8761c">A5 · folded</span>
+          <div class="l">
+            <div class="eb">After your purchase</div>
+            <h3>Tell us about<br/>your <span class="pop">pet.</span></h3>
+            <p>Scan this — we'll remember what they loved.<br/>So next time, we're ready.</p>
+            <div class="url">mochi.pos/p · 30s</div>
+          </div>
+          <div class="r"><svg viewBox="0 0 40 40"><use href="#qr-mini"/></svg></div>
+        </div>
+
+        <!-- Scan-me poster -->
+        <div class="print-it pi-scanposter">
+          <span class="pi-tag" style="background:var(--lavender)">A3</span>
+          <svg class="corner-mochi" viewBox="0 0 64 64"><use href="#mochi-sparkle"/></svg>
+          <div>
+            <div class="eb">theMeowseum · day 3</div>
+            <h3>Meet <span class="pop">Mochi.</span></h3>
+          </div>
+          <div class="big-qr"><svg viewBox="0 0 40 40"><use href="#qr-mini"/></svg></div>
+          <div class="url">mochi.pos / M</div>
+        </div>
+
+        <!-- Name tag stickers -->
+        <div class="print-it pi-nametag">
+          <span class="pi-tag">stickers · A4 sheet</span>
+          <div class="sticker"><div class="e">🐱</div><div><div class="nm">Mochi</div><div class="meta">M-0034</div></div></div>
+          <div class="sticker"><div class="e">🐶</div><div><div class="nm">Lulu</div><div class="meta">M-0033</div></div></div>
+          <div class="sticker"><div class="e">🐰</div><div><div class="nm">Bunbun</div><div class="meta">M-0028</div></div></div>
+          <div class="sticker"><div class="e">🐢</div><div><div class="nm">Khao</div><div class="meta">M-0019</div></div></div>
+        </div>
+
+        <!-- Countdown banner -->
+        <div class="print-it pi-countdown">
+          <span class="pi-tag" style="background:#1c1838">DL · 99×210</span>
+          <div class="day-num">3</div>
+          <div class="meta">
+            <div class="eb">Day · of 5</div>
+            <div class="ttl">theMeowseum is open</div>
+            <div class="ed">until 8pm · come find us at M-22</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="caption">
+      <span class="lbl">why it matters</span>
+      <p class="txt">Sellers cobble these together in Canva at 2am the night before. Mochi <b>auto-generates the whole pack</b> the moment the event is created — pulls today's product list into the price card, embeds the right QR into the poster, names the stickers from the booked customer list. The seller hits Print. The booth is dressed.</p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>Pair with <a href="Mochi Signature Moments.html">Signature Moments</a> for the in-app celebrations. <a href="Mochi Color Reference.html">Color reference</a> · <a href="Mochi POS Main.html">POS main</a>.</span>
+    <span>Mochi POS · outstanding · vol 2</span>
+  </footer>
+</div>
+
+</body>
+</html>

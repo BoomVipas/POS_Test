@@ -1,0 +1,195 @@
+/* MochiPOS SaaS — design tokens
+   Source: logo (deep indigo + lavender + warm cream).
+   Use this for the SaaS surfaces (admin dashboard, event setup, customer portal).
+   For the booth-side event POS, see legacy/colors_and_type.css (Meowseum cream/brown). */
+
+:root {
+  /* ── Surfaces ────────────────────────────────────────────────────── */
+  --bg:           #f7f5fb;   /* page — soft warm-cool off-white */
+  --bg-soft:      #efeaf6;   /* recessed surface */
+  --panel:        #ffffff;   /* card */
+  --panel-2:      #faf8fd;   /* sidebar / muted panel */
+  --line:         #e5dff0;   /* hairline */
+  --line-strong:  #d6cee5;
+  --line-quiet:   rgba(58,52,116,.10);
+
+  /* ── Brand ───────────────────────────────────────────────────────── */
+  --indigo:       #2d2960;   /* primary "Mochi" — deepest brand */
+  --indigo-700:   #3a3478;   /* hover */
+  --indigo-600:   #4a4396;   /* active link */
+  --indigo-500:   #5d54b8;
+  --indigo-100:   #e7e3f6;   /* tinted bg */
+  --indigo-50:    #f1eff9;
+
+  --lavender-700: #7a6ad6;
+  --lavender:     #b8a9f0;   /* "POS" accent — soft lavender */
+  --lavender-300: #d3c8f6;
+  --lavender-200: #e2dafa;
+  --lavender-100: #efeafd;
+
+  --cream:        #f4eedf;   /* warm receipt accent (heritage tie-in) */
+  --cream-deep:   #e9dec3;
+  --pink-blush:   #f7c8d2;   /* mascot blush — used sparingly */
+
+  /* Gradients */
+  --grad-primary: linear-gradient(180deg,#3d3686 0%,#2a2557 100%);
+  --grad-accent:  linear-gradient(135deg,#b8a9f0 0%,#7a6ad6 100%);
+  --grad-page:    linear-gradient(180deg,#fbfaff 0%,#f3eef9 100%);
+  --grad-cream:   linear-gradient(180deg,#fdf9ee 0%,#f4eedf 100%);
+
+  /* ── Text ────────────────────────────────────────────────────────── */
+  --text:         #1c1838;   /* primary, near-black indigo */
+  --text-2:       #3a3461;   /* secondary heading */
+  --muted:        #6b6489;   /* body secondary */
+  --muted-soft:   #8a83a4;   /* tertiary, captions */
+  --on-indigo:    #ffffff;
+  --on-lavender:  #2d2960;
+
+  /* ── Semantic ────────────────────────────────────────────────────── */
+  --success:      #1f7a4d;
+  --success-bg:   #d8efe2;
+  --warn:         #a8761c;
+  --warn-bg:      #fcecc8;
+  --danger:       #b8362d;
+  --danger-bg:    #fbdcd8;
+  --info:         #3a4ab8;
+  --info-bg:      #dde2f8;
+
+  /* ── Shadows (cool indigo-tinted, not warm-brown like legacy) ─── */
+  --shadow-rest:  0 1px 2px rgba(28,24,56,.04), 0 4px 12px rgba(28,24,56,.04);
+  --shadow-card:  0 4px 12px rgba(28,24,56,.06), 0 24px 48px rgba(28,24,56,.08);
+  --shadow-pop:   0 12px 24px rgba(28,24,56,.10), 0 32px 80px rgba(28,24,56,.16);
+  --shadow-inset: inset 0 1px 0 rgba(255,255,255,.6);
+
+  /* ── Typography ──────────────────────────────────────────────────── */
+  --font-body:    "Nunito","Inter",ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;
+  --font-display: "Nunito","Inter",ui-sans-serif,system-ui,sans-serif;
+  --font-mono:    "JetBrains Mono","SF Mono",Menlo,Consolas,ui-monospace,monospace;
+
+  /* Body type scale (px) */
+  --fs-eyebrow: 11px;
+  --fs-xs:      11px;
+  --fs-sm:      12px;
+  --fs-md:      13px;
+  --fs-base:    14px;
+  --fs-lg:      16px;
+  --fs-xl:      18px;
+  --fs-h3:      22px;
+  --fs-h2:      28px;
+  --fs-h1:      36px;
+  --fs-hero:    48px;
+
+  /* Weights — Nunito has lots of weight; we use these only */
+  --fw-reg: 400;
+  --fw-md:  600;
+  --fw-sb:  700;
+  --fw-b:   800;
+  --fw-xb:  900;
+
+  /* ── Radii — generous, friendly (matches mascot's roundness) ──── */
+  --r-pill: 999px;
+  --r-xs:   8px;
+  --r-sm:   12px;
+  --r-md:   16px;
+  --r-lg:   20px;
+  --r-xl:   28px;
+  --r-2xl:  36px;
+
+  /* ── Spacing 4/8 hybrid ───────────────────────────────────────── */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 32px;
+  --sp-8: 40px;
+  --sp-9: 56px;
+  --sp-10: 72px;
+
+  /* ── Layout ──────────────────────────────────────────────────── */
+  --topbar-h:     64px;
+  --sidebar-w:    240px;
+  --sidebar-w-c:  72px;       /* collapsed */
+  --max-content:  1280px;
+}
+
+/* Webfont — Nunito (Google Fonts substitute for the geometric-rounded display look of the logo wordmark).
+   The logo itself was rendered in a custom geometric-rounded face; Nunito is the closest free webfont match.
+   FLAGGED in README — swap to the real face when available. */
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap");
+
+/* ── Element-level styles ────────────────────────────────────────── */
+html, body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  color: var(--text);
+  background: var(--bg);
+  font-feature-settings: "ss01" on, "cv11" on; /* helps Inter fallback */
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 { color: var(--text); margin: 0; font-family: var(--font-display); letter-spacing: -.015em; }
+h1 { font-size: var(--fs-h1);   line-height: 1.1;  font-weight: 900; letter-spacing: -.025em; }
+h2 { font-size: var(--fs-h2);   line-height: 1.15; font-weight: 800; letter-spacing: -.02em; }
+h3 { font-size: var(--fs-h3);   line-height: 1.2;  font-weight: 800; letter-spacing: -.015em; }
+h4 { font-size: var(--fs-lg);   line-height: 1.3;  font-weight: 700; }
+
+p   { margin: 0; line-height: 1.5; color: var(--text); }
+.muted { color: var(--muted); }
+
+.eyebrow {
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Wordmark — typographic version. Use the PNG (assets/mochi-wordmark.png) when possible
+   for pixel-perfect brand presence. This CSS version is a fallback / inline use case. */
+.wm {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -.04em;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--indigo);
+}
+.wm .pos { color: var(--lavender-700); font-weight: 800; }
+
+/* SKU / order id */
+code, .sku, .ord {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+/* Money — tabular numerics, slightly tightened */
+.num {
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -.01em;
+  font-feature-settings: "tnum";
+}
+
+/* Pill — small status chips */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: .02em;
+  background: var(--indigo-50);
+  color: var(--indigo);
+}
+.pill.ok   { background: var(--success-bg); color: var(--success); }
+.pill.warn { background: var(--warn-bg);    color: var(--warn); }
+.pill.bad  { background: var(--danger-bg);  color: var(--danger); }
+.pill.info { background: var(--info-bg);    color: var(--info); }
+.pill.lav  { background: var(--lavender-100); color: var(--indigo-600); }

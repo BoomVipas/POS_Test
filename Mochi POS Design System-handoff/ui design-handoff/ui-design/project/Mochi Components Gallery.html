@@ -1,0 +1,1069 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Mochi POS · Components Gallery</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="stylesheet" href="colors_and_type.css"/>
+<link rel="stylesheet" href="gallery.css"/>
+</head>
+<body>
+
+<!-- Shared SVG sprite — mascot face, paw -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="g-mochi" cx="38%" cy="32%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="55%" stop-color="#f1edfb"/>
+      <stop offset="100%" stop-color="#d3c8f6"/>
+    </radialGradient>
+
+    <!-- Default happy mochi face. Use <use href="#mochi"/> -->
+    <symbol id="mochi" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="23" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+      <ellipse cx="41" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+      <circle cx="23.7" cy="29.5" r=".9" fill="#fff"/>
+      <circle cx="41.7" cy="29.5" r=".9" fill="#fff"/>
+      <path d="M27 39 Q32 43 37 39" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Sparkle-eyes mochi -->
+    <symbol id="mochi-sparkle" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <path d="M23 27 L24.3 30.4 L27.8 31 L24.3 31.6 L23 35 L21.7 31.6 L18.2 31 L21.7 30.4 Z" fill="#7a6ad6"/>
+      <path d="M41 27 L42.3 30.4 L45.8 31 L42.3 31.6 L41 35 L39.7 31.6 L36.2 31 L39.7 30.4 Z" fill="#7a6ad6"/>
+      <path d="M27 40 Q32 44 37 40" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Heart-eyes mochi -->
+    <symbol id="mochi-heart" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <path d="M23 33 C20 30, 19 27, 21 26 C22.5 25, 23 26.2, 23 27.2 C23 26.2, 23.5 25, 25 26 C27 27, 26 30, 23 33 Z" fill="#e85b75"/>
+      <path d="M41 33 C38 30, 37 27, 39 26 C40.5 25, 41 26.2, 41 27.2 C41 26.2, 41.5 25, 43 26 C45 27, 44 30, 41 33 Z" fill="#e85b75"/>
+      <path d="M27 40 Q32 44 37 40" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Sleepy mochi -->
+    <symbol id="mochi-sleep" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <path d="M19 31 Q23 28 27 31" stroke="#1c1838" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <path d="M37 31 Q41 28 45 31" stroke="#1c1838" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <path d="M30 41 Q32 39 34 41" stroke="#1c1838" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Peek mochi (top half + arms) -->
+    <symbol id="mochi-peek" viewBox="0 0 80 44">
+      <clipPath id="clip-peek"><rect x="0" y="0" width="80" height="40"/></clipPath>
+      <g clip-path="url(#clip-peek)">
+        <circle cx="40" cy="44" r="24" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+        <ellipse cx="33" cy="32" rx="6" ry="3" fill="#fff" opacity=".7"/>
+        <ellipse cx="28" cy="44" rx="3.4" ry="2" fill="#f7c8d2"/>
+        <ellipse cx="52" cy="44" rx="3.4" ry="2" fill="#f7c8d2"/>
+        <ellipse cx="33" cy="38" rx="2.4" ry="3" fill="#1c1838"/>
+        <ellipse cx="47" cy="38" rx="2.4" ry="3" fill="#1c1838"/>
+        <circle cx="33.6" cy="36.8" r=".8" fill="#fff"/>
+        <circle cx="47.6" cy="36.8" r=".8" fill="#fff"/>
+      </g>
+      <ellipse cx="22" cy="40" rx="5" ry="3" fill="#fff" stroke="#2d2960" stroke-width="1.6"/>
+      <ellipse cx="58" cy="40" rx="5" ry="3" fill="#fff" stroke="#2d2960" stroke-width="1.6"/>
+      <line x1="0" y1="40" x2="80" y2="40" stroke="#2d2960" stroke-width="2"/>
+    </symbol>
+
+    <!-- Mochi face for receipt header (warm tinted) -->
+    <symbol id="mochi-cream" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="#fdfbf4" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="23" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+      <ellipse cx="41" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+      <circle cx="23.7" cy="29.5" r=".9" fill="#fff"/>
+      <circle cx="41.7" cy="29.5" r=".9" fill="#fff"/>
+      <path d="M27 39 Q32 43 37 39" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Paw -->
+    <symbol id="paw" viewBox="0 0 40 40">
+      <ellipse cx="20" cy="26" rx="9" ry="7.5" fill="currentColor"/>
+      <ellipse cx="9"  cy="14" rx="3.4" ry="4.4" fill="currentColor"/>
+      <ellipse cx="31" cy="14" rx="3.4" ry="4.4" fill="currentColor"/>
+      <ellipse cx="15" cy="6"  rx="2.8" ry="3.6" fill="currentColor"/>
+      <ellipse cx="25" cy="6"  rx="2.8" ry="3.6" fill="currentColor"/>
+    </symbol>
+
+    <!-- Icons (stroke 1.75, lucide-flavored) -->
+    <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M10.3 3.86l-8 13.4A2 2 0 0 0 4 20h16a2 2 0 0 0 1.7-2.74l-8-13.4a2 2 0 0 0-3.4 0z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 8h.01M11 12h1v5h1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-arr-up" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+    <symbol id="i-arr-down" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+    <symbol id="i-arr-right" viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3-3" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-scan" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M3 17v2a2 2 0 0 0 2 2h2M21 7V5a2 2 0 0 0-2-2h-2M21 17v2a2 2 0 0 1-2 2h-2M7 7v10M11 7v10M15 7v10M19 7v10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" fill="none"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M2 22c0-4 3-7 7-7s7 3 7 7M17 11a4 4 0 0 0 0-8M22 22c0-3-2-5-5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-trend" viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><polyline points="15 7 21 7 21 13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<div class="page">
+
+  <!-- ── HERO ─────────────────────────────────────────────────────── -->
+  <header class="gallery-hero">
+    <div>
+      <span class="eyebrow">Mochi POS · Components &amp; beauty kit</span>
+      <h1>Every <span class="pop">small thing</span> the<br/>POS surface needs.</h1>
+      <p>A working library of the visual pieces that make Mochi POS feel like Mochi POS — money displays, cards, receipts, charts, status moments. Built on the same tokens as <code>colors_and_type.css</code> so you can lift any block straight into a screen.</p>
+      <div class="tally">
+        <span>Money &amp; metrics</span><b>5</b>
+        <span>Cards</span><b>5</b>
+        <span>Buttons</span><b>6</b>
+        <span>Status &amp; moments</span><b>6</b>
+        <span>Pills &amp; chips</span><b>5</b>
+        <span>Receipts</span><b>2</b>
+        <span>Charts</span><b>4</b>
+        <span>Forms</span><b>4</b>
+        <span>Navigation</span><b>3</b>
+        <span>Special moments</span><b>4</b>
+      </div>
+    </div>
+    <div class="hero-mark"><img src="assets/mochi-logo.png" alt="Mochi POS"/></div>
+  </header>
+
+  <!-- ── 1. MONEY & METRICS ───────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="badge"><span class="dot"></span>01 · Money &amp; metrics</span>
+        <h2>How ฿ shows up</h2>
+      </div>
+      <span class="count">5 pieces</span>
+    </div>
+    <p class="sec-desc">Booth sellers want to see <em>today's takings</em> the second they open the app. Tabular numerics, Nunito Black at -.04em, lavender currency mark, never a cent.</p>
+
+    <div class="grid g-23">
+      <!-- Hero KPI -->
+      <div class="frame">
+        <div class="mc-hero-money">
+          <span class="eyebrow">Today's takings</span>
+          <div class="amount"><span class="cur">฿</span>24,820</div>
+          <div class="meta">
+            <span class="mc-delta up"><svg><use href="#i-arr-up"/></svg> ฿3,420</span>
+            <span class="vs">vs yesterday · Day 3 of 5</span>
+          </div>
+        </div>
+        <span class="frame-label">.mc-hero-money</span>
+      </div>
+
+      <!-- Stacked smaller KPIs -->
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="mc-kpi">
+          <div class="label">Orders</div>
+          <div class="value">132</div>
+          <div class="foot"><span class="mc-delta up"><svg><use href="#i-arr-up"/></svg> 18</span> vs yesterday</div>
+        </div>
+        <div class="mc-kpi">
+          <div class="label">Avg basket</div>
+          <div class="value"><span class="cur">฿</span>188</div>
+          <div class="foot"><span class="mc-delta down"><svg><use href="#i-arr-down"/></svg> 4%</span> last 7 days</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid g-3" style="margin-top:20px">
+      <div class="frame">
+        <div class="mc-spark">
+          <div>
+            <div class="label">Hour rate</div>
+            <div class="value"><span class="cur">฿</span>2,140<span style="font-size:12px;color:var(--muted);font-weight:700;margin-left:6px">/hr</span></div>
+          </div>
+          <svg viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="0,32 12,28 24,30 36,22 48,24 60,16 72,18 84,8 100,12"
+              fill="none" stroke="#7a6ad6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="100" cy="12" r="3" fill="#2d2960"/>
+          </svg>
+        </div>
+        <span class="frame-label">.mc-spark</span>
+      </div>
+
+      <div class="frame">
+        <div style="display:flex;align-items:center;gap:14px;padding:6px 0">
+          <div class="mc-live">
+            <span class="pulse"></span>
+            <span class="num">฿420</span>
+            <span class="ago">just now</span>
+          </div>
+        </div>
+        <div style="color:var(--muted);font-size:12px;margin-top:6px">Live takings pip — top of the dashboard.</div>
+        <span class="frame-label">.mc-live</span>
+      </div>
+
+      <div class="frame">
+        <div class="mc-kpi" style="border:none;padding:0;box-shadow:none">
+          <div class="label">Send Later queue</div>
+          <div class="value">12</div>
+          <div class="foot"><span class="mc-pill warn"><span class="dot"></span>ships Day 4</span></div>
+        </div>
+        <span class="frame-label">.mc-kpi (compact)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 2. CARDS ─────────────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="badge"><span class="dot"></span>02 · Cards</span>
+        <h2>The things you tap</h2>
+      </div>
+      <span class="count">5 pieces</span>
+    </div>
+    <p class="sec-desc">Products, orders, customers, booths, stock. Soft shadow, lavender-100 image fallback, mascot-roundness everywhere.</p>
+
+    <div class="grid g-4">
+      <div class="frame">
+        <div class="mc-product">
+          <div class="img">
+            <span class="sku">MM-204</span>
+            <svg width="48" height="48" viewBox="0 0 64 64"><use href="#mochi"/></svg>
+          </div>
+          <div>
+            <div class="name">Tonkatsu Mochi Plushie</div>
+            <div class="row" style="margin-top:8px">
+              <div class="price"><span class="cur">฿</span>420</div>
+              <div class="mc-pill ok"><span class="dot"></span>24 left</div>
+            </div>
+          </div>
+        </div>
+        <span class="frame-label">.mc-product</span>
+      </div>
+
+      <div class="frame">
+        <div class="mc-product">
+          <div class="img" style="background:var(--cream)">
+            <span class="sku">MM-118</span>
+            <svg width="48" height="48"><use href="#paw"/></svg>
+          </div>
+          <div>
+            <div class="name">Paw Sticker Pack · 8 ct</div>
+            <div class="row" style="margin-top:8px">
+              <div class="price"><span class="cur">฿</span>120</div>
+              <div class="mc-pill warn"><span class="dot"></span>4 left</div>
+            </div>
+          </div>
+        </div>
+        <span class="frame-label">.mc-product · low stock</span>
+      </div>
+
+      <div class="frame">
+        <div class="mc-stock">
+          <div>
+            <div class="name">Mochi Hoodie · M</div>
+            <div class="bar"><i style="width:72%"></i></div>
+            <div class="qty">18 / 25</div>
+          </div>
+          <div class="mc-pill ok"><span class="dot"></span>OK</div>
+        </div>
+        <div class="mc-stock low" style="margin-top:10px">
+          <div>
+            <div class="name">Mochi Hoodie · S</div>
+            <div class="bar"><i style="width:18%"></i></div>
+            <div class="qty">3 / 25</div>
+          </div>
+          <div class="mc-pill warn"><span class="dot"></span>Low</div>
+        </div>
+        <span class="frame-label">.mc-stock</span>
+      </div>
+
+      <div class="frame">
+        <div class="mc-product">
+          <div class="img" style="background:var(--indigo);color:var(--lavender-300)">
+            <span class="sku" style="background:rgba(0,0,0,.25);color:var(--lavender)">BOOTH-3</span>
+            <svg width="42" height="42"><use href="#i-box"/></svg>
+          </div>
+          <div>
+            <div class="name">Booth #3 · West Hall</div>
+            <div class="row" style="margin-top:8px">
+              <div class="price">62<span style="font-size:11px;color:var(--muted);font-weight:700;margin-left:4px">orders</span></div>
+              <div class="mc-pill lav"><span class="dot"></span>Open</div>
+            </div>
+          </div>
+        </div>
+        <span class="frame-label">.mc-product · booth variant</span>
+      </div>
+    </div>
+
+    <div class="grid g-2" style="margin-top:20px">
+      <div class="frame">
+        <div class="mc-customer">
+          <div class="av"><svg width="44" height="44"><use href="#mochi-heart"/></svg></div>
+          <div>
+            <div class="name">Visan C.</div>
+            <div class="last">Last visit · 2 days ago</div>
+            <div class="pets">
+              <span class="mc-pet-chip"><span class="emo">🐱</span>Mochi</span>
+              <span class="mc-pet-chip"><span class="emo">🐶</span>Lulu</span>
+            </div>
+            <div class="memo">
+              <svg width="14" height="14" style="margin-top:2px;color:var(--lavender-700)"><use href="#i-zap"/></svg>
+              <span>Mochi loved the <b>tonkatsu plushie</b>. Suggest the matching keychain.</span>
+            </div>
+          </div>
+        </div>
+        <span class="frame-label">.mc-customer · with pet memory</span>
+      </div>
+
+      <div class="frame">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="mc-order">
+            <span class="mc-pill lav"><span class="dot"></span>NEW</span>
+            <div>
+              <div class="who">Kanya P.</div>
+              <div class="pet">🐰 Bunny · booth #2</div>
+            </div>
+            <div class="total"><span class="cur">฿</span>620</div>
+            <div class="when">just now</div>
+          </div>
+          <div class="mc-order">
+            <span class="mc-pill ok"><span class="dot"></span>PAID</span>
+            <div>
+              <div class="who">Nina R.</div>
+              <div class="pet">🐱 2 cats · booth #3</div>
+            </div>
+            <div class="total"><span class="cur">฿</span>180</div>
+            <div class="when">2 min</div>
+          </div>
+          <div class="mc-order">
+            <span class="mc-pill warn"><span class="dot"></span>LATER</span>
+            <div>
+              <div class="who">Anon</div>
+              <div class="pet">walk-in · no pet</div>
+            </div>
+            <div class="total"><span class="cur">฿</span>240</div>
+            <div class="when">11 min</div>
+          </div>
+        </div>
+        <span class="frame-label">.mc-order · list</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 3. BUTTONS ───────────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="badge"><span class="dot"></span>03 · Buttons &amp; CTAs</span>
+        <h2>Actions</h2>
+      </div>
+      <span class="count">6 pieces</span>
+    </div>
+    <p class="sec-desc">Indigo gradient is the SaaS primary; lavender is the friendly accent; ghost = secondary. The Charge giant lives only on the cashier flow.</p>
+
+    <div class="grid g-2">
+      <div class="frame">
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+          <button class="mc-btn mc-btn--primary">Save changes <svg><use href="#i-arr-right"/></svg></button>
+          <button class="mc-btn mc-btn--accent">Add product <svg><use href="#i-plus"/></svg></button>
+          <button class="mc-btn mc-btn--ghost">Cancel</button>
+          <button class="mc-btn mc-btn--icon" aria-label="Settings"><svg><use href="#i-settings"/></svg></button>
+        </div>
+        <span class="frame-label">.mc-btn · variants</span>
+      </div>
+
+      <div class="frame">
+        <div style="display:flex;align-items:center;gap:18px">
+          <button class="mc-fab" aria-label="New order">
+            <svg width="22" height="22"><use href="#i-plus"/></svg>
+            <span class="ping">3</span>
+          </button>
+          <div>
+            <div style="font-weight:800;font-size:13px;color:var(--indigo)">FAB · new order</div>
+            <div style="color:var(--muted);font-size:12px">Mobile cashier · pinned bottom-right.</div>
+          </div>
+        </div>
+        <span class="frame-label">.mc-fab</span>
+      </div>
+    </div>
+
+    <div class="frame" style="margin-top:20px">
+      <button class="mc-charge">
+        <span>
+          <span class="lbl">Charge customer</span>
+          <span class="amt"><span class="cur">฿</span>620</span>
+        </span>
+        <span class="arr"><svg width="20" height="20"><use href="#i-arr-right"/></svg></span>
+      </button>
+      <span class="frame-label">.mc-charge · cashier hero</span>
+    </div>
+  </section>
+
+  <!-- ── 4. STATUS · TOASTS · EMPTY · MOMENTS ─────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="badge"><span class="dot"></span>04 · Status &amp; moments</span>
+        <h2>Feedback &amp; celebration</h2>
+      </div>
+      <span class="count">7 pieces</span>
+    </div>
+    <p class="sec-desc">Most feedback is calm and quiet. The mascot only shows up at meaningful moments — first sale, milestones, empty states — never on routine confirmations.</p>
+
+    <div class="grid g-2">
+      <div class="frame">
+        <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-start">
+          <div class="mc-toast ok">
+            <span class="ic"><svg><use href="#i-check"/></svg></span>
+            <div><div class="msg">Order saved · ฿620</div><div class="sub">Sent to booth #2</div></div>
+          </div>
+          <div class="mc-toast warn">
+            <span class="ic"><svg><use href="#i-alert"/></svg></span>
+            <div><div class="msg">Hoodie · S is running low</div><div class="sub">3 left · restock from van</div></div>
+          </div>
+          <div class="mc-toast info">
+            <span class="ic"><svg><use href="#i-info"/></svg></span>
+            <div><div class="msg">Send Later queue is open</div><div class="sub">Ships on Day 4 at 9am</div></div>
+          </div>
+          <div class="mc-toast bad">
+            <span class="ic"><svg><use href="#i-alert"/></svg></span>
+            <div><div class="msg">Card reader unreachable</div><div class="sub">Tap to retry</div></div>
+          </div>
+        </div>
+        <span class="frame-label">.mc-toast · 4 variants</span>
+      </div>
+
+      <div class="frame" style="display:flex;flex-direction:column;gap:12px">
+        <div class="mc-banner success">
+          <span class="ic"><svg width="20" height="20"><use href="#i-check"/></svg></span>
+          <div><b>Day 3 closed.</b> Send Later queue locked in — 12 orders for tomorrow morning.</div>
+        </div>
+        <div class="mc-banner warn">
+          <span class="ic"><svg width="20" height="20"><use href="#i-alert"/></svg></span>
+          <div><b>4 products are low.</b> Restock before the lunch rush at 12:30.</div>
+          <span class="x"><svg width="14" height="14"><use href="#i-x"/></svg></span>
+        </div>
+        <div class="mc-banner info">
+          <span class="ic"><svg width="20" height="20"><use href="#i-info"/></svg></span>
+          <div><b>New feature.</b> Pet memory is now on — customers can register from any receipt QR.</div>
+          <span class="x"><svg width="14" height="14"><use href="#i-x"/></svg></span>
+        </div>
+        <span class="frame-label">.mc-banner</span>
+      </div>
+    </div>
+
+    <div class="grid g-3" style="margin-top:20px">
+      <div class="frame">
+        <div class="mc-empty">
+          <svg width="64" height="64"><use href="#mochi-sleep"/></svg>
+          <div class="ttl">Nothing on the queue</div>
+          <div class="sub">When Day 4 starts, Send Later orders will land here.</div>
+          <div class="actions">
+            <button class="mc-btn mc-btn--ghost">View Day 3</button>
+          </div>
+        </div>
+        <span class="frame-label">.mc-empty</span>
+      </div>
+
+      <div class="frame">
+        <div class="mc-achieve">
+          <div class="label">Milestone</div>
+          <div class="num">100</div>
+          <div class="sub">orders today · best ever</div>
+          <svg class="mascot" viewBox="0 0 64 64"><use href="#mochi-sparkle"/></svg>
+        </div>
+        <span class="frame-label">.mc-achieve</span>
+      </div>
+
+      <div class="frame">
+        <div class="mc-first-sale">
+          <svg class="confetti" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="18" cy="20" r="3" fill="#b8a9f0"/>
+            <circle cx="40" cy="10" r="2" fill="#2d2960"/>
+            <circle cx="160" cy="22" r="3.5" fill="#f7c8d2"/>
+            <circle cx="184" cy="40" r="2" fill="#7a6ad6"/>
+            <rect x="12" y="60" width="6" height="2" rx="1" fill="#2d2960" transform="rotate(-20 15 61)"/>
+            <rect x="178" y="80" width="7" height="2.4" rx="1" fill="#b8a9f0" transform="rotate(30 181 81)"/>
+            <circle cx="22" cy="120" r="2.5" fill="#d3c8f6"/>
+            <circle cx="186" cy="130" r="2" fill="#7a6ad6"/>
+            <rect x="166" y="110" width="6" height="2" rx="1" fill="#f7c8d2" transform="rotate(-15 169 111)"/>
+          </svg>
+          <svg class="mascot" viewBox="0 0 64 64"><use href="#mochi-heart"/></svg>
+          <div class="ttl">First sale of the day!</div>
+          <div class="amt"><span class="cur">฿</span>420</div>
+          <div class="sub">From Kanya at booth #2 · 9:14am</div>
+        </div>
+        <span class="frame-label">.mc-first-sale · the moment</span>
+      </div>
+    </div>
+
+    <div class="grid g-2" style="margin-top:20px">
+      <div class="frame">
+        <div class="mc-loader-bounce">
+          <svg width="40" height="40"><use href="#mochi"/></svg>
+          <div>
+            <div style="font-weight:800;font-size:14px">Crunching today's takings…</div>
+            <div style="color:var(--muted);font-size:12px;margin-top:2px">Almost there.</div>
+          </div>
+        </div>
+        <div style="margin-top:14px;display:flex;align-items:center;gap:18px">
+          <div class="mc-loader-dots"><span></span><span></span><span></span></div>
+          <div style="display:flex;flex-direction:column;gap:6px;flex:1">
+            <div class="mc-skel" style="height:10px;width:60%"></div>
+            <div class="mc-skel" style="height:10px;width:80%"></div>
+            <div class="mc-skel" style="height:10px;width:40%"></div>
+          </div>
+        </div>
+        <span class="frame-label">loaders · bounce, dots, skeleton</span>
+      </div>
+
+      <div class="frame">
+        <div class="mc-tip">
+          <svg class="mascot" viewBox="0 0 64 64"><use href="#mochi"/></svg>
+          <div>
+            <div class="ttl">Tip · scan twice to add a duplicate</div>
+            <div class="sub">It's faster than tapping the stepper when you have a whole tray of plushies.</div>
+          </div>
+        </div>
+        <div style="margin-top:14px" class="mc-tip">
+          <svg class="mascot" viewBox="0 0 64 64"><use href="#mochi-sparkle"/></svg>
+          <div>
+            <div class="ttl">Pet memory is on</div>
+            <div class="sub">When customers register from the receipt QR, you'll see what their pet loved last time.</div>
+          </div>
+        </div>
+        <span class="frame-label">.mc-tip · mascot-led help</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 5. PILLS & CHIPS ─────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="badge"><span class="dot"></span>05 · Pills &amp; chips</span>
+        <h2>Tiny labels</h2>
+      </div>
+      <span class="count">5 sets</span>
+    </div>
+    <p class="sec-desc">Status pills use semantic color; pet chips use emoji because they live in the customer-facing portal; filter chips show selection on indigo.</p>
+
+    <div class="grid g-3">
+      <div class="frame">
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <span class="mc-pill"><span class="dot"></span>Active</span>
+          <span class="mc-pill ok"><span class="dot"></span>Paid</span>
+          <span class="mc-pill warn"><span class="dot"></span>Low stock</span>
+          <span class="mc-pill bad"><span class="dot"></span>Offline</span>
+          <span class="mc-pill info"><span class="dot"></span>Send Later</span>
+          <span class="mc-pill lav"><span class="dot"></span>VIP</span>
+          <span class="mc-pill cream"><span class="dot"></span>Heritage</span>
+        </div>
+        <span class="frame-label">.mc-pill · semantic</span>
+      </div>
+
+      <div class="frame">
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <span class="mc-pet-chip"><span class="emo">🐱</span>Cat</span>
+          <span class="mc-pet-chip"><span class="emo">🐶</span>Dog</span>
+          <span class="mc-pet-chip"><span class="emo">🐰</span>Bunny</span>
+          <span class="mc-pet-chip"><span class="emo">🐹</span>Hamster</span>
+          <span class="mc-pet-chip"><span class="emo">🐦</span>Bird</span>
+          <span class="mc-pet-chip"><span class="emo">🐢</span>Turtle</span>
+        </div>
+        <span class="frame-label">.mc-pet-chip · portal only</span>
+      </div>
+
+      <div class="frame">
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <span class="mc-day-chip"><span class="n">Day 3</span>of 5</span>
+          <span class="mc-day-chip"><svg width="12" height="12" style="color:#5a4a1f"><use href="#i-calendar"/></svg>theMeowseum Expo</span>
+          <span class="mc-day-chip"><span class="n">2:14pm</span></span>
+        </div>
+        <span class="frame-label">.mc-day-chip · cream tones</span>
+      </div>
+    </div>
+
+    <div class="grid g-2" style="margin-top:20px">
+      <div class="frame">
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <button class="mc-filter-chip">All</button>
+          <button class="mc-filter-chip on">Plushies<span class="x"><svg width="10" height="10"><use href="#i-x"/></svg></span></button>
+          <button class="mc-filter-chip on">Stickers<span class="x"><svg width="10" height="10"><use href="#i-x"/></svg></span></button>
+          <button class="mc-filter-chip">Apparel</button>
+          <button class="mc-filter-chip">Accessories</button>
+          <button class="mc-filter-chip">Limited</button>
+        </div>
+        <span class="frame-label">.mc-filter-chip</span>
+      </div>
+
+      <div class="frame">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+          <div class="mc-stepper">
+            <button>−</button><span class="n">3</span><button>+</button>
+          </div>
+          <div class="mc-toggle on">
+            <span class="track"></span>
+            <span>Send Later</span>
+          </div>
+          <div class="mc-toggle">
+            <span class="track"></span>
+            <span>Tax included</span>
+          </div>
+        </div>
+        <span class="frame-label">.mc-stepper · .mc-toggle</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 6. RECEIPT ───────────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="badge"><span class="dot"></span>06 · Receipt</span>
+        <h2>The slip</h2>
+      </div>
+      <span class="count">2 pieces</span>
+    </div>
+    <p class="sec-desc">Receipts honor the Meowseum heritage — cream paper, mono type, jagged paper-tear bottom edge — but ride the SaaS indigo for the brand mark.</p>
+
+    <div class="grid g-23">
+      <div class="frame" style="background:var(--bg-soft);display:grid;place-items:center;padding:40px">
+        <div class="mc-receipt">
+          <div class="head">
+            <svg class="mark" viewBox="0 0 64 64"><use href="#mochi-cream"/></svg>
+            <div class="name">Mochi<span class="pos">POS</span></div>
+            <div class="sub">theMeowseum · Day 3 · 14:24</div>
+          </div>
+          <div class="lines">
+            <div class="ln"><span><span class="qty">2×</span>Tonkatsu Plushie</span><span>฿840</span></div>
+            <div class="ln"><span><span class="qty">1×</span>Paw Sticker Pack</span><span>฿120</span></div>
+            <div class="ln"><span><span class="qty">1×</span>Mochi Hoodie · M</span><span>฿1,280</span></div>
+            <div class="ln" style="color:var(--muted)"><span>Subtotal</span><span>฿2,240</span></div>
+            <div class="ln" style="color:var(--muted)"><span>VAT 7%</span><span>฿157</span></div>
+          </div>
+          <div class="total"><span>Total</span><span><span class="cur">฿</span>2,397</span></div>
+          <div class="foot">
+            ORDER · M-0034 · paid card
+            <svg class="paw" viewBox="0 0 40 40" style="color:#a8761c"><use href="#paw"/></svg>
+            so next time, we'll know what mochi loves
+          </div>
+        </div>
+        <span class="frame-label">.mc-receipt · printable</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="frame">
+          <div class="mc-mini-receipt">
+            <svg width="36" height="36" style="color:#a8761c"><use href="#paw"/></svg>
+            <div>
+              <div class="ord">M-0034</div>
+              <div class="label">Visan C. · 4 items</div>
+              <div class="items">paid card · 14:24</div>
+            </div>
+            <div class="tot"><span class="cur">฿</span>2,397</div>
+          </div>
+          <span class="frame-label">.mc-mini-receipt</span>
+        </div>
+
+        <div class="frame">
+          <div class="mc-qr">
+            <div class="code">
+              <!-- decorative qr block -->
+              <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                <rect width="60" height="60" rx="8" fill="white"/>
+                <g fill="#2d2960">
+                  <rect x="4" y="4" width="16" height="16" rx="3"/>
+                  <rect x="40" y="4" width="16" height="16" rx="3"/>
+                  <rect x="4" y="40" width="16" height="16" rx="3"/>
+                  <rect x="8" y="8" width="8" height="8" fill="white"/>
+                  <rect x="44" y="8" width="8" height="8" fill="white"/>
+                  <rect x="8" y="44" width="8" height="8" fill="white"/>
+                  <rect x="11" y="11" width="2" height="2"/>
+                  <rect x="47" y="11" width="2" height="2"/>
+                  <rect x="11" y="47" width="2" height="2"/>
+                  <rect x="26" y="4"  width="3" height="3"/>
+                  <rect x="32" y="4"  width="3" height="3"/>
+                  <rect x="26" y="10" width="3" height="3"/>
+                  <rect x="32" y="14" width="3" height="3"/>
+                  <rect x="26" y="22" width="3" height="3"/>
+                  <rect x="34" y="26" width="3" height="3"/>
+                  <rect x="22" y="32" width="3" height="3"/>
+                  <rect x="28" y="32" width="3" height="3"/>
+                  <rect x="40" y="32" width="3" height="3"/>
+                  <rect x="48" y="32" width="3" height="3"/>
+                  <rect x="22" y="40" width="3" height="3"/>
+                  <rect x="32" y="44" width="3" height="3"/>
+                  <rect x="40" y="40" width="3" height="3"/>
+                  <rect x="48" y="46" width="3" height="3"/>
+                  <rect x="26" y="52" width="3" height="3"/>
+                  <rect x="34" y="48" width="3" height="3"/>
+                  <rect x="42" y="52" width="3" height="3"/>
+                </g>
+              </svg>
+            </div>
+            <div>
+              <div class="ttl">Tell us about your pet</div>
+              <div class="sub">Scan to register Mochi — takes 30 seconds, you can edit anytime.</div>
+              <div class="meta">mochi.pos / pet · M-0034</div>
+            </div>
+          </div>
+          <span class="frame-label">.mc-qr · post-purchase</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 7. CHARTS ────────────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="badge"><span class="dot"></span>07 · Charts</span>
+        <h2>Looking at the day</h2>
+      </div>
+      <span class="count">4 pieces</span>
+    </div>
+    <p class="sec-desc">Lavender-on-indigo, peak hour gets the deeper indigo tint. No axes — the bars are the read.</p>
+
+    <div class="grid g-2">
+      <div class="frame">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px">
+          <div>
+            <div class="badge" style="margin-bottom:0">By the hour</div>
+            <div style="font-family:var(--font-display);font-weight:900;font-size:20px;color:var(--indigo);margin-top:6px;letter-spacing:-.02em">Peak at 1pm · ฿4,120</div>
+          </div>
+          <span class="mc-pill lav">Today</span>
+        </div>
+        <div class="mc-bars">
+          <i style="height:12%"></i><i style="height:18%"></i><i style="height:32%"></i><i style="height:46%"></i>
+          <i style="height:64%"></i><i style="height:78%"></i><i style="height:92%" class="peak"></i><i style="height:68%"></i>
+          <i style="height:54%"></i><i style="height:42%"></i><i style="height:28%"></i><i style="height:16%"></i>
+        </div>
+        <div class="mc-bars-axis">
+          <span>9</span><span>10</span><span>11</span><span>12</span><span>1p</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
+        </div>
+        <span class="frame-label">.mc-bars · hourly</span>
+      </div>
+
+      <div class="frame">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px">
+          <div>
+            <div class="badge" style="margin-bottom:0">Category mix</div>
+            <div style="font-family:var(--font-display);font-weight:900;font-size:20px;color:var(--indigo);margin-top:6px;letter-spacing:-.02em">Plushies lead · 48%</div>
+          </div>
+        </div>
+        <div class="mc-donut-wrap">
+          <svg class="mc-donut" viewBox="0 0 120 120">
+            <!-- circumference ≈ 339.3 -->
+            <circle cx="60" cy="60" r="54" stroke="#efeafd"/>
+            <circle cx="60" cy="60" r="54" stroke="#2d2960" stroke-dasharray="163 339" stroke-dashoffset="0" stroke-linecap="butt"/>
+            <circle cx="60" cy="60" r="54" stroke="#7a6ad6" stroke-dasharray="88 339" stroke-dashoffset="-163"/>
+            <circle cx="60" cy="60" r="54" stroke="#b8a9f0" stroke-dasharray="54 339" stroke-dashoffset="-251"/>
+            <circle cx="60" cy="60" r="54" stroke="#f7c8d2" stroke-dasharray="34 339" stroke-dashoffset="-305"/>
+          </svg>
+          <div class="mc-donut-key">
+            <div class="row"><span class="sw" style="background:#2d2960"></span><span>Plushies</span><span class="n">48%</span></div>
+            <div class="row"><span class="sw" style="background:#7a6ad6"></span><span>Apparel</span><span class="n">26%</span></div>
+            <div class="row"><span class="sw" style="background:#b8a9f0"></span><span>Stickers</span><span class="n">16%</span></div>
+            <div class="row"><span class="sw" style="background:#f7c8d2"></span><span>Accessories</span><span class="n">10%</span></div>
+          </div>
+        </div>
+        <span class="frame-label">.mc-donut</span>
+      </div>
+    </div>
+
+    <div class="grid g-2" style="margin-top:20px">
+      <div class="frame">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px">
+          <div>
+            <div class="badge" style="margin-bottom:0">5-day heat</div>
+            <div style="font-family:var(--font-display);font-weight:900;font-size:18px;color:var(--indigo);margin-top:6px;letter-spacing:-.02em">When the booth is busy</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:center">
+          <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted-soft);font-weight:700;text-align:right">Mo</div>
+          <div class="mc-heat"><i class="l1"></i><i class="l1"></i><i class="l2"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><i class="l5"></i><i class="l4"></i><i class="l3"></i><i class="l2"></i><i class="l1"></i><i></i></div>
+          <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted-soft);font-weight:700;text-align:right">Tu</div>
+          <div class="mc-heat"><i></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><i class="l5"></i><i class="l5"></i><i class="l4"></i><i class="l3"></i><i class="l2"></i><i class="l1"></i><i></i></div>
+          <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted-soft);font-weight:700;text-align:right">We</div>
+          <div class="mc-heat"><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><i class="l5"></i><i class="l5"></i><i class="l4"></i><i class="l3"></i><i class="l3"></i><i class="l2"></i><i class="l1"></i><i></i></div>
+          <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted-soft);font-weight:700;text-align:right">Th</div>
+          <div class="mc-heat"><i></i><i class="l1"></i><i class="l2"></i><i class="l4"></i><i class="l5"></i><i class="l5"></i><i class="l4"></i><i class="l4"></i><i class="l3"></i><i class="l2"></i><i class="l1"></i><i></i></div>
+          <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted-soft);font-weight:700;text-align:right">Fr</div>
+          <div class="mc-heat"><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><i class="l5"></i><i class="l5"></i><i class="l5"></i><i class="l4"></i><i class="l3"></i><i class="l2"></i><i class="l1"></i><i></i></div>
+        </div>
+        <span class="frame-label">.mc-heat · weekday × hour</span>
+      </div>
+
+      <div class="frame">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px">
+          <div>
+            <div class="badge" style="margin-bottom:0">Streak</div>
+            <div style="font-family:var(--font-display);font-weight:900;font-size:18px;color:var(--indigo);margin-top:6px;letter-spacing:-.02em">7-day takings · trending up</div>
+          </div>
+        </div>
+        <svg viewBox="0 0 320 110" width="100%" height="120" xmlns="http://www.w3.org/2000/svg" style="display:block">
+          <defs>
+            <linearGradient id="line-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#7a6ad6" stop-opacity=".3"/>
+              <stop offset="100%" stop-color="#7a6ad6" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <!-- area -->
+          <path d="M0,80 L40,72 L80,68 L120,52 L160,58 L200,40 L240,32 L280,20 L320,12 L320,110 L0,110 Z" fill="url(#line-grad)"/>
+          <!-- line -->
+          <polyline points="0,80 40,72 80,68 120,52 160,58 200,40 240,32 280,20 320,12"
+            fill="none" stroke="#2d2960" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- points -->
+          <g fill="#fff" stroke="#2d2960" stroke-width="2">
+            <circle cx="40" cy="72" r="3"/><circle cx="80" cy="68" r="3"/><circle cx="120" cy="52" r="3"/><circle cx="160" cy="58" r="3"/><circle cx="200" cy="40" r="3"/><circle cx="240" cy="32" r="3"/><circle cx="280" cy="20" r="3"/>
+          </g>
+          <circle cx="320" cy="12" r="5" fill="#2d2960"/>
+          <circle cx="320" cy="12" r="9" fill="#2d2960" opacity=".15"/>
+        </svg>
+        <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:var(--muted-soft);font-weight:700;margin-top:6px;letter-spacing:.04em">
+          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span style="color:var(--indigo)">Today</span>
+        </div>
+        <span class="frame-label">trend area · 7-day</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 8. FORMS ─────────────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="badge"><span class="dot"></span>08 · Forms</span>
+        <h2>Inputs</h2>
+      </div>
+      <span class="count">4 pieces</span>
+    </div>
+    <p class="sec-desc">Pill inputs in chrome, indigo scan bar in the cashier flow. Toggles and steppers stay generous-sized for tap-friendly POS use.</p>
+
+    <div class="grid g-2">
+      <div class="frame">
+        <div class="mc-search">
+          <span class="ic"><svg width="18" height="18"><use href="#i-search"/></svg></span>
+          <input type="text" placeholder="Search customers, orders, products…"/>
+          <span class="kbd">⌘ K</span>
+        </div>
+        <div style="height:14px"></div>
+        <div class="mc-scan">
+          <span class="ic"><svg width="20" height="20"><use href="#i-scan"/></svg></span>
+          <input type="text" placeholder="Scan barcode or type SKU"/>
+          <span style="font-family:var(--font-mono);font-size:11px;color:var(--lavender-300);font-weight:700">⏎</span>
+        </div>
+        <span class="frame-label">.mc-search · .mc-scan</span>
+      </div>
+
+      <div class="frame">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <label style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-weight:800;font-size:13px">Send Later</div>
+              <div style="color:var(--muted);font-size:12px">Ship after Day 4 — saves customers from carrying it home.</div>
+            </div>
+            <div class="mc-toggle on"><span class="track"></span></div>
+          </label>
+          <label style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-weight:800;font-size:13px">Auto-print receipt</div>
+              <div style="color:var(--muted);font-size:12px">Otherwise show the QR on screen.</div>
+            </div>
+            <div class="mc-toggle"><span class="track"></span></div>
+          </label>
+          <label style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-weight:800;font-size:13px">Quantity</div>
+              <div style="color:var(--muted);font-size:12px">For this scan.</div>
+            </div>
+            <div class="mc-stepper"><button>−</button><span class="n">3</span><button>+</button></div>
+          </label>
+        </div>
+        <span class="frame-label">settings row · toggle + stepper</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 9. NAVIGATION ────────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="badge"><span class="dot"></span>09 · Navigation</span>
+        <h2>Getting around</h2>
+      </div>
+      <span class="count">3 pieces</span>
+    </div>
+    <p class="sec-desc">Sidebar on desktop SaaS, day banner above any event screen, tabs for quick section flips.</p>
+
+    <div class="grid g-12">
+      <div class="frame" style="background:var(--bg-soft);padding:18px">
+        <div class="mc-nav">
+          <div class="mc-nav-item active">
+            <svg><use href="#i-trend"/></svg>
+            <span>Dashboard</span>
+            <span></span>
+          </div>
+          <div class="mc-nav-item">
+            <svg><use href="#i-calendar"/></svg>
+            <span>Events</span>
+            <span class="count">2</span>
+          </div>
+          <div class="mc-nav-item">
+            <svg><use href="#i-box"/></svg>
+            <span>Products</span>
+            <span class="count">48</span>
+          </div>
+          <div class="mc-nav-item">
+            <svg><use href="#i-users"/></svg>
+            <span>Customers</span>
+            <span></span>
+          </div>
+          <div class="mc-nav-item">
+            <svg><use href="#i-bell"/></svg>
+            <span>Send Later</span>
+            <span class="count">12</span>
+          </div>
+          <div class="mc-nav-item">
+            <svg><use href="#i-settings"/></svg>
+            <span>Settings</span>
+            <span></span>
+          </div>
+        </div>
+        <span class="frame-label">.mc-nav · sidebar</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="frame" style="padding:0">
+          <div class="mc-day-banner">
+            <div>
+              <div class="eyebrow">Day 3 of 5 · in progress</div>
+              <div class="ttl">theMeowseum · Pet Expo</div>
+              <div class="progress"><i></i></div>
+              <div class="progress-meta">14:24 · 60% of day · ฿24,820 / ฿40,000 goal</div>
+            </div>
+            <svg class="mark" viewBox="0 0 64 64"><use href="#mochi-sparkle"/></svg>
+          </div>
+          <span class="frame-label" style="position:relative;display:block;padding:8px 18px;color:var(--muted-soft);font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase">.mc-day-banner</span>
+        </div>
+
+        <div class="frame">
+          <div class="mc-tabs">
+            <button class="on">Today</button>
+            <button>Yesterday</button>
+            <button>7 days</button>
+            <button>Event</button>
+          </div>
+          <div style="height:14px"></div>
+          <div class="mc-tabs">
+            <button>Open</button>
+            <button class="on">Send Later · 12</button>
+            <button>Closed</button>
+          </div>
+          <span class="frame-label">.mc-tabs · pill segment</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 10. SPECIAL MOMENTS ──────────────────────────────────────── -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="badge"><span class="dot"></span>10 · Special moments</span>
+        <h2>Where the mascot earns her keep</h2>
+      </div>
+      <span class="count">4 pieces</span>
+    </div>
+    <p class="sec-desc">Save the mascot for these — onboarding tips, peek banners, milestones, the post-purchase pet portal. If she's everywhere, she's nowhere.</p>
+
+    <div class="grid g-2">
+      <div class="frame" style="background:var(--cream);border-color:var(--cream-deep);padding-top:48px">
+        <div class="mc-peek-banner" style="margin-top:0;padding-top:48px">
+          <svg class="peek" viewBox="0 0 80 44"><use href="#mochi-peek"/></svg>
+          <div class="ttl">Pssst — first 100 orders unlocked Pet Memory</div>
+          <div class="sub">Your customers can now register pets straight from the receipt QR.</div>
+        </div>
+        <span class="frame-label">.mc-peek-banner</span>
+      </div>
+
+      <div class="frame">
+        <div class="mc-medal-wrap">
+          <div class="mc-medal">
+            <svg width="48" height="48"><use href="#mochi-sparkle"/></svg>
+          </div>
+          <div>
+            <div class="label">Achievement unlocked</div>
+            <div class="ttl">100-order day</div>
+            <div class="sub">A personal best for theMeowseum. Mochi is proud.</div>
+          </div>
+        </div>
+        <div style="height:14px"></div>
+        <div class="mc-medal-wrap">
+          <div class="mc-medal" style="background:var(--lavender-100);border-color:var(--lavender-300)">
+            <svg width="44" height="44" style="color:var(--lavender-700)"><use href="#paw"/></svg>
+          </div>
+          <div>
+            <div class="label">Collected</div>
+            <div class="ttl">50 pets remembered</div>
+            <div class="sub">Mochi, Lulu, Bunny, +47 more.</div>
+          </div>
+        </div>
+        <span class="frame-label">.mc-medal · milestone badges</span>
+      </div>
+    </div>
+
+    <div class="grid g-2" style="margin-top:20px">
+      <div class="frame indigo">
+        <div style="display:flex;align-items:center;gap:18px">
+          <svg width="64" height="64"><use href="#mochi"/></svg>
+          <div>
+            <div style="color:var(--lavender-300);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase">Welcome back</div>
+            <div style="font-family:var(--font-display);font-weight:900;font-size:24px;color:white;letter-spacing:-.02em;margin-top:4px">Good morning, Visan</div>
+            <div style="color:var(--lavender-300);font-size:13px;margin-top:4px">You closed Day 2 at ฿18,400. Let's beat it.</div>
+          </div>
+        </div>
+        <span class="frame-label">welcome card · indigo</span>
+      </div>
+
+      <div class="frame" style="background:var(--grad-cream);border-color:var(--cream-deep)">
+        <div style="display:flex;align-items:center;gap:18px">
+          <div style="position:relative;width:64px;height:64px;flex-shrink:0">
+            <svg width="64" height="64" style="animation:bounce 1.4s cubic-bezier(.5,0,.3,1) infinite"><use href="#mochi-heart"/></svg>
+          </div>
+          <div>
+            <div style="color:#5a4a1f;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase">Pet portal · live</div>
+            <div style="font-family:var(--font-display);font-weight:900;font-size:20px;color:var(--indigo);letter-spacing:-.02em;margin-top:4px">Lulu just registered 🐶</div>
+            <div style="color:var(--muted);font-size:13px;margin-top:4px">Customer chose "loved the hoodie" — they'll be back.</div>
+          </div>
+        </div>
+        <span class="frame-label">live pet sign-up · cream</span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>Pair this gallery with <a href="Mochi Decorations Kit.html">Mochi Decorations Kit</a> for mascot moods, lockups &amp; motifs.</span>
+    <span>Mochi POS · components · v1</span>
+  </footer>
+</div>
+
+</body>
+</html>

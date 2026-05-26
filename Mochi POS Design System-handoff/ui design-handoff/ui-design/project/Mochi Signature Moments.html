@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Mochi POS · Signature Moments</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="stylesheet" href="colors_and_type.css"/>
+<link rel="stylesheet" href="signature.css"/>
+</head>
+<body>
+
+<!-- SVG sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="g-mochi" cx="38%" cy="32%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="55%" stop-color="#f1edfb"/>
+      <stop offset="100%" stop-color="#d3c8f6"/>
+    </radialGradient>
+
+    <symbol id="mochi" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="23" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+      <ellipse cx="41" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+      <circle cx="23.7" cy="29.5" r=".9" fill="#fff"/>
+      <circle cx="41.7" cy="29.5" r=".9" fill="#fff"/>
+      <path d="M27 39 Q32 43 37 39" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <symbol id="mochi-sparkle" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <path d="M23 27 L24.3 30.4 L27.8 31 L24.3 31.6 L23 35 L21.7 31.6 L18.2 31 L21.7 30.4 Z" fill="#7a6ad6"/>
+      <path d="M41 27 L42.3 30.4 L45.8 31 L42.3 31.6 L41 35 L39.7 31.6 L36.2 31 L39.7 30.4 Z" fill="#7a6ad6"/>
+      <path d="M27 40 Q32 44 37 40" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <symbol id="mochi-heart" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <path d="M23 33 C20 30, 19 27, 21 26 C22.5 25, 23 26.2, 23 27.2 C23 26.2, 23.5 25, 25 26 C27 27, 26 30, 23 33 Z" fill="#e85b75"/>
+      <path d="M41 33 C38 30, 37 27, 39 26 C40.5 25, 41 26.2, 41 27.2 C41 26.2, 41.5 25, 43 26 C45 27, 44 30, 41 33 Z" fill="#e85b75"/>
+      <path d="M27 40 Q32 44 37 40" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <symbol id="mochi-sleep" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <path d="M19 31 Q23 28 27 31" stroke="#1c1838" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <path d="M37 31 Q41 28 45 31" stroke="#1c1838" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <path d="M30 41 Q32 39 34 41" stroke="#1c1838" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      <text x="49" y="18" font-family="Nunito,sans-serif" font-weight="900" font-size="9" fill="#7a6ad6">z</text>
+      <text x="54" y="13" font-family="Nunito,sans-serif" font-weight="900" font-size="7" fill="#b8a9f0">z</text>
+    </symbol>
+
+    <symbol id="mochi-surprised" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <circle cx="23" cy="31" r="3.2" fill="#1c1838"/>
+      <circle cx="41" cy="31" r="3.2" fill="#1c1838"/>
+      <circle cx="24" cy="29.8" r="1.1" fill="#fff"/>
+      <circle cx="42" cy="29.8" r="1.1" fill="#fff"/>
+      <ellipse cx="32" cy="41" rx="2.4" ry="2.8" fill="#1c1838"/>
+    </symbol>
+
+    <symbol id="mochi-wave" viewBox="0 0 80 64">
+      <path d="M52 32 Q66 22 70 12" stroke="#2d2960" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <ellipse cx="71" cy="11" rx="5" ry="4" fill="#ffffff" stroke="#2d2960" stroke-width="1.6"/>
+      <circle cx="32" cy="32" r="24" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="24" cy="22" rx="6" ry="3" fill="#ffffff" opacity=".7"/>
+      <ellipse cx="20" cy="38" rx="3.6" ry="2.2" fill="#f7c8d2"/>
+      <ellipse cx="44" cy="38" rx="3.6" ry="2.2" fill="#f7c8d2"/>
+      <ellipse cx="23" cy="31" rx="2.4" ry="3.2" fill="#1c1838"/>
+      <ellipse cx="39" cy="31" rx="2.4" ry="3.2" fill="#1c1838"/>
+      <circle cx="23.7" cy="29.6" r=".8" fill="#fff"/>
+      <circle cx="39.7" cy="29.6" r=".8" fill="#fff"/>
+      <path d="M26 40 Q31 44 36 40" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <symbol id="mochi-peek" viewBox="0 0 80 44">
+      <clipPath id="cp-peek-sig"><rect x="0" y="0" width="80" height="40"/></clipPath>
+      <g clip-path="url(#cp-peek-sig)">
+        <circle cx="40" cy="44" r="24" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+        <ellipse cx="33" cy="32" rx="6" ry="3" fill="#fff" opacity=".7"/>
+        <ellipse cx="33" cy="38" rx="2.4" ry="3" fill="#1c1838"/>
+        <ellipse cx="47" cy="38" rx="2.4" ry="3" fill="#1c1838"/>
+        <circle cx="33.6" cy="36.8" r=".8" fill="#fff"/>
+        <circle cx="47.6" cy="36.8" r=".8" fill="#fff"/>
+      </g>
+    </symbol>
+
+    <symbol id="paw" viewBox="0 0 40 40">
+      <ellipse cx="20" cy="26" rx="9" ry="7.5" fill="currentColor"/>
+      <ellipse cx="9"  cy="14" rx="3.4" ry="4.4" fill="currentColor"/>
+      <ellipse cx="31" cy="14" rx="3.4" ry="4.4" fill="currentColor"/>
+      <ellipse cx="15" cy="6"  rx="2.8" ry="3.6" fill="currentColor"/>
+      <ellipse cx="25" cy="6"  rx="2.8" ry="3.6" fill="currentColor"/>
+    </symbol>
+
+    <symbol id="sparkle" viewBox="0 0 32 32">
+      <path d="M16 2 C17 10, 22 15, 30 16 C22 17, 17 22, 16 30 C15 22, 10 17, 2 16 C10 15, 15 10, 16 2 Z" fill="currentColor"/>
+    </symbol>
+
+    <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-arr-right" viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+    <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.58 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><circle cx="6" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="6" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="18" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m8.5 10.5 7-3M8.5 13.5l7 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+
+<div class="page">
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <header class="hero">
+    <div>
+      <span class="eyebrow">Mochi POS · signature moments</span>
+      <h1>The bits that<br/>make people <span class="pop">talk</span>.</h1>
+      <p>Working chrome is the floor. These six moments are where the app earns word-of-mouth — splash, success, the wall, the coach, the debrief, and the off-states that most products forget about.</p>
+    </div>
+    <div class="marquee">
+      <div style="background:var(--indigo)">M</div>
+      <div style="background:var(--lavender-700)">+</div>
+      <div style="background:var(--lavender)">♥</div>
+      <div style="background:var(--cream)">P</div>
+      <div style="background:var(--pink-blush)">!</div>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════════════════════════════════
+       1 · SPLASH
+  ════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">01 · Splash · launch screen</span>
+        <h2>Hello, Visan.</h2>
+        <p class="why">The first beat. Most apps blink the logo and dump you on a dashboard. Mochi <b>greets you by name</b>, names the day, and shows the goal you're chasing — so even the boot sequence carries the relationship.</p>
+      </div>
+      <div class="stat">
+        <span class="num">1.8s</span>
+        <span>average dwell</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <span class="tag">splash · iPad landscape</span>
+      <div class="splash">
+        <div class="inner">
+          <svg class="mochi-big" viewBox="0 0 80 64"><use href="#mochi-wave"/></svg>
+          <div class="eyebrow-up">Good afternoon</div>
+          <h1>Welcome back,<br/><span class="pop">Visan.</span></h1>
+          <p class="greet">Day 3 of theMeowseum is underway — you closed Day 2 at ฿18,400.<br/>Let's beat it.</p>
+          <div class="pulse-line">
+            <span class="led"></span>
+            <span>Goal today · <b>฿40,000</b> · last sale ฿620 at 14:18</span>
+          </div>
+        </div>
+        <div class="splash-corner">
+          <div class="mk"><svg width="18" height="18" viewBox="0 0 24 24"><text x="12" y="18" text-anchor="middle" font-family="Nunito" font-weight="900" font-size="18" fill="#b8a9f0" letter-spacing="-.5">M</text></svg></div>
+          <div class="wm">Mochi<span class="pos">POS</span></div>
+        </div>
+        <div class="splash-loading">
+          <span>booting today's stock</span>
+          <span class="dots"><span></span><span></span><span></span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="caption">
+      <span class="lbl">why it matters</span>
+      <p class="txt">A splash screen is a free 1.8 seconds of brand presence — most teams waste it. Mochi uses it to <b>set the day's intention</b>, <b>remind you of yesterday's number</b>, and confirm the booth is live. The waving mascot does the personality work without needing copy.</p>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════
+       2 · CHARGE SUCCESS — full-screen takeover
+  ════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">02 · Charge success · the moment</span>
+        <h2>Every sale earns a stamp.</h2>
+        <p class="why">When ฿ lands, the app takes over the whole screen for 2 seconds. Confetti, paw stamp impact, the takings count up live, Mochi celebrates. <b>The dopamine is the product.</b> Sellers said this is what they show their friends.</p>
+      </div>
+      <div class="stat">
+        <span class="num">2.0s</span>
+        <span>takeover</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <span class="tag">success · full-screen takeover</span>
+      <div class="charge-success">
+        <!-- Confetti scatter -->
+        <div class="conf-layer">
+          <svg width="20" height="20" style="left:8%;top:14%" fill="#7a6ad6"><use href="#sparkle"/></svg>
+          <svg width="14" height="14" style="left:22%;top:68%" fill="#b8a9f0"><use href="#sparkle"/></svg>
+          <svg width="18" height="18" style="left:48%;top:8%" fill="#f7c8d2"><use href="#sparkle"/></svg>
+          <svg width="12" height="12" style="left:62%;top:80%" fill="#d3c8f6"><use href="#sparkle"/></svg>
+          <svg width="22" height="22" style="left:88%;top:62%" fill="#7a6ad6"><use href="#sparkle"/></svg>
+          <svg width="14" height="14" style="left:78%;top:18%" fill="#b8a9f0"><use href="#sparkle"/></svg>
+          <svg width="16" height="16" style="left:14%;top:88%" fill="#7a6ad6"><use href="#sparkle"/></svg>
+          <!-- paws scattered -->
+          <svg width="22" height="22" style="left:30%;top:24%;transform:rotate(-20deg)" fill="#7a6ad6"><use href="#paw"/></svg>
+          <svg width="18" height="18" style="left:72%;top:74%;transform:rotate(25deg)" fill="#b8a9f0"><use href="#paw"/></svg>
+        </div>
+
+        <!-- Paw "PAID" stamp -->
+        <div class="paw-stamp">
+          <svg><use href="#paw"/></svg>
+          <span class="lbl">PAID · DAY 3</span>
+        </div>
+
+        <div class="cs-content">
+          <svg class="mochi-celebrate" viewBox="0 0 64 64"><use href="#mochi-sparkle"/></svg>
+          <span class="wow">First sale this hour!</span>
+          <div class="charge-amt"><span class="cur">฿</span>2,397</div>
+          <div class="who">Charged to <b>Visan C.</b> · paid card · ending 4422</div>
+          <div class="cs-running">
+            <span class="l">Day 3 total</span>
+            <span class="v">฿24,820</span>
+            <span class="arr">→</span>
+            <span class="v">฿27,217</span>
+          </div>
+        </div>
+
+        <div class="cs-actions">
+          <button>
+            <svg width="14" height="14" style="color:white"><use href="#i-share"/></svg>
+            Email receipt
+          </button>
+          <button class="go">
+            <span class="ic"><svg width="12" height="12"><use href="#i-arr-right"/></svg></span>
+            Next sale
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="caption">
+      <span class="lbl">why it matters</span>
+      <p class="txt">In a typical POS the seller misses the satisfaction loop — a paid order shows as a green tick at best. The full-screen takeover gives the hand-eye-money loop a <b>2-second celebration</b>, ticks up the running day total live (so you feel the goal coming), and stamps the receipt with a paw. The "Next sale" button keeps flow — the moment is bounded, not blocking.</p>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════
+       3 · PET WALL — second screen
+  ════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">03 · Pet Wall · second screen</span>
+        <h2>"My pet is on the wall."</h2>
+        <p class="why">A customer-facing display the booth runs on a second screen or TV. Every pet registered today appears as a portrait. The newest tile glows for 30 seconds, then settles in. Customers cluster around it — <b>it's both social proof and a little gift</b>.</p>
+      </div>
+      <div class="stat">
+        <span class="num">+38%</span>
+        <span>registration rate</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <span class="tag">pet wall · 16:9 kiosk</span>
+      <div class="pet-wall">
+        <div class="pw-head">
+          <div class="left">
+            <div class="eyebrow">theMeowseum · Day 3</div>
+            <div class="ttl">Pets we met <span class="pop">today.</span></div>
+          </div>
+          <div class="center">
+            <div class="v">18</div>
+            <div class="lbl">registered</div>
+          </div>
+          <div class="right">
+            <div class="qr-box">
+              <div class="qr">
+                <svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="44" height="44" fill="white"/>
+                  <g fill="#2d2960">
+                    <rect x="3" y="3" width="12" height="12" rx="2"/><rect x="6" y="6" width="6" height="6" fill="white"/><rect x="8" y="8" width="2" height="2"/>
+                    <rect x="29" y="3" width="12" height="12" rx="2"/><rect x="32" y="6" width="6" height="6" fill="white"/><rect x="34" y="8" width="2" height="2"/>
+                    <rect x="3" y="29" width="12" height="12" rx="2"/><rect x="6" y="32" width="6" height="6" fill="white"/><rect x="8" y="34" width="2" height="2"/>
+                    <rect x="17" y="6" width="2" height="2"/><rect x="21" y="3" width="2" height="2"/><rect x="19" y="11" width="2" height="2"/>
+                    <rect x="22" y="14" width="2" height="2"/><rect x="17" y="17" width="2" height="2"/><rect x="20" y="19" width="2" height="2"/>
+                    <rect x="3" y="20" width="2" height="2"/><rect x="6" y="22" width="2" height="2"/><rect x="10" y="20" width="2" height="2"/>
+                    <rect x="26" y="22" width="2" height="2"/><rect x="30" y="20" width="2" height="2"/><rect x="34" y="24" width="2" height="2"/>
+                    <rect x="38" y="22" width="2" height="2"/><rect x="20" y="28" width="2" height="2"/><rect x="24" y="29" width="2" height="2"/>
+                    <rect x="28" y="32" width="2" height="2"/><rect x="32" y="35" width="2" height="2"/><rect x="36" y="38" width="2" height="2"/>
+                    <rect x="20" y="34" width="2" height="2"/><rect x="24" y="36" width="2" height="2"/><rect x="38" y="32" width="2" height="2"/>
+                    <rect x="18" y="40" width="2" height="2"/><rect x="30" y="40" width="2" height="2"/>
+                  </g>
+                  <rect x="18" y="18" width="8" height="8" fill="white"/>
+                  <circle cx="22" cy="22" r="3" fill="#b8a9f0"/>
+                </svg>
+              </div>
+              <div class="txt">
+                <div class="l">Scan to join</div>
+                <div class="v">mochi.pos/M</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pw-grid">
+          <!-- Row 1 -->
+          <div class="pet-portrait v3 new"><div class="pic">🐱</div><div class="nm">Mochi</div><div class="meta">Scottish Fold</div></div>
+          <div class="pet-portrait v1"><div class="pic" style="background:white">🐶</div><div class="nm">Lulu</div><div class="meta">Shiba mix</div></div>
+          <div class="pet-portrait v2"><div class="pic" style="background:white">🐰</div><div class="nm">Bunbun</div><div class="meta">Lop · 2y</div></div>
+          <div class="pet-portrait v4"><div class="pic" style="background:white">🐱</div><div class="nm">Pim</div><div class="meta">Munchkin</div></div>
+          <div class="pet-portrait v3"><div class="pic">🐢</div><div class="nm">Khao</div><div class="meta">Tortoise · 11y</div></div>
+          <div class="pet-portrait v5"><div class="pic" style="background:white">🐦</div><div class="nm">Khanom</div><div class="meta">Cockatiel</div></div>
+          <!-- Row 2 -->
+          <div class="pet-portrait v6"><div class="pic" style="background:rgba(255,255,255,.15)">🐹</div><div class="nm">Toast</div><div class="meta">Hamster · 1y</div></div>
+          <div class="pet-portrait v2"><div class="pic" style="background:white">🐱</div><div class="nm">Suki</div><div class="meta">Calico</div></div>
+          <div class="pet-portrait v3"><div class="pic">🐶</div><div class="nm">Coco</div><div class="meta">Poodle · 5y</div></div>
+          <div class="pet-portrait v4"><div class="pic" style="background:white">🐰</div><div class="nm">Daisy</div><div class="meta">Holland Lop</div></div>
+          <div class="pet-portrait v1"><div class="pic" style="background:white">🐱</div><div class="nm">Boba</div><div class="meta">Persian</div></div>
+          <div class="pet-portrait v3"><div class="pic">🐶</div><div class="nm">Mango</div><div class="meta">Corgi · 3y</div></div>
+          <!-- Row 3 -->
+          <div class="pet-portrait v2"><div class="pic" style="background:white">🐦</div><div class="nm">Pepper</div><div class="meta">Lovebird</div></div>
+          <div class="pet-portrait v3"><div class="pic">🐱</div><div class="nm">Niko</div><div class="meta">Maine Coon</div></div>
+          <div class="pet-portrait v5"><div class="pic" style="background:white">🐶</div><div class="nm">Pancake</div><div class="meta">Golden · 7y</div></div>
+          <div class="pet-portrait v4"><div class="pic" style="background:white">🐰</div><div class="nm">Pudding</div><div class="meta">Rex · 3y</div></div>
+          <div class="pet-portrait v3"><div class="pic">🦔</div><div class="nm">Tofu</div><div class="meta">Hedgie · 2y</div></div>
+          <div class="pet-portrait v6"><div class="pic" style="background:rgba(255,255,255,.15)">🐱</div><div class="nm">Latte</div><div class="meta">Ragdoll</div></div>
+        </div>
+
+        <div class="pw-foot">
+          <span class="ttl-pip">NEWEST</span>
+          <div class="scroll">
+            <span><b>Mochi</b> the Scottish Fold · likes tonkatsu plushies</span>
+            <span class="sep">·</span>
+            <span><b>Lulu</b> the Shiba · fits a size S</span>
+            <span class="sep">·</span>
+            <span><b>Bunbun</b> the Lop · brings homemade jerky</span>
+            <span class="sep">·</span>
+            <span><b>Toast</b> the Hamster · 1 year old today 🎂</span>
+            <span class="sep">·</span>
+            <span><b>Niko</b> the Maine Coon · suspicious of new toys</span>
+            <span class="sep">·</span>
+            <!-- duplicated for seamless scroll -->
+            <span><b>Mochi</b> the Scottish Fold · likes tonkatsu plushies</span>
+            <span class="sep">·</span>
+            <span><b>Lulu</b> the Shiba · fits a size S</span>
+            <span class="sep">·</span>
+            <span><b>Bunbun</b> the Lop · brings homemade jerky</span>
+            <span class="sep">·</span>
+            <span><b>Toast</b> the Hamster · 1 year old today 🎂</span>
+            <span class="sep">·</span>
+          </div>
+        </div>
+
+        <svg class="pw-mochi" viewBox="0 0 80 44"><use href="#mochi-peek"/></svg>
+      </div>
+    </div>
+
+    <div class="caption">
+      <span class="lbl">why it matters</span>
+      <p class="txt">The Pet Wall turns a private CRM signup into a <b>public moment</b>. Owners scan the QR, register their pet, and watch their tile glow on the wall in front of strangers. The crowd effect drives the next person to scan. Same QR as the receipt, same data — just made visible. Booth conversion goes up because the wall is doing the asking.</p>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════
+       4 · MOCHI COACH — conversational onboarding
+  ════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">04 · Mochi Coach · conversational setup</span>
+        <h2>"Hi! Let's get you ready."</h2>
+        <p class="why">Where most apps drop new sellers into a multi-step form, Mochi <b>talks</b>. Same questions, conversational tone, mascot avatar. Decisions feel like answering a friend, not filling a form.</p>
+      </div>
+      <div class="stat">
+        <span class="num">2.4×</span>
+        <span>completion vs form</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <span class="tag light">coach · setup chat</span>
+      <div class="coach">
+        <div class="coach-head">
+          <div class="av"><svg width="36" height="36" viewBox="0 0 64 64"><use href="#mochi-sparkle"/></svg></div>
+          <div class="nm">Mochi <small>your setup coach · here to help</small></div>
+          <div class="live">
+            <span class="led"></span>
+            <span class="lbl">online</span>
+          </div>
+        </div>
+
+        <div class="coach-chat">
+          <div class="bubble from-m with-mascot">
+            <div class="av"><svg width="22" height="22" viewBox="0 0 64 64"><use href="#mochi"/></svg></div>
+            Hi <b>Visan</b>! I'm Mochi 🐾<br/>
+            Let's get theMeowseum ready — should take about 4 minutes.
+          </div>
+
+          <div class="bubble from-m">
+            First, what are you selling most? I'll suggest a quick-pick layout for the booth.
+            <span class="when">11:42 am</span>
+          </div>
+
+          <div class="bubble from-u">Mostly plushies + stickers</div>
+
+          <div class="bubble suggestion-card">
+            <div class="ic"><svg width="20" height="20"><use href="#i-zap"/></svg></div>
+            <div>
+              <div class="ttl">Got it — plushie-led layout</div>
+              <div class="sub">Featured plushie on the wall, sticker hooks at the bottom. We can change this any time.</div>
+            </div>
+          </div>
+
+          <div class="bubble from-m">
+            Want to <b>import last year's product list</b>, or scan barcodes as you go?
+          </div>
+        </div>
+
+        <div class="coach-replies">
+          <button class="go">Import last year</button>
+          <button>Scan as I go</button>
+          <button>Type manually</button>
+          <button>Show me a sample</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="caption">
+      <span class="lbl">why it matters</span>
+      <p class="txt">Wizards feel like paperwork. Chat feels like help. Same data captured, but the seller leaves remembering <b>"Mochi was nice"</b> instead of <b>"setup was annoying"</b>. The mascot has a job to do here — every reply has her avatar, every suggestion is framed as advice, not validation.</p>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════
+       5 · END-OF-DAY DEBRIEF
+  ════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">05 · End-of-day · debrief</span>
+        <h2>"We had a good one."</h2>
+        <p class="why">At close of day, a wall of stats is the wrong move. Mochi <b>narrates the day</b> through chat messages and three big numbers. The takeaway lands before the report opens. A quiet, considered moment that closes the loop.</p>
+      </div>
+      <div class="stat">
+        <span class="num">8:00 PM</span>
+        <span>auto-trigger</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <span class="tag">debrief · close of day</span>
+      <div class="debrief">
+        <div class="db-head">
+          <div class="av"><svg width="56" height="56" viewBox="0 0 64 64"><use href="#mochi-heart"/></svg></div>
+          <div class="meta">
+            <div class="ttl">We had a good one, Visan.</div>
+            <div class="sub">Day 3 wrapped at 8:00 pm · theMeowseum · 2 days left</div>
+          </div>
+          <div class="badge-day">
+            <span class="n">3</span>
+            of 5
+          </div>
+        </div>
+
+        <div class="db-body">
+          <div class="db-chat">
+            <div class="db-msg">
+              <b>132 sales</b> today — your best day this run. The afternoon stretch was wild.
+              <span class="when">8:02 pm</span>
+            </div>
+            <div class="db-msg">
+              Best hour was <b>1pm</b> — <span class="num">฿4,120</span> in 60 minutes. The lunch crowd loved the plushies.
+              <span class="when">8:02 pm</span>
+            </div>
+            <div class="db-msg">
+              You met <b>18 new pets</b> today 🐾 — Mochi the Scottish Fold registered first. I've saved them all.
+              <span class="when">8:03 pm</span>
+            </div>
+            <div class="db-msg">
+              Heads up: only <b>3 size-M hoodies</b> left for tomorrow. Want me to flag the restock?
+              <span class="when">8:03 pm</span>
+            </div>
+          </div>
+
+          <div class="db-stats">
+            <div class="db-stat lead">
+              <div class="l">Today's takings</div>
+              <div class="v"><span class="cur">฿</span>24,820</div>
+              <div class="ch">▲ ฿3,420 vs Day 2 · 62% of goal</div>
+            </div>
+            <div class="db-stat">
+              <div class="l">Orders</div>
+              <div class="v">132 <span class="small">orders</span></div>
+            </div>
+            <div class="db-stat">
+              <div class="l">Pets remembered</div>
+              <div class="v">18 <span class="small">new today</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="db-actions">
+          <div class="l">Tomorrow's forecast · <b>busier</b> · pull stock from the van by 10am.</div>
+          <div class="btns">
+            <button class="ghost">Not now</button>
+            <button class="ghost">Flag restock</button>
+            <button class="go">
+              See full report
+              <svg width="14" height="14"><use href="#i-arr-right"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="caption">
+      <span class="lbl">why it matters</span>
+      <p class="txt">The debrief is where the seller decides whether to come back tomorrow with energy. Stats alone are exhausting; <b>narration is restorative</b>. Three big numbers grip the eye, four chat messages give context, and one action ("flag restock") sets tomorrow up. The full report is one tap away — but most days, the chat is enough.</p>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════
+       6 · OFF-STATES
+  ════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="sec-head">
+      <div>
+        <span class="lbl">06 · Off-states · 404, offline, update</span>
+        <h2>Where most apps put boring.</h2>
+        <p class="why">Spinners, dead-end errors, "update required" walls. The places teams forget are the places character lives. Mochi's <b>off-states have personality</b> — and stay calm, useful, never cute-at-the-expense-of-clarity.</p>
+      </div>
+      <div class="stat">
+        <span class="num">3</span>
+        <span>off-states</span>
+      </div>
+    </div>
+
+    <div class="off-grid">
+      <!-- 404 -->
+      <div class="off s-404">
+        <span class="big-num">404</span>
+        <svg class="mochi-big" viewBox="0 0 64 64"><use href="#mochi-surprised"/></svg>
+        <div class="ttl">Hmm, can't find that.</div>
+        <div class="sub">The page got loose. Mochi's looking, but you might be faster.</div>
+        <div class="code">/orders/M-99999</div>
+        <div class="actions">
+          <button class="go">Back to dashboard</button>
+          <button class="ghost">Report it</button>
+        </div>
+      </div>
+
+      <!-- Offline -->
+      <div class="off s-offline">
+        <svg class="mochi-big" viewBox="0 0 64 64"><use href="#mochi-sleep"/></svg>
+        <div class="ttl">You're offline.</div>
+        <div class="sub">No worries — sales keep working. We'll sync the moment we're back.</div>
+        <div class="signal">
+          <i style="height:30%"></i><i style="height:55%"></i><i style="height:80%;opacity:1;background:var(--warn)"></i><i style="height:100%"></i>
+        </div>
+        <div class="code">12 orders queued · last sync 14:42</div>
+        <div class="actions">
+          <button class="go">Keep selling</button>
+        </div>
+      </div>
+
+      <!-- Update -->
+      <div class="off s-update">
+        <span class="badge-up">v 1.4 ready</span>
+        <svg class="mochi-big" viewBox="0 0 64 64"><use href="#mochi-sparkle"/></svg>
+        <div class="ttl">New version, fresh paws.</div>
+        <div class="sub">Pet Wall is faster, Send Later groups smarter. 2 min update — finish your day first.</div>
+        <div class="code">v1.3.2 → v1.4.0 · 28 MB</div>
+        <div class="actions">
+          <button class="go">
+            <svg width="12" height="12" style="vertical-align:-1px;margin-right:4px"><use href="#i-download"/></svg>
+            Update tonight
+          </button>
+          <button class="ghost">Later</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="caption">
+      <span class="lbl">why it matters</span>
+      <p class="txt">Off-states are <b>brand touchpoints in disguise</b>. The 404 keeps the URL visible so power users can copy-debug. The offline state is calm and informative — never panicky — because a booth seller doesn't have time for panic. The update card respects the seller's day ("finish your day first") — that one sentence does more for trust than any onboarding screen.</p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>Six moments. The other 50 screens earn their keep — these earn the love.</span>
+    <span>Mochi POS · signature moments · v1</span>
+  </footer>
+</div>
+
+</body>
+</html>

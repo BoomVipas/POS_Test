@@ -1,0 +1,1232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Mochi POS · Main</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="stylesheet" href="colors_and_type.css"/>
+<style>
+  body{
+    background: var(--bg);
+    min-height: 100vh;
+    overflow-x: auto;
+  }
+
+  /* ── Page padding & POS root ───────────────────────────────── */
+  .wrap{ padding: 32px; min-width: 1340px; }
+
+  /* Designer note ribbon above */
+  .designer-note{
+    max-width: 1280px; margin: 0 auto 22px;
+    display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: center;
+    padding: 16px 22px;
+    background: var(--panel);
+    border: 1px solid var(--line); border-radius: 18px;
+    box-shadow: var(--shadow-rest);
+  }
+  .designer-note .lbl{ font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--lavender-700); }
+  .designer-note .ttl{ font-weight: 800; font-size: 15px; margin-top: 2px; }
+  .designer-note .points{ display: flex; gap: 10px; flex-wrap: wrap; }
+  .designer-note .points span{
+    font-size: 11px; font-weight: 700;
+    background: var(--lavender-100); color: var(--indigo-600);
+    padding: 4px 10px; border-radius: 999px;
+  }
+
+  /* ── POS shell ──────────────────────────────────────────────── */
+  .pos-app{
+    max-width: 1280px;
+    margin: 0 auto;
+    background: var(--panel);
+    border-radius: 32px;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 860px;
+    position: relative;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     TOP BAR
+  ═══════════════════════════════════════════════════════════ */
+  .pos-app-top{
+    display: grid;
+    grid-template-columns: auto 1fr auto auto auto;
+    gap: 18px;
+    align-items: center;
+    padding: 16px 24px;
+    background: var(--panel-2);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand{ display: flex; align-items: center; gap: 12px; }
+  .brand .mk{
+    width: 38px; height: 38px; border-radius: 12px;
+    background: var(--grad-primary); display: grid; place-items: center;
+    box-shadow: 0 2px 6px rgba(45,41,96,.2), inset 0 1px 0 rgba(255,255,255,.15);
+  }
+  .brand .mk svg{ width: 22px; height: 22px; }
+  .brand .wm{ font-family: var(--font-display); font-weight: 900; font-size: 17px; letter-spacing: -.025em; color: var(--indigo); }
+  .brand .wm .pos{ color: var(--lavender-700); }
+
+  /* The distinctive event ribbon — runs across the top */
+  .event-ribbon{
+    background: linear-gradient(90deg, rgba(184,169,240,.18), rgba(247,200,210,.18));
+    border-radius: 999px;
+    padding: 8px 12px 8px 8px;
+    display: grid;
+    grid-template-columns: auto auto 1fr auto auto;
+    gap: 14px;
+    align-items: center;
+    border: 1px solid var(--line);
+  }
+  .event-ribbon .chip-day{
+    background: var(--indigo); color: white;
+    padding: 6px 12px 6px 8px;
+    border-radius: 999px;
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 900; font-size: 12px;
+  }
+  .event-ribbon .chip-day .n{
+    background: var(--lavender); color: var(--indigo);
+    width: 22px; height: 22px; border-radius: 999px;
+    display: grid; place-items: center; font-size: 11px; font-weight: 900;
+  }
+  .event-ribbon .ev-name{ font-weight: 800; font-size: 13px; color: var(--indigo); }
+  .event-ribbon .progress-rail{
+    display: flex; align-items: center; gap: 12px;
+    min-width: 280px;
+  }
+  .event-ribbon .progress-rail .bar{
+    flex: 1; height: 6px; background: rgba(45,41,96,.08);
+    border-radius: 999px; overflow: hidden; position: relative;
+  }
+  .event-ribbon .progress-rail .bar > i{
+    display: block; height: 100%; background: linear-gradient(90deg, #7a6ad6, #b8a9f0);
+    width: 60%; border-radius: 999px; position: relative;
+  }
+  .event-ribbon .progress-rail .bar > i::after{
+    content: ""; position: absolute; right: -3px; top: -3px;
+    width: 12px; height: 12px; border-radius: 999px;
+    background: var(--lavender-700); border: 2px solid white;
+    box-shadow: 0 0 0 4px rgba(122,106,214,.18);
+  }
+  .event-ribbon .progress-rail .pct{ font-family: var(--font-mono); font-size: 11px; font-weight: 800; color: var(--lavender-700); }
+  .event-ribbon .ends{ font-size: 11px; color: var(--muted); font-weight: 700; }
+  .event-ribbon .ends b{ color: var(--indigo); font-family: var(--font-mono); }
+
+  /* Live takings */
+  .live-takings{
+    display: flex; align-items: center; gap: 12px;
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 999px; padding: 8px 16px 8px 10px;
+  }
+  .live-takings .led{
+    width: 10px; height: 10px; border-radius: 999px;
+    background: var(--success); position: relative;
+  }
+  .live-takings .led::after{
+    content: ""; position: absolute; inset: 0; border-radius: 999px;
+    background: var(--success); animation: ledpulse 1.8s ease-out infinite;
+  }
+  @keyframes ledpulse{
+    0%{ transform: scale(1); opacity: .5; }
+    100%{ transform: scale(3); opacity: 0; }
+  }
+  .live-takings .lbl{ font-size: 10px; font-weight: 800; letter-spacing: .14em; color: var(--muted); text-transform: uppercase; }
+  .live-takings .v{ font-family: var(--font-display); font-weight: 900; color: var(--indigo); font-size: 16px; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+  .live-takings .v .cur{ color: var(--lavender-700); }
+
+  /* Top right icons */
+  .top-icons{ display: flex; gap: 8px; }
+  .top-icons .ti{
+    width: 36px; height: 36px; border-radius: 999px;
+    background: var(--panel); border: 1px solid var(--line);
+    display: grid; place-items: center;
+    color: var(--text-2); cursor: pointer;
+    position: relative;
+  }
+  .top-icons .ti:hover{ background: var(--lavender-100); color: var(--indigo); }
+  .top-icons .ti svg{ width: 18px; height: 18px; }
+  .top-icons .ti .dot{
+    position: absolute; top: 5px; right: 6px;
+    width: 8px; height: 8px; border-radius: 999px;
+    background: var(--danger); border: 2px solid var(--panel-2);
+  }
+  .top-icons .av{
+    width: 36px; height: 36px; border-radius: 999px;
+    background: var(--lavender-100);
+    display: grid; place-items: center;
+    border: 2px solid white; box-shadow: var(--shadow-rest);
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     BODY · STAGE + RAIL
+  ═══════════════════════════════════════════════════════════ */
+  .pos-app-body{
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 0;
+    min-height: 0;
+  }
+
+  .stage{
+    padding: 24px;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    gap: 22px;
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 0% 0%, rgba(184,169,240,.12), transparent 40%),
+      radial-gradient(circle at 100% 100%, rgba(247,200,210,.08), transparent 40%);
+  }
+
+  /* ── 1. THE STAGE — distinctive curved gauge hero ──────────── */
+  .stage-hero{
+    background: var(--panel);
+    border-radius: 24px;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-rest);
+    padding: 22px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 28px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .stage-hero::before{
+    content: ""; position: absolute; inset: -1px;
+    background: linear-gradient(135deg, rgba(184,169,240,.16) 0%, transparent 45%, transparent 60%, rgba(247,200,210,.12) 100%);
+    pointer-events: none;
+    border-radius: 24px;
+  }
+  /* The gauge SVG — open at the bottom, curved like a vinyl record */
+  .gauge{ position: relative; width: 200px; height: 200px; flex-shrink: 0; }
+  .gauge svg{ position: absolute; inset: 0; transform: rotate(135deg); }
+  .gauge .center{
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center;
+  }
+  .gauge .lbl{ font-size: 10px; font-weight: 800; letter-spacing: .14em; color: var(--muted); text-transform: uppercase; }
+  .gauge .amt{ font-family: var(--font-display); font-weight: 900; font-size: 32px; color: var(--indigo); letter-spacing: -.03em; font-variant-numeric: tabular-nums; line-height: 1; margin-top: 4px; }
+  .gauge .amt .cur{ color: var(--lavender-700); }
+  .gauge .sub{ font-size: 10px; color: var(--muted); margin-top: 4px; font-weight: 700; }
+  .gauge .sub b{ color: var(--success); font-family: var(--font-display); font-weight: 900; }
+  /* Mochi co-host peeking from behind the gauge — top right */
+  .gauge .peek{
+    position: absolute; top: -14px; right: -10px; width: 48px; height: 48px;
+    transform: rotate(8deg);
+  }
+
+  .stage-hero .right{ position: relative; z-index: 1; }
+  .stage-hero h2{
+    font-family: var(--font-display); font-weight: 900;
+    font-size: 22px; letter-spacing: -.02em;
+    line-height: 1.15;
+  }
+  .stage-hero h2 .pop{ color: var(--lavender-700); }
+  .stage-hero .stats{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 16px;
+  }
+  .stage-hero .stat{
+    padding: 12px 14px;
+    background: rgba(255,255,255,.7);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  .stage-hero .stat .k{ font-size: 10px; font-weight: 800; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
+  .stage-hero .stat .v{
+    font-family: var(--font-display); font-weight: 900;
+    font-size: 22px; color: var(--indigo); margin-top: 4px;
+    font-variant-numeric: tabular-nums; letter-spacing: -.02em;
+    display: flex; align-items: baseline; gap: 4px;
+  }
+  .stage-hero .stat .v .cur{ color: var(--lavender-700); font-size: 14px; }
+  .stage-hero .stat .ch{ font-size: 11px; color: var(--success); font-weight: 800; margin-top: 2px; display: flex; align-items: center; gap: 3px; }
+  .stage-hero .stat .ch.down{ color: var(--danger); }
+
+  /* ── 2. RHYTHM — distinctive heat bar showing day progression */
+  .rhythm{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 16px 22px 14px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 18px;
+    align-items: center;
+    box-shadow: var(--shadow-rest);
+  }
+  .rhythm .l{
+    display: flex; flex-direction: column;
+  }
+  .rhythm .l .ttl{ font-weight: 800; font-size: 13px; color: var(--indigo); }
+  .rhythm .l .sub{ font-size: 10px; color: var(--muted); font-weight: 700; letter-spacing: .04em; margin-top: 2px; }
+  .rhythm .bars{
+    display: grid; grid-template-columns: repeat(20, 1fr);
+    gap: 3px;
+    height: 38px;
+    align-items: flex-end;
+    position: relative;
+  }
+  .rhythm .bars > i{
+    display: block;
+    background: var(--lavender-300);
+    border-radius: 3px 3px 1px 1px;
+    transition: opacity .15s ease;
+  }
+  .rhythm .bars > i.cur{
+    background: linear-gradient(180deg, var(--indigo) 0%, var(--lavender-700) 100%);
+  }
+  .rhythm .bars > i.cur::after{
+    content: ""; position: absolute; top: -2px;
+    width: 6px; height: 6px; border-radius: 999px;
+    background: var(--indigo);
+    transform: translateX(-50%);
+  }
+  .rhythm .bars > i.future{
+    background: rgba(45,41,96,.08);
+  }
+  .rhythm .r{
+    text-align: right;
+    border-left: 1px dashed var(--line);
+    padding-left: 18px;
+  }
+  .rhythm .r .v{
+    font-family: var(--font-display); font-weight: 900; font-size: 16px;
+    color: var(--indigo); font-variant-numeric: tabular-nums; letter-spacing: -.01em;
+    display: flex; align-items: baseline; gap: 4px;
+    justify-content: flex-end;
+  }
+  .rhythm .r .v .cur{ color: var(--lavender-700); }
+  .rhythm .r .lbl{ font-size: 10px; font-weight: 800; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
+
+  /* ── 3. SPLIT BOTTOM — ticker + wall ─────────────────────── */
+  .stage-bottom{
+    display: grid;
+    grid-template-columns: 290px 1fr;
+    gap: 18px;
+    min-height: 0;
+  }
+
+  /* TICKER — live orders flowing in */
+  .ticker{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 16px 18px;
+    display: flex; flex-direction: column;
+    box-shadow: var(--shadow-rest);
+    overflow: hidden;
+  }
+  .ticker .head{
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .ticker .head .ttl{ font-weight: 800; font-size: 13px; color: var(--indigo); display: flex; align-items: center; gap: 8px; }
+  .ticker .head .live{ display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--success); font-weight: 800; letter-spacing: .08em; }
+  .ticker .head .live::before{ content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--success); animation: ledpulse 1.6s ease-out infinite; }
+  .ticker .head .ct{ font-size: 11px; color: var(--muted); font-weight: 700; }
+  .ticker .list{ display: flex; flex-direction: column; gap: 4px; flex: 1; min-height: 0; overflow: hidden; }
+  .ticker .ord{
+    display: grid; grid-template-columns: 32px 1fr auto; gap: 10px;
+    align-items: center;
+    padding: 10px 8px;
+    border-radius: 12px;
+    transition: background .15s ease;
+  }
+  .ticker .ord:hover{ background: var(--bg-soft); }
+  .ticker .ord.new{ background: var(--lavender-100); position: relative; }
+  .ticker .ord.new::before{
+    content: ""; position: absolute; left: 0; top: 8px; bottom: 8px;
+    width: 3px; border-radius: 999px;
+    background: var(--lavender-700);
+  }
+  .ticker .ord .av{
+    width: 32px; height: 32px; border-radius: 999px;
+    background: var(--lavender-100);
+    display: grid; place-items: center;
+    font-size: 16px;
+    border: 1.5px solid white;
+  }
+  .ticker .ord.new .av{ background: white; }
+  .ticker .ord .name{ font-weight: 800; font-size: 13px; color: var(--text); line-height: 1.2; }
+  .ticker .ord .meta{ font-size: 10px; color: var(--muted); margin-top: 2px; font-weight: 700; letter-spacing: .02em; }
+  .ticker .ord .meta .pet{ color: var(--lavender-700); font-weight: 800; }
+  .ticker .ord .amt{ font-family: var(--font-display); font-weight: 900; color: var(--indigo); font-size: 14px; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+  .ticker .ord .amt .cur{ color: var(--lavender-700); }
+  .ticker .ord.refund .amt{ color: var(--muted); text-decoration: line-through; }
+  .ticker .ord .ago{ font-size: 10px; color: var(--muted-soft); font-family: var(--font-mono); font-weight: 700; margin-top: 2px; text-align: right; }
+
+  /* PRODUCT WALL — distinctive physical shelf metaphor */
+  .wall{
+    background: var(--grad-cream);
+    border: 1px solid var(--cream-deep);
+    border-radius: 20px;
+    padding: 18px;
+    display: flex; flex-direction: column; gap: 14px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-rest);
+  }
+  .wall::before{
+    content: ""; position: absolute; left: 18px; right: 18px;
+    top: 50%;
+    height: 0;
+    border-top: 1px dashed rgba(168,118,28,.18);
+    pointer-events: none;
+  }
+  .wall .head{
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .wall .head .ttl{ font-weight: 800; font-size: 13px; color: var(--indigo); display: flex; align-items: center; gap: 8px; }
+  .wall .head .tabs{ display: flex; gap: 4px; padding: 3px; background: rgba(255,255,255,.6); border-radius: 999px; }
+  .wall .head .tabs button{
+    border: none; background: transparent;
+    padding: 5px 12px; border-radius: 999px;
+    font-family: var(--font-body); font-weight: 800; font-size: 11px; color: var(--muted);
+    cursor: pointer;
+  }
+  .wall .head .tabs button.on{ background: var(--indigo); color: white; box-shadow: var(--shadow-rest); }
+  .wall .head .search-mini{
+    display: flex; align-items: center; gap: 6px;
+    background: white; border: 1px solid var(--cream-deep);
+    border-radius: 999px; padding: 4px 12px 4px 10px;
+    font-size: 11px; color: var(--muted);
+  }
+
+  /* The grid — featured big plushie + smaller items */
+  .wall .grid{
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 10px;
+    flex: 1;
+    min-height: 0;
+  }
+  .wall .it{
+    background: white;
+    border-radius: 14px;
+    border: 1px solid rgba(168,118,28,.12);
+    padding: 10px;
+    display: flex; flex-direction: column;
+    cursor: pointer;
+    transition: transform .14s ease, box-shadow .14s ease;
+    box-shadow: 0 1px 3px rgba(168,118,28,.08);
+    position: relative;
+  }
+  .wall .it:hover{ transform: translateY(-2px); box-shadow: 0 4px 10px rgba(168,118,28,.18); }
+  .wall .it .pic{
+    flex: 1; min-height: 0;
+    background: var(--lavender-100);
+    border-radius: 10px;
+    display: grid; place-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .wall .it .nm{
+    font-weight: 800; font-size: 11px; color: var(--text);
+    margin-top: 8px; line-height: 1.25;
+    overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
+  .wall .it .pr{
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-top: 4px;
+  }
+  .wall .it .pr .p{
+    font-family: var(--font-display); font-weight: 900;
+    font-size: 14px; color: var(--indigo);
+    font-variant-numeric: tabular-nums; letter-spacing: -.01em;
+  }
+  .wall .it .pr .p .cur{ color: var(--lavender-700); }
+  .wall .it .pr .stk{ font-size: 9px; color: var(--success); font-weight: 800; font-family: var(--font-mono); }
+  .wall .it .pr .stk.low{ color: var(--warn); }
+  .wall .it .badge{
+    position: absolute; top: 14px; left: 14px;
+    background: var(--indigo); color: white;
+    font-size: 9px; font-weight: 800; letter-spacing: .08em;
+    padding: 3px 8px; border-radius: 999px;
+    z-index: 1;
+  }
+  .wall .it .badge.hot{ background: var(--danger); }
+  .wall .it .badge.heart{ background: var(--pink-blush); color: var(--danger); }
+  /* Featured = spans 2 rows */
+  .wall .it.feat{ grid-row: span 2; padding: 14px; }
+  .wall .it.feat .pic{ background: linear-gradient(135deg, var(--lavender-300) 0%, var(--lavender) 50%, var(--pink-blush) 100%); }
+  .wall .it.feat .nm{ font-size: 14px; margin-top: 12px; }
+  .wall .it.feat .pr .p{ font-size: 20px; }
+  .wall .it.feat svg{ width: 60%; height: 60%; }
+
+  /* Sticker hooks — bottom row */
+  .wall .hooks{
+    display: flex; gap: 8px; padding-top: 14px; border-top: 1px dashed rgba(168,118,28,.2);
+  }
+  .wall .hooks .hk{
+    flex: 1; min-width: 0;
+    background: white; border: 1px solid rgba(168,118,28,.12);
+    border-radius: 12px;
+    padding: 8px 10px;
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+    transition: transform .12s ease;
+  }
+  .wall .hooks .hk:hover{ transform: translateY(-1px); }
+  .wall .hooks .hk .e{ font-size: 16px; }
+  .wall .hooks .hk .nm{ font-weight: 800; font-size: 10px; line-height: 1.2; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .wall .hooks .hk .p{ font-family: var(--font-display); font-weight: 900; font-size: 11px; color: var(--indigo); font-variant-numeric: tabular-nums; }
+  .wall .hooks .hk .p .cur{ color: var(--lavender-700); }
+
+  /* ═══════════════════════════════════════════════════════════
+     RAIL — persistent cashier on the right
+  ═══════════════════════════════════════════════════════════ */
+  .rail{
+    background: var(--panel-2);
+    border-left: 1px solid var(--line);
+    display: flex; flex-direction: column;
+    padding: 24px 20px 20px;
+    gap: 18px;
+    position: relative;
+  }
+
+  /* Pet Memory peek — when customer is recognized */
+  .pet-peek{
+    background: white;
+    border: 1px solid var(--lavender-200);
+    border-radius: 18px;
+    padding: 14px;
+    position: relative;
+    box-shadow: 0 4px 14px rgba(122,106,214,.12);
+    overflow: hidden;
+  }
+  .pet-peek::before{
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px; background: var(--lavender-700);
+    border-radius: 4px 0 0 4px;
+  }
+  .pet-peek .row{
+    display: grid; grid-template-columns: 40px 1fr; gap: 10px; align-items: center;
+  }
+  .pet-peek .av{
+    width: 40px; height: 40px; border-radius: 999px;
+    background: var(--lavender-100);
+    display: grid; place-items: center;
+    border: 2px solid white; box-shadow: var(--shadow-rest);
+  }
+  .pet-peek .nm{ font-weight: 800; font-size: 14px; line-height: 1.2; }
+  .pet-peek .nm .v{ color: var(--indigo); }
+  .pet-peek .nm .sub{ display: block; font-weight: 700; font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .pet-peek .pets{ display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+  .pet-peek .pets .pet{
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--lavender-100); color: var(--indigo);
+    border-radius: 999px; padding: 3px 10px 3px 6px;
+    font-weight: 800; font-size: 11px;
+  }
+  .pet-peek .memo{
+    margin-top: 10px; padding: 10px 12px;
+    background: var(--cream); border-radius: 10px;
+    color: #5a4a1f; font-size: 11px; line-height: 1.4;
+    display: flex; align-items: flex-start; gap: 6px;
+    border: 1px solid var(--cream-deep);
+  }
+  .pet-peek .memo svg{ width: 12px; height: 12px; color: var(--warn); margin-top: 2px; flex-shrink: 0; }
+  .pet-peek .memo b{ font-weight: 800; }
+
+  /* Cart */
+  .cart{
+    flex: 1; min-height: 0;
+    display: flex; flex-direction: column;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  .cart .head{
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 16px 12px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .cart .head .ttl{ font-weight: 800; font-size: 13px; color: var(--indigo); }
+  .cart .head .ct{
+    background: var(--lavender-100); color: var(--indigo-600);
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 800;
+  }
+  .cart .lines{
+    flex: 1; min-height: 0; padding: 6px 12px;
+    overflow: hidden;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .cart .ln{
+    display: grid; grid-template-columns: 1fr auto auto;
+    gap: 10px; align-items: center;
+    padding: 10px 6px;
+  }
+  .cart .ln + .ln{ border-top: 1px dashed var(--line); }
+  .cart .ln .nm{ font-weight: 800; font-size: 13px; line-height: 1.2; }
+  .cart .ln .sku{ font-family: var(--font-mono); font-size: 10px; color: var(--muted-soft); font-weight: 700; margin-top: 2px; letter-spacing: .04em; }
+  .cart .ln .qty{
+    background: var(--lavender-100); color: var(--indigo);
+    border-radius: 999px; padding: 2px 10px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
+  }
+  .cart .ln .amt{
+    font-family: var(--font-display); font-weight: 900;
+    color: var(--indigo); font-size: 13px;
+    font-variant-numeric: tabular-nums; letter-spacing: -.01em;
+    min-width: 50px; text-align: right;
+  }
+  .cart .ln .amt .cur{ color: var(--lavender-700); }
+
+  .cart .totals{
+    padding: 12px 16px;
+    background: var(--panel-2);
+    border-top: 1px dashed var(--line);
+    display: flex; flex-direction: column; gap: 4px;
+    font-size: 12px;
+  }
+  .cart .totals .r{ display: flex; justify-content: space-between; color: var(--muted); }
+  .cart .totals .r b{ color: var(--text); font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-weight: 700; }
+  .cart .totals .grand{
+    margin-top: 6px; padding-top: 10px;
+    border-top: 1px dashed var(--line);
+    color: var(--indigo);
+  }
+  .cart .totals .grand .lbl{ font-weight: 800; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+  .cart .totals .grand .v{
+    font-family: var(--font-display); font-weight: 900;
+    font-size: 22px; letter-spacing: -.02em; font-variant-numeric: tabular-nums;
+  }
+  .cart .totals .grand .v .cur{ color: var(--lavender-700); }
+
+  /* Charge mega-button */
+  .charge{
+    width: 100%;
+    height: 72px;
+    background: var(--grad-primary);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px 0 24px;
+    box-shadow: 0 12px 28px rgba(45,41,96,.32), inset 0 1px 0 rgba(255,255,255,.15);
+    transition: transform .14s ease, box-shadow .14s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .charge::after{
+    content: ""; position: absolute; top: -50%; right: -20%;
+    width: 60%; height: 200%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.06), transparent);
+    transform: rotate(20deg);
+    pointer-events: none;
+  }
+  .charge:hover{ transform: translateY(-2px); box-shadow: 0 16px 36px rgba(45,41,96,.42), inset 0 1px 0 rgba(255,255,255,.18); }
+  .charge .l{ text-align: left; }
+  .charge .l .lbl{
+    font-size: 10px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--lavender-300);
+  }
+  .charge .l .amt{
+    font-family: var(--font-display); font-weight: 900;
+    font-size: 26px; color: white; letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums; margin-top: 1px;
+    display: block;
+  }
+  .charge .l .amt .cur{ color: var(--lavender); }
+  .charge .arr{
+    width: 44px; height: 44px; border-radius: 999px;
+    background: var(--lavender);
+    display: grid; place-items: center;
+    color: var(--indigo);
+    flex-shrink: 0;
+  }
+
+  /* Quick actions strip */
+  .quick{
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .quick button{
+    background: white; border: 1px solid var(--line-strong);
+    border-radius: 14px;
+    padding: 10px 6px;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font-family: var(--font-body); font-weight: 800; font-size: 11px; color: var(--indigo);
+    cursor: pointer; transition: all .12s ease;
+  }
+  .quick button:hover{ border-color: var(--lavender-700); background: var(--lavender-100); }
+  .quick button svg{ width: 16px; height: 16px; }
+
+  /* ═══════════════════════════════════════════════════════════
+     MOCHI CO-HOST — bottom-left ambient assistant
+  ═══════════════════════════════════════════════════════════ */
+  .cohost{
+    position: absolute;
+    left: 24px;
+    bottom: 24px;
+    z-index: 5;
+    display: flex; align-items: flex-end; gap: 12px;
+    pointer-events: none;
+  }
+  .cohost .mochi{
+    width: 64px; height: 64px;
+    position: relative;
+    animation: cohost-bob 3.6s ease-in-out infinite;
+  }
+  .cohost .mochi svg{ width: 100%; height: 100%; }
+  @keyframes cohost-bob{
+    0%, 100%{ transform: translateY(0) rotate(-2deg); }
+    50%{ transform: translateY(-4px) rotate(2deg); }
+  }
+  .cohost .bubble{
+    background: var(--indigo);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 16px 16px 16px 4px;
+    box-shadow: var(--shadow-pop);
+    max-width: 320px;
+    position: relative;
+    pointer-events: auto;
+  }
+  .cohost .bubble::before{
+    content: ""; position: absolute;
+    left: -6px; bottom: 4px;
+    width: 10px; height: 10px;
+    background: var(--indigo);
+    border-radius: 2px;
+    transform: rotate(45deg);
+  }
+  .cohost .bubble .who{
+    font-size: 10px; font-weight: 800; letter-spacing: .14em;
+    color: var(--lavender-300); text-transform: uppercase;
+  }
+  .cohost .bubble .msg{
+    font-weight: 700; font-size: 13px; line-height: 1.4;
+    margin-top: 2px;
+  }
+  .cohost .bubble .msg b{ font-weight: 900; color: var(--lavender); }
+  .cohost .bubble .acts{
+    display: flex; gap: 6px; margin-top: 10px;
+  }
+  .cohost .bubble .acts button{
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.18);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-family: var(--font-body); font-weight: 800; font-size: 11px;
+    cursor: pointer;
+  }
+  .cohost .bubble .acts button.go{
+    background: var(--lavender); color: var(--indigo);
+    border-color: transparent;
+  }
+
+  /* Animations for the breathing gauge */
+  @keyframes gauge-breathe{
+    0%, 100%{ filter: drop-shadow(0 0 0 transparent); }
+    50%{ filter: drop-shadow(0 0 6px rgba(122,106,214,.4)); }
+  }
+  .gauge .breath{ animation: gauge-breathe 3.4s ease-in-out infinite; }
+
+  /* ── Mobile responsive note ─────────────────────────────── */
+  @media (max-width: 1320px){
+    .wrap{ min-width: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SVG sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="g-mochi" cx="38%" cy="32%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="55%" stop-color="#f1edfb"/>
+      <stop offset="100%" stop-color="#d3c8f6"/>
+    </radialGradient>
+    <symbol id="mochi" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="38" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="23" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+      <ellipse cx="41" cy="31" rx="2.6" ry="3.4" fill="#1c1838"/>
+      <circle cx="23.7" cy="29.5" r=".9" fill="#fff"/>
+      <circle cx="41.7" cy="29.5" r=".9" fill="#fff"/>
+      <path d="M27 39 Q32 43 37 39" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="mochi-sparkle" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <path d="M23 27 L24.3 30.4 L27.8 31 L24.3 31.6 L23 35 L21.7 31.6 L18.2 31 L21.7 30.4 Z" fill="#7a6ad6"/>
+      <path d="M41 27 L42.3 30.4 L45.8 31 L42.3 31.6 L41 35 L39.7 31.6 L36.2 31 L39.7 30.4 Z" fill="#7a6ad6"/>
+      <path d="M27 40 Q32 44 37 40" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="mochi-heart" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+      <ellipse cx="23" cy="20" rx="7" ry="3.5" fill="#fff" opacity=".7"/>
+      <ellipse cx="18" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <ellipse cx="46" cy="39" rx="4" ry="2.4" fill="#f7c8d2"/>
+      <path d="M23 33 C20 30, 19 27, 21 26 C22.5 25, 23 26.2, 23 27.2 C23 26.2, 23.5 25, 25 26 C27 27, 26 30, 23 33 Z" fill="#e85b75"/>
+      <path d="M41 33 C38 30, 37 27, 39 26 C40.5 25, 41 26.2, 41 27.2 C41 26.2, 41.5 25, 43 26 C45 27, 44 30, 41 33 Z" fill="#e85b75"/>
+      <path d="M27 40 Q32 44 37 40" stroke="#1c1838" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="mochi-peek" viewBox="0 0 80 44">
+      <clipPath id="cp-peek-pos"><rect x="0" y="0" width="80" height="40"/></clipPath>
+      <g clip-path="url(#cp-peek-pos)">
+        <circle cx="40" cy="44" r="24" fill="url(#g-mochi)" stroke="#2d2960" stroke-width="2"/>
+        <ellipse cx="33" cy="32" rx="6" ry="3" fill="#fff" opacity=".7"/>
+        <ellipse cx="33" cy="38" rx="2.4" ry="3" fill="#1c1838"/>
+        <ellipse cx="47" cy="38" rx="2.4" ry="3" fill="#1c1838"/>
+        <circle cx="33.6" cy="36.8" r=".8" fill="#fff"/>
+        <circle cx="47.6" cy="36.8" r=".8" fill="#fff"/>
+      </g>
+    </symbol>
+    <symbol id="paw" viewBox="0 0 40 40">
+      <ellipse cx="20" cy="26" rx="9" ry="7.5" fill="currentColor"/>
+      <ellipse cx="9"  cy="14" rx="3.4" ry="4.4" fill="currentColor"/>
+      <ellipse cx="31" cy="14" rx="3.4" ry="4.4" fill="currentColor"/>
+      <ellipse cx="15" cy="6"  rx="2.8" ry="3.6" fill="currentColor"/>
+      <ellipse cx="25" cy="6"  rx="2.8" ry="3.6" fill="currentColor"/>
+    </symbol>
+    <symbol id="m-mark" viewBox="0 0 24 24">
+      <text x="12" y="18" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="18" fill="#b8a9f0" letter-spacing="-.5">M</text>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3-3" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="i-arr-right" viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+    <symbol id="i-arr-up" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+    <symbol id="i-cash" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 9v.01M18 15v.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M2 10h20M6 15h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-qr" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M14 14h2v2M16 18v3M19 14h2v3M14 19h3v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <!-- Designer note ribbon -->
+  <div class="designer-note">
+    <div>
+      <span class="lbl">Mochi POS · main surface</span>
+      <div class="ttl">Distinctive choices vs. typical POS apps</div>
+    </div>
+    <div class="points">
+      <span>Stage gauge (not flat KPI)</span>
+      <span>Live ticker</span>
+      <span>Product wall on cream "shelf"</span>
+      <span>Pet Memory peek</span>
+      <span>Mochi co-host bubble</span>
+      <span>Day-rhythm heat bar</span>
+    </div>
+  </div>
+
+  <!-- The POS itself -->
+  <div class="pos-app">
+
+    <!-- ─── TOP BAR ─────────────────────────────────────────── -->
+    <header class="pos-app-top">
+      <div class="brand">
+        <div class="mk"><svg width="22" height="22"><use href="#m-mark"/></svg></div>
+        <div class="wm">Mochi<span class="pos">POS</span></div>
+      </div>
+
+      <div class="event-ribbon">
+        <div class="chip-day"><span class="n">3</span><span>DAY</span></div>
+        <div class="ev-name">theMeowseum · Pet Expo 2026</div>
+        <div class="progress-rail">
+          <div class="bar"><i></i></div>
+          <div class="pct">60%</div>
+        </div>
+        <div class="ends">ends <b>20:00</b> · 5h 36m left</div>
+      </div>
+
+      <div class="live-takings">
+        <span class="led"></span>
+        <div>
+          <div class="lbl">Today</div>
+          <div class="v"><span class="cur">฿</span>24,820</div>
+        </div>
+      </div>
+
+      <div class="top-icons">
+        <div class="ti">
+          <svg viewBox="0 0 24 24" width="18" height="18"><use href="#i-search"/></svg>
+        </div>
+        <div class="ti">
+          <svg viewBox="0 0 24 24" width="18" height="18"><use href="#i-bell"/></svg>
+          <span class="dot"></span>
+        </div>
+        <div class="ti">
+          <svg viewBox="0 0 24 24" width="18" height="18"><use href="#i-settings"/></svg>
+        </div>
+        <div class="av"><svg width="32" height="32" viewBox="0 0 64 64"><use href="#mochi"/></svg></div>
+      </div>
+    </header>
+
+    <!-- ─── BODY ────────────────────────────────────────────── -->
+    <div class="pos-app-body">
+
+      <!-- LEFT: STAGE -->
+      <section class="stage">
+
+        <!-- 1. Stage Hero — curved gauge -->
+        <div class="stage-hero">
+          <div class="gauge">
+            <svg viewBox="0 0 200 200" class="breath">
+              <!-- Background ring (270° arc, starts at -135°) -->
+              <circle cx="100" cy="100" r="80" stroke="rgba(45,41,96,.08)" stroke-width="14" fill="none"
+                stroke-dasharray="377 502" stroke-linecap="round"/>
+              <!-- Takings progress: 24820/40000 = ~62% of the 270° arc -->
+              <circle cx="100" cy="100" r="80" stroke="url(#gauge-grad)" stroke-width="14" fill="none"
+                stroke-dasharray="234 502" stroke-linecap="round"/>
+              <!-- Inner ring — day progress -->
+              <circle cx="100" cy="100" r="62" stroke="rgba(184,169,240,.2)" stroke-width="6" fill="none"
+                stroke-dasharray="292 390" stroke-linecap="round"/>
+              <circle cx="100" cy="100" r="62" stroke="#b8a9f0" stroke-width="6" fill="none"
+                stroke-dasharray="175 390" stroke-linecap="round"/>
+              <defs>
+                <linearGradient id="gauge-grad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#3d3686"/>
+                  <stop offset="50%" stop-color="#7a6ad6"/>
+                  <stop offset="100%" stop-color="#b8a9f0"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="center">
+              <div class="lbl">Day 3 · stage</div>
+              <div class="amt"><span class="cur">฿</span>24,820</div>
+              <div class="sub"><b>62%</b> of ฿40k goal</div>
+            </div>
+            <svg class="peek" viewBox="0 0 80 44"><use href="#mochi-peek"/></svg>
+          </div>
+
+          <div class="right">
+            <h2>Strong day, Visan.<br/><span class="pop">Lunch rush in 38 min.</span></h2>
+            <div class="stats">
+              <div class="stat">
+                <div class="k">Orders</div>
+                <div class="v">132</div>
+                <div class="ch"><svg viewBox="0 0 24 24" width="10" height="10"><use href="#i-arr-up"/></svg> 18 vs yest</div>
+              </div>
+              <div class="stat">
+                <div class="k">Avg basket</div>
+                <div class="v"><span class="cur">฿</span>188</div>
+                <div class="ch"><svg viewBox="0 0 24 24" width="10" height="10"><use href="#i-arr-up"/></svg> 12%</div>
+              </div>
+              <div class="stat">
+                <div class="k">Pets remembered</div>
+                <div class="v">18 <span style="font-size:11px;color:var(--lavender-700)">🐾</span></div>
+                <div class="ch"><svg viewBox="0 0 24 24" width="10" height="10"><use href="#i-arr-up"/></svg> 6 new</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Rhythm — the day's heat by half-hour -->
+        <div class="rhythm">
+          <div class="l">
+            <div class="ttl">Day rhythm</div>
+            <div class="sub">฿ by half-hour · 9am → 8pm</div>
+          </div>
+          <div class="bars">
+            <i style="height:18%"></i>
+            <i style="height:24%"></i>
+            <i style="height:32%"></i>
+            <i style="height:28%"></i>
+            <i style="height:46%"></i>
+            <i style="height:52%"></i>
+            <i style="height:42%"></i>
+            <i style="height:58%"></i>
+            <i style="height:66%"></i>
+            <i style="height:72%"></i>
+            <i style="height:84%"></i>
+            <i style="height:78%"></i>
+            <i class="cur" style="height:92%"></i>
+            <i class="future" style="height:50%"></i>
+            <i class="future" style="height:60%"></i>
+            <i class="future" style="height:70%"></i>
+            <i class="future" style="height:80%"></i>
+            <i class="future" style="height:60%"></i>
+            <i class="future" style="height:40%"></i>
+            <i class="future" style="height:25%"></i>
+          </div>
+          <div class="r">
+            <div class="lbl">Now</div>
+            <div class="v"><span class="cur">฿</span>2,140<span style="font-size:11px;color:var(--muted);font-weight:700">/hr</span></div>
+          </div>
+        </div>
+
+        <!-- 3. Split bottom — ticker + product wall -->
+        <div class="stage-bottom">
+
+          <!-- TICKER -->
+          <div class="ticker">
+            <div class="head">
+              <span class="ttl">Live orders</span>
+              <span class="live">LIVE</span>
+            </div>
+            <div class="list">
+              <div class="ord new">
+                <div class="av">🐰</div>
+                <div>
+                  <div class="name">Kanya P.</div>
+                  <div class="meta"><span class="pet">Bunny</span> · booth #2</div>
+                </div>
+                <div>
+                  <div class="amt"><span class="cur">฿</span>620</div>
+                  <div class="ago">just now</div>
+                </div>
+              </div>
+              <div class="ord">
+                <div class="av">🐱</div>
+                <div>
+                  <div class="name">Nina R.</div>
+                  <div class="meta"><span class="pet">2 cats</span> · booth #3</div>
+                </div>
+                <div>
+                  <div class="amt"><span class="cur">฿</span>180</div>
+                  <div class="ago">2m</div>
+                </div>
+              </div>
+              <div class="ord">
+                <div class="av" style="background:var(--bg-soft);font-size:14px;color:var(--muted)">·</div>
+                <div>
+                  <div class="name">walk-in</div>
+                  <div class="meta">no pet · booth #2</div>
+                </div>
+                <div>
+                  <div class="amt"><span class="cur">฿</span>240</div>
+                  <div class="ago">7m</div>
+                </div>
+              </div>
+              <div class="ord">
+                <div class="av">🐢</div>
+                <div>
+                  <div class="name">Prim S.</div>
+                  <div class="meta"><span class="pet">VIP</span> · ×6 items</div>
+                </div>
+                <div>
+                  <div class="amt"><span class="cur">฿</span>1,840</div>
+                  <div class="ago">11m</div>
+                </div>
+              </div>
+              <div class="ord refund">
+                <div class="av" style="background:var(--danger-bg);color:var(--danger);font-size:11px;font-weight:900">↩</div>
+                <div>
+                  <div class="name">refund</div>
+                  <div class="meta">M-0029 · card</div>
+                </div>
+                <div>
+                  <div class="amt"><span class="cur">฿</span>320</div>
+                  <div class="ago">18m</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PRODUCT WALL — cream shelf -->
+          <div class="wall">
+            <div class="head">
+              <span class="ttl">The wall</span>
+              <div class="tabs">
+                <button class="on">Hot</button>
+                <button>Plushies</button>
+                <button>Apparel</button>
+                <button>Stickers</button>
+              </div>
+            </div>
+
+            <div class="grid">
+              <!-- Featured -->
+              <div class="it feat">
+                <span class="badge hot">#1 hot</span>
+                <div class="pic">
+                  <svg viewBox="0 0 64 64" width="80" height="80"><use href="#mochi"/></svg>
+                </div>
+                <div class="nm">Tonkatsu Mochi Plushie</div>
+                <div class="pr">
+                  <div class="p"><span class="cur">฿</span>420</div>
+                  <span class="stk">24 left</span>
+                </div>
+              </div>
+
+              <!-- Mid -->
+              <div class="it">
+                <span class="badge heart">♥</span>
+                <div class="pic" style="background:var(--cream)"><svg width="34" height="34" style="color:#a8761c"><use href="#paw"/></svg></div>
+                <div class="nm">Paw Sticker Pack · 8 ct</div>
+                <div class="pr"><div class="p"><span class="cur">฿</span>120</div><span class="stk low">4</span></div>
+              </div>
+
+              <div class="it">
+                <div class="pic" style="background:var(--lavender-300)"><svg viewBox="0 0 64 64" width="40" height="40"><use href="#mochi-heart"/></svg></div>
+                <div class="nm">Mochi Hoodie · M</div>
+                <div class="pr"><div class="p"><span class="cur">฿</span>1,280</div><span class="stk">18</span></div>
+              </div>
+
+              <div class="it">
+                <div class="pic" style="background:#efeafd"><svg viewBox="0 0 64 64" width="40" height="40"><use href="#mochi-sparkle"/></svg></div>
+                <div class="nm">Mochi Keychain · gold ring</div>
+                <div class="pr"><div class="p"><span class="cur">฿</span>180</div><span class="stk">32</span></div>
+              </div>
+
+              <div class="it">
+                <div class="pic" style="background:#f7c8d2"><span style="font-size:22px">🐱</span></div>
+                <div class="nm">Cat Tote · canvas</div>
+                <div class="pr"><div class="p"><span class="cur">฿</span>300</div><span class="stk">8</span></div>
+              </div>
+
+              <div class="it">
+                <div class="pic" style="background:#d3c8f6"><span style="font-size:24px">🎀</span></div>
+                <div class="nm">Velvet Bow · pair</div>
+                <div class="pr"><div class="p"><span class="cur">฿</span>80</div><span class="stk">22</span></div>
+              </div>
+
+              <div class="it">
+                <div class="pic" style="background:#e9dec3"><span style="font-size:24px">📓</span></div>
+                <div class="nm">Pet Diary · cream</div>
+                <div class="pr"><div class="p"><span class="cur">฿</span>240</div><span class="stk">14</span></div>
+              </div>
+            </div>
+
+            <div class="hooks">
+              <div class="hk"><span class="e">🐾</span><span class="nm">Paw 4-pack</span><span class="p"><span class="cur">฿</span>60</span></div>
+              <div class="hk"><span class="e">⭐</span><span class="nm">Glow stars</span><span class="p"><span class="cur">฿</span>80</span></div>
+              <div class="hk"><span class="e">🐱</span><span class="nm">Cat decals</span><span class="p"><span class="cur">฿</span>50</span></div>
+              <div class="hk"><span class="e">🐰</span><span class="nm">Bunny mini</span><span class="p"><span class="cur">฿</span>70</span></div>
+              <div class="hk"><span class="e">+</span><span class="nm">All stickers</span><span class="p" style="color:var(--lavender-700)">→</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: CASHIER RAIL -->
+      <aside class="rail">
+
+        <!-- Pet Memory peek -->
+        <div class="pet-peek">
+          <div class="row">
+            <div class="av"><svg width="28" height="28" viewBox="0 0 64 64"><use href="#mochi-heart"/></svg></div>
+            <div class="nm">
+              <span class="v">Visan C.</span>
+              <span class="sub">last visit · 2 days ago · 12 orders</span>
+            </div>
+          </div>
+          <div class="pets">
+            <span class="pet">🐱 Mochi · 4y</span>
+            <span class="pet">🐶 Lulu · 2y</span>
+          </div>
+          <div class="memo">
+            <svg viewBox="0 0 24 24"><use href="#i-zap"/></svg>
+            <div><b>Mochi loved</b> the tonkatsu plushie. Lulu fits hoodie <b>S</b>.</div>
+          </div>
+        </div>
+
+        <!-- Cart -->
+        <div class="cart">
+          <div class="head">
+            <span class="ttl">Cart</span>
+            <span class="ct">3 items</span>
+          </div>
+          <div class="lines">
+            <div class="ln">
+              <div>
+                <div class="nm">Tonkatsu Plushie</div>
+                <div class="sku">MM-204</div>
+              </div>
+              <span class="qty">×2</span>
+              <span class="amt"><span class="cur">฿</span>840</span>
+            </div>
+            <div class="ln">
+              <div>
+                <div class="nm">Paw Sticker Pack</div>
+                <div class="sku">MM-118</div>
+              </div>
+              <span class="qty">×1</span>
+              <span class="amt"><span class="cur">฿</span>120</span>
+            </div>
+            <div class="ln">
+              <div>
+                <div class="nm">Mochi Hoodie</div>
+                <div class="sku">MM-301 · S</div>
+              </div>
+              <span class="qty">×1</span>
+              <span class="amt"><span class="cur">฿</span>1,280</span>
+            </div>
+          </div>
+          <div class="totals">
+            <div class="r"><span>Subtotal</span><b>฿2,240</b></div>
+            <div class="r"><span>VAT 7%</span><b>฿157</b></div>
+            <div class="r grand">
+              <span class="lbl">Total</span>
+              <span class="v"><span class="cur">฿</span>2,397</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charge -->
+        <button class="charge">
+          <span class="l">
+            <span class="lbl">Charge customer</span>
+            <span class="amt"><span class="cur">฿</span>2,397</span>
+          </span>
+          <span class="arr"><svg viewBox="0 0 24 24" width="20" height="20"><use href="#i-arr-right"/></svg></span>
+        </button>
+
+        <!-- Quick actions -->
+        <div class="quick">
+          <button>
+            <svg viewBox="0 0 24 24"><use href="#i-cash"/></svg>
+            Cash
+          </button>
+          <button>
+            <svg viewBox="0 0 24 24"><use href="#i-card"/></svg>
+            Card
+          </button>
+          <button>
+            <svg viewBox="0 0 24 24"><use href="#i-qr"/></svg>
+            PromptPay
+          </button>
+        </div>
+
+      </aside>
+    </div>
+
+    <!-- ─── MOCHI CO-HOST ─────────────────────────────────────── -->
+    <div class="cohost">
+      <div class="mochi"><svg viewBox="0 0 64 64"><use href="#mochi-sparkle"/></svg></div>
+      <div class="bubble">
+        <div class="who">Mochi says</div>
+        <div class="msg">🔥 Lunch rush incoming in <b>38 min</b>. Pull <b>M hoodies</b> forward — they're trending today.</div>
+        <div class="acts">
+          <button class="go">Pull forward</button>
+          <button>Not now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spacer below for cohost overlap -->
+  <div style="height:24px"></div>
+</div>
+
+</body>
+</html>
