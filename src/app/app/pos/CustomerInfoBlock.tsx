@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useCart, useCartDispatch } from "@/lib/pos/cart-store";
 import { useDemoCustomers } from "@/lib/demo/useDemoCustomers";
 import { useDemoCustomerNotes } from "@/lib/demo/useDemoCustomerNotes";
@@ -32,17 +32,13 @@ export function CustomerInfoBlock() {
   const { t } = useT();
   const customers = useDemoCustomers();
   const notes = useDemoCustomerNotes();
-  const [match, setMatch] = useState<CustomerProfile | null>(null);
   const [customTagDraft, setCustomTagDraft] = useState("");
 
   const debouncedPhone = useDebouncedValue(cart.customer.phone, 350);
 
-  useEffect(() => {
-    if (!customers.ready || !debouncedPhone.trim()) {
-      setMatch(null);
-      return;
-    }
-    setMatch(customers.findByPhone(debouncedPhone));
+  const match = useMemo<CustomerProfile | null>(() => {
+    if (!customers.ready || !debouncedPhone.trim()) return null;
+    return customers.findByPhone(debouncedPhone);
   }, [debouncedPhone, customers]);
 
   const existingNote = match
