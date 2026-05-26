@@ -20,6 +20,7 @@ as $$
 declare
   v_user_id      uuid := auth.uid();
   v_workspace_id uuid;
+  v_status       text;
   v_row          public.event_inventory;
   v_old          jsonb;
 begin
@@ -31,10 +32,16 @@ begin
       using errcode = '22023';
   end if;
 
-  select workspace_id into v_workspace_id
+  select workspace_id, status into v_workspace_id, v_status
     from public.events where id = p_event_id;
   if v_workspace_id is null then
     raise exception 'convert_sample_to_event: event % not found', p_event_id;
+  end if;
+  -- Closed/archived events are read-only (mirror adjust_event_stock): their stock
+  -- backs end-of-day + post-event reports and must not change after close.
+  if v_status in ('closed', 'archived') then
+    raise exception 'convert_sample_to_event: cannot move stock on a closed or archived event (status=%)', v_status
+      using errcode = '42501';
   end if;
   if not public.is_workspace_member(
     v_workspace_id, array['owner','manager','cashier','stock_staff']

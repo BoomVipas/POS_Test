@@ -90,4 +90,18 @@ describe("sample bucket conversions (Wave 39d)", () => {
       { action: "convert_sample_to_event", n: 1 },
     ]);
   });
+
+  it("rejects moving stock INTO the sample bucket on a closed event", async () => {
+    await db.exec(
+      `update public.events set status = 'closed' where id = '${ws.eventId}'`,
+    );
+    await expect(toSample(ws, 1)).rejects.toThrow(/closed or archived/i);
+  });
+
+  it("rejects moving stock OUT of the sample bucket on an archived event", async () => {
+    await db.exec(
+      `update public.events set status = 'archived' where id = '${ws.eventId}'`,
+    );
+    await expect(toEvent(ws, 1)).rejects.toThrow(/closed or archived/i);
+  });
 });

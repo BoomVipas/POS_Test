@@ -55,6 +55,9 @@ async function convert(
           "Sample conversion isn't set up yet — an admin needs to apply the sample RPCs.",
       };
     }
+    if (/closed or archived/i.test(error.message)) {
+      return { ok: false, error: "This event is closed — stock can't be changed." };
+    }
     if (/not enough/i.test(error.message)) {
       return {
         ok: false,
