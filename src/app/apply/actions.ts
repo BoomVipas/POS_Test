@@ -68,22 +68,22 @@ export async function submitApplication(
     };
   }
 
+  const application = {
+    owner_name: data.owner_name,
+    phone: data.phone,
+    email: data.email,
+    brand_name: data.brand_name,
+    product_category: data.product_category,
+    social_link: nullIfEmpty(data.social_link),
+    num_skus: intOrNull(data.num_skus),
+    events_per_year: intOrNull(data.events_per_year),
+    message: nullIfEmpty(data.message),
+  };
+
   const supabase = await createClient();
-  const { data: row, error: dbErr } = await supabase
+  const { error: dbErr } = await supabase
     .from("applications")
-    .insert({
-      owner_name: data.owner_name,
-      phone: data.phone,
-      email: data.email,
-      brand_name: data.brand_name,
-      product_category: data.product_category,
-      social_link: nullIfEmpty(data.social_link),
-      num_skus: intOrNull(data.num_skus),
-      events_per_year: intOrNull(data.events_per_year),
-      message: nullIfEmpty(data.message),
-    })
-    .select()
-    .single();
+    .insert(application);
 
   if (dbErr) {
     if (dbErr.code === "23505") {
@@ -98,7 +98,7 @@ export async function submitApplication(
   // Best-effort admin notification.
   try {
     if (process.env.RESEND_API_KEY && process.env.ADMIN_EMAIL) {
-      const { subject, html } = renderNewApplicationEmail(row);
+      const { subject, html } = renderNewApplicationEmail(application);
       await sendEmail({ to: adminEmail(), subject, html });
     }
   } catch (e) {

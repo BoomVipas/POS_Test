@@ -1,7 +1,18 @@
 import "server-only";
 import type { Database } from "@/lib/database.types";
 
-type Application = Database["public"]["Tables"]["applications"]["Row"];
+type Application = Pick<
+  Database["public"]["Tables"]["applications"]["Row"],
+  | "brand_name"
+  | "owner_name"
+  | "email"
+  | "phone"
+  | "product_category"
+  | "social_link"
+  | "num_skus"
+  | "events_per_year"
+  | "message"
+>;
 
 export function renderNewApplicationEmail(app: Application) {
   const subject = `New pilot application — ${app.brand_name}`;
