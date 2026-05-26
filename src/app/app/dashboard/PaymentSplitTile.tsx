@@ -16,32 +16,69 @@ const LABELS: Record<keyof Split, string> = {
   other: "Other",
 };
 
-const ORDER: Array<keyof Split> = ["cash", "promptpay", "transfer", "card", "other"];
+const ORDER: Array<keyof Split> = [
+  "cash",
+  "promptpay",
+  "transfer",
+  "card",
+  "other",
+];
 
 export function PaymentSplitTile({ split }: { split: Split }) {
-  const total = ORDER.reduce((s, k) => s + split[k], 0);
+  const total = ORDER.reduce((sum, key) => sum + split[key], 0);
+  const dominant = ORDER.reduce(
+    (best, key) => (split[key] > split[best] ? key : best),
+    ORDER[0],
+  );
+
   return (
-    <div className="rounded-[var(--radius-lg)] border border-line bg-panel-strong px-5 py-4">
-      <p className="text-xs font-bold uppercase tracking-wider text-muted">
-        Payment split
-      </p>
-      <div className="mt-3 grid grid-cols-2 gap-2 text-sm sm:grid-cols-5">
-        {ORDER.map((k) => {
-          const v = split[k];
-          const pct = total > 0 ? Math.round((v / total) * 100) : 0;
+    <section className="rounded-[var(--radius-xl)] border border-line bg-panel p-5 shadow-[var(--shadow-card)]">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="font-display text-xl font-black text-accent-strong">
+            Payment split
+          </h2>
+          <p className="mt-1 text-sm text-muted">
+            {total > 0
+              ? `${LABELS[dominant]} is the largest payment source.`
+              : "No payments in this range yet."}
+          </p>
+        </div>
+        <div className="rounded-[14px] bg-[var(--indigo-50)] px-3 py-2 text-right">
+          <p className="text-[10px] font-black uppercase tracking-[0.1em] text-muted">
+            Total
+          </p>
+          <p className="num text-sm font-black text-accent-strong">
+            {formatTHB(total)} THB
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-5 grid gap-3">
+        {ORDER.map((key) => {
+          const value = split[key];
+          const pct = total > 0 ? Math.round((value / total) * 100) : 0;
           return (
-            <div key={k} className="rounded-xl border border-line bg-panel px-3 py-2">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-muted">
-                {LABELS[k]}
-              </p>
-              <p className="num mt-1 text-base font-black text-accent-strong">
-                {formatTHB(v)}
-              </p>
-              <p className="num text-[11px] text-muted">{pct}%</p>
+            <div key={key} className="grid gap-1.5">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-sm font-extrabold text-text">{LABELS[key]}</p>
+                <p className="num text-sm font-black text-accent-strong">
+                  {formatTHB(value)} THB
+                  <span className="ml-2 text-xs font-bold text-muted">
+                    {pct}%
+                  </span>
+                </p>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-[var(--color-soft)]">
+                <div
+                  className="h-full rounded-full bg-[var(--grad-accent)]"
+                  style={{ width: `${Math.max(2, pct)}%` }}
+                />
+              </div>
             </div>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }
