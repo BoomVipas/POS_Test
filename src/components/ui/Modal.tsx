@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
+import { Button } from "./Button";
 
 type ModalProps = {
   open: boolean;
@@ -36,14 +37,14 @@ export function Modal({
 }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
+  const [confirming, setConfirming] = useState(false);
 
   // Ambient dismiss (backdrop / Esc): confirm first if there are unsaved edits.
   const attemptClose = () => {
-    if (
-      confirmClose?.() &&
-      typeof window !== "undefined" &&
-      !window.confirm("Discard your changes? Your edits won't be saved.")
-    ) {
+    // Ambient dismiss with unsaved edits -> show the in-app confirm (styled,
+    // on-brand) rather than a jarring browser alert.
+    if (confirmClose?.()) {
+      setConfirming(true);
       return;
     }
     onClose();
@@ -139,6 +140,38 @@ export function Modal({
         <div className={cn("min-h-0 overflow-y-auto", title && "mt-4")}>
           {children}
         </div>
+
+        {confirming && (
+          <div
+            className="absolute inset-0 z-20 grid place-items-center rounded-[inherit] bg-black/40 p-4"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setConfirming(false);
+            }}
+          >
+            <div className="panel w-full max-w-[19rem] p-5 text-center">
+              <p className="font-display text-lg text-accent-strong">
+                Discard changes?
+              </p>
+              <p className="mt-1 text-sm text-muted">
+                Your edits won&apos;t be saved.
+              </p>
+              <div className="mt-4 flex justify-center gap-2">
+                <Button variant="ghost" onClick={() => setConfirming(false)}>
+                  Keep editing
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={() => {
+                    setConfirming(false);
+                    onClose();
+                  }}
+                >
+                  Discard
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
