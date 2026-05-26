@@ -58,4 +58,10 @@ describe("adjust_event_stock", () => {
     const s = await seedWorkspace(db);
     await expect(adjust(s, 0)).rejects.toThrow(/non-zero/);
   });
+
+  it("refuses to adjust a closed event (protects post-event reports)", async () => {
+    const s = await seedWorkspace(db);
+    await db.exec(`update public.events set status = 'closed' where id = '${s.eventId}'`);
+    await expect(adjust(s, 10)).rejects.toThrow(/closed or archived/);
+  });
 });

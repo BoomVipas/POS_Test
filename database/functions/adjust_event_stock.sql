@@ -27,6 +27,7 @@ as $$
 declare
   v_user_id      uuid := auth.uid();
   v_workspace_id uuid;
+  v_status       text;
   v_row          public.event_inventory;
   v_old          jsonb;
   v_new_qty      int;
@@ -39,10 +40,16 @@ begin
       using errcode = '22023';
   end if;
 
-  select workspace_id into v_workspace_id
+  select workspace_id, status into v_workspace_id, v_status
     from public.events where id = p_event_id;
   if v_workspace_id is null then
     raise exception 'adjust_event_stock: event % not found', p_event_id;
+  end if;
+  -- Closed/archived events are read-only: their stock history backs end-of-day
+  -- and post-event reports, so it must not change after close.
+  if v_status in ('closed', 'archived') then
+    raise exception 'adjust_event_stock: cannot adjust stock on a closed or archived event (status=%)', v_status
+      using errcode = '42501';
   end if;
   if not public.is_workspace_member(
     v_workspace_id, array['owner','manager','stock_staff']

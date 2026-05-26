@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { getActiveWorkspace, canWriteCatalog } from "@/lib/auth/workspace";
 import {
   PRODUCT_IMAGE_BUCKET,
@@ -44,7 +45,12 @@ export async function setProductImage(
   const path = productImagePath(ws.workspaceId, productId, ext);
 
   const supabase = await createClient();
-  const { error: upErr } = await supabase.storage
+  // The workspace + role checks above are the gate. The Storage write itself
+  // goes through the service role (hard rule #4: admin client inside a Server
+  // Action) so uploads don't depend on a per-bucket Storage RLS policy — which
+  // is otherwise the easy-to-miss step that blocks uploads on a fresh bucket.
+  const admin = createAdminClient();
+  const { error: upErr } = await admin.storage
     .from(PRODUCT_IMAGE_BUCKET)
     .upload(path, file, { upsert: true, contentType: file.type });
   if (upErr) {

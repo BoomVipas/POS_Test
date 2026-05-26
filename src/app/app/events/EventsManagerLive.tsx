@@ -216,7 +216,9 @@ export function EventsManagerLive({
 
                 {(canManage || canAllocate) && (
                   <div className="mt-2 flex flex-wrap gap-1.5">
-                    {canAllocate && ev.status !== "archived" && (
+                    {canAllocate &&
+                      ev.status !== "closed" &&
+                      ev.status !== "archived" && (
                       <Button
                         size="sm"
                         variant="ghost"
