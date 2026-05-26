@@ -50,8 +50,17 @@ export async function createEvent(
     .select("id")
     .single();
   if (error || !data) {
-    console.error("[events] create failed:", error?.message);
-    return { ok: false, error: "Couldn't create the event. Please try again." };
+    console.error("[events] create failed:", error?.code, error?.message);
+    // Pilot diagnostics: surface the real DB reason (the two founders are the
+    // only users today) so manual testers see WHY it failed instead of a generic
+    // toast — this is how we'll pin the "any input errors" report. Genericize
+    // before public launch.
+    return {
+      ok: false,
+      error: error
+        ? `Couldn't create the event — ${error.message} [${error.code ?? "?"}]`
+        : "Couldn't create the event. Please try again.",
+    };
   }
 
   revalidatePath("/app/events");
