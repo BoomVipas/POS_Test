@@ -108,7 +108,7 @@ export function ApplyForm() {
         <input
           {...register("product_category")}
           className={inputCls}
-          placeholder="e.g. Cat apparel, treats, toys"
+          placeholder="e.g. Home goods, snacks, apparel"
         />
       </Field>
 
@@ -150,11 +150,14 @@ export function ApplyForm() {
         </Field>
       </div>
 
-      <Field label="Why us? (optional)" error={errors.message?.message}>
+      <Field
+        label="Upcoming event or setup notes (optional)"
+        error={errors.message?.message}
+      >
         <textarea
           {...register("message")}
           className={`${inputCls} min-h-[110px]`}
-          placeholder="Anything you want us to know"
+          placeholder="Tell us about your event, booth workflow, or questions"
         />
       </Field>
 
@@ -173,13 +176,13 @@ export function ApplyForm() {
         className="mt-2 w-full rounded-[14px] py-3.5 text-[15px] font-extrabold text-white shadow-[var(--shadow-card)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45 disabled:opacity-60"
         style={{ background: "var(--grad-primary)" }}
       >
-        {pending ? "Submitting…" : "Submit application"}
+        {pending ? "Submitting..." : "Submit application"}
       </button>
 
       <p className="text-center text-xs text-muted">
         Already approved?{" "}
         <Link href="/register" className="font-bold text-accent hover:underline">
-          Redeem your invite code →
+          Redeem your invite code -&gt;
         </Link>
       </p>
     </form>
