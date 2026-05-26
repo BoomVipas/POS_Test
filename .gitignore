@@ -30,6 +30,8 @@
 # Claude Code scheduler transient files (the .claude/skills/ dir stays tracked)
 .claude/scheduled_tasks.lock
 .claude/scheduled_tasks.json
+# Board-first reminder per-branch markers (transient; one file per branch)
+.claude/.board-first/
 
 # debug
 npm-debug.log*
