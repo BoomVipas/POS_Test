@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
     // Design-system handoff export (reference assets + stale duplicated source) —
     // not part of the app; keep it out of lint.
     "Mochi POS Design System-handoff/**",
+    // Codex loop-agent working directory — contains in-progress code copies.
+    ".loop-agent/**",
   ]),
   // `react-hooks/set-state-in-effect` (new in eslint-config-next 16 / React 19)
   // fires on intentional client-mount localStorage hydration in the demo stores

@@ -21,6 +21,11 @@ export default async function AppHomePage() {
           body={t.appHome.tileProductsBody}
         />
         <Tile
+          href="/app/events"
+          title="Events"
+          body="Create an event, allocate stock per SKU, then start selling. Each event tracks its own inventory."
+        />
+        <Tile
           href="/app/dashboard"
           title={t.appHome.tileDashboardTitle}
           body={t.appHome.tileDashboardBody}
