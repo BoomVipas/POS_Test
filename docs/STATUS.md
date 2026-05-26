@@ -46,7 +46,7 @@ Rolling snapshot. The "What's live" section below is the original 2026-05-04 bas
 | `/app/correction` | demo | bill-correction flow (`correct_order` analog) |
 | `/app/audit-log` | demo | activity history (Wave 18) |
 | `/app/close-day` | demo | cash reconciliation (Wave 25) |
-| `/app/send-later` | demo | pending fulfillments, status flow (Wave 16/17) |
+| `/app/send-later` | wired + demo | real `send_later_orders` queue + status flow (pending→packed→shipped→completed / cancel) when configured (DD-75–81); demo localStorage fallback |
 | `/app/stock-count` | demo | walk-the-warehouse recount with variance (Wave 33) |
 | `/app/pre-orders` | demo | sold-out pre-orders (Wave 31) |
 | `/app/inventory/samples` | demo | sample bucket Make / Return (Wave 39b) |
