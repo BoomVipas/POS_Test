@@ -1,20 +1,64 @@
 import { CloseDayWorkspace } from "./CloseDayWorkspace";
+import { CloseDayReconcileLive } from "./CloseDayReconcileLive";
+import { getCloseDayReconciliation } from "./actions";
 
-export default function CloseDayPage() {
+export const dynamic = "force-dynamic";
+
+function isConfigured(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  );
+}
+
+function Shell({
+  demoNote,
+  children,
+}: {
+  demoNote?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <main className="mx-auto max-w-3xl px-5 py-10">
-      <h1 className="font-display text-3xl font-extrabold tracking-tight text-accent-strong">Close day</h1>
+      <h1 className="font-display text-3xl font-extrabold tracking-tight text-accent-strong">
+        Close day
+      </h1>
       <p className="mt-2 text-text/85">
         Reconcile counted cash against today&rsquo;s recorded cash sales.
       </p>
-      <p className="mt-1 text-xs text-muted">
-        Demo mode: history saves to your browser. DD-92 will move this to the
-        Supabase <code>close_day_records</code> table.
-      </p>
-
-      <div className="mt-6">
-        <CloseDayWorkspace />
-      </div>
+      {demoNote && (
+        <p className="mt-1 text-xs text-muted">
+          Demo mode: history saves to your browser.
+        </p>
+      )}
+      <div className="mt-6">{children}</div>
     </main>
+  );
+}
+
+export default async function CloseDayPage() {
+  if (!isConfigured()) {
+    return (
+      <Shell demoNote>
+        <CloseDayWorkspace />
+      </Shell>
+    );
+  }
+
+  const reconciliation = await getCloseDayReconciliation();
+  if (!reconciliation) {
+    // No workspace resolved — fall back to the demo sandbox (the /app layout
+    // already guards true orphans).
+    return (
+      <Shell demoNote>
+        <CloseDayWorkspace />
+      </Shell>
+    );
+  }
+
+  return (
+    <Shell>
+      <CloseDayReconcileLive initial={reconciliation} />
+    </Shell>
   );
 }
