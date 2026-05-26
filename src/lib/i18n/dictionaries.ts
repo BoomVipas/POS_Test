@@ -110,6 +110,8 @@ export type Dict = {
     body: string;
     ctaApply: string;
     ctaStatus: string;
+    ctaRegister: string;
+    ctaOpenApp: string;
     feature1Title: string;
     feature1Body: string;
     feature2Title: string;
@@ -456,6 +458,8 @@ const en: Dict = {
     body: "Sell faster at events. Track stock per event. Take cash, PromptPay, transfer or card. Send-later orders included. Close each day in five minutes.",
     ctaApply: "Apply to join the pilot",
     ctaStatus: "Check application status",
+    ctaRegister: "Redeem invite code",
+    ctaOpenApp: "Open app",
     feature1Title: "Made for booths",
     feature1Body: "Built from a year of selling at pet expos. Same workflow as our event booth, just multi-tenant.",
     feature2Title: "Real database",
@@ -807,6 +811,8 @@ const th: Dict = {
     body: "ขายเร็วขึ้นในงานอีเวนต์ ติดตามสต็อกแยกแต่ละงาน รับเงินสด พร้อมเพย์ โอน หรือบัตร พร้อมระบบจัดส่งทีหลัง ปิดยอดประจำวันได้ใน 5 นาที",
     ctaApply: "สมัครเข้าร่วมโครงการ",
     ctaStatus: "ตรวจสอบสถานะการสมัคร",
+    ctaRegister: "ใช้รหัสเชิญ",
+    ctaOpenApp: "เปิดแอป",
     feature1Title: "ออกแบบมาเพื่อบูธ",
     feature1Body: "สร้างจากประสบการณ์ขายในงาน Pet Expo มาทั้งปี เวิร์กโฟลว์เดียวกับบูธของเราจริง ๆ แค่รองรับหลายร้าน",
     feature2Title: "ฐานข้อมูลจริง",
