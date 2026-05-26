@@ -38,7 +38,7 @@ Rolling snapshot. The "What's live" section below is the original 2026-05-04 bas
 | `/admin/pilot-status` | mock-only | DD-100 makes it live |
 | **Cashier app (gated)** | | |
 | `/app` | gated + demo | demo banner when no creds; seller home with tiles |
-| `/app/pos` | wired + demo | sells from the active event's real catalog/inventory; "Confirm" → `create_order` RPC (DD-55–66) when configured; demo/mock otherwise |
+| `/app/pos` | wired + demo | sells from the active event's real catalog/inventory; "Confirm" → `create_order` RPC (DD-55–66) when configured; demo/mock otherwise. Failed confirm (incl. wifi drop) shows a retryable inline error and never clears the cart (Wave 45) |
 | `/app/pos/success/[orderId]` | demo | success screen + PromptPay QR + Customer Portal token (Wave 8 + 40b) |
 | `/app/dashboard` | demo | multi-period dashboard, 10+ tiles (Wave 29/34) |
 | `/app/events` | wired + demo | real `events` + `event_inventory` (create, allocate active products, start/close) when configured (Wave 43); demo wizard fallback |

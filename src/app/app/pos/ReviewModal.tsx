@@ -20,7 +20,8 @@ import type { OrderType, PaymentMethod } from "@/lib/database.types";
 import { useT } from "@/lib/i18n/provider";
 import { useToast } from "@/components/ui/Toast";
 import { usePOSMode } from "@/lib/pos/pos-mode";
-import { submitOrder } from "./actions";
+import { resolveSubmit, shouldClearCart } from "@/lib/pos/confirm-state";
+import { submitOrder, type SubmitOrderResult } from "./actions";
 
 export function ReviewModal({
   products,
@@ -47,6 +48,7 @@ export function ReviewModal({
   const posMode = usePOSMode();
 
   const [confirmed, setConfirmed] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const productIndex = new Map(products.map((p) => [p.id, p]));
   const hasSendLater = cart.lines.some((l) => l.fulfillment === "send_later");
   const hasTakeNow = cart.lines.some((l) => l.fulfillment === "take_now");
@@ -141,39 +143,60 @@ export function ReviewModal({
       return;
     }
     setConfirmed(true);
-    const res = await submitOrder({
-      eventId: posMode.eventId,
-      lines: cart.lines.map((l) => ({
-        productId: l.productId,
-        qty: l.qty,
-        fulfillment: l.fulfillment,
-        ...(l.note ? { note: l.note } : {}),
-      })),
-      paymentMethod: cart.paymentMethod ?? "cash",
-      splits: cart.splits.map((s) => ({
-        method: s.method,
-        amountSatang: s.amountSatang,
-      })),
-      discountSatang: cart.discountSatang,
-      customer: {
-        name: cart.customer.name,
-        phone: cart.customer.phone,
-        email: cart.customer.email,
-        address: cart.customer.address,
-      },
-    });
-    if (res.ok) {
+    setError(null);
+
+    // Connectivity hedge: a wifi drop makes the Server Action call THROW (not
+    // return a result). Catch it so the cashier gets a retryable error instead
+    // of a button stuck on "Saved" — and the cart is never lost. resolveSubmit
+    // maps success / RPC-rejection / transport-failure; only success clears.
+    let res: SubmitOrderResult | null = null;
+    try {
+      res = await submitOrder({
+        eventId: posMode.eventId,
+        lines: cart.lines.map((l) => ({
+          productId: l.productId,
+          qty: l.qty,
+          fulfillment: l.fulfillment,
+          ...(l.note ? { note: l.note } : {}),
+        })),
+        paymentMethod: cart.paymentMethod ?? "cash",
+        splits: cart.splits.map((s) => ({
+          method: s.method,
+          amountSatang: s.amountSatang,
+        })),
+        discountSatang: cart.discountSatang,
+        customer: {
+          name: cart.customer.name,
+          phone: cart.customer.phone,
+          email: cart.customer.email,
+          address: cart.customer.address,
+        },
+      });
+    } catch (e) {
+      console.error("[pos] submitOrder threw (transport):", e);
+      res = null;
+    }
+
+    const resolution = resolveSubmit(res);
+    if (resolution.kind === "success") {
       push({
         kind: "success",
         title: "Sale recorded",
         message: `${formatTHB(total)} THB`,
       });
-      dispatch({ type: "CLEAR" });
+      if (shouldClearCart(resolution)) dispatch({ type: "CLEAR" });
       onClose();
-      router.push(`/app/pos/success/${res.orderId}`);
+      router.push(`/app/pos/success/${resolution.orderId}`);
     } else {
+      // Failure of any kind: keep the cart, surface a persistent retryable error
+      // (plus a toast), and re-enable the button so the cashier can retry.
       setConfirmed(false);
-      push({ kind: "error", title: "Sale failed", message: res.error });
+      setError(resolution.message);
+      push({
+        kind: "error",
+        title: "Sale not recorded",
+        message: resolution.message,
+      });
     }
   }
 
@@ -351,13 +374,22 @@ export function ReviewModal({
           )}
         </div>
 
+        {error && (
+          <div
+            role="alert"
+            className="mt-4 rounded-[var(--radius-md)] border border-[var(--color-danger-soft-fg)]/30 bg-[var(--color-danger-soft-bg)] px-3 py-2 text-sm font-bold text-[var(--color-danger-soft-fg)]"
+          >
+            {error}
+          </div>
+        )}
+
         <button
           type="button"
           onClick={handleConfirm}
           disabled={confirmed}
           className="btn-accent mt-5 w-full rounded-2xl px-5 py-3 text-base font-extrabold"
         >
-          {confirmed ? "Saved" : "Confirm sale"}
+          {confirmed ? "Saved" : error ? "Try again" : "Confirm sale"}
         </button>
 
         <p className="mt-2 text-center text-xs text-muted">
