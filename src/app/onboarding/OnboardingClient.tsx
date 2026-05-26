@@ -235,8 +235,8 @@ export function OnboardingClient() {
               />
             </Field>
             <p className="text-xs text-muted">
-              Google sign-in arrives at launch. For the pilot, a password keeps
-              you moving.
+              If you have an invite code, use the invite link instead — it sets
+              up your workspace via Google sign-in automatically.
             </p>
           </div>
         );
