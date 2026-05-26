@@ -39,13 +39,13 @@ export function DashboardConfiguredClient({
       <div className="mb-7 flex flex-wrap items-end justify-between gap-5">
         <div>
           <div className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-[var(--lavender-700)]">
-            Mochi POS live
+            Live dashboard
           </div>
           <h1 className="mt-1.5 font-display text-3xl font-black tracking-tight text-text">
             Today&apos;s takings
           </h1>
           <p className="mt-1 text-sm text-muted">
-            Real Supabase data for your active workspace.
+            Your workspace sales, updated in real time.
           </p>
         </div>
         <Link
