@@ -100,6 +100,21 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
 - Mochi UI parity for any new components introduced here (41b's disabled-button state must still use Mochi tokens).
 - Anything in the MeowMeow Event POS at the repo root (different protocol; off-limits from this wave's branches).
 
+## Wave 51 — Demo-sprint polish *(done — 2026-05-27 · PRs #109–#116)*
+
+Eight-PR sprint to make the app demo-ready before the first customer walkthrough. All CI green, all squash-merged to main.
+
+- **Wave 51a** (`7352718` / PR #109) — gated stale demo-mode notes behind `!isConfigured()` on audit-log + settings pages.
+- **Wave 51 Supabase wiring** (`36c05f8` / PR #110, Codex) — `lib/dashboard/queries.ts` (server-only; `getTodayStats`, `getRevenueByDay`, `getPaymentBreakdown`, `getTopProducts`, `getLiveStock`; Bangkok TZ); `DashboardConfiguredServer` async server component; `page.tsx` routes configured→`DashboardConfiguredServer`, demo→`DashboardLive`.
+- **Wave 51b** (`88e304a` / PR #111) — removed cat/pet-specific copy from `dictionaries.ts` (EN+TH): "cat-product booths"→"event booths", "Pet Expo" removed, "cat niche"→"booth sellers", "Cat Booth POS"→"Booth POS".
+- **Wave 51c** (`dfcc980` / PR #112) — deleted dead `DashboardConfigured.tsx` (unreachable after #110); fixed `CustomerInfoBlock.tsx` `useEffect+setState`→`useMemo` for `match` (pure derived state, one lint warning gone).
+- **Wave 51d** (`d561c32` / PR #113) — gated pre-orders demo note behind `!isConfigured()`.
+- **Wave 51e** (`5aa0349` / PR #114) — updated stale onboarding password-step copy: "Google sign-in arrives at launch…" → "If you have an invite code, use the invite link instead — it sets up your workspace via Google sign-in automatically."
+- **Wave 51f** (`372a60c` / PR #115) — added Events tile to `/app` home page (products → events → POS setup sequence now visible); added `.loop-agent/**` to `eslint.config.mjs` `globalIgnores` (Codex working dir was producing 174 lint errors blocking pre-push hook).
+- **Wave 51g** (`8ca1ace` / PR #116) — polished live dashboard header: "Mochi POS live"→"Live dashboard"; "Real Supabase data for your active workspace."→"Your workspace sales, updated in real time."
+
+Demo golden path after this sprint: landing → apply → invite link → Google sign-in → workspace → catalog (products) → events (allocate stock) → POS (create sale) → receipt → dashboard (live Supabase data). Zero TS errors; 20 lint warnings all intentional (localStorage hydration, `react-hooks/set-state-in-effect` set to `warn`).
+
 ## Wave 42 — Auth-error guard *(done — merged 2026-05-24 · `ea6d512` / PR #105)*
 
 Closed the one Medium follow-up from the Wave 41 Codex post-hoc review (a Supabase query error masquerading as onboarding-incomplete). Full result in the **Done** section below.
