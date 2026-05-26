@@ -56,10 +56,12 @@ export function ProductFormLive({
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState<string | null>(null);
+  const [dirty, setDirty] = useState(false);
   const [pending, startTransition] = useTransition();
   const { push } = useToast();
 
   function set<K extends keyof ProductInput>(key: K, val: ProductInput[K]) {
+    setDirty(true);
     setV((s) => ({ ...s, [key]: val }));
   }
 
@@ -97,6 +99,7 @@ export function ProductFormLive({
       onClose={onClose}
       title={initial ? "Edit product" : "Add product"}
       size="md"
+      confirmClose={() => dirty && !pending}
     >
       <form onSubmit={handleSubmit} className="grid gap-3">
         <TextInput

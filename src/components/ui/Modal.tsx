@@ -10,6 +10,13 @@ type ModalProps = {
   children: ReactNode;
   size?: "sm" | "md" | "lg";
   closeOnBackdropClick?: boolean;
+  /**
+   * Guard against losing unsaved input on an *ambient* dismiss (backdrop click
+   * or Esc). If provided and it returns true at dismiss time, the user is asked
+   * to confirm before the modal closes. The ✕ button and a form's own Cancel
+   * are explicit and always close directly. See feedback-form-modal-ux.
+   */
+  confirmClose?: () => boolean;
 };
 
 const sizeClass: Record<NonNullable<ModalProps["size"]>, string> = {
@@ -25,16 +32,36 @@ export function Modal({
   children,
   size = "md",
   closeOnBackdropClick = true,
+  confirmClose,
 }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
+
+  // Ambient dismiss (backdrop / Esc): confirm first if there are unsaved edits.
+  const attemptClose = () => {
+    if (
+      confirmClose?.() &&
+      typeof window !== "undefined" &&
+      !window.confirm("Discard your changes? Your edits won't be saved.")
+    ) {
+      return;
+    }
+    onClose();
+  };
+  // Keep the latest attemptClose reachable from the keydown listener without
+  // re-binding the effect on every render (updated in an effect, not during
+  // render, so it doesn't trip react-hooks' "no refs during render").
+  const attemptCloseRef = useRef(attemptClose);
+  useEffect(() => {
+    attemptCloseRef.current = attemptClose;
+  });
 
   useEffect(() => {
     if (!open) return;
     previouslyFocused.current = document.activeElement as HTMLElement | null;
 
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") attemptCloseRef.current();
       if (e.key === "Tab") {
         // simple focus trap inside the dialog
         const root = dialogRef.current;
@@ -73,7 +100,7 @@ export function Modal({
       document.body.style.overflow = prevOverflow;
       previouslyFocused.current?.focus();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 
@@ -84,25 +111,34 @@ export function Modal({
       aria-label={title}
       className="fixed inset-0 z-50 grid place-items-center bg-black/45 px-3 py-6"
       onClick={(e) => {
-        if (closeOnBackdropClick && e.target === e.currentTarget) onClose();
+        if (closeOnBackdropClick && e.target === e.currentTarget) attemptClose();
       }}
     >
+      {/* Capped to the viewport with an internal scroll area, so a tall form
+          never overflows off-screen (the bottom fields/buttons stay reachable). */}
       <div
         ref={dialogRef}
-        className={cn("panel relative w-full p-5", sizeClass[size])}
+        className={cn(
+          "panel relative flex max-h-[calc(100dvh-3rem)] w-full flex-col p-5",
+          sizeClass[size],
+        )}
       >
         <button
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute right-3 top-3 rounded-full bg-soft px-3 py-1 text-sm font-extrabold text-muted hover:text-text"
+          className="absolute right-3 top-3 z-10 rounded-full bg-soft px-3 py-1 text-sm font-extrabold text-muted hover:text-text"
         >
           ✕
         </button>
         {title && (
-          <h2 className="font-display text-2xl text-accent-strong">{title}</h2>
+          <h2 className="shrink-0 pr-10 font-display text-2xl text-accent-strong">
+            {title}
+          </h2>
         )}
-        <div className={cn(title && "mt-4")}>{children}</div>
+        <div className={cn("min-h-0 overflow-y-auto", title && "mt-4")}>
+          {children}
+        </div>
       </div>
     </div>
   );
