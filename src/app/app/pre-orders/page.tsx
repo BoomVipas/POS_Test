@@ -2,6 +2,10 @@ import Link from "next/link";
 import { getDict } from "@/lib/i18n/server";
 import { PreOrderList } from "./PreOrderList";
 
+function isConfigured(): boolean {
+  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL);
+}
+
 export default async function PreOrdersPage() {
   const { t } = await getDict();
   return (
@@ -10,7 +14,9 @@ export default async function PreOrdersPage() {
         {t.preOrders.title}
       </h1>
       <p className="mt-2 text-text/85">{t.preOrders.body}</p>
-      <p className="mt-1 text-xs text-muted">{t.preOrders.demoNote}</p>
+      {!isConfigured() && (
+        <p className="mt-1 text-xs text-muted">{t.preOrders.demoNote}</p>
+      )}
 
       <PreOrderList />
 
