@@ -282,6 +282,7 @@ alter table if exists public.pets                   enable row level security;
 alter table if exists public.customer_order_links   enable row level security;
 alter table if exists public.customer_registration_tokens enable row level security;
 alter table if exists public.close_day_records          enable row level security;
+alter table if exists public.order_refunds              enable row level security;
 
 drop policy if exists customers_member_select            on public.customers;
 drop policy if exists customer_contacts_member_select    on public.customer_contacts;
@@ -334,5 +335,19 @@ drop policy if exists close_day_records_member_select on public.close_day_record
 
 create policy close_day_records_member_select
   on public.close_day_records for select
+  to authenticated
+  using (public.is_workspace_member(workspace_id) or public.is_admin());
+
+-- =================================================================
+-- order_refunds
+--
+-- Reads: workspace members can view refunds. Writes go ONLY through the
+-- refund_order_items SECURITY DEFINER RPC (which restores stock + writes the
+-- audit row), so there is no insert/update/delete policy.
+-- =================================================================
+drop policy if exists order_refunds_member_select on public.order_refunds;
+
+create policy order_refunds_member_select
+  on public.order_refunds for select
   to authenticated
   using (public.is_workspace_member(workspace_id) or public.is_admin());

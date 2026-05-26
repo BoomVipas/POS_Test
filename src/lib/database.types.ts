@@ -457,6 +457,34 @@ export type Database = {
         >;
         Relationships: [];
       };
+      order_refunds: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          order_id: string;
+          order_item_id: string;
+          qty: number;
+          amount_satang: number;
+          reason: string | null;
+          refunded_by_user_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          order_id: string;
+          order_item_id: string;
+          qty: number;
+          amount_satang: number;
+          reason?: string | null;
+          refunded_by_user_id?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["order_refunds"]["Insert"]
+        >;
+        Relationships: [];
+      };
       audit_logs: {
         Row: {
           id: string;
@@ -703,6 +731,10 @@ export type Database = {
           p_reason?: string | null;
         };
         Returns: Database["public"]["Tables"]["close_day_records"]["Row"];
+      };
+      refund_order_items: {
+        Args: { p_order_id: string; p_lines: Json; p_reason?: string | null };
+        Returns: Json;
       };
     };
     Enums: Record<string, never>;

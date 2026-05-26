@@ -302,6 +302,24 @@ create index if not exists close_day_workspace_date_idx
   on public.close_day_records (workspace_id, iso_date desc, created_at desc);
 
 -- =================================================================
+-- 12c. order_refunds (per-line partial refunds; written via the
+--      refund_order_items RPC, which also restores stock + writes the audit row)
+-- =================================================================
+create table if not exists public.order_refunds (
+  id                  uuid primary key default gen_random_uuid(),
+  workspace_id        uuid not null references public.workspaces(id) on delete cascade,
+  order_id            uuid not null references public.orders(id) on delete cascade,
+  order_item_id       uuid not null references public.order_items(id) on delete cascade,
+  qty                 int not null check (qty > 0),
+  amount_satang       bigint not null check (amount_satang >= 0),
+  reason              text,
+  refunded_by_user_id uuid references auth.users(id),
+  created_at          timestamptz not null default now()
+);
+create index if not exists order_refunds_order_idx on public.order_refunds (workspace_id, order_id);
+create index if not exists order_refunds_item_idx  on public.order_refunds (order_item_id);
+
+-- =================================================================
 -- 13. audit_logs (append-only; mutations happen via RPCs that insert here)
 -- =================================================================
 create table if not exists public.audit_logs (
