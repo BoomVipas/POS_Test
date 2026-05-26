@@ -42,6 +42,9 @@ yarn-error.log*
 # local dev-server logs (e.g. .codex-dev/next-dev.*.log)
 .codex-dev/
 
+# local PR watchdog logs/state
+.watchdog/
+
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
