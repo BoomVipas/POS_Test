@@ -49,7 +49,7 @@ Rolling snapshot. The "What's live" section below is the original 2026-05-04 bas
 | `/app/send-later` | wired + demo | real `send_later_orders` queue + status flow (pending→packed→shipped→completed / cancel) when configured (DD-75–81); demo localStorage fallback |
 | `/app/stock-count` | demo | walk-the-warehouse recount with variance (Wave 33) |
 | `/app/pre-orders` | demo | sold-out pre-orders (Wave 31) |
-| `/app/inventory/samples` | demo | sample bucket Make / Return (Wave 39b) |
+| `/app/inventory/samples` | wired + demo | real `event_inventory` sample bucket on the active event via `convert_event_to_sample`/`convert_sample_to_event` RPCs (Wave 39d); demo localStorage fallback |
 | `/app/settings` | demo | workspace settings |
 | `/app/setup/products` | wired + demo | real `products` CRUD when configured (DD-43–53); demo localStorage fallback. Image→Storage deferred (DD-45) |
 | **Customer-facing** | | |

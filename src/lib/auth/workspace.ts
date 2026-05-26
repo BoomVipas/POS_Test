@@ -41,3 +41,17 @@ export const EVENT_MANAGE_ROLES = ["owner", "manager"] as const;
 export function canManageEvents(role: string): boolean {
   return (EVENT_MANAGE_ROLES as readonly string[]).includes(role);
 }
+
+// Roles allowed to move stock in/out of the sample bucket — matches the
+// convert_event_to_sample / convert_sample_to_event RPC role checks (booth
+// staff make samples, so cashier is included alongside stock roles).
+export const SAMPLE_MANAGE_ROLES = [
+  "owner",
+  "manager",
+  "cashier",
+  "stock_staff",
+] as const;
+
+export function canManageSamples(role: string): boolean {
+  return (SAMPLE_MANAGE_ROLES as readonly string[]).includes(role);
+}
