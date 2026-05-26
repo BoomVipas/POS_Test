@@ -1,6 +1,6 @@
 import { CloseDayWorkspace } from "./CloseDayWorkspace";
 import { CloseDayReconcileLive } from "./CloseDayReconcileLive";
-import { getCloseDayReconciliation } from "./actions";
+import { getCloseDayReconciliation, getCloseDayHistory } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -56,9 +56,10 @@ export default async function CloseDayPage() {
     );
   }
 
+  const history = await getCloseDayHistory();
   return (
     <Shell>
-      <CloseDayReconcileLive initial={reconciliation} />
+      <CloseDayReconcileLive initial={reconciliation} history={history} />
     </Shell>
   );
 }

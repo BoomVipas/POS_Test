@@ -284,6 +284,24 @@ create table if not exists public.send_later_orders (
 create index if not exists send_later_status_idx on public.send_later_orders (workspace_id, fulfillment_status);
 
 -- =================================================================
+-- 12b. close_day_records (end-of-day cash reconciliation; written via the
+--      close_day RPC, which also writes the audit row)
+-- =================================================================
+create table if not exists public.close_day_records (
+  id                   uuid primary key default gen_random_uuid(),
+  workspace_id         uuid not null references public.workspaces(id) on delete cascade,
+  iso_date             date not null,
+  expected_cash_satang bigint not null default 0,
+  counted_cash_satang  bigint not null default 0,
+  discrepancy_satang   bigint not null default 0,
+  reason               text,
+  closed_by_user_id    uuid references auth.users(id),
+  created_at           timestamptz not null default now()
+);
+create index if not exists close_day_workspace_date_idx
+  on public.close_day_records (workspace_id, iso_date desc, created_at desc);
+
+-- =================================================================
 -- 13. audit_logs (append-only; mutations happen via RPCs that insert here)
 -- =================================================================
 create table if not exists public.audit_logs (

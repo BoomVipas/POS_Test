@@ -281,6 +281,7 @@ alter table if exists public.customer_contacts      enable row level security;
 alter table if exists public.pets                   enable row level security;
 alter table if exists public.customer_order_links   enable row level security;
 alter table if exists public.customer_registration_tokens enable row level security;
+alter table if exists public.close_day_records          enable row level security;
 
 drop policy if exists customers_member_select            on public.customers;
 drop policy if exists customer_contacts_member_select    on public.customer_contacts;
@@ -319,5 +320,19 @@ drop policy if exists customer_reg_tokens_member_select on public.customer_regis
 
 create policy customer_reg_tokens_member_select
   on public.customer_registration_tokens for select
+  to authenticated
+  using (public.is_workspace_member(workspace_id) or public.is_admin());
+
+-- =================================================================
+-- close_day_records
+--
+-- Reads: workspace members can view close-day history. Writes go ONLY through
+-- the close_day SECURITY DEFINER RPC (which also writes the audit row), so there
+-- is no insert/update/delete policy.
+-- =================================================================
+drop policy if exists close_day_records_member_select on public.close_day_records;
+
+create policy close_day_records_member_select
+  on public.close_day_records for select
   to authenticated
   using (public.is_workspace_member(workspace_id) or public.is_admin());

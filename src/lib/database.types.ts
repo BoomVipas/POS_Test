@@ -429,6 +429,34 @@ export type Database = {
         >;
         Relationships: [];
       };
+      close_day_records: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          iso_date: string;
+          expected_cash_satang: number;
+          counted_cash_satang: number;
+          discrepancy_satang: number;
+          reason: string | null;
+          closed_by_user_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          iso_date: string;
+          expected_cash_satang?: number;
+          counted_cash_satang?: number;
+          discrepancy_satang?: number;
+          reason?: string | null;
+          closed_by_user_id?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["close_day_records"]["Insert"]
+        >;
+        Relationships: [];
+      };
       audit_logs: {
         Row: {
           id: string;
@@ -666,6 +694,15 @@ export type Database = {
       correct_order: {
         Args: { p_order_id: string; payload: Json };
         Returns: undefined;
+      };
+      close_day: {
+        Args: {
+          p_workspace_id: string;
+          p_iso_date: string;
+          p_counted_cash_satang: number;
+          p_reason?: string | null;
+        };
+        Returns: Database["public"]["Tables"]["close_day_records"]["Row"];
       };
     };
     Enums: Record<string, never>;
