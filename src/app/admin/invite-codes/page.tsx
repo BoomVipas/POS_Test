@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { Database, InviteCodeStatus } from "@/lib/database.types";
 import { Pill, type PillTone } from "@/components/ui/Pill";
 import { formatDateTimeTH } from "@/lib/date";
+import { CancelInviteButton } from "./CancelInviteButton";
 
 type Row = Database["public"]["Tables"]["invite_codes"]["Row"];
 
@@ -111,7 +112,15 @@ export default async function InviteCodesPage({
               <p className="font-display text-lg text-accent-strong">
                 {row.brand_name}
               </p>
-              <Pill tone={toneFor(row.status)}>{row.status}</Pill>
+              <div className="flex flex-wrap items-center gap-2">
+                <Pill tone={toneFor(row.status)}>{row.status}</Pill>
+                {!isMock && row.status === "active" && (
+                  <CancelInviteButton
+                    inviteCodeId={row.id}
+                    brandName={row.brand_name}
+                  />
+                )}
+              </div>
             </div>
             <p className="num mt-1 text-sm font-extrabold tracking-wide text-text">
               {row.code}
