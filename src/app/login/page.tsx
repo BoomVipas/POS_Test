@@ -1,3 +1,4 @@
+// Wave 59 — auth security fixes deployed
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
