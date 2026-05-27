@@ -100,6 +100,26 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
 - Mochi UI parity for any new components introduced here (41b's disabled-button state must still use Mochi tokens).
 - Anything in the MeowMeow Event POS at the repo root (different protocol; off-limits from this wave's branches).
 
+## Wave 56 — Customers page wired to Supabase *(in-review — PR #137)*
+
+- **Owner:** claude · **Branch:** `pos/wave-56-customers-live` · **Claimed:** 2026-05-27
+
+`CustomersConfiguredServer` server component queries `orders` + `order_items` to build phone-keyed customer rows: lifecycle stage (new/returning/vip/dormant), lifetime spend (satang), top SKU, days-since-last-order. Stage filter via `?stage=` URL param. `Date.now()` computation lives in module-level `loadCustomers()` (avoids `react-hooks/purity`). Demo fallback unchanged.
+
+---
+
+## Wave 55 — App audit log wired to Supabase *(done — 2026-05-27 · PR #135)*
+
+`AuditLogConfiguredServer` server component queries `audit_logs` filtered by `workspace_id`, with optional `?action=` filter. Shows pill-coded action type, target, timestamp, and human-readable summary. Limit 150 entries. Demo fallback (`AuditLogList`) unchanged.
+
+---
+
+## Wave 54 — i18n chrome keys: events + close-day *(done — 2026-05-27)*
+
+Added `chrome.events` and `chrome.closeDay` keys to `dictionaries.ts` (EN + TH). Layout `app/app/layout.tsx` now uses `t.chrome.events` and `t.chrome.closeDay` instead of hardcoded English strings.
+
+---
+
 ## Wave 51 — Demo-sprint polish *(done — 2026-05-27 · PRs #109–#116)*
 
 Eight-PR sprint to make the app demo-ready before the first customer walkthrough. All CI green, all squash-merged to main.
