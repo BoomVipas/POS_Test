@@ -1,6 +1,10 @@
 import { CloseDayWorkspace } from "./CloseDayWorkspace";
 import { CloseDayReconcileLive } from "./CloseDayReconcileLive";
-import { getCloseDayReconciliation, getCloseDayHistory } from "./actions";
+import {
+  getCloseDayReconciliation,
+  getCloseDayHistory,
+  getCloseDaySalesExport,
+} from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -56,10 +60,17 @@ export default async function CloseDayPage() {
     );
   }
 
-  const history = await getCloseDayHistory();
+  const [history, salesExportRows] = await Promise.all([
+    getCloseDayHistory(),
+    getCloseDaySalesExport(reconciliation.isoDate),
+  ]);
   return (
     <Shell>
-      <CloseDayReconcileLive initial={reconciliation} history={history} />
+      <CloseDayReconcileLive
+        initial={reconciliation}
+        history={history}
+        salesExportRows={salesExportRows}
+      />
     </Shell>
   );
 }

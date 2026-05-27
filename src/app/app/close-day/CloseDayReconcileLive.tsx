@@ -12,6 +12,7 @@ import {
   closeDay,
   type CloseDayReconciliation,
   type CloseDayRecord,
+  type CloseDaySalesExportRow,
 } from "./actions";
 
 const MIN_REASON = 3;
@@ -19,9 +20,11 @@ const MIN_REASON = 3;
 export function CloseDayReconcileLive({
   initial,
   history,
+  salesExportRows,
 }: {
   initial: CloseDayReconciliation;
   history: CloseDayRecord[];
+  salesExportRows: CloseDaySalesExportRow[];
 }) {
   const router = useRouter();
   const { push } = useToast();
@@ -35,30 +38,18 @@ export function CloseDayReconcileLive({
   const discrepancy = computeDiscrepancy(countedSatang, expected);
   const hasCounted = counted.trim() !== "" && Number.isFinite(Number(counted));
 
-  function exportHistoryCsv() {
-    if (history.length === 0) {
+  function exportSalesCsv() {
+    if (salesExportRows.length === 0) {
       push({
         kind: "warn",
         title: "Nothing to export",
-        message: "No close-day records yet.",
+        message: "No sales found for today.",
       });
       return;
     }
 
-    const rows = history.map((r) => ({
-      id: r.id,
-      iso_date: r.isoDate,
-      created_at: r.createdAt,
-      expected_cash_satang: r.expectedCashSatang,
-      counted_cash_satang: r.countedCashSatang,
-      discrepancy_satang: r.discrepancySatang,
-      expected_cash_baht: (r.expectedCashSatang / 100).toFixed(2),
-      counted_cash_baht: (r.countedCashSatang / 100).toFixed(2),
-      discrepancy_baht: (r.discrepancySatang / 100).toFixed(2),
-      reason: r.reason ?? "",
-    }));
-    const csv = toCsv(rows);
-    const filename = `mochipos-close-day-history-${initial.isoDate}.csv`;
+    const csv = toCsv(salesExportRows);
+    const filename = `mochipos-sales-ledger-${initial.isoDate}.csv`;
 
     // UTF-8 BOM so Excel-on-Windows opens it cleanly.
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
@@ -72,7 +63,7 @@ export function CloseDayReconcileLive({
     push({
       kind: "success",
       title: "CSV downloaded",
-      message: `${history.length} close-day record${history.length === 1 ? "" : "s"} exported as ${filename}`,
+      message: `${salesExportRows.length} sale line${salesExportRows.length === 1 ? "" : "s"} exported as ${filename}`,
     });
   }
 
@@ -127,6 +118,22 @@ export function CloseDayReconcileLive({
         <Tile label="Today" value={initial.isoDate} subtle />
         <Tile label="Expected cash" value={`${formatTHB(expected)} THB`} accent />
         <Tile label="Orders today" value={String(initial.ordersToday)} subtle />
+      </div>
+
+      <div className="panel mt-6 p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="font-display text-lg text-accent-strong">
+              Accounting export
+            </h2>
+            <p className="mt-1 text-xs text-muted">
+              Exports each sale line for today with order totals and payments.
+            </p>
+          </div>
+          <Button type="button" size="sm" variant="secondary" onClick={exportSalesCsv}>
+            Export today sales CSV
+          </Button>
+        </div>
       </div>
 
       <div className="panel mt-6 p-5">
@@ -197,12 +204,7 @@ export function CloseDayReconcileLive({
 
       {history.length > 0 && (
         <div className="panel mt-6 p-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="font-display text-lg text-accent-strong">History</h2>
-            <Button type="button" size="sm" variant="secondary" onClick={exportHistoryCsv}>
-              Export CSV
-            </Button>
-          </div>
+          <h2 className="font-display text-lg text-accent-strong">History</h2>
           <ul className="mt-3 grid gap-2">
             {history.map((r) => (
               <li

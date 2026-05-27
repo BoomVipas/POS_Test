@@ -4,7 +4,13 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getActiveWorkspace } from "@/lib/auth/workspace";
 import { computeExpectedCash } from "@/lib/close-day/reconcile";
+import {
+  buildCloseDaySalesExportRows,
+  type CloseDaySalesExportRow,
+} from "@/lib/close-day/sales-export";
 import { isoDateInTZ } from "@/lib/date";
+
+export type { CloseDaySalesExportRow } from "@/lib/close-day/sales-export";
 
 export type CloseDayReconciliation = {
   isoDate: string;
@@ -12,6 +18,13 @@ export type CloseDayReconciliation = {
   cashPaymentCount: number;
   ordersToday: number;
 };
+
+function bangkokDayWindow(isoDate: string) {
+  return {
+    startISO: new Date(`${isoDate}T00:00:00.000+07:00`).toISOString(),
+    endISO: new Date(`${isoDate}T23:59:59.999+07:00`).toISOString(),
+  };
+}
 
 // Read-only cash reconciliation for today (Bangkok day). Sums the real cash
 // payment_records for the workspace's non-voided orders created today — the
@@ -25,8 +38,7 @@ export async function getCloseDayReconciliation(): Promise<CloseDayReconciliatio
 
   const todayISO = isoDateInTZ(new Date());
   // Bangkok is UTC+7 with no DST, so the day boundaries are exact.
-  const startISO = new Date(`${todayISO}T00:00:00.000+07:00`).toISOString();
-  const endISO = new Date(`${todayISO}T23:59:59.999+07:00`).toISOString();
+  const { startISO, endISO } = bangkokDayWindow(todayISO);
 
   const empty: CloseDayReconciliation = {
     isoDate: todayISO,
@@ -192,4 +204,71 @@ export async function getCloseDayHistory(
     .limit(limit);
   if (error || !data) return [];
   return data.map(mapRecord);
+}
+
+// Accounting export for the selected Bangkok day. This is intentionally a
+// sales ledger, not a close-day cash summary: each sold item line becomes one
+// CSV row, with order totals and split payment columns attached.
+export async function getCloseDaySalesExport(
+  isoDate = isoDateInTZ(new Date()),
+): Promise<CloseDaySalesExportRow[]> {
+  const ws = await getActiveWorkspace();
+  if (!ws) return [];
+
+  const { startISO, endISO } = bangkokDayWindow(isoDate);
+  const supabase = await createClient();
+  const { data: orders, error: ordersError } = await supabase
+    .from("orders")
+    .select(
+      "id, order_number, customer_name, customer_phone, customer_email, order_type, payment_method, payment_status, subtotal_satang, discount_satang, shipping_fee_satang, total_satang, status, note, created_at",
+    )
+    .eq("workspace_id", ws.workspaceId)
+    .gte("created_at", startISO)
+    .lte("created_at", endISO)
+    .neq("status", "voided")
+    .order("created_at", { ascending: true });
+
+  if (ordersError || !orders) {
+    console.error(
+      "[close-day] sales export orders read failed:",
+      ordersError?.message,
+    );
+    return [];
+  }
+  if (orders.length === 0) return [];
+
+  const orderIds = orders.map((order) => order.id);
+  const [{ data: items, error: itemsError }, { data: payments, error: paymentsError }] =
+    await Promise.all([
+      supabase
+        .from("order_items")
+        .select(
+          "id, order_id, sku, product_name, qty, unit_price_satang, line_total_satang, fulfillment_type, is_sample, note",
+        )
+        .eq("workspace_id", ws.workspaceId)
+        .in("order_id", orderIds)
+        .order("created_at", { ascending: true }),
+      supabase
+        .from("payment_records")
+        .select("order_id, payment_method, amount_satang")
+        .eq("workspace_id", ws.workspaceId)
+        .in("order_id", orderIds),
+    ]);
+
+  if (itemsError) {
+    console.error("[close-day] sales export items read failed:", itemsError.message);
+  }
+  if (paymentsError) {
+    console.error(
+      "[close-day] sales export payments read failed:",
+      paymentsError.message,
+    );
+  }
+
+  return buildCloseDaySalesExportRows({
+    isoDate,
+    orders,
+    items: items ?? [],
+    payments: payments ?? [],
+  });
 }
