@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
+import { toCsv } from "@/lib/csv";
 import { formatTHB, bahtToSatang } from "@/lib/money/format";
 import { formatDateTimeTH } from "@/lib/date";
 import { computeDiscrepancy } from "@/lib/close-day/reconcile";
@@ -33,6 +34,47 @@ export function CloseDayReconcileLive({
     counted.trim() === "" ? 0 : bahtToSatang(Number(counted));
   const discrepancy = computeDiscrepancy(countedSatang, expected);
   const hasCounted = counted.trim() !== "" && Number.isFinite(Number(counted));
+
+  function exportHistoryCsv() {
+    if (history.length === 0) {
+      push({
+        kind: "warn",
+        title: "Nothing to export",
+        message: "No close-day records yet.",
+      });
+      return;
+    }
+
+    const rows = history.map((r) => ({
+      id: r.id,
+      iso_date: r.isoDate,
+      created_at: r.createdAt,
+      expected_cash_satang: r.expectedCashSatang,
+      counted_cash_satang: r.countedCashSatang,
+      discrepancy_satang: r.discrepancySatang,
+      expected_cash_baht: (r.expectedCashSatang / 100).toFixed(2),
+      counted_cash_baht: (r.countedCashSatang / 100).toFixed(2),
+      discrepancy_baht: (r.discrepancySatang / 100).toFixed(2),
+      reason: r.reason ?? "",
+    }));
+    const csv = toCsv(rows);
+    const filename = `mochipos-close-day-history-${initial.isoDate}.csv`;
+
+    // UTF-8 BOM so Excel-on-Windows opens it cleanly.
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    push({
+      kind: "success",
+      title: "CSV downloaded",
+      message: `${history.length} close-day record${history.length === 1 ? "" : "s"} exported as ${filename}`,
+    });
+  }
 
   function handleClose() {
     if (!hasCounted) {
@@ -155,7 +197,12 @@ export function CloseDayReconcileLive({
 
       {history.length > 0 && (
         <div className="panel mt-6 p-5">
-          <h2 className="font-display text-lg text-accent-strong">History</h2>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="font-display text-lg text-accent-strong">History</h2>
+            <Button type="button" size="sm" variant="secondary" onClick={exportHistoryCsv}>
+              Export CSV
+            </Button>
+          </div>
           <ul className="mt-3 grid gap-2">
             {history.map((r) => (
               <li
