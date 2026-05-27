@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Auth Setup — MochiPOS</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f8f7ff; color: #1a1a2e; line-height: 1.65; }
+  .page { max-width: 700px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  h1 { font-size: 1.75rem; font-weight: 900; color: #4f46e5; }
+  .subtitle { margin-top: 6px; font-size: 0.95rem; color: #6b7280; }
+  .badge { display: inline-block; background: #ede9fe; color: #4f46e5; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; margin-right: 6px; }
+
+  .skip-note { background: #ede9fe; border-left: 4px solid #4f46e5; padding: 12px 16px; border-radius: 8px; font-size: 0.88rem; margin: 24px 0; }
+  .gotcha { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 8px; font-size: 0.88rem; margin: 20px 0; }
+  .gotcha strong { color: #92400e; }
+
+  .part { margin-top: 40px; }
+  .part-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .part-num { width: 36px; height: 36px; border-radius: 50%; background: #4f46e5; color: white; font-weight: 900; font-size: 1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .part-title { font-size: 1.1rem; font-weight: 800; color: #1a1a2e; }
+  .part-meta { font-size: 0.8rem; color: #6b7280; }
+
+  .step { background: white; border: 1.5px solid #e5e7eb; border-radius: 14px; padding: 20px 22px; margin-bottom: 14px; transition: border-color 0.15s; }
+  .step.done { border-color: #a7f3d0; background: #f0fdf4; }
+  .step-top { display: flex; gap: 14px; align-items: flex-start; }
+  .step-check { margin-top: 2px; flex-shrink: 0; }
+  input[type="checkbox"] { width: 20px; height: 20px; accent-color: #4f46e5; cursor: pointer; }
+  .step-num { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #9ca3af; margin-bottom: 4px; }
+  .step-title { font-size: 1rem; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
+  .step.done .step-title { text-decoration: line-through; color: #9ca3af; }
+  .step-body { font-size: 0.9rem; color: #374151; }
+
+  .action { background: #ede9fe; border-radius: 8px; padding: 10px 14px; margin-top: 10px; font-size: 0.88rem; }
+  .action strong { color: #4f46e5; display: block; margin-bottom: 3px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .open-link { display: inline-flex; align-items: center; gap: 6px; background: #4f46e5; color: white; text-decoration: none; font-size: 0.85rem; font-weight: 700; padding: 7px 14px; border-radius: 8px; margin-top: 8px; }
+  .open-link:hover { background: #4338ca; }
+
+  code { background: #f3f4f6; border: 1px solid #e5e7eb; padding: 2px 7px; border-radius: 5px; font-family: monospace; font-size: 0.85em; color: #374151; word-break: break-all; }
+  .copy-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+  .copy-btn { background: white; border: 1.5px solid #d1d5db; color: #374151; font-size: 0.78rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; cursor: pointer; }
+  .copy-btn:hover { background: #f9fafb; }
+  .copy-btn.copied { border-color: #a7f3d0; color: #065f46; }
+
+  .divider { border: none; border-top: 1.5px dashed #e5e7eb; margin: 36px 0; }
+
+  .verify-section { margin-top: 40px; }
+  .verify-title { font-size: 1rem; font-weight: 800; color: #1a1a2e; margin-bottom: 14px; }
+  .verify-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 0.9rem; }
+  .verify-item:last-child { border-bottom: none; }
+  .tick { color: #10b981; font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+  .progress-bar { height: 6px; background: #e5e7eb; border-radius: 999px; margin: 20px 0; overflow: hidden; }
+  .progress-fill { height: 100%; background: #4f46e5; border-radius: 999px; transition: width 0.4s; }
+  .progress-label { font-size: 0.8rem; color: #6b7280; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Google Sign-in Setup</h1>
+  <p class="subtitle">
+    <span class="badge">~15 min</span>
+    <span class="badge">No code</span>
+    <span class="badge">No deploy</span>
+    Two browser tabs. Done.
+  </p>
+
+  <div class="skip-note">
+    <strong>Can you skip this?</strong> Yes — email + password login works fine without it. The "Continue with Google" buttons will just show an error. Do this when you're ready to let pilot sellers sign in with Google.
+  </div>
+
+  <div class="progress-label" id="progress-label">0 of 8 steps done</div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+  <!-- PART A -->
+  <div class="part">
+    <div class="part-header">
+      <div class="part-num">A</div>
+      <div>
+        <div class="part-title">Google Cloud Console</div>
+        <div class="part-meta">Get a Client ID + Secret · ~8 min</div>
+      </div>
+    </div>
+
+    <div class="step" id="step-1">
+      <div class="step-top">
+        <input type="checkbox" class="step-check" onchange="toggle('step-1')">
+        <div>
+          <div class="step-num">Step 1</div>
+          <div class="step-title">Open Google Cloud Console and pick your project</div>
+          <div class="step-body">
+            Open the link below. At the top-left, make sure you're in the <strong>MochiPOS project</strong> (or create one if it doesn't exist yet).
+            <div class="action">
+              <strong>Open in a new tab →</strong>
+              <a class="open-link" href="https://console.cloud.google.com" target="_blank">console.cloud.google.com ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" id="step-2">
+      <div class="step-top">
+        <input type="checkbox" class="step-check" onchange="toggle('step-2')">
+        <div>
+          <div class="step-num">Step 2</div>
+          <div class="step-title">Set up the OAuth consent screen</div>
+          <div class="step-body">
+            In the left sidebar: <strong>APIs &amp; Services → OAuth consent screen</strong>
+            <ul style="margin: 8px 0 0 18px; font-size:0.88rem;">
+              <li>User type: <strong>External</strong> → Create</li>
+              <li>App name: <code>Mochi POS</code></li>
+              <li>User support email: your email</li>
+              <li>Scopes: skip (defaults are fine — just click Save and Continue)</li>
+              <li>Save and Continue through all steps</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" id="step-3">
+      <div class="step-top">
+        <input type="checkbox" class="step-check" onchange="toggle('step-3')">
+        <div>
+          <div class="step-num">Step 3</div>
+          <div class="step-title">Add pilot sellers as Test Users</div>
+          <div class="step-body">
+            Still on the OAuth consent screen page → scroll to <strong>Test users</strong> → <strong>+ Add Users</strong>.<br><br>
+            Add every pilot seller's Gmail address here. While the app is in <em>Testing</em> mode, only these people can sign in with Google (max 100). You can add more anytime.
+            <div class="gotcha"><strong>⚠️ Important:</strong> The Gmail address you add here must <em>exactly</em> match the email you issue the invite code to. If they're different, sign-in will be blocked.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" id="step-4">
+      <div class="step-top">
+        <input type="checkbox" class="step-check" onchange="toggle('step-4')">
+        <div>
+          <div class="step-num">Step 4</div>
+          <div class="step-title">Create an OAuth Client ID</div>
+          <div class="step-body">
+            Left sidebar: <strong>APIs &amp; Services → Credentials → + Create Credentials → OAuth client ID</strong>
+            <ul style="margin: 8px 0 0 18px; font-size:0.88rem;">
+              <li>Application type: <strong>Web application</strong></li>
+              <li>Name: <code>MochiPOS web</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" id="step-5">
+      <div class="step-top">
+        <input type="checkbox" class="step-check" onchange="toggle('step-5')">
+        <div>
+          <div class="step-num">Step 5</div>
+          <div class="step-title">Add the Supabase redirect URI — then copy Client ID &amp; Secret</div>
+          <div class="step-body">
+            Still on the Create OAuth client ID form → <strong>Authorized redirect URIs → + Add URI</strong>.<br><br>
+            Paste this (replace <code>&lt;project-ref&gt;</code> with your Supabase project ref — found in Supabase → Project Settings → General):
+            <div class="copy-row">
+              <code id="supabase-url">https://&lt;project-ref&gt;.supabase.co/auth/v1/callback</code>
+            </div>
+            <br>
+            Click <strong>Create</strong>. A popup shows your <strong>Client ID</strong> and <strong>Client Secret</strong> — copy both and keep this tab open.
+            <div class="gotcha"><strong>⚠️ #1 mistake:</strong> This field (in Google Cloud) gets the <em>Supabase</em> URL ending in <code>/auth/v1/callback</code> — NOT your app's URL. They're different.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PART B -->
+  <div class="part">
+    <div class="part-header">
+      <div class="part-num">B</div>
+      <div>
+        <div class="part-title">Supabase Dashboard</div>
+        <div class="part-meta">Enable Google provider + allow-list your app · ~5 min</div>
+      </div>
+    </div>
+
+    <div class="step" id="step-6">
+      <div class="step-top">
+        <input type="checkbox" class="step-check" onchange="toggle('step-6')">
+        <div>
+          <div class="step-num">Step 6</div>
+          <div class="step-title">Enable Google in Supabase</div>
+          <div class="step-body">
+            Open your Supabase project → <strong>Authentication → Providers → Google</strong> → toggle <strong>Enable</strong>.<br><br>
+            Paste the <strong>Client ID</strong> and <strong>Client Secret</strong> you copied from Google Cloud → <strong>Save</strong>.
+            <div class="action">
+              <strong>Open in a new tab →</strong>
+              <a class="open-link" href="https://supabase.com/dashboard" target="_blank">supabase.com/dashboard ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" id="step-7">
+      <div class="step-top">
+        <input type="checkbox" class="step-check" onchange="toggle('step-7')">
+        <div>
+          <div class="step-num">Step 7</div>
+          <div class="step-title">Add your app's callback URLs to Supabase</div>
+          <div class="step-body">
+            Still in Supabase → <strong>Authentication → URL Configuration → Redirect URLs → Add URL</strong>.<br><br>
+            Add these three (one at a time):
+            <div style="margin-top:10px; display:flex; flex-direction:column; gap:6px;">
+              <code>https://mochipos.vercel.app/auth/callback</code>
+              <code>http://localhost:3000/auth/callback</code>
+              <code>https://mochipos-*.vercel.app/auth/callback</code>
+            </div>
+            <p style="margin-top:10px; font-size:0.85rem; color:#6b7280;">Replace <code>mochipos</code> with your actual Vercel project name if different. The wildcard (<code>*</code>) covers preview deploys.</p>
+            <div class="gotcha"><strong>⚠️ These are your app's URLs</strong> — different from what you put in Google Cloud. Supabase needs to know where to bounce the browser back to after Google approves.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" id="step-8">
+      <div class="step-top">
+        <input type="checkbox" class="step-check" onchange="toggle('step-8')">
+        <div>
+          <div class="step-num">Step 8</div>
+          <div class="step-title">Done — verify it works</div>
+          <div class="step-body">
+            No redeploy needed. Google auth is live the moment you saved in Step 6.<br><br>
+            Quick test:
+            <ul style="margin: 8px 0 0 18px; font-size:0.88rem;">
+              <li>Issue a new invite to a Gmail address you added in Step 3</li>
+              <li>Open the invite link → click <strong>Continue with Google</strong> → sign in as that same Gmail</li>
+              <li>Should land in <code>/app</code> with a workspace ✓</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verify-section">
+    <div class="verify-title">If something goes wrong</div>
+    <div class="verify-item"><span class="tick">→</span><div><strong>"Redirect not allowed"</strong> at Google screen — you put the wrong URL in Google Cloud (Step 5). It should be the Supabase URL, not your app URL.</div></div>
+    <div class="verify-item"><span class="tick">→</span><div><strong>"Redirect not allowed"</strong> after Google approves — you're missing your app URL in Supabase (Step 7).</div></div>
+    <div class="verify-item"><span class="tick">→</span><div><strong>"Doesn't match your invite"</strong> — the Gmail they signed in with doesn't match the email on the invite code. Re-issue the invite to their exact Gmail address.</div></div>
+    <div class="verify-item"><span class="tick">→</span><div><strong>Access blocked: App is in testing</strong> — the seller's Gmail wasn't added to Test Users (Step 3). Add it and try again.</div></div>
+  </div>
+
+</div>
+
+<script>
+  function toggle(id) {
+    const step = document.getElementById(id);
+    const cb = step.querySelector('input[type="checkbox"]');
+    step.classList.toggle('done', cb.checked);
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const total = document.querySelectorAll('.step-check').length;
+    const done = document.querySelectorAll('.step-check:checked').length;
+    document.getElementById('progress-fill').style.width = (done / total * 100) + '%';
+    document.getElementById('progress-label').textContent = done + ' of ' + total + ' steps done' + (done === total ? ' — all done! 🎉' : '');
+  }
+</script>
+</body>
+</html>
