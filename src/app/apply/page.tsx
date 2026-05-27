@@ -126,6 +126,12 @@ export default function ApplyPage() {
 
       <section className="mx-auto grid max-w-[1180px] items-center gap-10 px-5 pb-14 pt-10 lg:grid-cols-[minmax(0,1fr)_520px] lg:pb-20 lg:pt-16">
         <div>
+          <Link
+            href="/"
+            className="mb-5 inline-flex h-10 items-center rounded-[var(--radius-md)] border border-line bg-panel px-4 text-sm font-extrabold text-accent-strong shadow-[var(--shadow-rest)] hover:bg-soft"
+          >
+            Back to home
+          </Link>
           <h1 className="font-display text-5xl font-black leading-[0.98] tracking-tight text-accent-strong sm:text-6xl">
             Simple POS for pop-up sellers
           </h1>
