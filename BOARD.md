@@ -50,6 +50,10 @@ the GitHub UI (the API can't); the click-by-click is in
 
 | Issue | Batch | Item | Lane | Arc |
 |---|---|---|---|---|
+| [#308](https://github.com/visanchan/mochipos/issues/308) | Wave 58a | Audit log: filter nav disappears when ?action= active | ui | hardening |
+| [#309](https://github.com/visanchan/mochipos/issues/309) | Wave 58b | Audit log: ?action= filter value unvalidated | ui | hardening |
+| [#310](https://github.com/visanchan/mochipos/issues/310) | Wave 58c | Customers page: unbounded orders query | backend | hardening |
+| [#311](https://github.com/visanchan/mochipos/issues/311) | Wave 58d | Regression test: send_later without address → 'TBD' | qa | hardening |
 | [#16](https://github.com/visanchan/mochipos/issues/16) | DD-45/46 | Upload and show product images | backend | pos-polish |
 | [#17](https://github.com/visanchan/mochipos/issues/17) | — | Edit event stock during sales | backend | pos-polish |
 | [#18](https://github.com/visanchan/mochipos/issues/18) | — | Clean up app warning messages | qa | dx |
@@ -57,6 +61,7 @@ the GitHub UI (the API can't); the click-by-click is in
 | [#20](https://github.com/visanchan/mochipos/issues/20) | DD-23-32 | Admin approval creates seller invite codes | backend | admin-invite *(active arc)* |
 
 ## 🗺️ Arcs
+- **hardening** — #308, #309, #310, #311: Wave 58 post-scrutiny fixes (audit log nav, filter validation, customers limit, send_later regression test). **In progress on `pos/wave-58-scrutiny-fixes`** (claude).
 - **admin-invite** — #20: approve application → issue real invite code → email. **In progress** — core (DD-26/27/28) on `pos/DD-26-approve-generate-invite` (claude, PR #23); remaining: resend/cancel invite (DD-30/31), search (DD-25).
 - **pos-polish** — #15, #16, #17: finish the sale experience.
 - **dx** — #18, #19: developer hygiene.

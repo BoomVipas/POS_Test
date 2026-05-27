@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { AuditLogList } from "./AuditLogList";
-import { AuditLogConfiguredServer } from "./AuditLogConfiguredServer";
+import {
+  AuditLogConfiguredServer,
+  isKnownAction,
+  type KnownAction,
+} from "./AuditLogConfiguredServer";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +18,10 @@ export default async function AuditLogPage({
   searchParams: Promise<{ action?: string }>;
 }) {
   const sp = await searchParams;
-  const filter = sp.action ?? null;
+  // Wave 58b: validate the ?action= param — unknown values fall back to null
+  // so the empty-state can't render arbitrary user-supplied strings.
+  const raw = sp.action ?? null;
+  const filter: KnownAction | null = isKnownAction(raw) ? raw : null;
 
   return (
     <main className="mx-auto max-w-4xl px-5 py-10">

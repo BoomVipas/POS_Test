@@ -60,8 +60,15 @@ function stageFrom(
 async function loadCustomers(workspaceId: string): Promise<{
   rows: CustomerRow[];
   error: string | null;
+  truncated: boolean;
 }> {
   const supabase = await createClient();
+
+  // Wave 58c: PostgREST's default row cap is 1 000; without an explicit limit
+  // a workspace with >1 000 orders silently truncates (no error, no warning).
+  // 2 000 covers any realistic pilot workspace. When we hit this we'll migrate
+  // to a single GROUP BY query instead of the two-query client-side join.
+  const ORDER_LIMIT = 2000;
 
   const { data: orders, error: ordersErr } = await supabase
     .from("orders")
@@ -69,10 +76,12 @@ async function loadCustomers(workspaceId: string): Promise<{
     .eq("workspace_id", workspaceId)
     .neq("status", "voided")
     .not("customer_phone", "is", null)
-    .order("created_at", { ascending: true });
+    .order("created_at", { ascending: true })
+    .limit(ORDER_LIMIT);
 
-  if (ordersErr) return { rows: [], error: ordersErr.message };
-  if (!orders || orders.length === 0) return { rows: [], error: null };
+  if (ordersErr) return { rows: [], error: ordersErr.message, truncated: false };
+  if (!orders || orders.length === 0)
+    return { rows: [], error: null, truncated: false };
 
   const orderIds = orders.map((o) => o.id);
   const { data: items } = await supabase
@@ -154,7 +163,7 @@ async function loadCustomers(workspaceId: string): Promise<{
     return sd !== 0 ? sd : b.lastOrderAt.localeCompare(a.lastOrderAt);
   });
 
-  return { rows, error: null };
+  return { rows, error: null, truncated: orders.length === ORDER_LIMIT };
 }
 
 // ── component ─────────────────────────────────────────────────────────────────
@@ -167,7 +176,7 @@ export async function CustomersConfiguredServer({
   const ws = await getActiveWorkspace();
   if (!ws) return null;
 
-  const { rows, error } = await loadCustomers(ws.workspaceId);
+  const { rows, error, truncated } = await loadCustomers(ws.workspaceId);
 
   if (error) {
     return (
@@ -299,6 +308,14 @@ export async function CustomersConfiguredServer({
             </li>
           ))}
         </ul>
+      )}
+      {truncated && (
+        <p className="mt-4 text-xs text-muted">
+          Showing customers from the most recent 2 000 orders.{" "}
+          <span className="font-bold">
+            Older orders are not reflected in these totals.
+          </span>
+        </p>
       )}
     </>
   );

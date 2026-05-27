@@ -22,6 +22,17 @@ Anything inside `pos-for-sell/`. Do not edit files in the root or in `meowmeow_p
 
 ## Currently active
 
+## Wave 58 — Post-scrutiny hardening *(ready-for-review — PR #312)*
+
+- **Owner:** claude · **Branch:** `pos/wave-58-scrutiny-fixes` · **Claimed:** 2026-05-28 · **Issues:** #308, #309, #310, #311
+
+Four bugs + risks surfaced by `/scrutinize all the features that ship` (2026-05-28). No migrations needed; no schema changes.
+
+- **58a — Audit log filter nav stuck** (#308): when `?action=` filter is active and rows exist, the nav pills disappear and there is no way back to "all". Fix: render an unconditional "All" pill when `filter !== null`.
+- **58b — Audit log unvalidated `?action=` filter** (#309): any string passes through to the empty-state message. Fix: validate against the known action allowlist in `page.tsx`.
+- **58c — Customers page: unbounded orders query** (#310): no `.limit()` → silent truncation at the 1000-row PostgREST default, plus oversized `.in()` on order_items. Fix: add `.limit(2000)` + a truncation note.
+- **58d — Regression test: send_later without address → 'TBD'** (#311): no pglite test pins the silent 'TBD' default; DD-76 needs this anchor. Fix: add a pglite case for `create_order` with `send_later` + no shipping_address.
+
 _None claimed. ✅ **The post-Supabase wire-up arc (DD-39 login → DD-65 `create_order`) is COMPLETE** (2026-05-25) — see the arc summary in [docs/STATUS.md](docs/STATUS.md). A pilot seller can go invite → workspace → catalog → event + stock → **real atomic sale** on live Supabase, RLS-isolated per tenant. The autonomous loop that drove it (cron `c627795e`) has self-cancelled at its stop condition. Most recent code: **DD-55–66 real POS sale** (`ba53cbc`, PR #9 — see **Done**)._
 
 **Suggested next arc (post-sale polish — unclaimed):** DD-67 real receipt page · DD-45/46 product images → Supabase Storage · DD-49 CSV import · DD-54 setup-complete gate · DD-74 live free-sample toggle · DD-85+ real dashboard on `orders`/`event_inventory` · cleanup of the `redeem_invite_code` dead `set status='expired'` write (noted in DD-33–38).

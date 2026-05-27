@@ -10,7 +10,29 @@ type Row = Database["public"]["Tables"]["audit_logs"]["Row"];
 
 const LIMIT = 150;
 
-const TONE: Record<string, PillTone> = {
+// Wave 58b: the canonical action-type list. Used both for tone lookup and for
+// validating the ?action= URL param (unknown values fall back to null).
+const KNOWN_ACTIONS = [
+  "create_order",
+  "void_order",
+  "refund_order_items",
+  "close_day",
+  "adjust_event_stock",
+  "correct_order",
+  "claim_registration_token",
+  "create_registration_token",
+  "approve_application",
+  "reject_application",
+  "redeem_invite_code",
+] as const;
+
+export type KnownAction = (typeof KNOWN_ACTIONS)[number];
+
+export function isKnownAction(s: string | null): s is KnownAction {
+  return KNOWN_ACTIONS.includes(s as KnownAction);
+}
+
+const TONE: Record<KnownAction, PillTone> = {
   create_order: "accent",
   void_order: "danger",
   refund_order_items: "warn",
@@ -25,7 +47,7 @@ const TONE: Record<string, PillTone> = {
 };
 
 function toneFor(action: string): PillTone {
-  return TONE[action] ?? "neutral";
+  return (TONE as Record<string, PillTone>)[action] ?? "neutral";
 }
 
 function summaryFor(r: Row): string {
@@ -47,7 +69,9 @@ function summaryFor(r: Row): string {
 export async function AuditLogConfiguredServer({
   filter,
 }: {
-  filter: string | null;
+  // Wave 58b: callers must validate the filter against isKnownAction() before
+  // passing it here; unknown values should be coerced to null by page.tsx.
+  filter: KnownAction | null;
 }) {
   const ws = await getActiveWorkspace();
   if (!ws) return null;
@@ -72,9 +96,19 @@ export async function AuditLogConfiguredServer({
     );
   }
 
-  // Distinct action types present in the unfiltered data (approximated from
-  // the current page; deep counts would need a separate query).
-  const distinct = [...new Set((rows ?? []).map((r) => r.action))].sort();
+  // Wave 58a: always run an unfiltered pass for the distinct action types so
+  // the filter nav remains visible (and navigable) when a filter is active.
+  // The filtered `rows` above is cheap (≤150 rows); this second query is
+  // action-column-only and also ≤150 rows — acceptable for the pilot scale.
+  const distinctQuery = await supabase
+    .from("audit_logs")
+    .select("action")
+    .eq("workspace_id", ws.workspaceId)
+    .order("created_at", { ascending: false })
+    .limit(LIMIT);
+  const distinct = [
+    ...new Set((distinctQuery.data ?? []).map((r) => r.action)),
+  ].sort();
 
   if (!rows || rows.length === 0) {
     return (
@@ -105,7 +139,10 @@ export async function AuditLogConfiguredServer({
 
   return (
     <>
-      {distinct.length > 1 && (
+      {/* Wave 58a: show nav whenever distinct actions exist — not only when
+          distinct.length > 1. Previously the nav disappeared when a filter
+          was active because distinct was derived from the filtered rows. */}
+      {distinct.length > 0 && (
         <div className="mt-4 flex flex-wrap gap-2">
           <a
             href="/app/audit-log"
@@ -115,7 +152,7 @@ export async function AuditLogConfiguredServer({
                 : "rounded-full border border-line bg-panel px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-accent-strong"
             }
           >
-            all ({rows.length}{rows.length === LIMIT ? "+" : ""})
+            all
           </a>
           {distinct.map((a) => {
             const count = rows.filter((r) => r.action === a).length;
