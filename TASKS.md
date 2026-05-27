@@ -100,9 +100,15 @@ Twelve-batch arc landing **before** the DD-65 Supabase wire-up. Anchored to a `/
 - Mochi UI parity for any new components introduced here (41b's disabled-button state must still use Mochi tokens).
 - Anything in the MeowMeow Event POS at the repo root (different protocol; off-limits from this wave's branches).
 
-## Wave 56 — Customers page wired to Supabase *(in-review — PR #137)*
+## Wave 57 — ESLint warning cleanup *(in-review — PR #139)*
 
-- **Owner:** claude · **Branch:** `pos/wave-56-customers-live` · **Claimed:** 2026-05-27
+- **Owner:** claude · **Branch:** `pos/wave-57-lint-warnings` · **Claimed:** 2026-05-27 · **Issues:** #138, closes #18
+
+`npm run lint` → 0 problems (was 19 warnings). New `useIsClient()` hook (`useSyncExternalStore`-based) replaces `setReady(true)` in 13 demo hooks. Lazy `useState` init replaces synchronous `setState(readStorage())` calls. Non-demo fixes: state-update-during-render in `UpsellPrompt` + `ProductFormModal`, lazy init in `RegistrationLinkBlock`, redundant effect removed in `settings/Form`.
+
+---
+
+## Wave 56 — Customers page wired to Supabase *(done — 2026-05-27 · PR #137)*
 
 `CustomersConfiguredServer` server component queries `orders` + `order_items` to build phone-keyed customer rows: lifecycle stage (new/returning/vip/dormant), lifetime spend (satang), top SKU, days-since-last-order. Stage filter via `?stage=` URL param. `Date.now()` computation lives in module-level `loadCustomers()` (avoids `react-hooks/purity`). Demo fallback unchanged.
 
