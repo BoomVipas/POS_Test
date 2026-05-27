@@ -59,12 +59,12 @@ describe("humanizeResendInviteError", () => {
 
   it("maps missing email configuration to a manual fallback", () => {
     expect(humanizeResendInviteError("Email sending is not configured.")).toMatch(
-      /copy the invite code/i,
+      /RESEND_API_KEY/i,
     );
   });
 
-  it("falls back to a generic resend failure", () => {
-    expect(humanizeResendInviteError("unexpected")).toMatch(/couldn't resend/i);
+  it("falls back to showing the raw error message for unknown errors", () => {
+    expect(humanizeResendInviteError("unexpected")).toMatch(/email failed/i);
   });
 });
 
