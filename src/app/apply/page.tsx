@@ -2,85 +2,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ApplyForm } from "./Form";
+import { getDict } from "@/lib/i18n/server";
 
-const AUDIENCES = [
-  "Product booth sellers",
-  "Pop-up store owners",
-  "Event sellers",
-  "Small retail brands",
-  "Small brands preparing for multi-day events",
-];
+export default async function ApplyPage() {
+  const { t } = await getDict();
+  const a = t.apply;
 
-const BENEFITS = [
-  {
-    title: "Fast checkout",
-    body: "Ring up orders quickly on a tablet or laptop, even when the booth gets busy.",
-  },
-  {
-    title: "Easy stock",
-    body: "Track event stock, samples, and restock adjustments without paper notes.",
-  },
-  {
-    title: "Clear reports",
-    body: "See daily sales, payment methods, and event summaries after each selling day.",
-  },
-  {
-    title: "Product setup",
-    body: "Manage products, SKU, price, and starting stock before the event opens.",
-  },
-  {
-    title: "QR payment support",
-    body: "Built for QR and PromptPay-friendly sales workflows.",
-  },
-];
-
-const STEPS = [
-  {
-    title: "Apply or try the demo",
-    body: "Tell us about your brand and upcoming event. We review early access by hand.",
-  },
-  {
-    title: "Set up products and stock",
-    body: "Add products, SKU, prices, and starting stock for each event.",
-  },
-  {
-    title: "Sell at the booth",
-    body: "Use the POS to record sales, payment type, samples, and corrections.",
-  },
-  {
-    title: "Close the day",
-    body: "Review sales, cash, and stock movement before the team goes home.",
-  },
-];
-
-const FAQS = [
-  {
-    q: "Is Mochi POS free to try?",
-    a: "Early access is reviewed case by case. Apply and we will contact you with the current pilot details.",
-  },
-  {
-    q: "What device do I need?",
-    a: "A tablet or laptop with internet access works best.",
-  },
-  {
-    q: "Can it support QR payment?",
-    a: "Yes. Mochi POS is designed for QR and PromptPay-friendly sales workflows.",
-  },
-  {
-    q: "Can I use it for a multi-day event?",
-    a: "Yes. The workflow supports event stock and daily reporting.",
-  },
-  {
-    q: "Do I need technical setup?",
-    a: "No. We help early users get started and understand the setup.",
-  },
-  {
-    q: "Who will support me?",
-    a: "VC is the contact person for early access and setup questions.",
-  },
-];
-
-export default function ApplyPage() {
   return (
     <main className="flex-1">
       <header className="sticky top-0 z-30 border-b border-line/70 bg-bg/90 backdrop-blur">
@@ -97,13 +24,13 @@ export default function ApplyPage() {
           </Link>
           <nav className="ml-4 hidden items-center gap-5 text-sm font-bold text-muted md:flex">
             <a href="#features" className="hover:text-accent-strong">
-              Features
+              {a.navFeatures}
             </a>
             <a href="#how-it-works" className="hover:text-accent-strong">
-              How it works
+              {a.navHowItWorks}
             </a>
             <a href="#faq" className="hover:text-accent-strong">
-              FAQ
+              {a.navFaq}
             </a>
           </nav>
           <div className="ml-auto flex items-center gap-2">
@@ -112,13 +39,13 @@ export default function ApplyPage() {
               href="/login"
               className="hidden rounded-[var(--radius-md)] px-3 py-2 text-sm font-bold text-text hover:bg-soft sm:inline-flex"
             >
-              Sign in
+              {a.navSignIn}
             </Link>
             <a
               href="#apply"
               className="btn-accent inline-flex h-10 items-center rounded-[var(--radius-md)] px-4 text-sm font-extrabold"
             >
-              Try Demo / Apply
+              {a.heroCtaPrimary}
             </a>
           </div>
         </div>
@@ -130,53 +57,57 @@ export default function ApplyPage() {
             href="/"
             className="mb-5 inline-flex h-10 items-center rounded-[var(--radius-md)] border border-line bg-panel px-4 text-sm font-extrabold text-accent-strong shadow-[var(--shadow-rest)] hover:bg-soft"
           >
-            Back to home
+            {a.backToHome}
           </Link>
           <h1 className="font-display text-5xl font-black leading-[0.98] tracking-tight text-accent-strong sm:text-6xl">
-            Simple POS for pop-up sellers
+            {a.heroHeadline}
           </h1>
           <p className="mt-5 max-w-xl text-2xl font-extrabold leading-tight text-[var(--lavender-700)]">
-            Fast Sales. Easy Stock. Clear Reports.
+            {a.heroSubheadline}
           </p>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-text/85">
-            Sell faster at events, track stock clearly, and close each selling
-            day with reports you can trust.
+            {a.heroBody}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a
               href="#apply"
               className="btn-accent inline-flex items-center rounded-[var(--radius-md)] px-6 py-3 text-base font-extrabold"
             >
-              Try Demo / Apply
+              {a.heroCtaPrimary}
             </a>
             <a
               href="#how-it-works"
               className="inline-flex items-center rounded-[var(--radius-md)] border border-line bg-panel px-5 py-3 text-sm font-extrabold text-accent-strong shadow-[var(--shadow-rest)]"
             >
-              See how it works
+              {a.heroCtaSecondary}
             </a>
           </div>
           <p className="mt-4 text-sm font-bold text-muted">
-            Early access is reviewed by a real person. We help you get set up.
+            {a.heroTrustNote}
           </p>
         </div>
 
-        <HeroPreview />
+        <HeroPreview
+          kicker={a.heroPreviewKicker}
+          title={a.heroPreviewTitle}
+          status={a.heroPreviewStatus}
+          today={a.heroPreviewToday}
+          footer={a.heroPreviewFooter}
+        />
       </section>
 
       <section className="border-y border-line/70 bg-panel/55">
         <div className="mx-auto grid max-w-[1180px] gap-8 px-5 py-12 lg:grid-cols-[360px_1fr]">
           <div>
             <h2 className="font-display text-3xl font-black tracking-tight text-accent-strong">
-              Built for small brands selling in real places
+              {a.audiencesHeading}
             </h2>
             <p className="mt-3 leading-relaxed text-text/80">
-              Mochi POS is for sellers who need a practical booth system, not a
-              complicated enterprise setup.
+              {a.audiencesBody}
             </p>
           </div>
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {AUDIENCES.map((audience) => (
+            {a.audiences.map((audience) => (
               <li
                 key={audience}
                 className="rounded-[var(--radius-md)] border border-line bg-panel px-4 py-3 text-sm font-extrabold text-text shadow-[var(--shadow-rest)]"
@@ -191,15 +122,14 @@ export default function ApplyPage() {
       <section id="features" className="mx-auto max-w-[1180px] px-5 py-14">
         <div className="max-w-2xl">
           <h2 className="font-display text-3xl font-black tracking-tight text-accent-strong">
-            Everything a small event seller needs to run the booth
+            {a.featuresHeading}
           </h2>
           <p className="mt-3 leading-relaxed text-text/80">
-            Keep checkout, stock, and reporting in one simple workflow your team
-            can understand quickly.
+            {a.featuresBody}
           </p>
         </div>
         <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-          {BENEFITS.map((item) => (
+          {a.benefits.map((item) => (
             <article
               key={item.title}
               className="rounded-[var(--radius-lg)] border border-line bg-panel p-5 shadow-[var(--shadow-rest)]"
@@ -218,10 +148,10 @@ export default function ApplyPage() {
       <section id="how-it-works" className="bg-[var(--indigo-50)]">
         <div className="mx-auto max-w-[1180px] px-5 py-14">
           <h2 className="font-display text-3xl font-black tracking-tight text-accent-strong">
-            How it works
+            {a.howItWorksHeading}
           </h2>
           <div className="mt-8 grid gap-4 md:grid-cols-4">
-            {STEPS.map((step, index) => (
+            {a.steps.map((step, index) => (
               <article
                 key={step.title}
                 className="rounded-[var(--radius-lg)] border border-line bg-panel p-5 shadow-[var(--shadow-rest)]"
@@ -244,18 +174,16 @@ export default function ApplyPage() {
       <section className="mx-auto grid max-w-[1180px] gap-6 px-5 py-14 lg:grid-cols-2">
         <article className="rounded-[var(--radius-xl)] border border-line bg-panel p-7 shadow-[var(--shadow-card)]">
           <h2 className="font-display text-3xl font-black tracking-tight text-accent-strong">
-            You are not setting this up alone
+            {a.contactHeading}
           </h2>
           <p className="mt-3 leading-relaxed text-text/80">
-            Mochi POS is currently open to selected early users. We review each
-            application, help set up the first workspace, and collect feedback
-            to improve the product before wider launch.
+            {a.contactBody}
           </p>
           <div className="mt-6 rounded-[var(--radius-lg)] bg-[var(--cream)] p-5">
             <p className="font-extrabold text-accent-strong">
               Visan Chantrapanichkul (VC)
             </p>
-            <p className="text-sm text-muted">Product Lead & Sales Executive</p>
+            <p className="text-sm text-muted">Product Lead &amp; Sales Executive</p>
             <div className="mt-3 grid gap-2 text-sm font-bold text-text">
               <a href="tel:+66869948580" className="hover:text-accent">
                 086-994-8580
@@ -272,17 +200,13 @@ export default function ApplyPage() {
 
         <article className="rounded-[var(--radius-xl)] border border-line bg-panel p-7 shadow-[var(--shadow-card)]">
           <h2 className="font-display text-3xl font-black tracking-tight text-accent-strong">
-            Your sales data stays your business data
+            {a.dataHeading}
           </h2>
           <p className="mt-3 leading-relaxed text-text/80">
-            Mochi POS uses workspace-based access so each seller only sees their
-            own products, orders, stock, and reports. We use your application
-            information to review your pilot request and contact you about
-            setup. We do not sell your customer or sales data.
+            {a.dataBody}
           </p>
           <p className="mt-5 text-sm font-bold text-muted">
-            Simple promise: practical access control, careful handling, and no
-            exaggerated enterprise claims.
+            {a.dataFootnote}
           </p>
         </article>
       </section>
@@ -290,10 +214,10 @@ export default function ApplyPage() {
       <section id="faq" className="border-y border-line/70 bg-panel/55">
         <div className="mx-auto max-w-[900px] px-5 py-14">
           <h2 className="font-display text-3xl font-black tracking-tight text-accent-strong">
-            Questions before you try Mochi POS
+            {a.faqHeading}
           </h2>
           <div className="mt-8 grid gap-3">
-            {FAQS.map((item) => (
+            {a.faqs.map((item) => (
               <details
                 key={item.q}
                 className="group rounded-[var(--radius-lg)] border border-line bg-panel p-5 shadow-[var(--shadow-rest)]"
@@ -314,33 +238,47 @@ export default function ApplyPage() {
       >
         <div>
           <h2 className="font-display text-4xl font-black tracking-tight text-accent-strong">
-            Apply for early access
+            {a.applyHeading}
           </h2>
           <p className="mt-4 max-w-xl text-lg leading-relaxed text-text/85">
-            Tell us about your brand, products, and upcoming events. We will
-            review your application and contact you about the next step.
+            {a.applyBody}
           </p>
           <div className="mt-8 rounded-[var(--radius-xl)] border border-line bg-panel p-6 shadow-[var(--shadow-rest)]">
             <h3 className="font-display text-xl font-black text-accent-strong">
-              Early access, with hands-on support
+              {a.applyBoxHeading}
             </h3>
             <p className="mt-2 leading-relaxed text-text/80">
-              You do not need to be technical. We will help you understand the
-              setup and decide whether Mochi POS fits your event workflow.
+              {a.applyBoxBody}
             </p>
           </div>
         </div>
 
         <aside className="rounded-[var(--radius-xl)] border border-line bg-panel p-6 shadow-[var(--shadow-card)]">
           <h3 className="font-display text-2xl font-black text-accent-strong">
-            Start your application
+            {a.applyAsideHeading}
           </h3>
           <p className="mt-2 text-sm leading-relaxed text-muted">
-            We review every application by hand. Expect a reply within 3 working
-            days.
+            {a.applyAsideBody}
           </p>
           <div className="mt-6">
-            <ApplyForm />
+            <ApplyForm
+              labels={{
+                fieldName: a.fieldName,
+                fieldPhone: a.fieldPhone,
+                fieldEmail: a.fieldEmail,
+                fieldBrand: a.fieldBrand,
+                fieldCategory: a.fieldCategory,
+                fieldSocial: a.fieldSocial,
+                fieldNumSkus: a.fieldNumSkus,
+                fieldEventsPerYear: a.fieldEventsPerYear,
+                fieldMessage: a.fieldMessage,
+                fieldMessagePlaceholder: a.fieldMessagePlaceholder,
+                submit: a.submit,
+                submitting: a.submitting,
+                alreadyApproved: a.alreadyApproved,
+                redeemInvite: a.redeemInvite,
+              }}
+            />
           </div>
         </aside>
       </section>
@@ -348,7 +286,19 @@ export default function ApplyPage() {
   );
 }
 
-function HeroPreview() {
+function HeroPreview({
+  kicker,
+  title,
+  status,
+  today,
+  footer,
+}: {
+  kicker: string;
+  title: string;
+  status: string;
+  today: string;
+  footer: string;
+}) {
   return (
     <div className="rounded-[var(--radius-xl)] border border-line bg-panel p-4 shadow-[var(--shadow-card)]">
       <div className="rounded-[22px] bg-[var(--indigo-50)] p-4">
@@ -356,14 +306,14 @@ function HeroPreview() {
           <div className="flex items-center justify-between gap-3 border-b border-line pb-3">
             <div>
               <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-muted">
-                Event checkout
+                {kicker}
               </p>
               <p className="mt-1 font-display text-xl font-black text-accent-strong">
-                Booth POS
+                {title}
               </p>
             </div>
             <div className="rounded-[12px] bg-[var(--lavender-100)] px-3 py-2 text-xs font-black text-[var(--lavender-700)]">
-              Running
+              {status}
             </div>
           </div>
           <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_150px]">
@@ -385,10 +335,10 @@ function HeroPreview() {
               )}
             </div>
             <div className="rounded-[16px] bg-[var(--color-accent)] p-4 text-white">
-              <p className="text-xs font-bold text-white/70">Today</p>
+              <p className="text-xs font-bold text-white/70">{today}</p>
               <p className="num mt-2 text-3xl font-black">THB 12,840</p>
               <p className="mt-3 text-xs leading-relaxed text-white/75">
-                Stock, cash, QR, and daily close in one flow.
+                {footer}
               </p>
             </div>
           </div>

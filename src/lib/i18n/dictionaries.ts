@@ -146,6 +146,7 @@ export type Dict = {
     fieldNumSkus: string;
     fieldEventsPerYear: string;
     fieldMessage: string;
+    fieldMessagePlaceholder: string;
     submit: string;
     submitting: string;
     waitNote: string;
@@ -153,6 +154,45 @@ export type Dict = {
     successBody: string;
     statusTitle: string;
     statusBody: string;
+    navFeatures: string;
+    navHowItWorks: string;
+    navFaq: string;
+    navSignIn: string;
+    backToHome: string;
+    heroHeadline: string;
+    heroSubheadline: string;
+    heroBody: string;
+    heroCtaPrimary: string;
+    heroCtaSecondary: string;
+    heroTrustNote: string;
+    audiencesHeading: string;
+    audiencesBody: string;
+    audiences: string[];
+    featuresHeading: string;
+    featuresBody: string;
+    benefits: { title: string; body: string }[];
+    howItWorksHeading: string;
+    steps: { title: string; body: string }[];
+    contactHeading: string;
+    contactBody: string;
+    dataHeading: string;
+    dataBody: string;
+    dataFootnote: string;
+    faqHeading: string;
+    faqs: { q: string; a: string }[];
+    applyHeading: string;
+    applyBody: string;
+    applyBoxHeading: string;
+    applyBoxBody: string;
+    applyAsideHeading: string;
+    applyAsideBody: string;
+    heroPreviewKicker: string;
+    heroPreviewTitle: string;
+    heroPreviewStatus: string;
+    heroPreviewToday: string;
+    heroPreviewFooter: string;
+    alreadyApproved: string;
+    redeemInvite: string;
   };
   appHome: {
     title: string;
@@ -508,7 +548,8 @@ const en: Dict = {
     fieldSocial: "Instagram / Facebook / website (optional)",
     fieldNumSkus: "# of active SKUs",
     fieldEventsPerYear: "# of events per year",
-    fieldMessage: "Why us? (optional)",
+    fieldMessage: "Upcoming event or setup notes (optional)",
+    fieldMessagePlaceholder: "Tell us about your event, booth workflow, or questions",
     submit: "Submit application",
     submitting: "Submitting…",
     waitNote: "We review applications manually. Expect a reply within 3 working days.",
@@ -516,6 +557,69 @@ const en: Dict = {
     successBody: "We'll review your application and reply within three working days. If approved, you'll get an invite code by email.",
     statusTitle: "Check application status",
     statusBody: "Status check is opening soon. In the meantime, watch your inbox — we reply within three working days.",
+    navFeatures: "Features",
+    navHowItWorks: "How it works",
+    navFaq: "FAQ",
+    navSignIn: "Sign in",
+    backToHome: "Back to home",
+    heroHeadline: "Simple POS for pop-up sellers",
+    heroSubheadline: "Fast Sales. Easy Stock. Clear Reports.",
+    heroBody: "Sell faster at events, track stock clearly, and close each selling day with reports you can trust.",
+    heroCtaPrimary: "Try Demo / Apply",
+    heroCtaSecondary: "See how it works",
+    heroTrustNote: "Early access is reviewed by a real person. We help you get set up.",
+    audiencesHeading: "Built for small brands selling in real places",
+    audiencesBody: "Mochi POS is for sellers who need a practical booth system, not a complicated enterprise setup.",
+    audiences: [
+      "Product booth sellers",
+      "Pop-up store owners",
+      "Event sellers",
+      "Small retail brands",
+      "Small brands preparing for multi-day events",
+    ],
+    featuresHeading: "Everything a small event seller needs to run the booth",
+    featuresBody: "Keep checkout, stock, and reporting in one simple workflow your team can understand quickly.",
+    benefits: [
+      { title: "Fast checkout", body: "Ring up orders quickly on a tablet or laptop, even when the booth gets busy." },
+      { title: "Easy stock", body: "Track event stock, samples, and restock adjustments without paper notes." },
+      { title: "Clear reports", body: "See daily sales, payment methods, and event summaries after each selling day." },
+      { title: "Product setup", body: "Manage products, SKU, price, and starting stock before the event opens." },
+      { title: "QR payment support", body: "Built for QR and PromptPay-friendly sales workflows." },
+    ],
+    howItWorksHeading: "How it works",
+    steps: [
+      { title: "Apply or try the demo", body: "Tell us about your brand and upcoming event. We review early access by hand." },
+      { title: "Set up products and stock", body: "Add products, SKU, prices, and starting stock for each event." },
+      { title: "Sell at the booth", body: "Use the POS to record sales, payment type, samples, and corrections." },
+      { title: "Close the day", body: "Review sales, cash, and stock movement before the team goes home." },
+    ],
+    contactHeading: "You are not setting this up alone",
+    contactBody: "Mochi POS is currently open to selected early users. We review each application, help set up the first workspace, and collect feedback to improve the product before wider launch.",
+    dataHeading: "Your sales data stays your business data",
+    dataBody: "Mochi POS uses workspace-based access so each seller only sees their own products, orders, stock, and reports. We use your application information to review your pilot request and contact you about setup. We do not sell your customer or sales data.",
+    dataFootnote: "Simple promise: practical access control, careful handling, and no exaggerated enterprise claims.",
+    faqHeading: "Questions before you try Mochi POS",
+    faqs: [
+      { q: "Is Mochi POS free to try?", a: "Early access is reviewed case by case. Apply and we will contact you with the current pilot details." },
+      { q: "What device do I need?", a: "A tablet or laptop with internet access works best." },
+      { q: "Can it support QR payment?", a: "Yes. Mochi POS is designed for QR and PromptPay-friendly sales workflows." },
+      { q: "Can I use it for a multi-day event?", a: "Yes. The workflow supports event stock and daily reporting." },
+      { q: "Do I need technical setup?", a: "No. We help early users get started and understand the setup." },
+      { q: "Who will support me?", a: "VC is the contact person for early access and setup questions." },
+    ],
+    applyHeading: "Apply for early access",
+    applyBody: "Tell us about your brand, products, and upcoming events. We will review your application and contact you about the next step.",
+    applyBoxHeading: "Early access, with hands-on support",
+    applyBoxBody: "You do not need to be technical. We will help you understand the setup and decide whether Mochi POS fits your event workflow.",
+    applyAsideHeading: "Start your application",
+    applyAsideBody: "We review every application by hand. Expect a reply within 3 working days.",
+    heroPreviewKicker: "Event checkout",
+    heroPreviewTitle: "Booth POS",
+    heroPreviewStatus: "Running",
+    heroPreviewToday: "Today",
+    heroPreviewFooter: "Stock, cash, QR, and daily close in one flow.",
+    alreadyApproved: "Already approved?",
+    redeemInvite: "Redeem your invite code",
   },
   appHome: {
     title: "Open booth",
@@ -876,7 +980,8 @@ const th: Dict = {
     fieldSocial: "Instagram / Facebook / เว็บไซต์ (ไม่บังคับ)",
     fieldNumSkus: "จำนวน SKU ที่ใช้งาน",
     fieldEventsPerYear: "จำนวนงานต่อปี",
-    fieldMessage: "ทำไมต้องเรา (ไม่บังคับ)",
+    fieldMessage: "งานที่จะออกหรือหมายเหตุการเซ็ตอัป (ไม่บังคับ)",
+    fieldMessagePlaceholder: "เล่าให้ฟังเกี่ยวกับงาน กระบวนการออกบูธ หรือคำถาม",
     submit: "ส่งใบสมัคร",
     submitting: "กำลังส่ง…",
     waitNote: "เราพิจารณาใบสมัครด้วยตนเอง ตอบกลับภายใน 3 วันทำการ",
@@ -886,6 +991,69 @@ const th: Dict = {
     statusTitle: "ตรวจสอบสถานะการสมัคร",
     statusBody:
       "ระบบตรวจสอบสถานะกำลังจะเปิดให้ใช้งานเร็ว ๆ นี้ ระหว่างนี้รอดูในกล่องอีเมล — เราตอบกลับภายใน 3 วันทำการ",
+    navFeatures: "ฟีเจอร์",
+    navHowItWorks: "วิธีการใช้งาน",
+    navFaq: "คำถามที่พบบ่อย",
+    navSignIn: "เข้าสู่ระบบ",
+    backToHome: "กลับหน้าหลัก",
+    heroHeadline: "POS ออกบูธ สำหรับแบรนด์เล็ก",
+    heroSubheadline: "ขายได้เร็ว. สต็อกชัดเจน. รายงานน่าเชื่อถือ.",
+    heroBody: "ขายได้เร็วขึ้นที่งาน ดูสต็อกได้ชัดเจน และปิดวันขายพร้อมรายงานที่ไว้วางใจได้",
+    heroCtaPrimary: "ทดลองใช้ / สมัคร",
+    heroCtaSecondary: "ดูวิธีการใช้งาน",
+    heroTrustNote: "สมัครทดลองใช้ผ่านคนจริง เราช่วยเซ็ตอัปให้",
+    audiencesHeading: "สร้างมาสำหรับแบรนด์เล็กที่ขายในงานจริง",
+    audiencesBody: "Mochi POS สำหรับผู้ขายที่ต้องการระบบบูธใช้งานได้จริง ไม่ใช่ระบบองค์กรที่ซับซ้อน",
+    audiences: [
+      "ร้านออกบูธสินค้า",
+      "ร้าน Pop-up",
+      "ผู้ขายในงานอีเวนต์",
+      "แบรนด์รีเทลขนาดเล็ก",
+      "แบรนด์ที่เตรียมออกงานหลายวัน",
+    ],
+    featuresHeading: "ทุกอย่างที่ร้านออกบูธต้องการ",
+    featuresBody: "รวมการชำระเงิน สต็อก และรายงาน ในกระบวนการเดียวที่ทีมเข้าใจได้ทันที",
+    benefits: [
+      { title: "เช็คเอาต์เร็ว", body: "รับออเดอร์ได้รวดเร็วบนแท็บเล็ตหรือโน้ตบุ๊ก แม้ช่วงบูธแน่น" },
+      { title: "จัดการสต็อกง่าย", body: "ติดตามสต็อกงาน ของตัวอย่าง และการเติมสินค้า โดยไม่ต้องจดบนกระดาษ" },
+      { title: "รายงานชัดเจน", body: "ดูยอดขายรายวัน วิธีชำระเงิน และสรุปงาน หลังเลิกขายแต่ละวัน" },
+      { title: "ตั้งค่าสินค้า", body: "จัดการสินค้า SKU ราคา และสต็อกเริ่มต้นก่อนงานเปิด" },
+      { title: "รองรับ QR", body: "ออกแบบมาสำหรับการขายแบบ QR และ PromptPay โดยเฉพาะ" },
+    ],
+    howItWorksHeading: "วิธีการใช้งาน",
+    steps: [
+      { title: "สมัครหรือลองใช้ Demo", body: "บอกเราเกี่ยวกับแบรนด์และงานที่จะออก เราพิจารณาคัดเลือกด้วยตนเอง" },
+      { title: "ตั้งค่าสินค้าและสต็อก", body: "เพิ่มสินค้า SKU ราคา และสต็อกเริ่มต้นสำหรับแต่ละงาน" },
+      { title: "ขายที่บูธ", body: "ใช้ POS บันทึกยอดขาย ประเภทการชำระ ของตัวอย่าง และการแก้ไข" },
+      { title: "ปิดวัน", body: "ตรวจสอบยอดขาย เงินสด และความเคลื่อนไหวของสต็อกก่อนทีมกลับบ้าน" },
+    ],
+    contactHeading: "คุณไม่ต้องเซ็ตอัปคนเดียว",
+    contactBody: "ตอนนี้ Mochi POS เปิดให้กับผู้ใช้กลุ่มแรกที่คัดเลือกมา เราพิจารณาใบสมัครแต่ละใบ ช่วยเซ็ตอัป workspace แรก และรวบรวม feedback เพื่อปรับปรุงก่อนเปิดกว้างมากขึ้น",
+    dataHeading: "ข้อมูลยอดขายของคุณเป็นของคุณเท่านั้น",
+    dataBody: "Mochi POS ใช้การแบ่งสิทธิ์แบบ workspace แต่ละร้านเห็นแค่สินค้า ออเดอร์ สต็อก และรายงานของตัวเอง เราใช้ข้อมูลใบสมัครเพื่อพิจารณาและติดต่อเรื่องการเซ็ตอัปเท่านั้น ไม่นำข้อมูลลูกค้าหรือยอดขายของคุณไปขาย",
+    dataFootnote: "สัญญาง่าย ๆ: ควบคุมสิทธิ์อย่างรัดกุม ดูแลข้อมูลอย่างระมัดระวัง ไม่มีคำโอ้อวดแบบองค์กร",
+    faqHeading: "คำถามก่อนลองใช้ Mochi POS",
+    faqs: [
+      { q: "Mochi POS ทดลองใช้ฟรีไหม?", a: "สิทธิ์ใช้งานกลุ่มแรกพิจารณาเป็นรายกรณี สมัครได้เลยแล้วเราจะติดต่อแจ้งรายละเอียดโครงการนำร่อง" },
+      { q: "ต้องใช้อุปกรณ์อะไร?", a: "แท็บเล็ตหรือโน้ตบุ๊กที่ต่ออินเทอร์เน็ตได้เหมาะที่สุด" },
+      { q: "รองรับการชำระด้วย QR ได้ไหม?", a: "ได้ Mochi POS ออกแบบมาสำหรับการขายแบบ QR และ PromptPay โดยเฉพาะ" },
+      { q: "ใช้กับงานหลายวันได้ไหม?", a: "ได้ ระบบรองรับสต็อกงานและรายงานรายวัน" },
+      { q: "ต้องมีความรู้ด้านเทคนิคไหม?", a: "ไม่ต้อง เราช่วยผู้ใช้กลุ่มแรกเริ่มต้นและเข้าใจการเซ็ตอัป" },
+      { q: "ใครจะซัพพอร์ตเรา?", a: "VC เป็นผู้ติดต่อหลักสำหรับสิทธิ์ใช้งานกลุ่มแรกและคำถามเรื่องการเซ็ตอัป" },
+    ],
+    applyHeading: "สมัครใช้งานกลุ่มแรก",
+    applyBody: "บอกเราเกี่ยวกับแบรนด์ สินค้า และงานที่จะออก เราจะพิจารณาใบสมัครและติดต่อแจ้งขั้นตอนต่อไป",
+    applyBoxHeading: "ใช้งานกลุ่มแรก พร้อมซัพพอร์ตจากทีมงาน",
+    applyBoxBody: "ไม่จำเป็นต้องมีความรู้ด้านเทคนิค เราจะช่วยให้คุณเข้าใจการเซ็ตอัปและตัดสินใจว่า Mochi POS เหมาะกับกระบวนการออกบูธของคุณหรือไม่",
+    applyAsideHeading: "เริ่มต้นสมัคร",
+    applyAsideBody: "เราพิจารณาใบสมัครทุกใบด้วยตนเอง ตอบกลับภายใน 3 วันทำการ",
+    heroPreviewKicker: "ระบบขายงาน",
+    heroPreviewTitle: "บูธ POS",
+    heroPreviewStatus: "กำลังเปิดขาย",
+    heroPreviewToday: "วันนี้",
+    heroPreviewFooter: "สต็อก เงินสด QR และปิดวัน ในระบบเดียว",
+    alreadyApproved: "ได้รับการอนุมัติแล้วใช่ไหม?",
+    redeemInvite: "ใช้รหัสเชิญ",
   },
   appHome: {
     title: "เปิดร้าน",

@@ -11,7 +11,24 @@ import {
 } from "./schema";
 import { submitApplication } from "./actions";
 
-export function ApplyForm() {
+type FormLabels = {
+  fieldName: string;
+  fieldPhone: string;
+  fieldEmail: string;
+  fieldBrand: string;
+  fieldCategory: string;
+  fieldSocial: string;
+  fieldNumSkus: string;
+  fieldEventsPerYear: string;
+  fieldMessage: string;
+  fieldMessagePlaceholder: string;
+  submit: string;
+  submitting: string;
+  alreadyApproved: string;
+  redeemInvite: string;
+};
+
+export function ApplyForm({ labels }: { labels: FormLabels }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -66,7 +83,7 @@ export function ApplyForm() {
         className="hidden"
       />
 
-      <Field label="Your name" error={errors.owner_name?.message}>
+      <Field label={labels.fieldName} error={errors.owner_name?.message}>
         <input
           {...register("owner_name")}
           className={inputCls}
@@ -75,7 +92,7 @@ export function ApplyForm() {
         />
       </Field>
 
-      <Field label="Phone number" error={errors.phone?.message}>
+      <Field label={labels.fieldPhone} error={errors.phone?.message}>
         <input
           {...register("phone")}
           className={inputCls}
@@ -85,7 +102,7 @@ export function ApplyForm() {
         />
       </Field>
 
-      <Field label="Email" error={errors.email?.message}>
+      <Field label={labels.fieldEmail} error={errors.email?.message}>
         <input
           {...register("email")}
           type="email"
@@ -95,7 +112,7 @@ export function ApplyForm() {
         />
       </Field>
 
-      <Field label="Brand name" error={errors.brand_name?.message}>
+      <Field label={labels.fieldBrand} error={errors.brand_name?.message}>
         <input
           {...register("brand_name")}
           className={inputCls}
@@ -104,7 +121,7 @@ export function ApplyForm() {
         />
       </Field>
 
-      <Field label="Product category" error={errors.product_category?.message}>
+      <Field label={labels.fieldCategory} error={errors.product_category?.message}>
         <input
           {...register("product_category")}
           className={inputCls}
@@ -113,7 +130,7 @@ export function ApplyForm() {
       </Field>
 
       <Field
-        label="Instagram / Facebook / website (optional)"
+        label={labels.fieldSocial}
         error={errors.social_link?.message}
       >
         <input
@@ -125,7 +142,7 @@ export function ApplyForm() {
       </Field>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="# of active SKUs" error={errors.num_skus?.message}>
+        <Field label={labels.fieldNumSkus} error={errors.num_skus?.message}>
           <input
             {...register("num_skus")}
             type="number"
@@ -136,7 +153,7 @@ export function ApplyForm() {
           />
         </Field>
         <Field
-          label="# of events per year"
+          label={labels.fieldEventsPerYear}
           error={errors.events_per_year?.message}
         >
           <input
@@ -151,13 +168,13 @@ export function ApplyForm() {
       </div>
 
       <Field
-        label="Upcoming event or setup notes (optional)"
+        label={labels.fieldMessage}
         error={errors.message?.message}
       >
         <textarea
           {...register("message")}
           className={`${inputCls} min-h-[110px]`}
-          placeholder="Tell us about your event, booth workflow, or questions"
+          placeholder={labels.fieldMessagePlaceholder}
         />
       </Field>
 
@@ -176,13 +193,13 @@ export function ApplyForm() {
         className="mt-2 w-full rounded-[14px] py-3.5 text-[15px] font-extrabold text-white shadow-[var(--shadow-card)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45 disabled:opacity-60"
         style={{ background: "var(--grad-primary)" }}
       >
-        {pending ? "Submitting..." : "Submit application"}
+        {pending ? labels.submitting : labels.submit}
       </button>
 
       <p className="text-center text-xs text-muted">
-        Already approved?{" "}
+        {labels.alreadyApproved}{" "}
         <Link href="/register" className="font-bold text-accent hover:underline">
-          Redeem your invite code -&gt;
+          {labels.redeemInvite} -&gt;
         </Link>
       </p>
     </form>
