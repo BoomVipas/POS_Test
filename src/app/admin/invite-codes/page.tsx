@@ -4,6 +4,7 @@ import { Pill, type PillTone } from "@/components/ui/Pill";
 import { formatDateTimeTH } from "@/lib/date";
 import { CancelInviteButton } from "./CancelInviteButton";
 import { ResendInviteButton } from "./ResendInviteButton";
+import { IssueInviteButton } from "./IssueInviteButton";
 
 type Row = Database["public"]["Tables"]["invite_codes"]["Row"];
 
@@ -75,7 +76,10 @@ export default async function InviteCodesPage({
 
   return (
     <div>
-      <h1 className="font-display text-3xl text-accent-strong">Invite codes</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="font-display text-3xl text-accent-strong">Invite codes</h1>
+        {!isMock && <IssueInviteButton />}
+      </div>
       {isMock && (
         <p className="mt-1 text-xs font-bold uppercase tracking-wider text-[var(--color-warn-soft-fg)]">
           Demo mode — connect Supabase to load real codes

@@ -22,8 +22,8 @@ export default async function AppHomePage() {
         />
         <Tile
           href="/app/events"
-          title="Events"
-          body="Create an event, allocate stock per SKU, then start selling. Each event tracks its own inventory."
+          title={t.appHome.tileEventsTitle}
+          body={t.appHome.tileEventsBody}
         />
         <Tile
           href="/app/dashboard"
@@ -47,23 +47,23 @@ export default async function AppHomePage() {
         />
         <Tile
           href="/app/close-day"
-          title="Close day"
-          body="Reconcile counted cash against today's sales."
+          title={t.appHome.tileCloseDayTitle}
+          body={t.appHome.tileCloseDayBody}
         />
         <Tile
           href="/app/stock-count"
-          title="Stock count"
-          body="Walk the warehouse, count, fix drift after each event."
+          title={t.appHome.tileStockCountTitle}
+          body={t.appHome.tileStockCountBody}
         />
         <Tile
           href="/app/inventory/samples"
-          title="Sample bucket"
-          body="Move stock between event-sellable and on-display sample. Sell a sample, return one to event."
+          title={t.appHome.tileSampleBucketTitle}
+          body={t.appHome.tileSampleBucketBody}
         />
         <Tile
           href="/app/customers"
-          title="Customers"
-          body="Lifecycle, lifetime spend, top SKU per phone."
+          title={t.appHome.tileCustomersTitle}
+          body={t.appHome.tileCustomersBody}
         />
         <Tile
           href="/app/pre-orders"

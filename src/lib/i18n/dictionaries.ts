@@ -201,6 +201,8 @@ export type Dict = {
     tilePosBody: string;
     tileProductsTitle: string;
     tileProductsBody: string;
+    tileEventsTitle: string;
+    tileEventsBody: string;
     tileDashboardTitle: string;
     tileDashboardBody: string;
     tileSendLaterTitle: string;
@@ -209,6 +211,14 @@ export type Dict = {
     tileCorrectionsBody: string;
     tileAuditLogTitle: string;
     tileAuditLogBody: string;
+    tileCloseDayTitle: string;
+    tileCloseDayBody: string;
+    tileStockCountTitle: string;
+    tileStockCountBody: string;
+    tileSampleBucketTitle: string;
+    tileSampleBucketBody: string;
+    tileCustomersTitle: string;
+    tileCustomersBody: string;
     tileSettingsTitle: string;
     tileSettingsBody: string;
   };
@@ -628,6 +638,8 @@ const en: Dict = {
     tilePosBody: "Sell at the booth right now.",
     tileProductsTitle: "Products",
     tileProductsBody: "Set up SKUs, prices, images.",
+    tileEventsTitle: "Events",
+    tileEventsBody: "Create an event, allocate stock per SKU, then start selling.",
     tileDashboardTitle: "Dashboard",
     tileDashboardBody: "Today’s sales and inventory.",
     tileSendLaterTitle: "Send-later",
@@ -636,6 +648,14 @@ const en: Dict = {
     tileCorrectionsBody: "Void a sale, restore inventory.",
     tileAuditLogTitle: "Audit log",
     tileAuditLogBody: "Settings, catalog, sales, voids — append-only.",
+    tileCloseDayTitle: "Close day",
+    tileCloseDayBody: "Reconcile counted cash against today’s sales.",
+    tileStockCountTitle: "Stock count",
+    tileStockCountBody: "Walk the warehouse, count, fix drift after each event.",
+    tileSampleBucketTitle: "Sample bucket",
+    tileSampleBucketBody: "Move stock between sellable and on-display sample.",
+    tileCustomersTitle: "Customers",
+    tileCustomersBody: "Lifecycle, lifetime spend, top SKU per phone.",
     tileSettingsTitle: "Settings",
     tileSettingsBody: "Brand name, PromptPay phone, defaults.",
   },
@@ -1062,6 +1082,8 @@ const th: Dict = {
     tilePosBody: "ขายของที่บูธทันที",
     tileProductsTitle: "สินค้า",
     tileProductsBody: "ตั้งค่า SKU ราคา รูปภาพ",
+    tileEventsTitle: "งาน",
+    tileEventsBody: "สร้างงาน จัดสรรสต็อกต่อ SKU แล้วเริ่มขาย",
     tileDashboardTitle: "แดชบอร์ด",
     tileDashboardBody: "ยอดขายและสต็อกของวันนี้",
     tileSendLaterTitle: "จัดส่งทีหลัง",
@@ -1070,6 +1092,14 @@ const th: Dict = {
     tileCorrectionsBody: "ยกเลิกออเดอร์ คืนสต็อก",
     tileAuditLogTitle: "บันทึกการเปลี่ยนแปลง",
     tileAuditLogBody: "ตั้งค่า สินค้า ยอดขาย การยกเลิก — เก็บไว้อ่านอย่างเดียว",
+    tileCloseDayTitle: "ปิดวัน",
+    tileCloseDayBody: "ตรวจนับเงินสดเทียบกับยอดขายของวัน",
+    tileStockCountTitle: "นับสต็อก",
+    tileStockCountBody: "เดินนับคลัง ตรวจสอบ แก้ไขส่วนต่างหลังงาน",
+    tileSampleBucketTitle: "ของตัวอย่าง",
+    tileSampleBucketBody: "ย้ายสต็อกระหว่างสินค้าขายได้และของโชว์",
+    tileCustomersTitle: "ลูกค้า",
+    tileCustomersBody: "ประวัติ ยอดซื้อรวม สินค้าที่ซื้อบ่อยต่อเบอร์",
     tileSettingsTitle: "ตั้งค่า",
     tileSettingsBody: "ชื่อแบรนด์ เบอร์พร้อมเพย์ ค่าเริ่มต้น",
   },

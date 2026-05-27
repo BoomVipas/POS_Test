@@ -110,7 +110,7 @@ export type Database = {
       invite_codes: {
         Row: {
           id: string;
-          application_id: string;
+          application_id: string | null;
           code: string;
           email: string;
           brand_name: string;
@@ -123,7 +123,7 @@ export type Database = {
         };
         Insert: {
           id?: string;
-          application_id: string;
+          application_id?: string | null;
           code: string;
           email: string;
           brand_name: string;
