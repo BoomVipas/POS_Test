@@ -113,10 +113,25 @@ export async function GET(request: NextRequest) {
       return fail("redeem");
     }
 
-    return NextResponse.redirect(new URL("/app", origin));
+    // USER_FLOW.md step 7: new registrations land on product setup, not the
+    // home tile grid. Consistent with register/actions.completeRegistration.
+    return NextResponse.redirect(new URL("/app/setup/products", origin));
   }
 
-  // ── LOGIN: invite-only — require an existing workspace membership. ────────
+  // ── LOGIN: invite-only — require workspace membership OR admin role. ────────
+  // Admins (platform founders) have no workspace of their own but must still be
+  // able to sign in. Check admin_users first — if they're an admin, send them
+  // straight to /admin regardless of workspace status.
+  const admin = createAdminClient();
+  const { data: adminRow } = await admin
+    .from("admin_users")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (adminRow) {
+    return NextResponse.redirect(new URL("/admin", origin));
+  }
+
   const { data: membership, error: memErr } = await supabase
     .from("workspace_members")
     .select("workspace_id")

@@ -58,3 +58,6 @@ next-env.d.ts
 
 # local planning notes (never push)
 mochipos-auth-todo.md
+
+# Generated convenience file — never commit
+database/ALL_FUNCTIONS.sql

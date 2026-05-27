@@ -8,6 +8,19 @@ import type { Database } from "@/lib/database.types";
 // supabase-js writes the rotated cookies through `setAll`, which rebuilds
 // `response` with the new `Set-Cookie` headers — so a logged-in seller's session
 // is kept alive across navigations and won't expire mid-shift at the booth.
+//
+// P1-A fix: After session refresh, unauthenticated requests to protected route
+// prefixes are bounced at the edge — before the layout or any server component
+// runs. This is a second wall of defence; the layout guards remain in place as
+// the primary semantic check (membership, workspace existence, admin role).
+const PROTECTED_PREFIXES = ["/app", "/admin", "/onboarding"];
+
+function isProtected(pathname: string): boolean {
+  return PROTECTED_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + "/"),
+  );
+}
+
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
@@ -36,6 +49,21 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  await supabase.auth.getUser();
+  // Always refresh the session first — rotates the access token if needed.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // P1-A: Block unauthenticated access to protected routes at the middleware
+  // layer. The layout guards (app/layout.tsx, admin/layout.tsx, onboarding/page.tsx)
+  // remain the authoritative membership/role checks. This guard is purely
+  // "is there ANY session?" — a fast, cheap second wall.
+  if (!user && isProtected(request.nextUrl.pathname)) {
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = "/login";
+    loginUrl.searchParams.set("next", request.nextUrl.pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
   return response;
 }

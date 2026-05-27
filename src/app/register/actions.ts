@@ -216,5 +216,7 @@ export async function completeRegistration(
   }
 
   revalidatePath("/", "layout");
-  redirect("/app");
+  // USER_FLOW.md step 7: after registration, new clients go straight to product
+  // setup (the first onboarding step) rather than the home tile grid.
+  redirect("/app/setup/products");
 }
