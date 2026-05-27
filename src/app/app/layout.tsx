@@ -124,12 +124,12 @@ export default async function AppLayout({
   const navItems = [
     { href: "/app/pos", label: t.chrome.pos },
     { href: "/app/setup/products", label: t.chrome.products },
-    { href: "/app/events", label: "Events" },
+    { href: "/app/events", label: t.chrome.events },
     { href: "/app/dashboard", label: t.chrome.dashboard },
     { href: "/app/send-later", label: t.chrome.sendLater },
     { href: "/app/correction", label: t.chrome.corrections },
     { href: "/app/audit-log", label: t.chrome.auditLog },
-    { href: "/app/close-day", label: "Close day" },
+    { href: "/app/close-day", label: t.chrome.closeDay },
     { href: "/app/pre-orders", label: t.preOrders.chromeLink },
     { href: "/app/settings", label: t.chrome.settings },
   ];

@@ -106,10 +106,12 @@ export type Dict = {
   chrome: {
     pos: string;
     products: string;
+    events: string;
     dashboard: string;
     sendLater: string;
     corrections: string;
     auditLog: string;
+    closeDay: string;
     settings: string;
     appHome: string;
     signOut: string;
@@ -519,10 +521,12 @@ const en: Dict = {
   chrome: {
     pos: "POS",
     products: "Products",
+    events: "Events",
     dashboard: "Dashboard",
     sendLater: "Send-later",
     corrections: "Corrections",
     auditLog: "Audit log",
+    closeDay: "Close day",
     settings: "Settings",
     appHome: "App home",
     signOut: "Sign out",
@@ -961,10 +965,12 @@ const th: Dict = {
   chrome: {
     pos: "POS",
     products: "สินค้า",
+    events: "อีเวนต์",
     dashboard: "แดชบอร์ด",
     sendLater: "จัดส่งทีหลัง",
     corrections: "แก้ไขรายการ",
     auditLog: "บันทึกการเปลี่ยนแปลง",
+    closeDay: "ปิดยอดประจำวัน",
     settings: "ตั้งค่า",
     appHome: "หน้าแอป",
     signOut: "ออกจากระบบ",

@@ -44,11 +44,6 @@ export function useDemoEventSetup(): {
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  const persist = useCallback((next: EventSetup | null) => {
-    writeDemoEventSetup(next);
-    setSetup(next);
-  }, []);
-
   // Touch updatedAt on every mutation.
   const patch = useCallback(
     (mutator: (s: EventSetup) => EventSetup) => {
