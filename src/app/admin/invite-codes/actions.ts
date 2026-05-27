@@ -97,8 +97,10 @@ export async function resendInviteEmail(
     });
     await sendEmail({ to: invite.email, subject, html });
   } catch (e) {
-    console.error("[admin] resend invite email failed:", e);
-    return { ok: false, error: "Couldn't resend this invite email." };
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("[admin] resend invite email failed:", msg);
+    // Pass the real Resend error message back so the UI can show a specific reason.
+    return { ok: false, error: msg };
   }
 
   revalidatePath("/admin/invite-codes");
