@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Nunito } from "next/font/google";
+import { Nunito, Prompt } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/Toast";
 import { LangProvider } from "@/lib/i18n/provider";
@@ -9,6 +9,12 @@ const nunito = Nunito({
   subsets: ["latin"],
   weight: ["400", "600", "700", "800", "900"],
   variable: "--font-nunito",
+});
+
+const prompt = Prompt({
+  subsets: ["thai", "latin"],
+  weight: ["400", "600", "700", "800", "900"],
+  variable: "--font-prompt",
 });
 
 export const metadata: Metadata = {
@@ -21,7 +27,7 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const lang = await getLang();
   return (
-    <html lang={lang} className={`h-full antialiased ${nunito.variable}`}>
+    <html lang={lang} className={`h-full antialiased ${nunito.variable} ${prompt.variable}`}>
       <body className="min-h-dvh flex flex-col font-sans text-text">
         <LangProvider lang={lang}>
           <ToastProvider>{children}</ToastProvider>
