@@ -161,15 +161,11 @@ describe("redeem_invite_code — guards", () => {
     await expect(redeem(s.code, s.brand, "cancelled")).rejects.toThrow(/cancelled/);
   });
 
-  it("rejects an expired code (the lazy status flip is rolled back by the RAISE — known quirk)", async () => {
+  it("rejects an expired code without pretending to lazily persist status='expired'", async () => {
     const s = await freshScenario({ days: -1 });
     await expect(redeem(s.code, s.brand, "expired")).rejects.toThrow(/expired/);
-    // The RPC does `update invite_codes set status='expired'` immediately before
-    // `raise exception`, but the RAISE aborts the function's (sub)transaction and
-    // rolls that write back — so the row stays 'active' (still functionally
-    // expired by its expires_at; the functional gate is correct). The cosmetic
-    // lazy-expiry write is therefore dead code. Pinned here as the real behaviour;
-    // flagged in the PR as a latent cleanup candidate (not a security issue).
+    // Expiry is enforced by expires_at. The old lazy status flip was dead code:
+    // it ran immediately before RAISE, so PostgreSQL rolled it back.
     expect(
       await scalar<string>(
         `select status as v from public.invite_codes where code = $1`,

@@ -1,6 +1,9 @@
--- redeem_invite_code — call AFTER Supabase Auth signup (so auth.uid() is set).
--- Validates the invite code, creates the workspace, links owner membership,
--- marks the code used, and updates the application status.
+-- Remove the dead lazy-expiry write from redeem_invite_code.
+--
+-- The previous function tried to set invite_codes.status = 'expired' immediately
+-- before raising "code expired". In PostgreSQL, the raised exception aborts the
+-- function transaction, so that status write is rolled back and never persists.
+-- The real gate remains expires_at < now().
 
 create or replace function public.redeem_invite_code(
   p_code       text,
@@ -44,7 +47,7 @@ begin
     raise exception 'redeem_invite_code: code expired';
   end if;
 
-  -- One workspace per owner_user_id during the pilot (defensive — DB schema permits more).
+  -- One workspace per owner_user_id during the pilot (defensive - DB schema permits more).
   if exists (select 1 from public.workspaces where owner_user_id = v_user_id) then
     raise exception 'redeem_invite_code: user already owns a workspace';
   end if;

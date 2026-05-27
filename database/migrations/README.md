@@ -73,3 +73,4 @@ You do **not** need a migration for:
 |---|---|---|
 | `2026-05-07_add_sample_qty.sql` | Add `event_inventory.sample_qty` column + check ≥ 0. Adds the persistent event-long sample bucket per meowmeow Batch DD. | 39a |
 | `2026-05-07_customer_portal.sql` | Add Customer Portal tables (`customers`, `customer_contacts`, `pets`, `customer_order_links`, `customer_registration_tokens`) + triggers. Implements the post-purchase relationship layer per VISION.md. | 40a |
+| `2026-05-27_redeem_invite_expiry_cleanup.sql` | Replaces `redeem_invite_code` without the rolled-back lazy `status='expired'` write; expiry remains enforced by `expires_at`. | #19 |

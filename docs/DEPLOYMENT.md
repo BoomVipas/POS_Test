@@ -94,7 +94,8 @@ Schema changes ship as new SQL files under `database/`. Apply them in order in t
 | 11 | unapplied | `functions/create_registration_token.sql` | Wave 40a: cashier issues post-sale token |
 | 12 | unapplied | `functions/claim_registration_token.sql` | Wave 40a: anon customer claim (token-as-credential) |
 | 13 | unapplied | `functions/adjust_event_stock.sql` | #17: manual event-stock adjust (restock/correction) + audit, one txn — apply before restock UI is used live |
-| 14 | unapplied | `seed.sql` | Demo data (dev only; do NOT run in prod) |
+| 14 | unapplied | `migrations/2026-05-27_redeem_invite_expiry_cleanup.sql` | #19: replaces `redeem_invite_code` without the rolled-back lazy expired-status write; apply before considering #19 live |
+| 15 | unapplied | `seed.sql` | Demo data (dev only; do NOT run in prod) |
 
 ## Build sizes
 
