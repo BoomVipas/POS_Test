@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { useDemoCustomerTokens } from "@/lib/demo/useDemoCustomerTokens";
 import { portalUrlFor, type DemoCustomerToken } from "@/lib/demo/customer-tokens";
@@ -17,13 +17,11 @@ import { portalUrlFor, type DemoCustomerToken } from "@/lib/demo/customer-tokens
  */
 export function RegistrationLinkBlock({ orderId }: { orderId: string }) {
   const { ready, forOrder, registeredForOrder, create } = useDemoCustomerTokens();
-  const [origin, setOrigin] = useState<string>("");
+  const [origin] = useState<string>(() =>
+    typeof window !== "undefined" ? window.location.origin : "",
+  );
   const [copied, setCopied] = useState(false);
   const [qrSvg, setQrSvg] = useState<string>("");
-
-  useEffect(() => {
-    if (typeof window !== "undefined") setOrigin(window.location.origin);
-  }, []);
 
   const existing = forOrder(orderId);
   // Pick the most recent unclaimed token for this order; otherwise the latest.
@@ -59,8 +57,21 @@ export function RegistrationLinkBlock({ orderId }: { orderId: string }) {
 
   // Render the QR when the active token / origin changes. Stays above the
   // early return below so this hook runs on every render (rules-of-hooks).
+  const cancelledRef = useRef(false);
   useEffect(() => {
-    if (active && origin) void renderQr(active, origin);
+    cancelledRef.current = false;
+    if (!active || !origin) return;
+    const url = portalUrlFor(active.token, origin);
+    QRCode.toString(url, {
+      type: "svg",
+      width: 220,
+      margin: 1,
+      color: { dark: "#1c1838", light: "#f7f5fb" },
+      errorCorrectionLevel: "M",
+    })
+      .then((svg) => { if (!cancelledRef.current) setQrSvg(svg); })
+      .catch(() => { if (!cancelledRef.current) setQrSvg(""); });
+    return () => { cancelledRef.current = true; };
   }, [active, origin]);
 
   // Demo store still hydrating — render nothing until it is ready.

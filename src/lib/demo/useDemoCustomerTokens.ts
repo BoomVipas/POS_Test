@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useIsClient } from "@/lib/hooks/useIsClient";
 import {
   DEMO_CUSTOMER_TOKENS_KEY,
   DEMO_PORTAL_CUSTOMERS_KEY,
@@ -44,16 +45,15 @@ export function useDemoCustomerTokens(): {
   registeredForOrder: (orderId: string) => DemoPortalCustomer[];
   clear: () => void;
 } {
-  const [tokens, setTokens] = useState<DemoCustomerToken[]>([]);
-  const [portalCustomers, setPortalCustomers] = useState<DemoPortalCustomer[]>(
-    [],
+  const [tokens, setTokens] = useState<DemoCustomerToken[]>(() =>
+    typeof window !== "undefined" ? readTokens() : [],
   );
-  const [ready, setReady] = useState(false);
+  const [portalCustomers, setPortalCustomers] = useState<DemoPortalCustomer[]>(
+    () => (typeof window !== "undefined" ? readPortalCustomers() : []),
+  );
+  const ready = useIsClient();
 
   useEffect(() => {
-    setTokens(readTokens());
-    setPortalCustomers(readPortalCustomers());
-    setReady(true);
     function onStorage(e: StorageEvent) {
       if (
         e.key === null ||

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { X } from "lucide-react";
 import { useCart, useCartDispatch } from "@/lib/pos/cart-store";
 import { getCombinedUpsells } from "@/lib/pos/upsell";
@@ -16,6 +16,16 @@ export function UpsellPrompt({ products }: { products: Product[] }) {
   const { t } = useT();
 
   const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
+  const [prevCartActive, setPrevCartActive] = useState(cart.lines.length > 0);
+
+  // Reset dismissals when cart transitions to empty, without an effect.
+  const cartActive = cart.lines.length > 0;
+  if (!cartActive && prevCartActive) {
+    setPrevCartActive(false);
+    setDismissedIds(new Set());
+  } else if (cartActive && !prevCartActive) {
+    setPrevCartActive(true);
+  }
 
   const cartIds = useMemo(
     () => new Set(cart.lines.map((l) => l.productId)),
@@ -37,14 +47,6 @@ export function UpsellPrompt({ products }: { products: Product[] }) {
       max: MAX_VISIBLE,
     });
   }, [cartProducts, products, cartIds, dismissedIds]);
-
-  // When the cart fully clears, also clear dismissals so a fresh sale can
-  // see the same suggestions again.
-  useEffect(() => {
-    if (cart.lines.length === 0 && dismissedIds.size > 0) {
-      setDismissedIds(new Set());
-    }
-  }, [cart.lines.length, dismissedIds.size]);
 
   if (suggestions.length === 0) return null;
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 /**
  * Persist a small piece of UI state in localStorage.
@@ -13,18 +13,16 @@ export function useLocalStorageState<T>(
   key: string,
   initial: T,
 ): [T, (next: T | ((prev: T) => T)) => void] {
-  const [value, setValue] = useState<T>(initial);
-
-  // Load on mount.
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+  const [value, setValue] = useState<T>(() => {
+    if (typeof window === "undefined") return initial;
     try {
       const raw = window.localStorage.getItem(key);
-      if (raw !== null) setValue(JSON.parse(raw) as T);
+      if (raw !== null) return JSON.parse(raw) as T;
     } catch {
       // ignore parse errors and fall back to initial
     }
-  }, [key]);
+    return initial;
+  });
 
   const update = useCallback(
     (next: T | ((prev: T) => T)) => {

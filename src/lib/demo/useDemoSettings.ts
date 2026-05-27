@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useIsClient } from "@/lib/hooks/useIsClient";
 import {
   readDemoSettings,
   writeDemoSettings,
@@ -15,13 +16,9 @@ export function useDemoSettings(): {
   const [settings, setSettings] = useState<DemoSettings>(() =>
     readDemoSettings(),
   );
-  const [ready, setReady] = useState(false);
+  const ready = useIsClient();
 
-  // Re-read on mount so server-render and post-hydration values stay in sync.
   useEffect(() => {
-    setSettings(readDemoSettings());
-    setReady(true);
-
     function onStorage(e: StorageEvent) {
       if (e.key === null || e.key.startsWith("pos-for-sell:demo-settings")) {
         setSettings(readDemoSettings());

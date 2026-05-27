@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useIsClient } from "@/lib/hooks/useIsClient";
 import {
   DEMO_PRE_ORDERS_KEY,
   clearDemoPreOrders,
@@ -18,12 +19,12 @@ export function useDemoPreOrders(): {
   setStatus: (id: string, status: PreOrderStatus) => void;
   clear: () => void;
 } {
-  const [items, setItems] = useState<DemoPreOrder[]>([]);
-  const [ready, setReady] = useState(false);
+  const [items, setItems] = useState<DemoPreOrder[]>(() =>
+    typeof window !== "undefined" ? readDemoPreOrders() : [],
+  );
+  const ready = useIsClient();
 
   useEffect(() => {
-    setItems(readDemoPreOrders());
-    setReady(true);
     function onStorage(e: StorageEvent) {
       if (e.key === null || e.key === DEMO_PRE_ORDERS_KEY) {
         setItems(readDemoPreOrders());

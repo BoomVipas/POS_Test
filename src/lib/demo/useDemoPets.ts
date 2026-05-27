@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useIsClient } from "@/lib/hooks/useIsClient";
 import {
   DEMO_PETS_KEY,
   clearDemoPets,
@@ -30,12 +31,12 @@ export function useDemoPets(): {
   remove: (id: string) => void;
   clear: () => void;
 } {
-  const [pets, setPets] = useState<DemoPet[]>([]);
-  const [ready, setReady] = useState(false);
+  const [pets, setPets] = useState<DemoPet[]>(() =>
+    typeof window !== "undefined" ? readDemoPets() : [],
+  );
+  const ready = useIsClient();
 
   useEffect(() => {
-    setPets(readDemoPets());
-    setReady(true);
     function onStorage(e: StorageEvent) {
       if (e.key === null || e.key === DEMO_PETS_KEY) {
         setPets(readDemoPets());

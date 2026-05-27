@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDemoSettings } from "@/lib/demo/useDemoSettings";
 import { useDemoAudit } from "@/lib/demo/useDemoAudit";
 import { isValidPhoneTH, normalizePhoneTH } from "@/lib/phone";
@@ -9,21 +9,13 @@ import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
 
 export function SettingsForm() {
-  const { settings, save, ready } = useDemoSettings();
+  const { settings, save } = useDemoSettings();
   const audit = useDemoAudit();
   const [brand, setBrand] = useState(settings.brandDisplayName);
   const [phone, setPhone] = useState(settings.promptpayPhone);
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const { push } = useToast();
 
-  // SSR returns DEFAULT_DEMO_SETTINGS (no window). Once the localStorage values
-  // are read post-hydration, sync them into the form once.
-  useEffect(() => {
-    if (!ready) return;
-    setBrand(settings.brandDisplayName);
-    setPhone(settings.promptpayPhone);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready]);
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();

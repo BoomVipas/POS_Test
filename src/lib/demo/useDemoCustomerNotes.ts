@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useIsClient } from "@/lib/hooks/useIsClient";
 import {
   DEMO_CUSTOMER_NOTES_KEY,
   clearCustomerNotes,
@@ -16,12 +17,12 @@ export function useDemoCustomerNotes(): {
   set: (phone: string, patch: Partial<DemoCustomerNote>) => void;
   clear: () => void;
 } {
-  const [store, setStore] = useState<Record<string, DemoCustomerNote>>({});
-  const [ready, setReady] = useState(false);
+  const [store, setStore] = useState<Record<string, DemoCustomerNote>>(() =>
+    typeof window !== "undefined" ? readCustomerNotes() : {},
+  );
+  const ready = useIsClient();
 
   useEffect(() => {
-    setStore(readCustomerNotes());
-    setReady(true);
     function onStorage(e: StorageEvent) {
       if (e.key === null || e.key === DEMO_CUSTOMER_NOTES_KEY) {
         setStore(readCustomerNotes());

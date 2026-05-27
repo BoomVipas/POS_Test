@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useIsClient } from "@/lib/hooks/useIsClient";
 import {
   DEMO_SAMPLE_BUCKET_KEY,
   clearSampleBuckets,
@@ -40,12 +41,12 @@ export function useDemoSampleBucket(): {
   ) => ConvertResult;
   clear: () => void;
 } {
-  const [rows, setRows] = useState<SampleBucketRow[]>([]);
-  const [ready, setReady] = useState(false);
+  const [rows, setRows] = useState<SampleBucketRow[]>(() =>
+    typeof window !== "undefined" ? readSampleBuckets() : [],
+  );
+  const ready = useIsClient();
 
   useEffect(() => {
-    setRows(readSampleBuckets());
-    setReady(true);
     function onStorage(e: StorageEvent) {
       if (e.key === null || e.key === DEMO_SAMPLE_BUCKET_KEY) {
         setRows(readSampleBuckets());

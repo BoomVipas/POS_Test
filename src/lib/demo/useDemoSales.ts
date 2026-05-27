@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useIsClient } from "@/lib/hooks/useIsClient";
 import {
   DEMO_SALES_KEY,
   appendDemoSale,
@@ -20,12 +21,12 @@ export function useDemoSales(): {
   ) => void;
   clear: () => void;
 } {
-  const [orders, setOrders] = useState<DemoOrder[]>([]);
-  const [ready, setReady] = useState(false);
+  const [orders, setOrders] = useState<DemoOrder[]>(() =>
+    typeof window !== "undefined" ? readDemoSales() : [],
+  );
+  const ready = useIsClient();
 
   useEffect(() => {
-    setOrders(readDemoSales());
-    setReady(true);
     function onStorage(e: StorageEvent) {
       if (e.key === null || e.key === DEMO_SALES_KEY) {
         setOrders(readDemoSales());

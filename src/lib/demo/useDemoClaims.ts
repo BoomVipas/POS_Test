@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useIsClient } from "@/lib/hooks/useIsClient";
 import {
   DEFAULT_TTL_MINUTES,
   DEMO_CLAIMS_KEY,
@@ -22,12 +23,12 @@ export function useDemoClaims(): {
   cancel: (id: string) => void;
   clear: () => void;
 } {
-  const [claims, setClaims] = useState<DemoClaim[]>([]);
-  const [ready, setReady] = useState(false);
+  const [claims, setClaims] = useState<DemoClaim[]>(() =>
+    typeof window !== "undefined" ? readClaims() : [],
+  );
+  const ready = useIsClient();
 
   useEffect(() => {
-    setClaims(readClaims());
-    setReady(true);
     function onStorage(e: StorageEvent) {
       if (e.key === null || e.key === DEMO_CLAIMS_KEY) {
         setClaims(readClaims());

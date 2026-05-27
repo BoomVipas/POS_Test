@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { TextInput } from "@/components/ui/TextInput";
 import { NumberInput } from "@/components/ui/NumberInput";
@@ -81,17 +81,23 @@ export function ProductFormModal({
   workspaceId: string;
   onSubmit: (values: Omit<Product, "id">, originalId: string | null) => void;
 }) {
-  const [v, setV] = useState<FormValues>(empty());
+  const [v, setV] = useState<FormValues>(() =>
+    initial ? fromProduct(initial) : empty(),
+  );
   const [errors, setErrors] = useState<Partial<Record<keyof FormValues, string>>>({});
   const [uploading, setUploading] = useState(false);
   const { push } = useToast();
 
-  useEffect(() => {
+  // Reset form when the modal opens or the edit target changes.
+  const [prevOpenKey, setPrevOpenKey] = useState(`${open}:${initial?.id ?? ""}`);
+  const openKey = `${open}:${initial?.id ?? ""}`;
+  if (openKey !== prevOpenKey) {
+    setPrevOpenKey(openKey);
     if (open) {
       setV(initial ? fromProduct(initial) : empty());
       setErrors({});
     }
-  }, [open, initial]);
+  }
 
   function set<K extends keyof FormValues>(key: K, val: FormValues[K]) {
     setV((s) => ({ ...s, [key]: val }));

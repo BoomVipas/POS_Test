@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useIsClient } from "@/lib/hooks/useIsClient";
 import {
   DEMO_AUDIT_KEY,
   appendDemoAudit,
@@ -15,12 +16,12 @@ export function useDemoAudit(): {
   log: (entry: Omit<DemoAuditEntry, "id" | "createdAt">) => void;
   clear: () => void;
 } {
-  const [entries, setEntries] = useState<DemoAuditEntry[]>([]);
-  const [ready, setReady] = useState(false);
+  const [entries, setEntries] = useState<DemoAuditEntry[]>(() =>
+    typeof window !== "undefined" ? readDemoAudit() : [],
+  );
+  const ready = useIsClient();
 
   useEffect(() => {
-    setEntries(readDemoAudit());
-    setReady(true);
     function onStorage(e: StorageEvent) {
       if (e.key === null || e.key === DEMO_AUDIT_KEY) {
         setEntries(readDemoAudit());

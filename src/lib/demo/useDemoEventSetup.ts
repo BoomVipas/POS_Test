@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useIsClient } from "@/lib/hooks/useIsClient";
 import type { Product } from "@/lib/pos/types";
 import {
   DEMO_EVENT_SETUP_KEY,
@@ -29,12 +30,12 @@ export function useDemoEventSetup(): {
   setGiftRule: (patch: Partial<GiftRule>) => void;
   reset: () => void;
 } {
-  const [setup, setSetup] = useState<EventSetup | null>(null);
-  const [ready, setReady] = useState(false);
+  const [setup, setSetup] = useState<EventSetup | null>(() =>
+    typeof window !== "undefined" ? readDemoEventSetup() : null,
+  );
+  const ready = useIsClient();
 
   useEffect(() => {
-    setSetup(readDemoEventSetup());
-    setReady(true);
     function onStorage(e: StorageEvent) {
       if (e.key === null || e.key === DEMO_EVENT_SETUP_KEY) {
         setSetup(readDemoEventSetup());

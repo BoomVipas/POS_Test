@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useIsClient } from "@/lib/hooks/useIsClient";
 import {
   DEMO_CLOSE_DAY_KEY,
   appendCloseDay,
@@ -15,12 +16,12 @@ export function useDemoCloseDay(): {
   append: (record: DemoCloseDayRecord) => void;
   clear: () => void;
 } {
-  const [records, setRecords] = useState<DemoCloseDayRecord[]>([]);
-  const [ready, setReady] = useState(false);
+  const [records, setRecords] = useState<DemoCloseDayRecord[]>(() =>
+    typeof window !== "undefined" ? readDemoCloseDay() : [],
+  );
+  const ready = useIsClient();
 
   useEffect(() => {
-    setRecords(readDemoCloseDay());
-    setReady(true);
     function onStorage(e: StorageEvent) {
       if (e.key === null || e.key === DEMO_CLOSE_DAY_KEY) {
         setRecords(readDemoCloseDay());

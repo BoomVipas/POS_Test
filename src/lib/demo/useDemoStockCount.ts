@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useIsClient } from "@/lib/hooks/useIsClient";
 import {
   DEMO_STOCK_COUNT_KEY,
   buildSessionFromCatalog,
@@ -33,12 +34,12 @@ export function useDemoStockCount(): {
   cancel: (sessionId: string) => void;
   clear: () => void;
 } {
-  const [sessions, setSessions] = useState<StockCountSession[]>([]);
-  const [ready, setReady] = useState(false);
+  const [sessions, setSessions] = useState<StockCountSession[]>(() =>
+    typeof window !== "undefined" ? readDemoStockCounts() : [],
+  );
+  const ready = useIsClient();
 
   useEffect(() => {
-    setSessions(readDemoStockCounts());
-    setReady(true);
     function onStorage(e: StorageEvent) {
       if (e.key === null || e.key === DEMO_STOCK_COUNT_KEY) {
         setSessions(readDemoStockCounts());

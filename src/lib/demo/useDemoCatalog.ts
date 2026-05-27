@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useIsClient } from "@/lib/hooks/useIsClient";
 import type { Product } from "@/lib/pos/types";
 import {
   DEMO_CATALOG_KEY,
@@ -19,13 +20,12 @@ export function useDemoCatalog(): {
   replaceAll: (items: Product[]) => void;
   clear: () => void;
 } {
-  const [items, setItems] = useState<Product[]>([]);
-  const [ready, setReady] = useState(false);
+  const [items, setItems] = useState<Product[]>(() =>
+    typeof window !== "undefined" ? readDemoCatalog() : [],
+  );
+  const ready = useIsClient();
 
   useEffect(() => {
-    setItems(readDemoCatalog());
-    setReady(true);
-
     function onStorage(e: StorageEvent) {
       if (e.key === null || e.key === DEMO_CATALOG_KEY) {
         setItems(readDemoCatalog());
