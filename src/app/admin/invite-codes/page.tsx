@@ -3,6 +3,7 @@ import type { Database, InviteCodeStatus } from "@/lib/database.types";
 import { Pill, type PillTone } from "@/components/ui/Pill";
 import { formatDateTimeTH } from "@/lib/date";
 import { CancelInviteButton } from "./CancelInviteButton";
+import { ResendInviteButton } from "./ResendInviteButton";
 
 type Row = Database["public"]["Tables"]["invite_codes"]["Row"];
 
@@ -108,18 +109,24 @@ export default async function InviteCodesPage({
             key={row.id}
             className="rounded-[var(--radius-lg)] border border-line bg-panel px-5 py-4"
           >
-            <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="font-display text-lg text-accent-strong">
                 {row.brand_name}
               </p>
               <div className="flex flex-wrap items-center gap-2">
-                <Pill tone={toneFor(row.status)}>{row.status}</Pill>
                 {!isMock && row.status === "active" && (
-                  <CancelInviteButton
-                    inviteCodeId={row.id}
-                    brandName={row.brand_name}
-                  />
+                  <>
+                    <ResendInviteButton
+                      inviteCodeId={row.id}
+                      brandName={row.brand_name}
+                    />
+                    <CancelInviteButton
+                      inviteCodeId={row.id}
+                      brandName={row.brand_name}
+                    />
+                  </>
                 )}
+                <Pill tone={toneFor(row.status)}>{row.status}</Pill>
               </div>
             </div>
             <p className="num mt-1 text-sm font-extrabold tracking-wide text-text">
